@@ -1,8 +1,286 @@
-<html>
-<head>
-  <title>test</title>
-</head>
-<body>
-  <h1>Douze Points</h1>
-</body>
-</html>
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+   <meta charset="UTF-8">
+   <title>ESCFlix</title>
+ </head>
+ <body>
+
+  <link rel="stylesheet" type="text/css" href="euroflix_css.css">
+  <script type="text/javascript" src="euroflix.js"></script>
+  
+   <div class="carousel-section">
+     <h4>Eurovision Winners v0.5</h4>
+ 
+     <div class="carousel-wrapper" id="carousel1">
+       <button class="carousel-button" onclick="scrollCarousel('carousel1',-1)">&#10094;</button>
+ 
+       <div class="carousel-container">
+         <div class="carousel-track" id="carouselTrack1">
+ 
+           <!-- 2014 - Conchita Wurst -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2014/videos/2014+-+Austria+-+Conchita+Wurst+-+Rise+Like+a+Phoenix.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2014/thumbs/2014-austria.jpeg" alt="Austria 2014 - Conchita Wurst">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2014/videos/2014+-+Austria+-+Conchita+Wurst+-+Rise+Like+a+Phoenix.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Conchita Wurst <br> Rise Like A Phoenix <br> 2014</div>
+           </div>
+ 
+           <!-- 2015 - Måns Zelmerlöw -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2015/videos/2015+-+Sweden+-+Mans+Zelmerlow+-+Heroes.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2015/thumbs/2015-sweden.jpeg" alt="Sweden 2015 - Måns Zelmerlöw">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2015/videos/2015+-+Sweden+-+Mans+Zelmerlow+-+Heroes.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Måns Zelmerlöw <br> Heroes <br> 2015</div>
+           </div>
+ 
+           <!-- 2016 - Jamala -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2016/videos/2016+-+Ukraine+-+Jamala+-+1944.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2016/thumbs/2016-ukraine.jpeg" alt="Ukraine 2016 - Jamala">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2016/videoa/2016+-+Ukraine+-+Jamala+-+1944.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Jamala <br> 1944 <br> 2016</div>
+           </div>
+ 
+           <!-- 2017 - Salvador Sobral -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2017/videos/2017+-+Portugal+-+Salvador+Sobral+-+Amar+Pelos+Dois.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2017/thumbs/2017-portugal.jpeg" alt="Portugal 2017 - Salvador Sobral">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2017/videos/2017+-+Portugal+-+Salvador+Sobral+-+Amar+Pelos+Dois.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Salvador Sobral <br> Amar pelos dois <br> 2017</div>
+           </div>
+ 
+           <!-- 2018 - Netta -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2018/videos2018+-+Israel+-+Netta+-+Toy.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2018/thumbs/2018-israel.jpeg" alt="Israel 2018 - Netta">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2018/videos/2018+-+Israel+-+Netta+-+Toy.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Netta <br> Toy <br> 2018</div>
+           </div>
+ 
+           <!-- 2019 - Duncan Laurence -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2019/videos/2019+-+Netherlands+-+Duncan+Laurence+-+Arcade.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2019/thumbs/2019-netherlands.jpeg" alt="Netherlands 2019 - Duncan Laurence">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2019/videos/2019+-+Netherlands+-+Duncan+Laurence+-+Arcade.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Duncan Laurence <br> Arcade <br> 2019</div>
+           </div>
+ 
+ 
+           <!-- 2021 - Måneskin -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2021/videos/2021+-+Italy+-+Maneskin+-+Zitti+E+Buoni.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2021/thumbs/2021-italy.jpeg" alt="Italy 2021 - Måneskin">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2021/videos/2021+-+Italy+-+Maneskin+-+Zitti+E+Buoni.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Måneskin <br> Zitti e buoni <br> 2021</div>
+           </div>
+ 
+ 
+           <!-- 2022 - Kalush Orchestra -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2022/videos/2022+-+Ukraine+-+Kalush+Orchestra+-+Stefania.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2022/thumbs/2022-ukraine.jpeg" alt="Ukraine 2022 - Kalush Orchestra">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2022/videos/2022+-+Ukraine+-+Kalush+Orchestra+-+Stefania.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Kalush Orchestra <br> Stefania <br> 2022</div>
+           </div>
+ 
+           <!-- 2023 - Loreen -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2023/videos/2023+-+Sweden+-+Loreen+-+Tattoo.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2023/thumbs/2023-sweden.jpeg" alt="Sweden 2023 - Loreen">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2023/videos/2023+-+Sweden+-+Loreen+-+Tattoo.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Loreen <br> Tattoo <br> 2023</div>
+           </div>
+ 
+           <!-- 2024 - Nemo -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024+-+Switzerland+-+Nemo+-+The Code.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-switzerland.jpeg" alt="Switzerland 2024 - Nemo">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024+-+Switzerland+-+Nemo+-+The Code.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Nemo <br> The Code <br> 2024</div>
+           </div>
+ 
+ 
+         </div>
+       </div>
+ 
+       <button class="carousel-button" onclick="scrollCarousel('carousel1',1)">&#10095;</button>
+     </div>
+   </div>
+ 
+ 
+ 
+ 
+   <div class="carousel-section" id='carousel2'>
+     <h4>2024 Edition</h4>
+ 
+     <div class="carousel-wrapper">
+       <button class="carousel-button" onclick="scrollCarousel('carousel1',-1)">&#10094;</button>
+       
+       <div class="carousel-container">
+         <div class="carousel-track" id="carouselTrack2">
+           
+           <!-- 2014 - Conchita Wurst -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2014+-+Austria+-+Conchita+Wurst+-+Rise+Like+a+Phoenix.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2014-austria.jpeg" alt="Austria 2014 - Conchita Wurst">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2014+-+Austria+-+Conchita+Wurst+-+Rise+Like+a+Phoenix.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Conchita Wurst <br> Rise Like A Phoenix <br> 2014</div>
+           </div>
+ 
+           <!-- 2015 - Måns Zelmerlöw -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2015+-+Sweden+-+Mans+Zelmerlow+-+Heroes.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2015-sweden.jpeg" alt="Sweden 2015 - Måns Zelmerlöw">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2015+-+Sweden+-+Mans+Zelmerlow+-+Heroes.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Måns Zelmerlöw <br> Heroes <br> 2015</div>
+           </div>
+ 
+           <!-- 2016 - Jamala -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2016+-+Ukraine+-+Jamala+-+1944.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2016-ukraine.jpeg" alt="Ukraine 2016 - Jamala">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2016+-+Ukraine+-+Jamala+-+1944.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Jamala <br> 1944 <br> 2016</div>
+           </div>
+ 
+           <!-- 2017 - Salvador Sobral -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2017+-+Portugal+-+Salvador+Sobral+-+Amar+Pelos+Dois.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2017-portugal.jpeg" alt="Portugal 2017 - Salvador Sobral">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2017+-+Portugal+-+Salvador+Sobral+-+Amar+Pelos+Dois.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Salvador Sobral <br> Amar pelos dois <br> 2017</div>
+           </div>
+ 
+           <!-- 2018 - Netta -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2018+-+Israel+-+Netta+-+Toy.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2018-israel.jpeg" alt="Israel 2018 - Netta">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2018+-+Israel+-+Netta+-+Toy.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Netta <br> Toy <br> 2018</div>
+           </div>
+ 
+           <!-- 2019 - Duncan Laurence -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2019+-+Netherlands+-+Duncan+Laurence+-+Arcade.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2019-netherlands.jpeg" alt="Netherlands 2019 - Duncan Laurence">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2019+-+Netherlands+-+Duncan+Laurence+-+Arcade.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Duncan Laurence <br> Arcade <br> 2019</div>
+           </div>
+ 
+ 
+           <!-- 2021 - Måneskin -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2021+-+Italy+-+Maneskin+-+Zitti+E+Buoni.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2021-italy.jpeg" alt="Italy 2021 - Måneskin">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2021+-+Italy+-+Maneskin+-+Zitti+E+Buoni.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Måneskin <br> Zitti e buoni <br> 2021</div>
+           </div>
+ 
+ 
+           <!-- 2022 - Kalush Orchestra -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2022+-+Ukraine+-+Kalush+Orchestra+-+Stefania.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2022-ukraine.jpeg" alt="Ukraine 2022 - Kalush Orchestra">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2022+-+Ukraine+-+Kalush+Orchestra+-+Stefania.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Kalush Orchestra <br> Stefania <br> 2022</div>
+           </div>
+ 
+           <!-- 2023 - Loreen -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2023+-+Sweden+-+Loreen+-+Tattoo.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2023-sweden.jpeg" alt="Sweden 2023 - Loreen">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2023+-+Sweden+-+Loreen+-+Tattoo.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Loreen <br> Tattoo <br> 2023</div>
+           </div>
+ 
+           <!-- 2024 - Nemo -->
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024+-+Switzerland+-+Nemo+-+The Code.mp4')">
+             <div class="preview-container"
+                  onmouseover="showPreview(this)"
+                  onmouseout="hidePreview(this)">
+               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024-switzerland.jpeg" alt="Switzerland 2024 - Nemo">
+               <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024+-+Switzerland+-+Nemo+-+The Code.mp4" muted loop></video>
+             </div>
+             <div class="video-title">Nemo <br> The Code <br> 2024</div>
+           </div>
+ 
+           
+         </div>
+       </div>
+ 
+       <button class="carousel-button" onclick="scrollCarousel('carousel2',1)">&#10095;</button>
+     </div>
+   </div>
+ 
+ 
+ 
+   
+   <!-- Modal -->
+   <div id="videoModal" class="modal" onclick="closeModal()">
+     <div class="modal-content" onclick="event.stopPropagation()">
+       <span class="close-button" onclick="closeModal()">&times;</span>
+       <div id="modalVideoContainer"></div>
+     </div>
+   </div>
+ 
+  
+ </body>
+ </html>
