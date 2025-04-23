@@ -749,7 +749,7 @@
 <option value="country-desc">Country (Z–A)</option>
 <option value="artist">Artist Name</option>
 <option value="song">Song Title</option>
-<option value="final-total">Final Total Points ↓</option>
+<!--<option value="final-total">Final Total Points ↓</option>
 <option value="final-total-asc">Final Total Points ↑</option>
 <option value="final-jury">Final Jury Points ↓</option>
 <option value="final-jury-asc">Final Jury Points ↑</option>
@@ -760,7 +760,7 @@
 <option value="semifinal-jury">Semifinal Jury Points ↓</option>
 <option value="semifinal-jury-asc">Semifinal Jury Points ↑</option>
 <option value="semifinal-televote">Semifinal Televote Points ↓</option>
-<option value="semifinal-televote-asc">Semifinal Televote Points ↑</option>
+<option value="semifinal-televote-asc">Semifinal Televote Points ↑</option>-->
 </select>
 </div>
 <div class="header-title">
@@ -1696,8 +1696,9 @@ data-artist="Teya Dora"
 
    
 
-  </script>
-<script>
+  
+
+<!-- SORTING SCRIPT -->
 document.getElementById('sort-options').addEventListener('change', function () {
   const grid = document.querySelector('.grid-container');
   const items = Array.from(grid.querySelectorAll('.video-item'));
@@ -1746,6 +1747,7 @@ document.getElementById('sort-options').addEventListener('change', function () {
   grid.innerHTML = '';
   items.forEach(item => grid.appendChild(item));
 });
+    
 </script>
 </body>
 </html>
