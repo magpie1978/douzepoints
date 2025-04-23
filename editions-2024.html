@@ -765,6 +765,21 @@
           <h2>Malmö 2024</h2>
         </div>
         <br><br>
+
+        <!-- sorting -->
+        <div class="sort-controls" style="margin-bottom: 1rem;">
+          <label style="margin-right: 10px; color: white;">Sort by:</label>
+          <select id="sort-options">
+            <option value="country">Country (A–Z)</option>
+            <option value="country-desc">Country (Z–A)</option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+            <option value="points">Points (High to Low)</option>
+            <option value="points-asc">Points (Low to High)</option>
+          </select>
+        </div>
+        <!-- end of sorting -->
+        
         <div class="grid-container">
 
 
@@ -1488,6 +1503,37 @@
       video.style.display = 'none';
       img.style.display = 'block';
     }
+
+//SORTING 
+// Clear and re-append in sorted order
+document.getElementById('sort-options').addEventListener('change', function() {
+  const grid = document.querySelector('.grid-container');
+  const items = Array.from(grid.querySelectorAll('.video-item'));
+  const value = this.value;
+
+  let getAttribute = (el, attr) => el.getAttribute(`data-${attr}`)?.toLowerCase() || "";
+
+  items.sort((a, b) => {
+    switch (value) {
+      case 'country':
+        return getAttribute(a, 'country').localeCompare(getAttribute(b, 'country'));
+      case 'country-desc':
+        return getAttribute(b, 'country').localeCompare(getAttribute(a, 'country'));
+      case 'artist':
+        return getAttribute(a, 'artist').localeCompare(getAttribute(b, 'artist'));
+      case 'song':
+        return getAttribute(a, 'song').localeCompare(getAttribute(b, 'song'));
+      case 'points':
+        return parseInt(b.dataset.points) - parseInt(a.dataset.points);
+      case 'points-asc':
+        return parseInt(a.dataset.points) - parseInt(b.dataset.points);
+    }
+  });
+
+  // Clear and re-append in sorted order
+  grid.innerHTML = '';
+  items.forEach(item => grid.appendChild(item));
+});
 
 
    
