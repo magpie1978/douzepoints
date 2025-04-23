@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>ESCFlix | Malmö 2024</title>
+    
+    <style>
+    
+      body {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        margin: 0;
+        background: #141414;
+        color: #fff;
+      }
+  
+      .container {
+        display: flex;
+      }
+  
+      /* SIDEBAR CSS */
+        .sidebar {
+          width: 220px;
+          padding: 10px;
+          background-color: #111;
+          color: white;
+          font-size: 14px;
+          height: auto;
+          overflow: visible;
+        }
+    
+       .sidebar a {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          color: #fff;
+          text-decoration: none;
+          padding: 8px 12px;
+          border-radius: 8px;
+          transition: background-color 0.3s;
+        }
+    
+        .sidebar-row a {
+          text-decoration: none;
+          color: white;
+          display: flex;
+          align-items: center;
+        }
+        
+        .sidebar-row {
+          margin: 5px 0;
+        }
+  
+      .sidebar a:hover {
+        background-color: #e50914;
+        border-radius: 8px;
+      }    
+  
+      .sidebar img {
+        width: 22px;
+        height: 22px;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+  
+      .sidebar::-webkit-scrollbar {
+        width: 8px;
+      }
+  
+      .sidebar::-webkit-scrollbar-track {
+        background: #1a1a1a;
+      }
+  
+      .sidebar::-webkit-scrollbar-thumb {
+        background-color: #444;
+        border-radius: 4px;
+      }
+  
+      .sidebar::-webkit-scrollbar-thumb:hover {
+        background: #666;
+      }
+  
+      .flag-icon {
+        width: 24px;
+        height: auto; /* was 22px */
+        margin-right: 8px;
+        vertical-align: middle;
+      }
+      /* END OF SIDEBAR CSS */
+  
+  
+      /*  MAIN CONTENT CSS */
+  
+      .main-content {
+        flex-grow: 1;
+        padding: 20px;
+      }
+  
+  
+      h4 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #e5e5e5;
+        margin: 0 0 10px 10px;
+      }
+      
+      /* HEADER TITLE CSS*/
+      .header-title {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 1rem 0;
+      }
+  
+      .header-title h2 {
+        font-size: 1.8rem;
+        margin: 0;
+        color: white;
+      }
+      
+      .header-flag {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-right: 15px;
+        flex-shrink: 0;
+      }
+  
+      .header-flag img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      
+      /*  GRID CONTAINER CSS */
+       .grid-container {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 20px;
+        }
+
+      
+        .video-item {
+          cursor: pointer;
+          background-color: #1a1a1a;
+          padding: 10px;
+          border-radius: 8px;
+          overflow: hidden;
+          transition: transform 0.3s ease;
+        }
+
+        .video-item:hover {
+          transform: scale(1.05);
+        }
+
+
+        .preview-container {
+          position: relative;
+          width: 100%;
+          padding-top: 56.25%; /* 16:9 aspect ratio */
+          overflow: hidden;
+          border-radius: 6px;
+        }
+
+        .preview-container img,
+        .preview-container video {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .preview-container video {
+          display: none;
+        }
+
+
+        .preview-container:hover video {
+          display: block;
+        }
+  
+        .preview-container:hover img {
+          display: none;
+        }
+
+
+        .video-title-with-icon {
+          display: flex;
+          align-items: center;
+          margin-top: 10px;
+          gap: 8px;
+          color: white;
+          font-size: 0.8rem;
+        }
+
+        .icon-placeholder {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background-color: #444;
+          object-fit: cover;
+          margin-left: 8px;
+        }
+
+
+        .video-title-text {
+          line-height: 1.2;
+        }
+
+        .modal {
+          display: none;
+          position: fixed;
+          z-index: 9999;
+          left: 0;
+          top: 0;
+          width: 100vw;
+          height: 100vh;
+          overflow: auto;
+          background-color: rgba(0, 0, 0, 0.9);
+          justify-content: center;
+          align-items: center;
+        }
+        /* END OF GRID CONTAINER CSS */
+
+        /* MODEL CONTENT CSS */
+        .modal-content {
+          position: relative;
+          background-color: #000;
+          padding: 20px;
+          max-width: 90%;
+          max-height: 90%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+  
+        .modal-content video {
+          max-width: 100%;
+          max-height: 80vh;
+        }
+  
+        .close-button {
+          position: absolute;
+          color: #fff;
+          font-weight: bold;
+          cursor: pointer;
+          font-size: 40px;
+          top: 10px;
+          right: 20px;
+          z-index: 9999;
+          border-radius: 50%;
+        }
+
+        /*  SECTION HEADER CSS - NOT USED IN COUNTRY PAGES */
+        .section-header {
+          display: flex;
+          align-items: center;  /* was baseline */
+          gap: 20px;
+          margin: 0 10px 10px 10px;
+        }
+  
+      
+        .section-header h4 {
+          margin: 0;
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: #e5e5e5;
+        }
+  
+        .section-header .view-more {
+          margin: 0;
+          font-size: 0.9rem;
+          font-weight: normal;
+          color: #e50914;
+          text-decoration: none;
+        }
+  
+        .section-header .view-more:hover {
+          color: #e50914;
+          text-decoration: none;
+        }
+
+
+       /*  FOOTER HEADER CSS */
+      .site-footer {
+        margin-top: 3rem;
+        padding: 2rem 1rem;
+        text-align: center;
+        color: #ccc;
+        font-size: 0.85rem;
+        background-color: #141414;
+      }
+      
+      .footer-line {
+        width: 90%;
+        height: 1px;
+        background-color: #e50914;
+        margin: 0 auto 1rem auto;
+      }
+      
+      .footer-branding {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        gap: 10px;
+      }
+      
+      .footer-flag {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        overflow: hidden;
+      }
+      
+      .footer-flag img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      
+      .footer-title {
+        font-size: 1rem;
+        color: #fff;
+        font-weight: bold;
+      }
+      
+      .footer-links a {
+        color: #ccc;
+        margin: 0 10px;
+        text-decoration: none;
+        font-size: 0.85rem;
+      }
+      
+      .footer-links a:hover {
+        color: #e50914;
+        text-decoration: underline;
+      }
+
+      
+      /*  BANNER CAROUSEL */
+      .main-header {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        overflow: hidden;
+      }
+      
+.banner-static {
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+}
+
+.banner-static img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}      
+      .banner-image.active {
+        opacity: 1;
+        z-index: 2;
+      }
+      
+      /* Overlay layout */
+      .header-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 20px;
+        z-index: 3;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .home-link {
+        color: #fff;
+        font-size: 1rem;
+        font-weight: bold;
+        text-decoration: none;
+      }
+      
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .header-links {
+  display: flex;
+  gap: 20px;
+}
+
+.header-links a {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.header-links a:hover {
+  color: #e50914;
+}
+      
+      .banner-text {
+        position: absolute;
+        bottom: 30px;
+        left: 30px;
+        text-align: left;
+        color: black;
+        z-index: 3;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.7); /* Optional: semi-transparent background for readability */
+        border-radius: 8px;
+      }
+      
+      .banner-text h2 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .banner-text p {
+        font-size: 1rem;
+        margin: 0.3rem 0;
+      }
+
+      
+      .search-input {
+        padding: 6px 10px;
+        border-radius: 20px;
+        border: none;
+        outline: none;
+        font-size: 0.9rem;
+        width: 200px;
+      }
+      
+      /* Menu button and dropdown */
+      .menu-button {
+        position: relative;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: #e50914;
+        color: #fff;
+        font-weight: bold;
+        font-size: 1.2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        user-select: none;
+      }
+      
+      .menu-dropdown {
+        display: none;
+        position: absolute;
+        top: 45px;
+        right: 0;
+        background-color: #1f1f1f;
+        border-radius: 6px;
+        padding: 10px;
+        width: 150px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        flex-direction: column;
+      }
+      
+      .menu-dropdown a {
+        color: white;
+        text-decoration: none;
+        padding: 5px 0;
+        display: block;
+      }
+      
+      .menu-dropdown a:hover {
+        color: #e50914;
+      }
+      
+      /* Toggle dropdown on hover */
+      .menu-button:hover .menu-dropdown {
+        display: flex;
+      }
+
+      .banner-divider {
+        width: 100%;
+        height: 1px;
+        background-color: #e50914;
+}
+
+      
+      </style>
+  </head>
+
+  <body oncontextmenu="return false">
+
+    <!-- NEW CODE FOR HEADER -->
+    <header class="main-header">
+      <div class="header-overlay">
+        <div class="header-links">
+          <a class="home-link" href="escflix.html">Home</a>
+          <a class="countries-link" href="albania.html">Countries</a>
+        </div>
+        <div class="header-actions">
+          <input type="text" class="search-input" placeholder="Search...">
+          <div class="menu-button">
+            ☰
+            <div class="menu-dropdown">
+              <a href="#">My Favorites</a>
+              <a href="#">Log Out</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  <div class="banner-static">
+    <img src="https://euroflix.s3.eu-north-1.amazonaws.com/banners/banner4.jpg" alt="ESCFlix Banner">
+  </div>
+
+  <div class="banner-text">
+    <h2>Welcome to ESCFlix</h2>
+    <p>Explore Eurovision performances by year, country, or winner</p>
+    <p>Watch, search, and save your favorites</p>
+  </div>
+</header>
+
+<!--  red diviing line -->
+<div class="banner-divider"></div>
+
+
+
+
+
+
+
+
+    
+    <div class="container">
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-row">
+          <a href="albania.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/al.png" alt="Albania">Albania</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="andorra.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ad.png" alt="Andorra">Andorra</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="armenia.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ar.png" alt="Armenia">Armenia</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="australia.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/au.png" alt="Australia">Australia</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="austria.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/at.png" alt="Austria">Austria</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="azerbaijan.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/az.png" alt="Azerbaijan">Azerbaijan</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="belarus.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/by.png" alt="Belarus">Belarus</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="belgium.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/be.png" alt="Belgium">Belgium</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="bosnia-hercegovina.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ba.png" alt="Bosnia-Hercegovina">Bosnia & Hercegovina</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="bulgaria.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/bg.png" alt="Bulgaria">Bulgaria</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="croatia.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/hr.png" alt="Croatia">Croatia</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="cyprus.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/cy.png" alt="Cyprus">Cyprus</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="czechia.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/cz.png" alt="Czechia">Czechia</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="denmark.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/dk.png" alt="Denmark">Denmark</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="estonia.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ee.png" alt="Estonia">Estonia</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="finland.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/fi.png" alt="Finland">Finland</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="france.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/fr.png" alt="France">France</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="georgia.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ge.png" alt="Georgia">Georgia</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="germany.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/de.png" alt="Germany">Germany</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="greece.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/gr.png" alt="Greece">Greece</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="hungary.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/hu.png" alt="Hungary">Hungary</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="iceland.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/is.png" alt="Iceland">Iceland</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="ireland.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ie.png" alt="Ireland">Ireland</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="israel.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/il.png" alt="Israel">Israel</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="italy.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/it.png" alt="Italy">Italy</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="latvia.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/lv.png" alt="Latvia">Latvia</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="lithuania.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/lt.png" alt="Lithuania">Lithuania</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="luxembourg.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/lu.png" alt="Luxembourg">Luxembourg</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="malta.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/mt.png" alt="Malta">Malta</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="moldova.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/md.png" alt="Moldova">Moldova</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="monaco.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/mc.png" alt="Monaco">Monaco</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="montenegro.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/me.png" alt="Montenegro">Montenegro</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="morocco.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ma.png" alt="Morocco">Morocco</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="netherlands.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/nl.png" alt="Netherlands">Netherlands</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="northmacedonia.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/mk.png" alt="North Macedonia">North Macedonia</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="norway.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/no.png" alt="Norway">Norway</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="poland.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/pl.png" alt="Poland">Poland</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="portugal.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/pt.png" alt="Portugal">Portugal</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="romania.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ro.png" alt="Romania">Romania</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="russia.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ru.png" alt="Russia">Russia</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="sanmarino.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png" alt="San Marino">San Marino</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="serbia.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/rs.png" alt="Serbia">Serbia</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="serbia-montenegro.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/cs.png" alt="Serbia & Montenegro">Serbia & Montenegro</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="slovakia.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sk.png" alt="Slovakia">Slovakia</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="slovenia.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/si.png" alt="Slovenia">Slovenia</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="spain.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/es.png" alt="Spain">Spain</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="sweden.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/se.png" alt="Sweden">Sweden</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="switzerland.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ch.png" alt="Switzerland">Switzerland</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="turkey.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/tk.png" alt="Turkey">Turkey</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="ukraine.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ua.png" alt="Ukraine">Ukraine</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="unitedkingdom.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/gb.png" alt="United Kingdom">United Kingdom</a>
+        </div>
+        <div class="sidebar-row">
+          <a href="yugoslavia.html"><img class="flag-icon" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/yu.png" alt="Yugoslavia">Yugoslavia</a>
+        </div>
+      </div> <!-- end of sidebar -->
+
+      
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="grid-section">
+        <div class="header-title">
+          <div class="header-flag">
+          <img src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/se.png" alt="Sweden" /></div>
+          <h2>Malmö 2024</h2>
+        </div>
+        <br><br>
+        <div class="grid-container">
+
+
+
+
+
+          <!-- 2024 - Cyprus -->
+ 
+           <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-CY.mp4')">
+            <div class="preview-container"
+                onmouseover="showPreview(this)"
+                onmouseout="hidePreview(this)">
+             <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-CY.jpeg" alt="Cyprus">
+             <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-CY.mp4" muted loop></video>
+           </div>
+           <div class="video-title-with-icon" onclick="event.stopPropagation()">
+            <a href="cyprus.html">
+              <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/cy.png" alt="Flag">
+            </a>
+            <div class="video-title-text">Silia Kapsis<br>Liar<br></div>
+          </div>
+         </div>
+
+          <!-- 2024 - Serbia -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-RS.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-RS.jpeg" alt="Serbia 2015 - Teya Dora">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-RS.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="serbia">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/rs.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Teya Dora<br>Ramonda<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Lithuania -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-LT.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-LT.jpg" alt="Lithuania 2024 - Silvester Belt">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-LT.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="lithuania">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/lt.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Silvester Belt<br>Luktelk<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Ireland -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-IE.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-IE.jpeg" alt="Portugal 2017 - Salvador Sobral">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-IE.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="ireland">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ie.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Bambi Thug<br>Doomsday Blue<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Ukraine -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-UA.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-UA.jpeg" alt="Israel 2018 - Netta">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-UA.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="ukraine">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ua.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Alynoa Alyona...<br>Teresa & Maria<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Poland -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-PL.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-PL.jpeg" alt="Netherlands 2019 - Duncan Laurence">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-PL.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="poland">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/pl.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Luna<br>The Tower<br></div>
+              </div>
+             </div>
+ 
+ 
+             <!-- 2024 - Croatia -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-HR.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-HR.jpeg" alt="Italy 2021 - Måneskin">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-HR.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="croatia">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/hr.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Baby Lasagna<br>Rim Tim Tagi Dim<br></div>
+              </div>
+             </div>
+ 
+ 
+             <!-- 2024 - Iceland -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-IS.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-IS.jpeg" alt="Ukraine 2022 - Kalush Orchestra">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-IS.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="iceland">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/is.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Hera Björk<br>Scared of Heights<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Slovenia -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-SI.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-SI.jpeg" alt="Sweden 2023 - Loreen">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-SI.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="slovenia">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/si.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Raiven<br>Veronkia<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Finland -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-FI.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-FI.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-FI.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="finland">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/fi.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Windows95man<br>No Rules!<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Moldova -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-MD.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-MD.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-MD.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="moldova">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/md.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Natalia Barbu<br>In The Middle<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Azerbaijan -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AZ.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-AZ.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AZ.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="azerbaijan">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/az.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Fahree feat. Ilkin...<br>Özünlə apar<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Australia -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AU.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-AU.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AU.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="australia">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/au.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Electric Fields<br>One Milkali (One Blood)<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Portugal -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-PT.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-PT.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-PT.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="portugal">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/pt.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Iolanda<br>Grito<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Luxembourg -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-LU.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-LU.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-LU.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="luxembourg">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/lu.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Tali<br>Fighter<br></div>
+              </div>
+             </div>
+ 
+ 
+             <!-- 2024 - Malta -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-MT.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-MT.jpeg" alt="Austria 2014 - Conchita Wurst">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-MT.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="malta">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/mt.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Sarah Bonnici<br>Loop<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Albania -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AL.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-AL.jpeg" alt="Sweden 2015 - Måns Zelmerlöw">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AL.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="albania">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/al.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Besa<br>Titan<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Greece -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-GR.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-GR.jpeg" alt="Ukraine 2016 - Jamala">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-GR.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="greece">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/gr.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Marina Satti<br>Zari<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Switzerland -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-CH.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-CH.jpeg" alt="Portugal 2017 - Salvador Sobral">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-CH.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="switzerland">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ch.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Nemo<br>The Code<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Czechia -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-CZ.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-CZ.jpeg" alt="Israel 2018 - Netta">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-CZ.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="czechia">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/cz.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Aiko<br>Pedestal<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Austria -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AT.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-AT.jpeg" alt="Netherlands 2019 - Duncan Laurence">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AT.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="austria">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/at.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Kaleen<br>We Will Rave<br></div>
+              </div>
+             </div>
+ 
+ 
+             <!-- 2024 - Denmark -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-DK.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-DK.jpeg" alt="Italy 2021 - Måneskin">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-DK.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="denmark">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/dk.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Saba<br>Sand<br></div>
+              </div>
+             </div>
+ 
+ 
+             <!-- 2024 - Armenia -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AM.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-AM.jpeg" alt="Ukraine 2022 - Kalush Orchestra">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AM.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="armenia">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/am.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Ladaniva<br>Jako<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Latvia -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-LV.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-LV.jpeg" alt="Sweden 2023 - Loreen">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-LV.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="latvia">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/lv.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Dons<br>Hollow<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - San Marino -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-SM.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-SM.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-SM.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="sanmarino">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Megara<br>11:11<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Georgia -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-GE.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-GE.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-GE.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="georgia">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ge.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Nutsa Buzaladze<br>Firefighter<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Belgium -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-BE.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-BE.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-BE.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="belgium">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/be.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Mustii<br>Before the Party's Over<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Estonia -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-EE.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-EE.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-EE.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="estonia">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ee.png" alt="Flag">
+                </a>
+                <div class="video-title-text">5miinust and ...<br>(Nendest) narkooti...<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Israel -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-IL.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-IL.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-IL.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="israel">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/il.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Eden Golan<br>Hurricane<br></div>
+              </div>
+             </div>
+ 
+             <!-- 2024 - Norway -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-NO.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-NO.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-NO.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="norway">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/no.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Gåte<br>Ulveham<br></div>
+              </div>
+             </div>
+ 
+                     <!-- 2024 - Netherlands -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-NL.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-NL.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-NL.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="netherlands">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/nl.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Joost Klein<br>Europapa<br></div>
+              </div>
+             </div>
+ 
+ 
+ 
+                      <!-- 2024 - Spain -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-ES.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-ES.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-ES.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="spain">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/es.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Nebulossa<br>Zorra<br></div>
+              </div>
+             </div>
+ 
+                      <!-- 2024 - Germany -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-DE.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-DE.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-DE.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="germany">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/de.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Isaak<br>Always on the Run<br></div>
+              </div>
+             </div>
+ 
+                      <!-- 2024 - Sweden -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-SE.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-SE.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-SE.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="sweden">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/se.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Marcus & Martinus<br>Unforgettable<br></div>
+              </div>
+             </div>
+ 
+                      <!-- 2024 - United Kingdom -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-GB.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-GB.jpeg" alt="United Kingdom">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-GB.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="unitedkingdom">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/gb.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Olly Alexander<br>Dizzy<br></div>
+              </div>
+             </div>
+ 
+                      <!-- 2024 - Italy -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-IT.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-IT.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-IT.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="italy">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/it.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Angelina Mango<br>La Noia<br></div>
+              </div>
+             </div>
+ 
+               <!-- 2024 - France -->
+             <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-FR.mp4')">
+               <div class="preview-container"
+                    onmouseover="showPreview(this)"
+                    onmouseout="hidePreview(this)">
+                 <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-FR.jpeg" alt="Switzerland 2024 - Nemo">
+                 <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-FR.mp4" muted loop></video>
+               </div>
+               <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="france">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/fr.png" alt="Flag">
+                </a>
+                <div class="video-title-text">Slimane<br>Mon Amour<br></div>
+              </div>
+             </div>
+
+          
+          
+        </div> <!-- end of grid-container -->
+      </div> <!-- end of grid-section -->
+    </div> <!-- end of main-content -->
+  </div> <!-- end of container -->
+
+  <!-- Modal (used by JS) -->
+  <div id="videoModal" class="modal" onclick="closeModal(event)">
+    <span class="modal-close" onclick="closeModal(event)">&times;</span>
+    <video id="modalVideo" controls autoplay controlsList="nodownload"></video>
+  </div>
+
+
+  <footer class="site-footer">
+    <div class="footer-line"></div>
+    <div class="footer-branding">
+      <div class="footer-flag">
+        <img src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/gb.png" alt="United Kingdom" />
+      </div>
+      <span class="footer-title">Douze Points</span>
+    </div>
+    <div class="footer-links">
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact Us</a>
+      <a href="faq.html">FAQ</a>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+  </footer>
+
+    
+  <script>
+    function openModalWithVideo(videoUrl) {
+      const modal = document.createElement('div');
+      modal.classList.add('modal');
+      modal.style.display = 'flex';
+
+      modal.innerHTML = `
+        <div class="modal-content">
+          <span class="close-button" onclick="document.body.removeChild(this.closest('.modal'))">&times;</span>
+          <video 
+            src="${videoUrl}" 
+            controls 
+            autoplay 
+            controlsList="nodownload" 
+            oncontextmenu="return false"
+          ></video>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById("videoModal");
+      modal.style.display = "none";
+    }
+
+    function showPreview(container) {
+      const video = container.querySelector('video');
+      const img = container.querySelector('img');
+      img.style.display = 'none';
+      video.style.display = 'block';
+      video.play();
+    }
+
+    function hidePreview(container) {
+      const video = container.querySelector('video');
+      const img = container.querySelector('img');
+      video.pause();
+      video.style.display = 'none';
+      img.style.display = 'block';
+    }
+
+
+   
+
+  </script>
+  </body>
+</html>
