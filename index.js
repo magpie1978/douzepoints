@@ -14,10 +14,41 @@ function scrollCarousel(direction, trackId) {
   behavior: 'smooth'
   });
 }
- 
- 
- 
+
+
 function openModalWithVideo(videoUrl) {
+  // Create modal
+  const modal = document.createElement('div');
+  modal.classList.add('modal');
+  modal.style.display = 'flex';
+
+  // Modal inner HTML
+  modal.innerHTML = `
+    <div class="modal-content">
+      <span class="close-button" onclick="document.body.removeChild(this.closest('.modal'))">&times;</span>
+      <video id="modalVideo" 
+             src="${videoUrl}" 
+             controls 
+             controlsList="nodownload" 
+             oncontextmenu="return false"
+             style="max-width: 100%; max-height: 80vh;"
+             ></video>
+    </div>
+  `;
+
+  // Add modal to page
+  document.body.appendChild(modal);
+
+  // Force video to play AFTER it is added
+  const video = modal.querySelector('video');
+  video.play().catch((e) => {
+    console.warn('Video autoplay was blocked:', e);
+  });
+}
+
+ 
+ 
+function OLDopenModalWithVideo(videoUrl) {
   const modal = document.createElement('div');
   modal.classList.add('modal');
   modal.style.display = 'flex';
