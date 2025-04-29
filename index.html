@@ -4,6 +4,7 @@
          <title>ESCFlix</title>
 
       <link rel="stylesheet" type="text/css" href="index.css">
+      <script src="index.js" type="text/javascript"></script>
 
    </head>
    <body oncontextmenu="return false">
@@ -1081,7 +1082,6 @@
                 <div class="video-title-text">Michał Szpak<br>Color Of Your Life<br>2016</div>
               </div>
              </div>
-
                  
            </div>
          </div>
@@ -1106,84 +1106,5 @@
       <a href="privacy.html">Privacy Policy</a>
     </div>
   </footer>
-
-         
- <script>     
-      <!-- Modal -->
-      <div id="videoModal" class="modal" onclick="closeModal(event)">
-            <span class="modal-close" onclick="closeModal(event)">&times;</span>
-            <video id="modalVideo" controls autoplay controlsList="nodownload"></video>
-      </div>
-
-
-      /*  LOGIN SCRIPT */
-          if (sessionStorage.getItem("loggedIn") !== "true") {
-            window.location.href = "login.html";
-          }
-
-           
-        function scrollCarousel(direction, trackId) {
-      const track = document.getElementById(trackId);
-      const itemWidth = track.querySelector('.video-item').offsetWidth + 20; // includes margin
-      const scrollAmount = itemWidth * 5; // scroll 5 items
- 
-      track.scrollBy({
-        left: direction * scrollAmount,
-        behavior: 'smooth'
-      });
-    }
- 
- 
- 
-      function openModalWithVideo(videoUrl) {
-   const modal = document.createElement('div');
-   modal.classList.add('modal');
-   modal.style.display = 'flex';
- 
-   modal.innerHTML = `
-     <div class="modal-content">
-       <span class="close-button" onclick="document.body.removeChild(this.closest('.modal'))">&times;</span>
-       <video 
-         src="${videoUrl}" 
-         controls 
-         autoplay 
-         controlsList="nodownload" 
-         oncontextmenu="return false"
-       ></video>
-     </div>
-   `;
- 
-   document.body.appendChild(modal);
- }
- 
- 
- 
-       function closeModal() {
-         const modal = document.getElementById("videoModal");
-         const container = document.getElementById("modalVideoContainer");
-         modal.style.display = "none";
-         container.innerHTML = "";
-       }
- 
-    function showPreview(container) {
-      const video = container.querySelector('video');
-      const img = container.querySelector('img');
-      img.style.display = 'none';
-      video.style.display = 'block';
-      video.play();
-    }
- 
- 
-    function hidePreview(container) {
-      const video = container.querySelector('video');
-      const img = container.querySelector('img');
-      video.pause();
-      video.style.display = 'none';
-      img.style.display = 'block';
-    }
- 
- 
-     </script>
- 
-   </body>
-   </html>
+</body>
+</html>
