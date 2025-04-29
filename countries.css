@@ -149,7 +149,7 @@ h4 {
     transform: scale(1.05);
   }
 
-
+  
   .preview-container {
     position: relative;
     width: 100%;
@@ -203,6 +203,11 @@ h4 {
 
   .video-title-text {
     line-height: 1.2;
+  }
+
+  .video-title-text a {
+    text-decoration: none; /* Remove underline */
+    color: inherit;         /* Inherit color from surrounding text */
   }
 
   .modal {
@@ -413,6 +418,7 @@ color: #e50914;
   background: rgba(255, 255, 255, 0.7); /* Optional: semi-transparent background for readability */
   border-radius: 8px;
 }
+
 
 .banner-text h2 {
   font-size: 2rem;
