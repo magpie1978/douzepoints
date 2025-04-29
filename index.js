@@ -1,10 +1,3 @@
-/* Modal */
-<div id="videoModal" class="modal" onclick="closeModal(event)">
-      <span class="modal-close" onclick="closeModal(event)">&times;</span>
-      <video id="modalVideo" controls autoplay controlsList="nodownload"></video>
-</div>
-
-
 /*  LOGIN SCRIPT */
 if (sessionStorage.getItem("loggedIn") !== "true") {
   window.location.href = "login.html";
