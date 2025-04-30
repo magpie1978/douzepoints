@@ -120,13 +120,17 @@ h4 {
   flex-shrink: 0;
 }
 
-.header-flag img {
+.OLDheader-flag img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
+.header-flag img {
+    width: 32px;
+    height: auto;
+  }
 
 /*  GRID CONTAINER CSS */
  .grid-container {
