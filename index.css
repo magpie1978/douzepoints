@@ -224,8 +224,8 @@ h4 {
 }
 
 .banner-static img {
-  width: 1024px; /* was 100% */
-  height: 400px; /* was 100% */
+  width: 100%; /* was 100% */
+  height: 100%; /* was 100% */
   object-fit: contain;
   display: block;
 }      
