@@ -512,7 +512,22 @@ align-items: center;
 
   
 /* SORT CONTROLS */
+
+
 .sort-controls {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 20px;
+    align-items: center;
+}
+
+.sort-controls select {
+    width: 160px; /* adjust to desired thinner width */
+    padding: 5px;
+    font-size: 14px;
+}
+
+.OLDsort-controls {
 display: flex;
 align-items: center;
 gap: 10px;
@@ -535,7 +550,7 @@ height: 18px;
 stroke-width: 2;
 }
 
-.sort-controls select {
+.OLDsort-controls select {
 background-color: #1a1a1a;
 color: #fff;
 padding: 8px 12px;
