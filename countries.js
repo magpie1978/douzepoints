@@ -1,7 +1,7 @@
 /*  LOGIN SCRIPT */
-if (sessionStorage.getItem("loggedIn") !== "true") {
-  window.location.href = "login.html";
-}
+/* if (sessionStorage.getItem("loggedIn") !== "true") { */
+/*   window.location.href = "login.html"; */
+/* } */
 
 
 function openModalWithVideo(videoUrl) {
