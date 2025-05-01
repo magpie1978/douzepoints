@@ -247,45 +247,26 @@
             
         <!-- MAIN CONTENT -->
         
-                <div class="main-content">
-                    <div class="grid-section">
-
-                        <div class="header-bar">
-                          <div class="header-title">
-                            <div class="header-flag">
-                              <img alt="Sweden" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/se.png"/>
-                            </div>
-                            <h2>Stockholm 2016</h2>
-                          </div>
-
-                      <div class="sort-controls">
-                        <label for="sort-options">
-                          <i data-lucide="list-filter" style="margin-right: 5px;"></i>
-                        </label>
-                        <select id="sort-options">
-                          <option value="country">Country (A–Z)</option>
-                          <option value="country-desc">Country (Z–A)</option>
-                          <option value="artist">Artist Name</option>
-                          <option value="song">Song Title</option>
-                          <!--<option value="final-total">Final Total Points ↓</option>
-                          <option value="final-total-asc">Final Total Points ↑</option>
-                          <option value="final-jury">Final Jury Points ↓</option>
-                          <option value="final-jury-asc">Final Jury Points ↑</option>
-                          <option value="final-televote">Final Televote Points ↓</option>
-                          <option value="final-televote-asc">Final Televote Points ↑</option>
-                          <option value="semifinal-total">Semifinal Total Points ↓</option>
-                          <option value="semifinal-total-asc">Semifinal Total Points ↑</option>
-                          <option value="semifinal-jury">Semifinal Jury Points ↓</option>
-                          <option value="semifinal-jury-asc">Semifinal Jury Points ↑</option>
-                          <option value="semifinal-televote">Semifinal Televote Points ↓</option>
-                          <option value="semifinal-televote-asc">Semifinal Televote Points ↑</option>-->
-                    </select>
-                      </div>
+            <div class="main-content">
+                <div class="grid-section">
+                    <div class="header-bar">
+                        <div style="flex: 1;"></div> <!-- Push the sort-controls to the right -->
+                        <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
+                            <label for="sort-options">
+                                <i data-lucide="list-filter" style="margin-right: 5px;"></i>
+                            </label>
+                            <select id="sort-options" style="width: 160px; padding: 5px; font-size: 14px;">
+                                <option value="country">Country (A–Z)</option>
+                                <option value="country-desc">Country (Z–A)</option>
+                                <option value="artist">Artist Name</option>
+                                <option value="song">Song Title</option>
+                            </select>
+                        </div>
                     </div>
-
-                        <br/><br/>
+                    
+                    <br/><br/>
                 
-                        <div class="grid-container">
+                    <div class="grid-container">
                 
                         <!--  VIDEOS  -->
 
