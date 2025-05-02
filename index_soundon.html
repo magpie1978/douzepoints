@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>YouTube Modal Demo</title>
+  <style>
+    body { background: #111; color: #fff; font-family: sans-serif; margin: 0; padding: 20px; }
+    .video-item { cursor: pointer; background: #222; padding: 10px; border-radius: 8px; width: 300px; }
+    .preview-container img { width: 100%; border-radius: 6px; }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      position: relative;
+      max-width: 100%;
+      max-height: 100%;
+    }
+    .modal-content video,
+    .modal-content iframe {
+      width: 90vw;
+      height: 90vh;
+    }
+    .close-button {
+      position: absolute;
+      top: 10px; right: 20px;
+      font-size: 30px;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Click to Open YouTube Video in Modal</h2>
+
+<div class="video-item" onclick="openModalWithVideo('https://www.youtube.com/watch?v=kmg8EAD-Kjw')">
+  <div class="preview-container">
+    <img src="https://img.youtube.com/vi/kmg8EAD-Kjw/hqdefault.jpg" alt="YouTube Preview">
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="videoModal" class="modal" onclick="closeModal(event)">
+  <div class="modal-content">
+    <span class="close-button" onclick="closeModal(event)">&times;</span>
+    <video id="modalVideo" controls autoplay controlsList="nodownload" style="display: none;"></video>
+    <iframe id="modalIframe" style="display: none;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
