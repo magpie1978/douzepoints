@@ -1,65 +1,47 @@
 /*  LOGIN SCRIPT */
-/* if (sessionStorage.getItem("loggedIn") !== "true") {
-  window.location.href = "login.html";
-} */
+/* if (sessionStorage.getItem("loggedIn") !== "true") { */
+/*   window.location.href = "login.html"; */
+/* } */
+
 
 function openModalWithVideo(videoUrl) {
-  const modal = document.getElementById("videoModal");
+  const modal = document.createElement('div');
+  modal.classList.add('modal');
+  modal.style.display = 'flex';
+
   modal.innerHTML = `
     <div class="modal-content">
-      <span class="close-button" onclick="closeModal('videoModal', event)">&times;</span>
-      <video
-        src="${videoUrl}"
-        controls
-        autoplay
-        controlsList="nodownload"
+      <span class="close-button" onclick="document.body.removeChild(this.closest('.modal'))">&times;</span>
+      <video 
+        src="${videoUrl}" 
+        controls 
+        autoplay 
+        controlsList="nodownload" 
         oncontextmenu="return false"
       ></video>
     </div>
   `;
-  modal.style.display = "flex";
+
+  document.body.appendChild(modal);
 }
 
-function openModalWithYouTube(videoId) {
-  const modal = document.getElementById("youtubeModal");
-  modal.innerHTML = `
-    <div class="modal-content">
-      <span class="close-button" onclick="closeModal('youtubeModal', event)">&times;</span>
-      <iframe
-        src="https://www.youtube.com/embed/${videoId}?autoplay=1"
-        frameborder="0"
-        allow="autoplay; encrypted-media"
-        allowfullscreen
-      ></iframe>
-    </div>
-  `;
-  modal.style.display = "flex";
-}
-
-function closeModal(modalId, event) {
-  const modal = document.getElementById(modalId);
-  if (event.target === modal || event.target.classList.contains('close-button') || event.target.classList.contains('modal-close')) {
-    modal.style.display = "none";
-    modal.innerHTML = ''; // Clear modal content
-  }
+function closeModal() {
+  const modal = document.getElementById("videoModal");
+  modal.style.display = "none";
 }
 
 function showPreview(container) {
   const video = container.querySelector('video');
   const img = container.querySelector('img');
-  if (video && img) {
-    img.style.display = 'none';
-    video.style.display = 'block';
-    video.play();
-  }
+  img.style.display = 'none';
+  video.style.display = 'block';
+  video.play();
 }
 
 function hidePreview(container) {
   const video = container.querySelector('video');
   const img = container.querySelector('img');
-  if (video && img) {
-    video.pause();
-    video.style.display = 'none';
-    img.style.display = 'block';
-  }
+  video.pause();
+  video.style.display = 'none';
+  img.style.display = 'block';
 }
