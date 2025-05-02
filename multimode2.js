@@ -3,10 +3,17 @@ function openModalWithVideo(videoUrl) {
   modal.classList.add('modal');
   modal.style.display = 'flex';
 
-  let videoContent;
+  const modalContent = document.createElement('div');
+  modalContent.classList.add('modal-content');
 
-  const isYouTube = videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be');
-  if (isYouTube) {
+  const closeButton = document.createElement('span');
+  closeButton.classList.add('close-button');
+  closeButton.innerHTML = '&times;';
+  closeButton.onclick = () => document.body.removeChild(modal);
+
+  modalContent.appendChild(closeButton);
+
+  if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
     let videoId = '';
 
     try {
@@ -21,32 +28,37 @@ function openModalWithVideo(videoUrl) {
     }
 
     if (videoId) {
-      const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0`;
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0`;
+      iframe.allow = 'autoplay; encrypted-media';
+      iframe.allowFullscreen = true;
+      iframe.frameBorder = '0';
+      iframe.style.width = '100%';
+      iframe.style.height = '80vh';
 
-      videoContent = `
-        <iframe
-          id="yt-player"
-          src="${embedUrl}"
-          frameborder="0"
-          allow="autoplay; encrypted-media; fullscreen"
-          allowfullscreen
-          style="width: 100%; height: 80vh;"
-        ></iframe>
-      `;
+      modalContent.appendChild(iframe);
     } else {
-      videoContent = `<div style="color: white;">Invalid YouTube link</div>`;
+      const errorText = document.createElement('div');
+      errorText.style.color = 'white';
+      errorText.textContent = 'Invalid YouTube URL';
+      modalContent.appendChild(errorText);
     }
   } else {
-    videoContent = `
-      <video 
-        src="${videoUrl}" 
-        controls 
-        autoplay 
-        controlsList="nodownload" 
-        oncontextmenu="return false"
-      ></video>
-    `;
+    const video = document.createElement('video');
+    video.src = videoUrl;
+    video.controls = true;
+    video.autoplay = true;
+    video.controlsList = 'nodownload';
+    video.oncontextmenu = () => false;
+    video.style.maxWidth = '100%';
+    video.style.maxHeight = '80vh';
+
+    modalContent.appendChild(video);
   }
+
+  modal.appendChild(modalContent);
+  document.body.appendChild(modal);
+}
 
   modal.innerHTML = `
     <div class="modal-content">
