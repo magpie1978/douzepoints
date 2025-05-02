@@ -1,83 +1,41 @@
-/*  LOGIN SCRIPT */
-/* if (sessionStorage.getItem("loggedIn") !== "true") {
-  window.location.href = "login.html";
-} */
-
-function openModalWithVideo(videoUrl) {
-  const modal = document.getElementById("videoModal");
-  modal.innerHTML = `
-    <div class="modal-content">
-      <span class="close-button" onclick="closeModal('videoModal', event)">&times;</span>
-      <video
-        src="${videoUrl}"
-        controls
-        autoplay
-        controlsList="nodownload"
-        oncontextmenu="return false"
-      ></video>
-    </div>
-  `;
-  modal.style.display = "flex";
+.modal {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 9999;
 }
 
-function openModalWithYouTube(videoId) {
-  const modal = document.getElementById("youtubeModal");
-  modal.innerHTML = `
-    <div class="modal-content">
-      <span class="close-button" onclick="closeModal('youtubeModal', event)">&times;</span>
-      <iframe
-        class="modal-iframe"
-        src="https://www.youtube.com/embed/${videoId}?autoplay=1"
-        frameborder="0"
-        allow="autoplay; encrypted-media"
-        allowfullscreen>
-      ></iframe>
-    </div>
-  `;
-  modal.style.display = "flex";
-}
-
-function closeModal(modalId, event) {
-  const modal = document.getElementById(modalId);
-  if (event.target === modal || event.target.classList.contains('close-button') || event.target.classList.contains('modal-close')) {
-    modal.style.display = "none";
-    if (modalId === "videoModal") {
-      modal.innerHTML = ''; // clear inner HTML to reset video
-    } else if (modalId === "youtubeModal") {
-      modal.innerHTML = ''; // clear entire modal
-    }
-  }
-}
-
-function showPreview(container) {
-  const video = container.querySelector('video');
-  const img = container.querySelector('img');
-  if (video && img) {
-    img.style.display = 'none';
-    video.style.display = 'block';
-    video.play();
-  }
-}
-
-function hidePreview(container) {
-  const video = container.querySelector('video');
-  const img = container.querySelector('img');
-  if (video && img) {
-    video.pause();
-    video.style.display = 'none';
-    img.style.display = 'block';
-  }
-}
-
-/* Ensure this CSS exists in your stylesheet: */
-/*
-.modal-content iframe,
-.modal-iframe {
-  max-width: 100%;
+.modal-content {
+  max-width: 90vw;
   max-height: 80vh;
-  width: auto;
-  height: auto;
-  display: block;
-  margin: 0 auto;
+  width: 100%;
+  background-color: #000;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
-*/
+
+.modal-content video,
+.modal-content iframe {
+  width: 100%;
+  height: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border: none;
+  flex-grow: 1;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 40px;
+  color: white;
+  cursor: pointer;
+  z-index: 10000;
+}
