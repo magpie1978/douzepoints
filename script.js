@@ -26,7 +26,8 @@ function openModalWithVideo(videoUrl) {
     }
 
     if (videoId) {
-      const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0`;
+      const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+      /* const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0`; */
       iframe.src = embedUrl;
       iframe.style.display = "block";
     }
