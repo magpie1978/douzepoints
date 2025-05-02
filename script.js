@@ -1,19 +1,21 @@
-function openModalWithVideo(videoUrl) {
+function openModalWithVideo(videoUrl, titleText) {
   const modal = document.getElementById("videoModal");
   const video = document.getElementById("modalVideo");
   const iframe = document.getElementById("modalIframe");
+  const titleBar = document.getElementById("modalTitle");
 
   modal.style.display = "flex";
 
-  // Reset both players
   video.style.display = "none";
   iframe.style.display = "none";
   video.pause();
   iframe.src = "";
 
+  // Set the title
+  titleBar.textContent = titleText || '';
+
   if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
     let videoId = '';
-
     try {
       if (videoUrl.includes('youtu.be')) {
         videoId = videoUrl.split('/').pop().split('?')[0];
@@ -27,7 +29,6 @@ function openModalWithVideo(videoUrl) {
 
     if (videoId) {
       const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
-      /* const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0`; */
       iframe.src = embedUrl;
       iframe.style.display = "block";
     }
