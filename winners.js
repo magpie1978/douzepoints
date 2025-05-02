@@ -31,7 +31,7 @@ function OLDcloseModal() {
   modal.style.display = "none";
 }
 
-function showPreview(container) {
+function OLDshowPreview(container) {
   const video = container.querySelector('video');
   const img = container.querySelector('img');
   img.style.display = 'none';
@@ -39,7 +39,7 @@ function showPreview(container) {
   video.play();
 }
 
-function hidePreview(container) {
+function OLDhidePreview(container) {
   const video = container.querySelector('video');
   const img = container.querySelector('img');
   video.pause();
