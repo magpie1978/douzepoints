@@ -1,8 +1,3 @@
-/*  LOGIN SCRIPT */
-/* if (sessionStorage.getItem("loggedIn") !== "true") {
-  window.location.href = "login.html";
-} */
-
 function openModalWithVideo(videoUrl) {
   const modal = document.getElementById("videoModal");
   modal.innerHTML = `
@@ -28,11 +23,12 @@ function openModalWithYouTube(videoId) {
       <iframe
         width="100%"
         height="100%"
+        class="modal-iframe"
         src="https://www.youtube.com/embed/${videoId}?autoplay=1"
         frameborder="0"
         allow="autoplay; encrypted-media"
         allowfullscreen>
-      ></iframe>
+      </iframe>
     </div>
   `;
   modal.style.display = "flex";
@@ -42,11 +38,7 @@ function closeModal(modalId, event) {
   const modal = document.getElementById(modalId);
   if (event.target === modal || event.target.classList.contains('close-button') || event.target.classList.contains('modal-close')) {
     modal.style.display = "none";
-    if (modalId === "videoModal") {
-      modal.innerHTML = ''; // clear inner HTML to reset video
-    } else if (modalId === "youtubeModal") {
-      modal.innerHTML = ''; // clear entire modal
-    }
+    modal.innerHTML = '';
   }
 }
 
