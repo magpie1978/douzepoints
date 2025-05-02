@@ -484,3 +484,34 @@ h4 {
   width: 100%;
   height: 1px;
   background-color: #e50914;
+
+/* Code for multiple modald */
+  .modal {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 9999;
+}
+.modal video, .modal iframe {
+  max-width: 90vw;
+  max-height: 80vh;
+}
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 40px;
+  color: white;
+  cursor: pointer;
+}
+.youtube-wrapper {
+  width: 100%;
+  max-width: 800px;
+  aspect-ratio: 16 / 9;
+}
+
