@@ -1,17 +1,15 @@
 function openModalWithVideo(videoUrl) {
-  const modal = document.createElement('div');
-  modal.classList.add('modal');
-  modal.style.display = 'flex';
+  const modal = document.getElementById("videoModal");
+  const video = document.getElementById("modalVideo");
+  const iframe = document.getElementById("modalIframe");
 
-  const modalContent = document.createElement('div');
-  modalContent.classList.add('modal-content');
+  modal.style.display = "flex";
 
-  const closeButton = document.createElement('span');
-  closeButton.classList.add('close-button');
-  closeButton.innerHTML = '&times;';
-  closeButton.onclick = () => document.body.removeChild(modal);
-
-  modalContent.appendChild(closeButton);
+  // Reset both players
+  video.style.display = "none";
+  iframe.style.display = "none";
+  video.pause();
+  iframe.src = "";
 
   if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
     let videoId = '';
@@ -28,33 +26,29 @@ function openModalWithVideo(videoUrl) {
     }
 
     if (videoId) {
-      const iframe = document.createElement('iframe');
-      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0`;
-      iframe.allow = 'autoplay; encrypted-media';
-      iframe.allowFullscreen = true;
-      iframe.frameBorder = '0';
-      iframe.style.width = '100%';
-      iframe.style.height = '80vh';
-
-      modalContent.appendChild(iframe);
-    } else {
-      const errorText = document.createElement('div');
-      errorText.style.color = 'white';
-      errorText.textContent = 'Invalid YouTube URL';
-      modalContent.appendChild(errorText);
+      const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0`;
+      iframe.src = embedUrl;
+      iframe.style.display = "block";
     }
   } else {
-    const video = document.createElement('video');
     video.src = videoUrl;
-    video.controls = true;
-    video.autoplay = true;
-    video.controlsList = 'nodownload';
-    video.oncontextmenu = () => false;
-    video.style.maxWidth = '100%';
-    video.style.maxHeight = '80vh';
-
-    modalContent.appendChild(video);
+    video.style.display = "block";
+    video.play();
   }
+}
+
+function closeModal(event) {
+  event.stopPropagation();
+  const modal = document.getElementById("videoModal");
+  const video = document.getElementById("modalVideo");
+  const iframe = document.getElementById("modalIframe");
+
+  video.pause();
+  video.src = "";
+  iframe.src = "";
+
+  modal.style.display = "none";
+}
 
   modal.appendChild(modalContent);
   document.body.appendChild(modal);
