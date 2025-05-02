@@ -4,7 +4,7 @@
 /* } */
 
 
-function openModalWithVideo(videoUrl) {
+function OLDopenModalWithVideo(videoUrl) {
   const modal = document.createElement('div');
   modal.classList.add('modal');
   modal.style.display = 'flex';
@@ -25,23 +25,8 @@ function openModalWithVideo(videoUrl) {
   document.body.appendChild(modal);
 }
 
-function openModalWithYouTube(videoId) {
-  const modal = document.getElementById("videoModal");
-  modal.innerHTML = `
-    <span class="modal-close" onclick="closeModal(event)">&times;</span>
-    <div class="youtube-wrapper">
-      <iframe width="100%" height="480"
-        src="https://www.youtube.com/embed/${videoId}?autoplay=1"
-        frameborder="0"
-        allow="autoplay; encrypted-media"
-        allowfullscreen>
-      </iframe>
-    </div>
-  `;
-  modal.style.display = "flex";
-}
 
-function closeModal() {
+function OLDcloseModal() {
   const modal = document.getElementById("videoModal");
   modal.style.display = "none";
 }
@@ -60,4 +45,40 @@ function hidePreview(container) {
   video.pause();
   video.style.display = 'none';
   img.style.display = 'block';
+}
+
+
+function openModalWithVideo(videoUrl) {
+  const modal = document.getElementById("videoModal");
+  modal.innerHTML = `
+    <span class="modal-close" onclick="closeModal(event)">&times;</span>
+    <video id="modalVideo" controls autoplay controlsList="nodownload" oncontextmenu="return false">
+      <source src="${videoUrl}" type="video/mp4">
+    </video>
+  `;
+  modal.style.display = "flex";
+}
+
+function openModalWithYouTube(videoId) {
+  const modal = document.getElementById("videoModal");
+  modal.innerHTML = `
+    <span class="modal-close" onclick="closeModal(event)">&times;</span>
+    <div class="youtube-wrapper">
+      <iframe width="100%" height="480"
+        src="https://www.youtube.com/embed/${videoId}?autoplay=1"
+        frameborder="0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen>
+      </iframe>
+    </div>
+  `;
+  modal.style.display = "flex";
+}
+
+function closeModal(event) {
+  const modal = document.getElementById("videoModal");
+  if (event.target === modal || event.target.classList.contains('modal-close')) {
+    modal.style.display = "none";
+    modal.innerHTML = ''; // Clears modal content (important for YouTube audio stop)
+  }
 }
