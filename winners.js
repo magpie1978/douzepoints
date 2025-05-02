@@ -50,35 +50,38 @@ function OLDhidePreview(container) {
 
 function openModalWithVideo(videoUrl) {
   const modal = document.getElementById("videoModal");
-  modal.innerHTML = `
-    <span class="modal-close" onclick="closeModal(event)">&times;</span>
-    <video id="modalVideo" controls autoplay controlsList="nodownload" oncontextmenu="return false">
-      <source src="${videoUrl}" type="video/mp4">
-    </video>
-  `;
+  const video = document.getElementById("modalVideo");
+
+  video.src = videoUrl;
   modal.style.display = "flex";
 }
 
 function openModalWithYouTube(videoId) {
-  const modal = document.getElementById("videoModal");
-  modal.innerHTML = `
-    <span class="modal-close" onclick="closeModal(event)">&times;</span>
-    <div class="youtube-wrapper">
-      <iframe width="100%" height="480"
-        src="https://www.youtube.com/embed/${videoId}?autoplay=1"
-        frameborder="0"
-        allow="autoplay; encrypted-media"
-        allowfullscreen>
-      </iframe>
-    </div>
+  const modal = document.getElementById("youtubeModal");
+  const wrapper = document.getElementById("youtubeWrapper");
+
+  wrapper.innerHTML = `
+    <iframe width="100%" height="480"
+      src="https://www.youtube.com/embed/${videoId}?autoplay=1"
+      frameborder="0"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
   `;
   modal.style.display = "flex";
 }
 
-function closeModal(event) {
-  const modal = document.getElementById("videoModal");
+function closeModal(modalId, event) {
+  const modal = document.getElementById(modalId);
   if (event.target === modal || event.target.classList.contains('modal-close')) {
     modal.style.display = "none";
-    modal.innerHTML = ''; // Clears modal content (important for YouTube audio stop)
+    if (modalId === "videoModal") {
+      const video = document.getElementById("modalVideo");
+      video.pause();
+      video.src = "";
+    } else if (modalId === "youtubeModal") {
+      const wrapper = document.getElementById("youtubeWrapper");
+      wrapper.innerHTML = "";
+    }
   }
 }
