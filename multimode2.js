@@ -4,20 +4,35 @@ function openModalWithVideo(videoUrl) {
   modal.style.display = 'flex';
 
   let videoContent;
-  if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-    // Extract video ID and embed
-    const videoId = videoUrl.includes('youtu.be')
-      ? videoUrl.split('/').pop()
-      : new URL(videoUrl).searchParams.get('v');
-    videoContent = `
-      <iframe
-        src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0"
-        frameborder="0"
-        allow="autoplay; encrypted-media"
-        allowfullscreen
-        style="width: 100%; height: 80vh;"
-      ></iframe>
-    `;
+
+  const isYouTube = videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be');
+  if (isYouTube) {
+    let videoId = '';
+
+    try {
+      if (videoUrl.includes('youtu.be')) {
+        videoId = videoUrl.split('/').pop().split('?')[0];
+      } else {
+        const url = new URL(videoUrl);
+        videoId = url.searchParams.get('v');
+      }
+    } catch (e) {
+      console.error('Invalid YouTube URL:', videoUrl);
+    }
+
+    if (videoId) {
+      videoContent = `
+        <iframe
+          src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          style="width: 100%; height: 80vh;"
+        ></iframe>
+      `;
+    } else {
+      videoContent = `<div style="color: white;">Invalid YouTube link</div>`;
+    }
   } else {
     videoContent = `
       <video 
@@ -29,6 +44,16 @@ function openModalWithVideo(videoUrl) {
       ></video>
     `;
   }
+
+  modal.innerHTML = `
+    <div class="modal-content">
+      <span class="close-button" onclick="document.body.removeChild(this.closest('.modal'))">&times;</span>
+      ${videoContent}
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+}
 
   modal.innerHTML = `
     <div class="modal-content">
