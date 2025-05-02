@@ -25,6 +25,22 @@ function openModalWithVideo(videoUrl) {
   document.body.appendChild(modal);
 }
 
+function openModalWithYouTube(videoId) {
+  const modal = document.getElementById("videoModal");
+  modal.innerHTML = `
+    <span class="modal-close" onclick="closeModal(event)">&times;</span>
+    <div class="youtube-wrapper">
+      <iframe width="100%" height="480"
+        src="https://www.youtube.com/embed/${videoId}?autoplay=1"
+        frameborder="0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen>
+      </iframe>
+    </div>
+  `;
+  modal.style.display = "flex";
+}
+
 function closeModal() {
   const modal = document.getElementById("videoModal");
   modal.style.display = "none";
