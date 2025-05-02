@@ -264,8 +264,17 @@
   </div> <!-- end of container -->
 
 
-  <!-- Modal (used by JS) -->
-  <div id="videoModal" class="modal" onclick="closeModal(event)"></div>
+  <!-- Modal for S3 MP4 videos -->
+<div id="videoModal" class="modal" onclick="closeModal('videoModal', event)">
+  <span class="modal-close" onclick="closeModal('videoModal', event)">&times;</span>
+  <video id="modalVideo" controls autoplay controlsList="nodownload" oncontextmenu="return false"></video>
+</div>
+
+<!-- Modal for YouTube videos -->
+<div id="youtubeModal" class="modal" onclick="closeModal('youtubeModal', event)">
+  <span class="modal-close" onclick="closeModal('youtubeModal', event)">&times;</span>
+  <div class="youtube-wrapper" id="youtubeWrapper"></div>
+</div>
 
 
   <footer class="site-footer">
