@@ -25,16 +25,15 @@ function openModalWithYouTube(videoId) {
   modal.innerHTML = `
     <div class="modal-content">
       <span class="close-button" onclick="closeModal('youtubeModal', event)">&times;</span>
-      <div style="width: 100%; max-width: 1000px; aspect-ratio: 16 / 9;">
-        <iframe
-          width="100%"
-          height="100%"
-          src="https://www.youtube.com/embed/${videoId}?autoplay=1"
-          frameborder="0"
-          allow="autoplay; encrypted-media"
-          allowfullscreen>
-        </iframe>
-      </div>
+      <iframe
+        width="100%"
+        height="100%"
+        style="max-width: 100%; max-height: 80vh;"
+        src="https://www.youtube.com/embed/${videoId}?autoplay=1"
+        frameborder="0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen>
+      ></iframe>
     </div>
   `;
   modal.style.display = "flex";
