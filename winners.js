@@ -14,7 +14,6 @@ function openModalWithVideo(videoUrl) {
         autoplay
         controlsList="nodownload"
         oncontextmenu="return false"
-        style="max-width: 100%; max-height: 80vh;"
       ></video>
     </div>
   `;
@@ -24,14 +23,13 @@ function openModalWithVideo(videoUrl) {
 function openModalWithYouTube(videoId) {
   const modal = document.getElementById("youtubeModal");
   modal.innerHTML = `
-    <div class="modal-content" style="width: 100%; max-width: 90vw; max-height: 80vh; display: flex; flex-direction: column;">
-      <span class="close-button" onclick="closeModal('youtubeModal', event)" style="align-self: flex-end;">&times;</span>
+    <div class="modal-content">
+      <span class="close-button" onclick="closeModal('youtubeModal', event)">&times;</span>
       <iframe
         src="https://www.youtube.com/embed/${videoId}?autoplay=1"
         frameborder="0"
         allow="autoplay; encrypted-media"
         allowfullscreen
-        style="width: 100%; height: 100%; border: none; flex-grow: 1;"
       ></iframe>
     </div>
   `;
@@ -42,11 +40,7 @@ function closeModal(modalId, event) {
   const modal = document.getElementById(modalId);
   if (event.target === modal || event.target.classList.contains('close-button') || event.target.classList.contains('modal-close')) {
     modal.style.display = "none";
-    if (modalId === "videoModal") {
-      modal.innerHTML = ''; // clear inner HTML to reset video
-    } else if (modalId === "youtubeModal") {
-      modal.innerHTML = ''; // clear entire modal
-    }
+    modal.innerHTML = ''; // Clear modal content
   }
 }
 
