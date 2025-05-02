@@ -21,11 +21,14 @@ function openModalWithVideo(videoUrl) {
     }
 
     if (videoId) {
+      const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0`;
+
       videoContent = `
         <iframe
-          src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0"
+          id="yt-player"
+          src="${embedUrl}"
           frameborder="0"
-          allow="autoplay; encrypted-media"
+          allow="autoplay; encrypted-media; fullscreen"
           allowfullscreen
           style="width: 100%; height: 80vh;"
         ></iframe>
@@ -44,6 +47,16 @@ function openModalWithVideo(videoUrl) {
       ></video>
     `;
   }
+
+  modal.innerHTML = `
+    <div class="modal-content">
+      <span class="close-button" onclick="document.body.removeChild(this.closest('.modal'))">&times;</span>
+      ${videoContent}
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+}
 
   modal.innerHTML = `
     <div class="modal-content">
