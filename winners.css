@@ -1,3 +1,129 @@
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  margin: 0;
+  background: #141414;
+  color: #fff;
+}
+
+.container {
+  display: flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+  padding: 10px;
+  background-color: #111;
+  color: white;
+  font-size: 14px;
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.sidebar a:hover {
+  background-color: #e50914;
+}
+
+.sidebar img {
+  width: 22px;
+  height: 22px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.flag-icon {
+  width: 24px;
+  height: auto;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* MAIN CONTENT */
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.video-item {
+  cursor: pointer;
+  background-color: #1a1a1a;
+  padding: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.video-item:hover {
+  transform: scale(1.05);
+}
+
+.preview-container {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 aspect ratio */
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.preview-container img,
+.preview-container video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.preview-container video {
+  display: none;
+}
+
+.preview-container:hover video {
+  display: block;
+}
+
+.preview-container:hover img {
+  display: none;
+}
+
+.video-title-with-icon {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  gap: 8px;
+  color: white;
+  font-size: 0.8rem;
+}
+
+.icon-placeholder {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #444;
+  object-fit: cover;
+}
+
+.video-title-text {
+  line-height: 1.2;
+}
+
+/* MODALS - SHARED */
 .modal {
   display: none;
   justify-content: center;
@@ -11,9 +137,9 @@
 }
 
 .modal-content {
+  width: 100%;
   max-width: 90vw;
   max-height: 80vh;
-  width: 100%;
   background-color: #000;
   display: flex;
   flex-direction: column;
@@ -28,6 +154,7 @@
   object-fit: contain;
   border: none;
   flex-grow: 1;
+  display: block;
 }
 
 .close-button {
@@ -38,4 +165,121 @@
   color: white;
   cursor: pointer;
   z-index: 10000;
+}
+
+/* HEADER & FOOTER */
+.main-header {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+}
+
+.banner-static {
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+}
+
+.banner-static img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.header-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-links {
+  display: flex;
+  gap: 20px;
+}
+
+.header-links a {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.header-links a:hover {
+  color: #e50914;
+}
+
+.home-link {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.site-footer {
+  margin-top: 3rem;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #ccc;
+  font-size: 0.85rem;
+  background-color: #141414;
+}
+
+.footer-line {
+  width: 90%;
+  height: 1px;
+  background-color: #e50914;
+  margin: 0 auto 1rem auto;
+}
+
+.footer-branding {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  gap: 10px;
+}
+
+.footer-flag {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.footer-flag img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.footer-title {
+  font-size: 1rem;
+  color: #fff;
+  font-weight: bold;
+}
+
+.footer-links a {
+  color: #ccc;
+  margin: 0 10px;
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.footer-links a:hover {
+  color: #e50914;
+  text-decoration: underline;
+}
+
+/* BANNER DIVIDER */
+.banner-divider {
+  width: 100%;
+  height: 1px;
+  background-color: #e50914;
 }
