@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Video Modal Grid – Footer Inside</title>
+  <title>Video Modal Grid – YouTube + Google Drive</title>
   <style>
     body { background: #111; color: #fff; font-family: sans-serif; margin: 0; padding: 20px; }
     .grid { display: flex; flex-wrap: wrap; gap: 20px; }
@@ -59,11 +59,17 @@
 </head>
 <body>
 
-<h2>Video Modal Grid – Footer Inside</h2>
+<h2>Video Modal Grid – YouTube + Google Drive</h2>
 <div class="grid">
   <div class="video-item" onclick="openModalWithVideo('https://www.youtube.com/watch?v=kmg8EAD-Kjw', 'Baby Lasagna – Rim Tim Tagi Dim')">
     <div class="preview-container">
       <img src="https://img.youtube.com/vi/kmg8EAD-Kjw/hqdefault.jpg" alt="Baby Lasagna">
+    </div>
+  </div>
+
+  <div class="video-item" onclick="openModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/view?usp=drive_link', 'Malmö 2024 Opening Ceremony')">
+    <div class="preview-container">
+      <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024">
     </div>
   </div>
 </div>
@@ -92,6 +98,6 @@
   </div>
 </div>
 
-<script src="script9.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

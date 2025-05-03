@@ -27,6 +27,21 @@ function openModalWithVideo(videoUrl, titleText) {
       iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
       iframe.style.display = "block";
     }
+  } else if (videoUrl.includes('drive.google.com')) {
+    let fileId = '';
+    try {
+      const url = new URL(videoUrl);
+      const match = url.pathname.match(/\/d\/([^/]+)/);
+      if (match && match[1]) {
+        fileId = match[1];
+      }
+    } catch (e) {
+      console.error('Invalid Google Drive URL:', videoUrl);
+    }
+    if (fileId) {
+      iframe.src = `https://drive.google.com/file/d/${fileId}/preview`;
+      iframe.style.display = "block";
+    }
   } else {
     video.src = videoUrl;
     video.style.display = "block";
