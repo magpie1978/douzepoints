@@ -1,66 +1,62 @@
-/*  LOGIN SCRIPT */
-/* if (sessionStorage.getItem("loggedIn") !== "true") { */
-/*   window.location.href = "login.html"; */
-/* } */
+function openModalWithVideo(videoUrl, titleText) {
+  const modal = document.getElementById("videoModal");
+  const video = document.getElementById("modalVideo");
+  const iframe = document.getElementById("modalIframe");
+  const titleBar = document.getElementById("modalTitle");
 
+  modal.style.display = "flex";
+  video.style.display = "none";
+  iframe.style.display = "none";
+  video.pause();
+  iframe.src = "";
+  titleBar.textContent = titleText || '';
 
-function openModalWithVideo(videoUrl) {
-  const modal = document.createElement('div');
-  modal.classList.add('modal');
-  modal.style.display = 'flex';
-
-  modal.innerHTML = `
-    <div class="modal-content">
-      <span class="close-button" onclick="document.body.removeChild(this.closest('.modal'))">&times;</span>
-      <video 
-        src="${videoUrl}" 
-        controls 
-        autoplay 
-        controlsList="nodownload" 
-        oncontextmenu="return false"
-      ></video>
-    </div>
-  `;
-
-  document.body.appendChild(modal);
+  if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+    let videoId = '';
+    try {
+      if (videoUrl.includes('youtu.be')) {
+        videoId = videoUrl.split('/').pop().split('?')[0];
+      } else {
+        const url = new URL(videoUrl);
+        videoId = url.searchParams.get('v');
+      }
+    } catch (e) {
+      console.error('Invalid YouTube URL:', videoUrl);
+    }
+    if (videoId) {
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+      iframe.style.display = "block";
+    }
+  } else if (videoUrl.includes('drive.google.com')) {
+    let fileId = '';
+    try {
+      const url = new URL(videoUrl);
+      const match = url.pathname.match(/\/d\/([^/]+)/);
+      if (match && match[1]) {
+        fileId = match[1];
+      }
+    } catch (e) {
+      console.error('Invalid Google Drive URL:', videoUrl);
+    }
+    if (fileId) {
+      iframe.src = `https://drive.google.com/file/d/${fileId}/preview?autoplay=1`;
+      iframe.style.display = "block";
+    }
+  } else {
+    video.src = videoUrl;
+    video.style.display = "block";
+    video.play();
+  }
 }
 
-function closeModal() {
+function closeModal(event) {
+  event.stopPropagation();
   const modal = document.getElementById("videoModal");
+  const video = document.getElementById("modalVideo");
+  const iframe = document.getElementById("modalIframe");
+
+  video.pause();
+  video.src = "";
+  iframe.src = "";
   modal.style.display = "none";
 }
-
-function showPreview(container) {
-  const video = container.querySelector('video');
-  const img = container.querySelector('img');
-  img.style.display = 'none';
-  video.style.display = 'block';
-  video.play();
-}
-
-function hidePreview(container) {
-  const video = container.querySelector('video');
-  const img = container.querySelector('img');
-  video.pause();
-  video.style.display = 'none';
-  img.style.display = 'block';
-}
-
-
-/* script to display sidebar country selector */
-fetch('sidebar.html')
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Sidebar could not be loaded.');
-    }
-    return response.text();
-  })
-  .then(data => {
-    document.getElementById('sidebar-container').innerHTML = data;
-  })
-  .catch(error => {
-    console.error('Error loading sidebar:', error);
-  });
-
-
-
