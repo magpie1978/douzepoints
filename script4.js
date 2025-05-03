@@ -29,14 +29,16 @@ function openModalWithVideo(videoUrl, titleText) {
       iframe.style.display = "block";
     }
   } else if (videoUrl.includes('drive.google.com')) {
+    // Extract file ID from Google Drive URL
     let fileId = '';
     try {
-      const match = videoUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      const url = new URL(videoUrl);
+      const match = url.pathname.match(/\\/d\\/([^/]+)/);
       if (match && match[1]) {
         fileId = match[1];
       }
     } catch (e) {
-      console.error('Invalid Google Drive URL:', videoUrl);
+      console.error('Invalid Drive URL:', videoUrl);
     }
     if (fileId) {
       iframe.src = `https://drive.google.com/file/d/${fileId}/preview`;
