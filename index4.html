@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Video Modal Grid</title>
+  <style>
+    body { background: #111; color: #fff; font-family: sans-serif; margin: 0; padding: 20px; }
+    .grid { display: flex; flex-wrap: wrap; gap: 20px; }
+    .video-item { cursor: pointer; background: #222; padding: 10px; border-radius: 8px; width: 300px; }
+    .preview-container img { width: 100%; border-radius: 6px; }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      position: relative;
+      max-width: 100%;
+      max-height: 100%;
+    }
+    .modal-content video,
+    .modal-content iframe {
+      width: 90vw;
+      height: 90vh;
+    }
+    .modal-title-bar {
+      position: absolute;
+      top: -50px;
+      left: 0;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: white;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px 20px;
+      border-radius: 6px;
+    }
+    .close-button {
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      font-size: 36px;
+      color: white;
+      cursor: pointer;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 8px 12px;
+      border-radius: 50%;
+      z-index: 10000;
+    }
+    .close-button:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+<h2>Video Modal Grid – YouTube + Google Drive</h2>
+<div class="grid">
+  <div class="video-item" onclick="openModalWithVideo('https://www.youtube.com/watch?v=kmg8EAD-Kjw', 'Baby Lasagna – Rim Tim Tagi Dim')">
+    <div class="preview-container">
+      <img src="https://img.youtube.com/vi/kmg8EAD-Kjw/hqdefault.jpg" alt="Baby Lasagna">
+    </div>
+  </div>
+  <div class="video-item" onclick="openModalWithVideo('https://www.youtube.com/watch?v=L8-Kg4nuiyg', 'Nemo – The Code')">
+    <div class="preview-container">
+      <img src="https://img.youtube.com/vi/L8-Kg4nuiyg/hqdefault.jpg" alt="Nemo">
+    </div>
+  </div>
+  <div class="video-item" onclick="openModalWithVideo('https://www.youtube.com/watch?v=PBZg83B1ws8', 'Slimane – Mon Amour')">
+    <div class="preview-container">
+      <img src="https://img.youtube.com/vi/PBZg83B1ws8/hqdefault.jpg" alt="Slimane">
+    </div>
+  </div>
+  <div class="video-item" onclick="openModalWithVideo('https://www.youtube.com/watch?v=a0yefPLnOOw', 'Joost Klein – Europapa')">
+    <div class="preview-container">
+      <img src="https://img.youtube.com/vi/a0yefPLnOOw/hqdefault.jpg" alt="Joost Klein">
+    </div>
+  </div>
+  <div class="video-item" onclick="openModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/view?usp=drive_link', 'Malmö 2024 Opening Ceremony')">
+    <div class="preview-container">
+      <img src="https://via.placeholder.com/300x180?text=Malmö+2024" alt="Drive Video">
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="videoModal" class="modal" onclick="closeModal(event)">
+  <div class="modal-content">
+    <div id="modalTitle" class="modal-title-bar"></div>
+    <span class="close-button" onclick="closeModal(event)">&times;</span>
+    <video id="modalVideo" controls autoplay controlsList="nodownload" style="display: none;"></video>
+    <iframe id="modalIframe" style="display: none;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
