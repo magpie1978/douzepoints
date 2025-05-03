@@ -4,46 +4,20 @@
   <meta charset="UTF-8" />
   <title>Fixed Video Modal – YouTube + Drive</title>
   <style>
-    body {
-      background: #111;
-      color: #fff;
-      font-family: sans-serif;
-      margin: 0;
-      padding: 20px;
-    }
-
-    .grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .video-item {
-      cursor: pointer;
-      background: #222;
-      padding: 10px;
-      border-radius: 8px;
-      width: 300px;
-    }
-
-    .preview-container img {
-      width: 100%;
-      border-radius: 6px;
-    }
-
+    body { background: #111; color: #fff; font-family: sans-serif; margin: 0; padding: 20px; }
+    .grid { display: flex; flex-wrap: wrap; gap: 20px; }
+    .video-item { cursor: pointer; background: #222; padding: 10px; border-radius: 8px; width: 300px; }
+    .preview-container img { width: 100%; border-radius: 6px; }
     .modal {
       display: none;
       position: fixed;
       z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100vw;
-      height: 100vh;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
       background: rgba(0, 0, 0, 0.9);
       justify-content: center;
       align-items: center;
     }
-
     .modal-content {
       background-color: #333;
       border-radius: 16px;
@@ -55,7 +29,6 @@
       display: flex;
       flex-direction: column;
     }
-
     .modal-title-bar {
       position: absolute;
       top: -50px;
@@ -67,7 +40,6 @@
       padding: 10px 20px;
       border-radius: 6px;
     }
-
     .close-button {
       position: absolute;
       top: -40px;
@@ -75,9 +47,9 @@
       font-size: 36px;
       color: white;
       cursor: pointer;
+      
       z-index: 10000;
     }
-
     .close-button:hover {
       text-shadow: 0 0 4px white;
     }
@@ -86,7 +58,6 @@
 <body>
 
 <h2>Fixed Modal Layout – YouTube + Google Drive</h2>
-
 <div class="grid">
   <div class="video-item" onclick="openModalWithVideo('https://www.youtube.com/watch?v=kmg8EAD-Kjw', 'Baby Lasagna – Rim Tim Tagi Dim')">
     <div class="preview-container">
@@ -109,8 +80,11 @@
 
     <div style="display: flex; flex-direction: column; height: 100%;">
       <div class="video-wrapper" style="flex: 1; display: flex; justify-content: center; align-items: center;">
-        <video id="modalVideo" controls autoplay controlsList="nodownload" style="display: none; width: 100%; height: 100%;"></video>
-        <iframe id="modalIframe" style="display: none; width: 100%; height: 100%;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <video id="modalVideo" controls autoplay controlsList="nodownload"
+               style="display: none; width: 100%; height: 100%;"></video>
+        <iframe id="modalIframe"
+                style="display: none; width: 100%; height: 100%;"
+                frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
       </div>
 
       <div class="modal-footer" style="margin-top: 12px; display: flex; gap: 16px; align-items: flex-start;">
@@ -125,70 +99,6 @@
   </div>
 </div>
 
-<script>
-function openModalWithVideo(videoUrl, titleText) {
-  const modal = document.getElementById("videoModal");
-  const video = document.getElementById("modalVideo");
-  const iframe = document.getElementById("modalIframe");
-  const titleBar = document.getElementById("modalTitle");
-
-  modal.style.display = "flex";
-  video.style.display = "none";
-  iframe.style.display = "none";
-  video.pause();
-  iframe.src = "";
-  titleBar.textContent = titleText || '';
-
-  if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-    let videoId = '';
-    try {
-      if (videoUrl.includes('youtu.be')) {
-        videoId = videoUrl.split('/').pop().split('?')[0];
-      } else {
-        const url = new URL(videoUrl);
-        videoId = url.searchParams.get('v');
-      }
-    } catch (e) {
-      console.error('Invalid YouTube URL:', videoUrl);
-    }
-    if (videoId) {
-      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
-      iframe.style.display = "block";
-    }
-  } else if (videoUrl.includes('drive.google.com')) {
-    let fileId = '';
-    try {
-      const url = new URL(videoUrl);
-      const match = url.pathname.match(/\\/d\\/([^/]+)/);
-      if (match && match[1]) {
-        fileId = match[1];
-      }
-    } catch (e) {
-      console.error('Invalid Google Drive URL:', videoUrl);
-    }
-    if (fileId) {
-      iframe.src = `https://drive.google.com/file/d/${fileId}/preview`;
-      iframe.style.display = "block";
-    }
-  } else {
-    video.src = videoUrl;
-    video.style.display = "block";
-    video.play();
-  }
-}
-
-function closeModal(event) {
-  event.stopPropagation();
-  const modal = document.getElementById("videoModal");
-  const video = document.getElementById("modalVideo");
-  const iframe = document.getElementById("modalIframe");
-
-  video.pause();
-  video.src = "";
-  iframe.src = "";
-  modal.style.display = "none";
-}
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
