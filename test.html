@@ -5,12 +5,43 @@
     <title>Test Video Modal</title>
     <link rel="stylesheet" type="text/css" href="countries.css">
     <script src="countries.js" type="text/javascript"></script>
-  
+
     <style>
-      body { background: #111; color: #fff; font-family: sans-serif; margin: 0; padding: 20px; }
-      .grid { display: flex; flex-wrap: wrap; gap: 20px; }
-      .video-item { cursor: pointer; background: #222; padding: 10px; border-radius: 8px; width: 300px; }
-      .preview-container img { width: 100%; border-radius: 6px; }
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: #111;
+        color: #fff;
+        font-family: sans-serif;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .container {
+        flex: 1;
+        padding: 20px;
+      }
+
+      .grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .video-item {
+        cursor: pointer;
+        background: #222;
+        padding: 10px;
+        border-radius: 8px;
+        width: 300px;
+      }
+
+      .preview-container img {
+        width: 100%;
+        border-radius: 6px;
+      }
+
       .modal {
         display: none;
         position: fixed;
@@ -21,16 +52,19 @@
         justify-content: center;
         align-items: center;
       }
+
       .modal-content {
         position: relative;
         max-width: 100%;
         max-height: 100%;
       }
+
       .modal-content video,
       .modal-content iframe {
         width: 81vw;
         height: 81vh;
       }
+
       .modal-title-bar {
         position: absolute;
         top: -50px;
@@ -42,6 +76,7 @@
         padding: 10px 20px;
         border-radius: 6px;
       }
+
       .close-button {
         position: absolute;
         top: -40px;
@@ -54,18 +89,53 @@
         border-radius: 50%;
         z-index: 10000;
       }
+
       .close-button:hover {
         background: rgba(255, 255, 255, 0.2);
       }
+
+      .site-footer {
+        background: #000;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .footer-line {
+        height: 1px;
+        background: #444;
+        margin-bottom: 15px;
+      }
+
+      .footer-branding {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .footer-flag img {
+        height: 24px;
+      }
+
+      .footer-title {
+        font-weight: bold;
+      }
+
+      .footer-links a {
+        margin: 0 10px;
+        color: #aaa;
+        text-decoration: none;
+      }
+
+      .footer-links a:hover {
+        text-decoration: underline;
+      }
     </style>
-    
   </head>
 
   <body oncontextmenu="return false">
-    
     <!-- HEADER -->
     <header class="main-header">
-      
       <div class="header-overlay">
         <div class="header-links">
           <a class="home-link" href="index.html">Home</a>
@@ -73,47 +143,45 @@
           <a class="home-link" href="edition-2024.html">Editions</a>
         </div>
       </div>
-    
       <div class="banner-static">
         <img src="https://euroflix.s3.eu-north-1.amazonaws.com/banners/al.png" alt="Banner">
       </div>
-      
     </header>
-    
-    <!--  red diviing line -->
+
+    <!-- red dividing line -->
     <div class="banner-divider"></div>
-    
+
+    <!-- MAIN CONTAINER -->
     <div class="container">
-    
-    <!-- Display Sidebar from countries.js file -->
-    <div id="sidebar-container"></div>
+      <div id="sidebar-container"></div>
 
-      
-    <div class="grid">
+      <div class="grid">
 
-      <!-- Google Drive -->
-      <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/', 'Malmö 2024 Opening Ceremony')">
-        <div class="preview-container">
-          <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024">
+        <!-- Google Drive -->
+        <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/', 'Malmö 2024 Opening Ceremony')">
+          <div class="preview-container">
+            <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024">
+          </div>
         </div>
-      </div>
-    
-      <!-- 2024 -->
-      <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AL.mp4')">
-        <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-          <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-AL.jpeg" alt="Albania 2024">
-          <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AL.mp4" muted loop></video>
+
+        <!-- 2024 -->
+        <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AL.mp4')">
+          <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
+            <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-AL.jpeg" alt="Albania 2024">
+            <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AL.mp4" muted loop></video>
+          </div>
+          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+            <a href="albania.html">
+              <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/al.png" alt="Flag">
+            </a>
+            <div class="video-title-text"><b>Besa</b><br>Titan<br>2024</div>
+          </div>
         </div>
-        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-          <a href="albania.html">
-            <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/al.png" alt="Flag">
-          </a>
-        <div class="video-title-text"><b>Besa</b><br>Titan<br>2024</div>
-      </div> <!-- end of video item -->
-    </div> <!-- end of grid -->
 
+      </div> <!-- end .grid -->
+    </div> <!-- end .container -->
 
-    <!-- Modal -->
+    <!-- MODAL -->
     <div id="videoModal" class="modal" onclick="GDriveCloseModal(event)">
       <div class="modal-content">
         <div id="modalTitle" class="modal-title-bar"></div>
@@ -123,6 +191,7 @@
       </div>
     </div>
 
+    <!-- FOOTER -->
     <footer class="site-footer">
       <div class="footer-line"></div>
       <div class="footer-branding">
@@ -139,7 +208,7 @@
       </div>
     </footer>
 
-      
+    <!-- JS -->
     <script>
       function GDriveOpenModalWithVideo(videoUrl, titleText) {
         const modal = document.getElementById("videoModal");
@@ -148,7 +217,6 @@
         const titleBar = document.getElementById("modalTitle");
 
         modal.style.display = "flex";
-
         video.style.display = "none";
         iframe.style.display = "none";
         video.pause();
@@ -198,11 +266,9 @@
         const modal = document.getElementById("videoModal");
         const video = document.getElementById("modalVideo");
         const iframe = document.getElementById("modalIframe");
-  
         video.pause();
         video.src = "";
         iframe.src = "";
-  
         modal.style.display = "none";
       }
     </script>
