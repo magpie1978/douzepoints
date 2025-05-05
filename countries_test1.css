@@ -137,7 +137,7 @@ gap: 20px;
 }
 
 
-.video-item {
+.S3video-item {
 cursor: pointer;
 background-color: #1a1a1a;
 padding: 10px;
@@ -146,13 +146,13 @@ overflow: hidden;
 transition: transform 0.3s ease;
 }
 
-.video-item:hover {
+.S3video-item:hover {
 transform: scale(1.05);
 }
 
 
   
-.preview-container {
+.S3preview-container {
 position: relative;
 width: 100%;
 padding-top: 56.25%; /* 16:9 aspect ratio */
@@ -160,8 +160,8 @@ overflow: hidden;
 border-radius: 6px;
 }
 
-.preview-container img,
-.preview-container video {
+.S3preview-container img,
+.S3preview-container video {
 position: absolute;
 top: 0;
 left: 0;
@@ -170,21 +170,21 @@ height: 100%;
 object-fit: cover;
 }
 
-.preview-container video {
+.S3preview-container video {
 display: none;
 }
 
 
-.preview-container:hover video {
+.S3preview-container:hover video {
 display: block;
 }
 
-.preview-container:hover img {
+.S3preview-container:hover img {
 display: none;
 }
 
 
-.video-title-with-icon {
+.S3video-title-with-icon {
 display: flex;
 align-items: center;
 margin-top: 10px;
@@ -193,7 +193,7 @@ color: white;
 font-size: 0.8rem;
 }
 
-.icon-placeholder {
+.S3icon-placeholder {
 width: 24px;
 height: 24px;
 border-radius: 50%;
@@ -203,16 +203,16 @@ margin-left: 8px;
 }
 
 
-.video-title-text {
+.S3video-title-text {
 line-height: 1.2;
 }
 
-  .video-title-text a {
+  .S3video-title-text a {
     text-decoration: none; /* Remove underline */
     color: inherit;         /* Inherit color from surrounding text */
   }
 
-.modal {
+.S3modal {
 display: none;
 position: fixed;
 z-index: 9999;
@@ -228,7 +228,7 @@ align-items: center;
 /* END OF GRID CONTAINER CSS */
 
 /* MODEL CONTENT CSS */
-.modal-content {
+.S3modal-content {
 position: relative;
 background-color: #000;
 padding: 20px;
@@ -239,12 +239,12 @@ justify-content: center;
 align-items: center;
 }
 
-.modal-content video {
+.S3modal-content video {
 max-width: 100%;
 max-height: 80vh;
 }
 
-.close-button {
+.S3close-button {
 position: absolute;
 color: #fff;
 font-weight: bold;
