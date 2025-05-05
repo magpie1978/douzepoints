@@ -1,4 +1,4 @@
-function GDriveopenModalWithVideo(videoUrl, titleText) {
+function openModalWithVideo(videoUrl, titleText) {
   const modal = document.getElementById("videoModal");
   const video = document.getElementById("modalVideo");
   const iframe = document.getElementById("modalIframe");
@@ -50,7 +50,7 @@ function GDriveopenModalWithVideo(videoUrl, titleText) {
 }
 
 
-function GDrivecloseModal(event) {
+function closeModal(event) {
   event.stopPropagation();
   const modal = document.getElementById("videoModal");
   const video = document.getElementById("modalVideo");
