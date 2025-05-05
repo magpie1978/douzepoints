@@ -14,27 +14,34 @@
       font-family: sans-serif;
     }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    padding: 20px 0;
-  }
+    .container {
+      width: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
 
-  .video-item {
-    background: #222;
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-  }
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: space-between;
+    }
 
-  .preview-container img {
-    width: 100%;
-    border-radius: 6px;
-    display: block;
-  }
+    .video-item {
+      background: #222;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: calc(25% - 15px);
+      box-sizing: border-box;
+    }
+
+    .preview-container img {
+      width: 100%;
+      border-radius: 6px;
+      display: block;
+    }
+
     .modal {
       display: none;
       position: fixed;
@@ -151,45 +158,29 @@
     <div id="sidebar-container"></div>
 
     <div class="grid">
-      
-      <!-- Example video item -->
+      <!-- Sample video items -->
       <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/', 'Malmö 2024 Opening Ceremony')">
         <div class="preview-container">
           <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024">
         </div>
       </div>
 
-      <!-- Example video item -->
-      <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/', 'Malmö 2024 Opening Ceremony')">
+      <!-- Duplicate items for layout preview -->
+      <div class="video-item" onclick="GDriveOpenModalWithVideo('...')">
         <div class="preview-container">
           <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024">
         </div>
       </div>
-
-
-      <!-- Example video item -->
-      <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/', 'Malmö 2024 Opening Ceremony')">
+      <div class="video-item" onclick="GDriveOpenModalWithVideo('...')">
         <div class="preview-container">
           <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024">
         </div>
       </div>
-
-
-      <!-- Example video item -->
-      <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/', 'Malmö 2024 Opening Ceremony')">
+      <div class="video-item" onclick="GDriveOpenModalWithVideo('...')">
         <div class="preview-container">
           <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024">
         </div>
       </div>
-
-      <!-- Example video item -->
-      <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/', 'Malmö 2024 Opening Ceremony')">
-        <div class="preview-container">
-          <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024">
-        </div>
-      </div>
-
-
     </div>
   </div>
 
