@@ -4,7 +4,7 @@
 /* } */
 
 
-function openModalWithVideo(videoUrl) {
+function S3openModalWithVideo(videoUrl) {
   const modal = document.createElement('div');
   modal.classList.add('modal');
   modal.style.display = 'flex';
@@ -25,12 +25,12 @@ function openModalWithVideo(videoUrl) {
   document.body.appendChild(modal);
 }
 
-function closeModal() {
+function S3closeModal() {
   const modal = document.getElementById("videoModal");
   modal.style.display = "none";
 }
 
-function showPreview(container) {
+function S3showPreview(container) {
   const video = container.querySelector('video');
   const img = container.querySelector('img');
   img.style.display = 'none';
@@ -38,7 +38,7 @@ function showPreview(container) {
   video.play();
 }
 
-function hidePreview(container) {
+function S3hidePreview(container) {
   const video = container.querySelector('video');
   const img = container.querySelector('img');
   video.pause();
