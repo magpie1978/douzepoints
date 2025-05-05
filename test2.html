@@ -5,35 +5,13 @@
   <title>Test Video Modal</title>
   <link rel="stylesheet" type="text/css" href="countries.css">
   <script src="countries.js" type="text/javascript"></script>
-
   <style>
-    html, body {
-      height: 100%;
+    body {
       margin: 0;
       padding: 0;
       background: #111;
       color: #fff;
       font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-    }
-
-    header.main-header {
-      position: relative;
-      z-index: 1;
-      background: #222;
-    }
-
-    .banner-static img {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-
-    .container {
-      flex: 1;
-      padding: 20px;
-      z-index: 0;
     }
 
     .grid {
@@ -59,8 +37,10 @@
       display: none;
       position: fixed;
       z-index: 9999;
-      left: 0; top: 0;
-      width: 100vw; height: 100vh;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
       background: rgba(0, 0, 0, 0.9);
       justify-content: center;
       align-items: center;
@@ -161,32 +141,18 @@
     </div>
   </header>
 
-  <!-- red dividing line -->
+  <!-- Red dividing line -->
   <div class="banner-divider"></div>
 
-  <!-- MAIN CONTAINER -->
+  <!-- MAIN CONTENT -->
   <div class="container">
     <div id="sidebar-container"></div>
 
     <div class="grid">
-      <!-- Google Drive -->
+      <!-- Example video item -->
       <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/', 'Malmö 2024 Opening Ceremony')">
         <div class="preview-container">
           <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024">
-        </div>
-      </div>
-
-      <!-- 2024 -->
-      <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AL.mp4')">
-        <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-          <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-AL.jpeg" alt="Albania 2024">
-          <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AL.mp4" muted loop></video>
-        </div>
-        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-          <a href="albania.html">
-            <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/al.png" alt="Flag">
-          </a>
-          <div class="video-title-text"><b>Besa</b><br>Titan<br>2024</div>
         </div>
       </div>
     </div>
@@ -219,7 +185,6 @@
     </div>
   </footer>
 
-  <!-- JS -->
   <script>
     function GDriveOpenModalWithVideo(videoUrl, titleText) {
       const modal = document.getElementById("videoModal");
