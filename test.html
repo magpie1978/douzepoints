@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Video Modal Grid</title>
+  <title>Test Video Modal</title>
   <style>
     body { background: #111; color: #fff; font-family: sans-serif; margin: 0; padding: 20px; }
     .grid { display: flex; flex-wrap: wrap; gap: 20px; }
@@ -59,12 +59,11 @@
 <body>
 
   <div class="grid">
-    <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/preview?autoplay=1', 'Malmö 2024 Opening Ceremony')">
+    <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/', 'Malmö 2024 Opening Ceremony')">
       <div class="preview-container">
         <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024">
       </div>
     </div>
-    <!-- Add more .video-item blocks here as needed -->
   </div>
 
   <!-- Modal -->
@@ -77,6 +76,71 @@
     </div>
   </div>
 
-  <script src="test.js"></script>
+  <script>
+    function GDriveOpenModalWithVideo(videoUrl, titleText) {
+      const modal = document.getElementById("videoModal");
+      const video = document.getElementById("modalVideo");
+      const iframe = document.getElementById("modalIframe");
+      const titleBar = document.getElementById("modalTitle");
+
+      modal.style.display = "flex";
+
+      video.style.display = "none";
+      iframe.style.display = "none";
+      video.pause();
+      iframe.src = "";
+      titleBar.textContent = titleText || '';
+
+      if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+        let videoId = '';
+        try {
+          if (videoUrl.includes('youtu.be')) {
+            videoId = videoUrl.split('/').pop().split('?')[0];
+          } else {
+            const url = new URL(videoUrl);
+            videoId = url.searchParams.get('v');
+          }
+        } catch (e) {
+          console.error('Invalid YouTube URL:', videoUrl);
+        }
+        if (videoId) {
+          iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+          iframe.style.display = "block";
+        }
+      } else if (videoUrl.includes('drive.google.com')) {
+        let fileId = '';
+        try {
+          const url = new URL(videoUrl);
+          const match = url.pathname.match(/\/d\/([^/]+)/);
+          if (match && match[1]) {
+            fileId = match[1];
+          }
+        } catch (e) {
+          console.error('Invalid Google Drive URL:', videoUrl);
+        }
+        if (fileId) {
+          iframe.src = `https://drive.google.com/file/d/${fileId}/preview`;
+          iframe.style.display = "block";
+        }
+      } else {
+        video.src = videoUrl;
+        video.style.display = "block";
+        video.play();
+      }
+    }
+
+    function GDriveCloseModal(event) {
+      event.stopPropagation();
+      const modal = document.getElementById("videoModal");
+      const video = document.getElementById("modalVideo");
+      const iframe = document.getElementById("modalIframe");
+
+      video.pause();
+      video.src = "";
+      iframe.src = "";
+
+      modal.style.display = "none";
+    }
+  </script>
 </body>
 </html>
