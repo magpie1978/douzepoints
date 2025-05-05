@@ -5,7 +5,6 @@
   <title>Test Video Modal</title>
   <script src="countries.js" type="text/javascript"></script>
   <style>
-    /* EMBEDDED CSS PROVIDED BY USER */
     body {
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       margin: 0;
@@ -15,6 +14,50 @@
 
     .container {
       display: flex;
+    }
+
+    .sidebar {
+      width: 220px;
+      padding: 10px;
+      background-color: #111;
+      color: white;
+      font-size: 14px;
+      height: auto;
+      overflow: visible;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar-row a {
+      text-decoration: none;
+      color: white;
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar-row {
+      margin: 5px 0;
+    }
+
+    .sidebar a:hover {
+      background-color: #e50914;
+      border-radius: 8px;
+    }
+
+    .sidebar img {
+      width: 22px;
+      height: 22px;
+      object-fit: cover;
+      border-radius: 50%;
     }
 
     .main-content {
@@ -79,7 +122,6 @@
       top: 0;
       width: 100vw;
       height: 100vh;
-      overflow: auto;
       background-color: rgba(0, 0, 0, 0.9);
       justify-content: center;
       align-items: center;
@@ -87,18 +129,14 @@
 
     .modal-content {
       position: relative;
-      background-color: #000;
-      padding: 20px;
-      max-width: 90%;
-      max-height: 90%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      max-width: 100%;
+      max-height: 100%;
     }
 
-    .modal-content video {
-      max-width: 100%;
-      max-height: 80vh;
+    .modal-content video,
+    .modal-content iframe {
+      width: 81vw;
+      height: 81vh;
     }
 
     .close-button {
@@ -112,11 +150,84 @@
       z-index: 9999;
       border-radius: 50%;
     }
+
+    .site-footer {
+      margin-top: 3rem;
+      padding: 2rem 1rem;
+      text-align: center;
+      color: #ccc;
+      font-size: 0.85rem;
+      background-color: #141414;
+    }
+
+    .footer-line {
+      width: 90%;
+      height: 1px;
+      background-color: #e50914;
+      margin: 0 auto 1rem auto;
+    }
+
+    .footer-branding {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      gap: 10px;
+    }
+
+    .footer-flag {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .footer-flag img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .footer-title {
+      font-size: 1rem;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .footer-links a {
+      color: #ccc;
+      margin: 0 10px;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .footer-links a:hover {
+      color: #e50914;
+      text-decoration: underline;
+    }
   </style>
 </head>
 
 <body oncontextmenu="return false">
+  <!-- HEADER -->
+  <header class="main-header">
+    <div class="header-overlay">
+      <div class="header-links">
+        <a class="home-link" href="index.html">Home</a>
+        <a class="countries-link" href="countries.html">Countries</a>
+        <a class="home-link" href="edition-2024.html">Editions</a>
+      </div>
+    </div>
+    <div class="banner-static">
+      <img src="https://euroflix.s3.eu-north-1.amazonaws.com/banners/al.png" alt="Banner">
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
   <div class="container">
+    <div class="sidebar" id="sidebar-container">
+      <!-- Sidebar will be populated by JS -->
+    </div>
     <div class="main-content">
       <div class="grid-container">
         <!-- Example video items -->
@@ -126,21 +237,6 @@
           </div>
         </div>
         <!-- Duplicate as needed -->
-        <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/', 'Malmö 2024 Opening Ceremony')">
-          <div class="preview-container">
-            <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024" />
-          </div>
-        </div>
-        <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/', 'Malmö 2024 Opening Ceremony')">
-          <div class="preview-container">
-            <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024" />
-          </div>
-        </div>
-        <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/', 'Malmö 2024 Opening Ceremony')">
-          <div class="preview-container">
-            <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024" />
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -153,6 +249,23 @@
       <iframe id="modalIframe" style="display: none;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
   </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-line"></div>
+    <div class="footer-branding">
+      <div class="footer-flag">
+        <img src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/gb.png" alt="United Kingdom" />
+      </div>
+      <span class="footer-title">Douze Points</span>
+    </div>
+    <div class="footer-links">
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact Us</a>
+      <a href="faq.html">FAQ</a>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+  </footer>
 
   <script>
     function GDriveOpenModalWithVideo(videoUrl, titleText) {
