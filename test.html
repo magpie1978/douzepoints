@@ -58,23 +58,25 @@
 </head>
 <body>
 
-  <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/preview?autoplay=1', 'Malmö 2024 Opening Ceremony')">
-    <div class="preview-container">
-      <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024">
+  <div class="grid">
+    <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/preview?autoplay=1', 'Malmö 2024 Opening Ceremony')">
+      <div class="preview-container">
+        <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024">
+      </div>
+    </div>
+    <!-- Add more .video-item blocks here as needed -->
+  </div>
+
+  <!-- Modal -->
+  <div id="videoModal" class="modal" onclick="GDriveCloseModal(event)">
+    <div class="modal-content">
+      <div id="modalTitle" class="modal-title-bar"></div>
+      <span class="close-button" onclick="GDriveCloseModal(event)">&times;</span>
+      <video id="modalVideo" controls autoplay controlsList="nodownload" style="display: none;"></video>
+      <iframe id="modalIframe" style="display: none;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
   </div>
-</div>
 
-<!-- Modal -->
-<div id="videoModal" class="modal" onclick="GDriveCloseModal(event)">
-  <div class="modal-content">
-    <div id="modalTitle" class="modal-title-bar"></div>
-    <span class="close-button" onclick="GDriveCloseModal(event)">&times;</span>
-    <video id="modalVideo" controls autoplay controlsList="nodownload" style="display: none;"></video>
-    <iframe id="modalIframe" style="display: none;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-  </div>
-</div>
-
-<script src="test.js"></script>
+  <script src="test.js"></script>
 </body>
 </html>
