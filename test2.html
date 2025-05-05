@@ -16,6 +16,8 @@
 
     .container {
       width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
       padding: 20px;
       box-sizing: border-box;
     }
@@ -28,12 +30,12 @@
     }
 
     .video-item {
-      background: #222;
+      width: 25%;
+      box-sizing: border-box;
       padding: 10px;
+      background: #222;
       border-radius: 8px;
       cursor: pointer;
-      width: calc(25% - 15px);
-      box-sizing: border-box;
     }
 
     .preview-container img {
@@ -158,14 +160,12 @@
     <div id="sidebar-container"></div>
 
     <div class="grid">
-      <!-- Sample video items -->
+      <!-- Repeatable video items -->
       <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/', 'Malmö 2024 Opening Ceremony')">
         <div class="preview-container">
           <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024">
         </div>
       </div>
-
-      <!-- Duplicate items for layout preview -->
       <div class="video-item" onclick="GDriveOpenModalWithVideo('...')">
         <div class="preview-container">
           <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024">
