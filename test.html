@@ -153,33 +153,39 @@
 
     <!-- MAIN CONTAINER -->
     <div class="container">
+      
       <div id="sidebar-container"></div>
 
-      <div class="grid">
-
-        <!-- Google Drive -->
-        <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/', 'Malmö 2024 Opening Ceremony')">
-          <div class="preview-container">
-            <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024">
-          </div>
-        </div>
-
-        <!-- 2024 -->
-        <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AL.mp4')">
-          <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-            <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-AL.jpeg" alt="Albania 2024">
-            <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AL.mp4" muted loop></video>
-          </div>
-          <div class="video-title-with-icon" onclick="event.stopPropagation()">
-            <a href="albania.html">
-              <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/al.png" alt="Flag">
-            </a>
-            <div class="video-title-text"><b>Besa</b><br>Titan<br>2024</div>
-          </div>
-        </div>
-
-      </div> <!-- end .grid -->
-    </div> <!-- end .container -->
+      <!-- Main Content -->
+      <div class="main-content">
+        
+        <div class="grid">
+  
+            <!-- Google Drive -->
+            <div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/', 'Malmö 2024 Opening Ceremony')">
+              <div class="preview-container">
+                <img src="https://drive.google.com/thumbnail?id=1gL6Dw4mkcKztOf0FAJ69zm6KQQm5L11y" alt="Malmö 2024">
+              </div>
+            </div>
+  
+            <!-- 2024 -->
+            <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AL.mp4')">
+              <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
+                <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-AL.jpeg" alt="Albania 2024">
+                <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AL.mp4" muted loop></video>
+              </div>
+              <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                <a href="albania.html">
+                  <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/al.png" alt="Flag">
+                </a>
+                <div class="video-title-text"><b>Besa</b><br>Titan<br>2024</div>
+              </div>
+            </div>
+  
+          </div> <!-- end of grid-container -->
+      </div> <!-- end of grid-section -->
+    </div> <!-- end of main-content -->
+  </div> <!-- end of container -->
 
     <!-- MODAL -->
     <div id="videoModal" class="modal" onclick="GDriveCloseModal(event)">
