@@ -198,14 +198,23 @@
       display: none;
     }
 
-    .preview-container:hover video {
+    .preview-container:hover video:has(source[src]) {
       display: block;
     }
 
     .preview-container:hover img {
       display: none;
     }
+    
+    /*  .preview-container:hover video {
+      display: block;
+    }
 
+    .preview-container:hover img {
+      display: none;
+    }
+    */
+    
     .modal {
       display: none;
       position: fixed;
