@@ -175,11 +175,11 @@
     .video-item:hover {
       transform: scale(1.05);
     }
-/*
+
     .preview-container {
       position: relative;
       width: 100%;
-      padding-top: 56.25%;
+      padding-top: 56.25%; /* 16:9 */
       overflow: hidden;
       border-radius: 6px;
     }
@@ -193,57 +193,18 @@
       height: 100%;
       object-fit: cover;
     }
-
+    
     .preview-container video {
       display: none;
     }
-
-    .preview-container:hover video:has(source[src]) {
+    
+    .preview-container.has-video:hover video {
       display: block;
-    }
-
-    .preview-container:hover img {
-      display: none;
     }
     
-    /*  .preview-container:hover video {
-      display: block;
-    }
-
-    .preview-container:hover img {
+    .preview-container.has-video:hover img {
       display: none;
     }
-    */
-
-    .preview-container {
-  position: relative;
-  width: 100%;
-  padding-top: 56.25%; /* 16:9 */
-  overflow: hidden;
-  border-radius: 6px;
-}
-
-.preview-container img,
-.preview-container video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.preview-container video {
-  display: none;
-}
-
-.preview-container.has-video:hover video {
-  display: block;
-}
-
-.preview-container.has-video:hover img {
-  display: none;
-}
     
     .modal {
       display: none;
@@ -400,13 +361,13 @@
           data-song="Titan"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1kRN5_a2SiKgf_tyeDMRo3bsmXV4g0Yet/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2024-AL.jpeg" alt="Albania 2024">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
               <img class="icon-placeholder" src="flags/al.png" alt="Flag">
             </a>
-            <div class="video-title-text"><b>Albina and Familja Kelmendi</b><br>Duje<br>2023</div>
+            <div class="video-title-text"><b>Besa</b><br>Titan<br>2024</div>
           </div>
         </div>
         
@@ -418,7 +379,7 @@
           data-song="Duje"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1m320fGjiYihEnOkSaF9pp3jD1kSW9YzP/')">
           <div class="preview-container">
-            <img src="images/2023-AL.jpeg" alt="Eurovision 2023 Banner">
+            <img src="images/2023-AL.jpeg" alt="Albania 2023">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -436,7 +397,7 @@
           data-song="Sekret"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1mJMAJMSFxtnqOz9VS-92NquhSfJnx87f/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2022-AL.jpeg" alt="Albania 2022">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -454,7 +415,7 @@
           data-song="Karma"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1dUiBHLE9JYQFt9_aVb1yswuKFb6pAkaC/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2021-AL.jpeg" alt="Albania 2021">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -472,7 +433,7 @@
           data-song="Ktheju tokës"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1kUXizFIgkSdlmFAyXxobSLl3PUaC3F7R/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2020-AL.jpeg" alt="Albania 2020">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -490,7 +451,7 @@
           data-song="Ktheju tokës"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1ACnEAcUy4AIG8tE8xnlEXNzheaq3VpNe/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2019-AL.jpeg" alt="Albania 2019">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -508,7 +469,7 @@
           data-song="Mall"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1pZnOnIFz9pLR2z23wUhOQzxuJgVOMWEo/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2018-AL.jpeg" alt="Albania 2018">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -526,7 +487,7 @@
           data-song="World"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Do9DEu8Lk4lmAzQ6Koj5PzDRioVcdtaS/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2017-AL.jpeg" alt="Albania 2017">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -544,7 +505,7 @@
           data-song="Fairytale"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1cDTCCLoCyOUIWRA9p8stwA5t3iwJI85X/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2016-AL.jpeg" alt="Albania 2016">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -562,7 +523,7 @@
           data-song="I'm Alive"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1l-X0oiEdMDg--7-QW2yBD0QZE0QgLdVt/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2015-AL.jpeg" alt="Albania 2015">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -580,7 +541,7 @@
           data-song="One Night's Anger"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2014-AL.jpeg" alt="Albania 2014">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -598,7 +559,7 @@
           data-song="Identitet"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1RS4953hcZz3DYZWLrL1H4F5WgsnoYTzF/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2013-AL.jpeg" alt="Albania 2013">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -616,7 +577,7 @@
           data-song="Suus"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/19ErCta8RFzLBqPDM36j8_NCbqJmlS3T_/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2012-AL.jpeg" alt="Albania 2012">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -634,7 +595,7 @@
           data-song="Feel the Passion"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1QAbwDvrePyPpYD02LLxA1yZylASMS-RA/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2011-AL.jpeg" alt="Albania 2011">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -652,7 +613,7 @@
           data-song="It's All About You"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/15JY-OBkXNUFbANFuDQ2P2a_Oim3gPvJV/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2010-AL.jpeg" alt="Albania 2010">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -670,7 +631,7 @@
           data-song="Carry Me in Your Dreams"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1gZr2NjxRlDP-0VRIwX_cywc-aF3uikjW/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2009-AL.jpeg" alt="Albania 2009">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -688,7 +649,7 @@
           data-song="Zemrën e lamë peng"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1xmSA6kf3hRwgaWFl0tUHv2adLkhdDSh-/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2008-AL.jpeg" alt="Albania 2008">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -706,7 +667,7 @@
           data-song="Hear My Plea"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Vy-nc0p435v96BnYsn5g9USHrqtVo6fH/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2007-AL.jpeg" alt="Albania 2007">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -724,7 +685,7 @@
           data-song="Zjarr e ftohtë"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1gCiUACFOLnjr1Y1ghjgragBGLHUkPFQZ/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2006-AL.jpeg" alt="Albania 2006">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -742,7 +703,7 @@
           data-song="Tomorrow I Go"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1pMMapZklBXMKHnP3WnevliGQXRW-9lLw/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2005-AL.jpeg" alt="Albania 2005">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
@@ -760,7 +721,7 @@
           data-song="The Image of You"
           onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1lmlV5-HlyooHHdkf3wSoJWKsSHQBpcN5/')">
           <div class="preview-container">
-            <img src="images/2024-AL.jpeg" alt="Eurovision 2024 Banner">
+            <img src="images/2004-AL.jpeg" alt="Albania 2004">
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
             <a href="albania.html">
