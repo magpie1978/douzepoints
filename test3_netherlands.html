@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<!-- Import Raleway typeface -->
+<link href="https://fonts.googleapis.com/css2?family=Raleway&amp;display=swap" rel="stylesheet"/>
+<title>Douze Points | Albania</title>
+<script src="countries.js" type="text/javascript"></script>
+<style>
+    
+
+    body {
+      font-family: 'Raleway', sans-serif;
+      margin: 0;
+      background: #141414;
+      color: #fff;
+    }
+
+    .banner-static {
+      width: 100%;
+      height: 400px;
+      overflow: hidden;
+    }
+    
+    .banner-static img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }      
+      .banner-image.active {
+      opacity: 1;
+      z-index: 2;
+    }
+    /* Overlay layout */
+    .header-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .home-link {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .header-links {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .header-links a {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .header-links a:hover {
+      color: #e50914;
+    }
+
+    .banner-title img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .banner-title h2 {
+      font-size: 2rem;
+      color: black;
+      margin: 0;
+    }
+    
+    .banner-text h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .banner-text p {
+      font-size: 1rem;
+      margin: 0.3rem 0;
+    }
+
+    .banner-divider {
+      width: 100%;
+      height: 1px;
+      background-color: #e50914;
+      }
+    
+    .container {
+          display: flex;
+        }
+
+    .sidebar {
+      width: 220px;
+      padding: 10px;
+      background-color: #111;
+      color: white;
+      font-size: 14px;
+      height: auto;
+      overflow: visible;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar-row a {
+      text-decoration: none;
+      color: white;
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar-row {
+      margin: 5px 0;
+    }
+
+    .sidebar a:hover {
+      background-color: #e50914;
+      border-radius: 8px;
+    }
+
+    .sidebar img {
+      width: 22px;
+      height: 22px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 20px;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .video-item {
+      cursor: pointer;
+      background-color: #1a1a1a;
+      padding: 10px;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .video-item:hover {
+      transform: scale(1.05);
+    }
+
+    .preview-container {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+      overflow: hidden;
+      border-radius: 6px;
+    }
+
+    .preview-container img,
+    .preview-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .preview-container video {
+      display: none;
+    }
+    
+    .preview-container.has-video:hover video {
+      display: block;
+    }
+    
+    .preview-container.has-video:hover img {
+      display: none;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      position: relative;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .modal-content video,
+    .modal-content iframe {
+      width: 81vw;
+      height: 81vh;
+    }
+
+    .close-button {
+      position: absolute;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 40px;
+      top: -20px;
+      right: -20px;
+      z-index: 9999;
+      border-radius: 50%;
+    }
+
+    .site-footer {
+      margin-top: 3rem;
+      padding: 2rem 1rem;
+      text-align: center;
+      color: #ccc;
+      font-size: 0.85rem;
+      background-color: #141414;
+    }
+
+    .footer-line {
+      width: 90%;
+      height: 1px;
+      background-color: #e50914;
+      margin: 0 auto 1rem auto;
+    }
+
+    .footer-branding {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      gap: 10px;
+    }
+
+    .footer-flag {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .footer-flag img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .footer-title {
+      font-size: 1rem;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .footer-links a {
+      color: #ccc;
+      margin: 0 10px;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .footer-links a:hover {
+      color: #e50914;
+      text-decoration: underline;
+    }
+
+    .video-title-with-icon {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      gap: 8px;
+      color: white;
+      font-size: 0.8rem;
+    }
+      
+    .icon-placeholder {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: #444;
+      object-fit: cover;
+      margin-left: 8px;
+    }
+
+    .video-title-text {
+      line-height: 1.2;
+      }
+
+    .video-title-text a {
+      text-decoration: none; /* Remove underline */
+      color: inherit;         /* Inherit color from surrounding text */
+    }
+
+  </style>
+</head>
+<body oncontextmenu="return false">
+<!-- HEADER -->
+<header class="main-header">
+<div class="header-overlay">
+<div class="header-links">
+<a class="home-link" href="index.html">Home</a>
+<a class="home-link" href="countries.html">Countries</a>
+<a class="home-link" href="edition-2024.html">Editions</a>
+</div>
+</div>
+<div class="banner-static">
+<img alt="Banner" src="https://euroflix.s3.eu-north-1.amazonaws.com/banners/al.png"/>
+</div>
+</header>
+<!--  red dividing line -->
+<div class="banner-divider"></div>
+<!-- Main Content Layout -->
+<div class="container">
+<div class="sidebar" id="sidebar-container"></div>
+<div class="main-content">
+<div class="grid-container">
+<!-- 2024 -->
+<div class="video-item" data-artist="Joost Klein" data-country="Netherlands" data-song="Europapa" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1UOnblKlduoOBFXnXfL_opeUCcXODbRXh/')">
+<div class="preview-container">
+<img alt="Albania 2024" src="images/2024-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Joost Klein</b>
+Europapa
+2024</div>
+</div>
+</div>
+<!-- 2023 -->
+<div class="video-item" data-artist="Mia Nicolai and Dion Cooper" data-country="Netherlands" data-song="Burning Daylight" data-year="2023" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1pYaILj02JqbYiC4QYxlamP3_XIJcw2rq/')">
+<div class="preview-container">
+<img alt="Albania 2023" src="images/2023-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Mia Nicolai and Dion Cooper</b>
+Burning Daylight
+2023</div>
+</div>
+</div>
+<!-- 2022 -->
+<div class="video-item" data-artist="S10" data-country="Netherlands" data-song="De diepte" data-year="2022" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Tx1bCJyFUsZ7K3VAefK1zWSqIoz4x4WA/')">
+<div class="preview-container">
+<img alt="Albania 2022" src="images/2022-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>S10</b>
+De diepte
+2022</div>
+</div>
+</div>
+<!-- 2021 -->
+<div class="video-item" data-artist="Jeangu Macrooy" data-country="Netherlands" data-song="Birth of a New Age" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/15Z7D7ujRrAPboxux_K-q7AETyG6J5FRE/')">
+<div class="preview-container">
+<img alt="Albania 2021" src="images/2021-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Jeangu Macrooy</b>
+Birth of a New Age
+2021</div>
+</div>
+</div>
+<!-- 2020 -->
+<div class="video-item" data-artist="Duncan Laurence" data-country="Netherlands" data-song="Arcade" data-year="2020" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1TvxUOQCUW1XmFlGykxJZRMZk6frk9lfL/')">
+<div class="preview-container">
+<img alt="Albania 2020" src="images/2020-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Duncan Laurence</b>
+Arcade
+2020</div>
+</div>
+</div>
+<!-- 2019 -->
+<div class="video-item" data-artist="Duncan Laurence" data-country="Netherlands" data-song="Arcade" data-year="2019" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1JOSIyONilpp86NL2hnLz0lM6ggIOID44/')">
+<div class="preview-container">
+<img alt="Albania 2019" src="images/2019-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Duncan Laurence</b>
+Arcade
+2019</div>
+</div>
+</div>
+<!-- 2018 -->
+<div class="video-item" data-artist="Waylon" data-country="Netherlands" data-song="Outlaw in 'Em" data-year="2018" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1WIOqHr0y0LB0iG8Qd46B6cvvqfk3NSgo/')">
+<div class="preview-container">
+<img alt="Albania 2018" src="images/2018-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Waylon</b>
+Outlaw in 'Em
+2018</div>
+</div>
+</div>
+<!-- 2017 -->
+<div class="video-item" data-artist="OG3NE" data-country="Netherlands" data-song="Lights and Shadows" data-year="2017" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/10DczOp9e2UFl4QLynu905TM6s0R8m6wk/')">
+<div class="preview-container">
+<img alt="Albania 2017" src="images/2017-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>OG3NE</b>
+Lights and Shadows
+2017</div>
+</div>
+</div>
+<!-- 2016 -->
+<div class="video-item" data-artist="Douwe Bob" data-country="Netherlands" data-song="Slow Down" data-year="2016" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1oM0G31F2BR6pHsiEd7DSe9pDxO-gjCzb/')">
+<div class="preview-container">
+<img alt="Albania 2016" src="images/2016-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Douwe Bob</b>
+Slow Down
+2016</div>
+</div>
+</div>
+<!-- 2015 -->
+<div class="video-item" data-artist="Trijntje Oosterhuis" data-country="Netherlands" data-song="Walk Along" data-year="2015" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1zsQMYlEV6-qPUAuuxGe_6sq3De7LjsYW/')">
+<div class="preview-container">
+<img alt="Albania 2015" src="images/2015-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Trijntje Oosterhuis</b>
+Walk Along
+2015</div>
+</div>
+</div>
+<!-- 2014 -->
+<div class="video-item" data-artist="The Common Linnets" data-country="Netherlands" data-song="Calm After the Storm" data-year="2014" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1YYRroLV1-XkYcPl9d8wfRA_yUlBSEhrz/')">
+<div class="preview-container">
+<img alt="Albania 2014" src="images/2014-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>The Common Linnets</b>
+Calm After the Storm
+2014</div>
+</div>
+</div>
+<!-- 2013 -->
+<div class="video-item" data-artist="Anouk" data-country="Netherlands" data-song="Birds" data-year="2013" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Wv87FbVUMsCa61GWb-ca7dooVr0ihpe4/')">
+<div class="preview-container">
+<img alt="Albania 2013" src="images/2013-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Anouk</b>
+Birds
+2013</div>
+</div>
+</div>
+<!-- 2012 -->
+<div class="video-item" data-artist="Joan Franka" data-country="Netherlands" data-song="You and Me" data-year="2012" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1siZuwzm97QEqBDX_j4kny1sb90D6yI1M/')">
+<div class="preview-container">
+<img alt="Albania 2012" src="images/2012-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Joan Franka</b>
+You and Me
+2012</div>
+</div>
+</div>
+<!-- 2011 -->
+<div class="video-item" data-artist="3JS" data-country="Netherlands" data-song="Never Alone" data-year="2011" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/14OQfy35CFtQw32HyECJznms-PZCdYyxw/')">
+<div class="preview-container">
+<img alt="Albania 2011" src="images/2011-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>3JS</b>
+Never Alone
+2011</div>
+</div>
+</div>
+<!-- 2010 -->
+<div class="video-item" data-artist="Sieneke" data-country="Netherlands" data-song="Ik ben verliefd (Sha-la-lie)" data-year="2010" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1A9jVdzYz-U2rpUU0nn_m9a-8zLzauJqd/')">
+<div class="preview-container">
+<img alt="Albania 2010" src="images/2010-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Sieneke</b>
+Ik ben verliefd (Sha-la-lie)
+2010</div>
+</div>
+</div>
+<!-- 2009 -->
+<div class="video-item" data-artist="The Toppers" data-country="Netherlands" data-song="Shine" data-year="2009" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/173vftyFeOzPlN5doWF8A-YcOhHgQdnSr/')">
+<div class="preview-container">
+<img alt="Albania 2009" src="images/2009-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>The Toppers</b>
+Shine
+2009</div>
+</div>
+</div>
+<!-- 2008 -->
+<div class="video-item" data-artist="Hind" data-country="Netherlands" data-song="Your Heart Belongs to Me" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1c_laV19VDj0_tpPXUFq3vxtZcwUnGy2Y/')">
+<div class="preview-container">
+<img alt="Albania 2008" src="images/2008-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Hind</b>
+Your Heart Belongs to Me
+2008</div>
+</div>
+</div>
+<!-- 2007 -->
+<div class="video-item" data-artist="Edsilia Rombley" data-country="Netherlands" data-song="On Top of the World" data-year="2007" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/10w6iI_dOpC06TVnIKEsY3Lj7Eh6lVhFN/')">
+<div class="preview-container">
+<img alt="Albania 2007" src="images/2007-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Edsilia Rombley</b>
+On Top of the World
+2007</div>
+</div>
+</div>
+<!-- 2006 -->
+<div class="video-item" data-artist="Treble" data-country="Netherlands" data-song="Amambanda" data-year="2006" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1iz89kWFOOt5MCASFrLerTNq0oPgIesDS/')">
+<div class="preview-container">
+<img alt="Albania 2006" src="images/2006-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Treble</b>
+Amambanda
+2006</div>
+</div>
+</div>
+<!-- 2005 -->
+<div class="video-item" data-artist="Glennis Grace" data-country="Netherlands" data-song="My Impossible Dream" data-year="2005" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1yoH_DJIf9ZiozF3iJqi6C6va5QRipkys/')">
+<div class="preview-container">
+<img alt="Albania 2005" src="images/2005-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Glennis Grace</b>
+My Impossible Dream
+2005</div>
+</div>
+</div>
+<!-- 2004 -->
+<div class="video-item" data-artist="Re-union" data-country="Netherlands" data-song="Without You" data-year="2004" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1HV2XpkNsULYXcmUeEGaPTWRoEg2_hMNV/')">
+<div class="preview-container">
+<img alt="Albania 2004" src="images/2004-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Re-union</b>
+Without You
+2004</div>
+</div>
+</div>
+<!-- 2003 -->
+<div class="video-item" data-artist="Esther Hart" data-country="Netherlands" data-song="One More Night" data-year="2003" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1zpZQed-_KA8FefTDaFBLRsIfFBscKG1G/')">
+<div class="preview-container">
+<img alt="Albania 2003" src="images/2003-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Esther Hart</b>
+One More Night
+2003</div>
+</div>
+</div>
+<!-- 2002 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 2002" src="images/2002-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2001 -->
+<div class="video-item" data-artist="Michelle" data-country="Netherlands" data-song="Out on My Own" data-year="2001" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1EtIG2Q7cfcad7nlINFcpguLlILj8JesF/')">
+<div class="preview-container">
+<img alt="Albania 2001" src="images/2001-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Michelle</b>
+Out on My Own
+2001</div>
+</div>
+</div>
+<!-- 2000 -->
+<div class="video-item" data-artist="Linda" data-country="Netherlands" data-song="No Goodbyes" data-year="2000" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1vARDGclQNvqPTP9MOaMh_MO3pOxo9LVz/')">
+<div class="preview-container">
+<img alt="Albania 2000" src="images/2000-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Linda</b>
+No Goodbyes
+2000</div>
+</div>
+</div>
+<!-- 1999 -->
+<div class="video-item" data-artist="Marlayne" data-country="Netherlands" data-song="One Good Reason" data-year="1999" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/14qu54_dW_N3vRW2KKm88JaAIlLNfidFd/')">
+<div class="preview-container">
+<img alt="Albania 1999" src="images/1999-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Marlayne</b>
+One Good Reason
+1999</div>
+</div>
+</div>
+<!-- 1998 -->
+<div class="video-item" data-artist="Edsilia" data-country="Netherlands" data-song="Hemel en aarde" data-year="1998" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1z4pHqGgOZnLIzAeRnrOB3G3mazJfgkXx/')">
+<div class="preview-container">
+<img alt="Albania 1998" src="images/1998-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Edsilia</b>
+Hemel en aarde
+1998</div>
+</div>
+</div>
+<!-- 1997 -->
+<div class="video-item" data-artist="Mrs. Einstein" data-country="Netherlands" data-song="Niemand heeft nog tijd" data-year="1997" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/12mwhR8i2DEBKT63m9sALVyBNw-Ozm53-/')">
+<div class="preview-container">
+<img alt="Albania 1997" src="images/1997-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Mrs. Einstein</b>
+Niemand heeft nog tijd
+1997</div>
+</div>
+</div>
+<!-- 1996 -->
+<div class="video-item" data-artist="Maxine and Franklin Brown" data-country="Netherlands" data-song="De eerste keer" data-year="1996" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1G14EAnzjrlBHl9XM3ziqNbweJRTYexM2/')">
+<div class="preview-container">
+<img alt="Albania 1996" src="images/1996-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Maxine and Franklin Brown</b>
+De eerste keer
+1996</div>
+</div>
+</div>
+<!-- 1995 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1995" src="images/1995-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1994 -->
+<div class="video-item" data-artist="Willeke Alberti" data-country="Netherlands" data-song="Waar is de zon" data-year="1994" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1zFjYmKMjkVW2Jz_iS9k0smjEMFZ41KR8/')">
+<div class="preview-container">
+<img alt="Albania 1994" src="images/1994-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Willeke Alberti</b>
+Waar is de zon
+1994</div>
+</div>
+</div>
+<!-- 1993 -->
+<div class="video-item" data-artist="Ruth Jacott" data-country="Netherlands" data-song="Vrede" data-year="1993" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1GPLV07KNO5gkYr_jGNaAp8h_QNJp-uX-/')">
+<div class="preview-container">
+<img alt="Albania 1993" src="images/1993-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Ruth Jacott</b>
+Vrede
+1993</div>
+</div>
+</div>
+<!-- 1992 -->
+<div class="video-item" data-artist="Humphrey Campbell" data-country="Netherlands" data-song="Wijs me de weg" data-year="1992" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1ZpaKrHHjBiZRW1sA_wiJuB0-ilapPh8N/')">
+<div class="preview-container">
+<img alt="Albania 1992" src="images/1992-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Humphrey Campbell</b>
+Wijs me de weg
+1992</div>
+</div>
+</div>
+<!-- 1991 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1991" src="images/1991-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1990 -->
+<div class="video-item" data-artist="Maywood" data-country="Netherlands" data-song="Ik wil alles met je delen" data-year="1990" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1g-fcq-NZiPRFO3jak-WIqYtKRg8rzUif/')">
+<div class="preview-container">
+<img alt="Albania 1990" src="images/1990-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Maywood</b>
+Ik wil alles met je delen
+1990</div>
+</div>
+</div>
+<!-- 1989 -->
+<div class="video-item" data-artist="Justine Pelmelay" data-country="Netherlands" data-song="Blijf zoals je bent" data-year="1989" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1SpN8ChXGbagFJEfoVornyOFNAsa7AYU-/')">
+<div class="preview-container">
+<img alt="Albania 1989" src="images/1989-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Justine Pelmelay</b>
+Blijf zoals je bent
+1989</div>
+</div>
+</div>
+<!-- 1988 -->
+<div class="video-item" data-artist="Gerard Joling" data-country="Netherlands" data-song="Shangri-La" data-year="1988" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1cpKOg-obYtxieOSYArJxmuYUTitjtP5K/')">
+<div class="preview-container">
+<img alt="Albania 1988" src="images/1988-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Gerard Joling</b>
+Shangri-La
+1988</div>
+</div>
+</div>
+<!-- 1987 -->
+<div class="video-item" data-artist="Marcha" data-country="Netherlands" data-song="Rechtop in de wind" data-year="1987" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1WFFmVzPxzcZt-Mw1wiOzjBMnUb9zDApI/')">
+<div class="preview-container">
+<img alt="Albania 1987" src="images/1987-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Marcha</b>
+Rechtop in de wind
+1987</div>
+</div>
+</div>
+<!-- 1986 -->
+<div class="video-item" data-artist="Frizzle Sizzle" data-country="Netherlands" data-song="Alles heeft ritme" data-year="1986" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Gk5YGdpC300lv4DtgzdEuOjOFC_D2K-f/')">
+<div class="preview-container">
+<img alt="Albania 1986" src="images/1986-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Frizzle Sizzle</b>
+Alles heeft ritme
+1986</div>
+</div>
+</div>
+<!-- 1985 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1985" src="images/1985-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1984 -->
+<div class="video-item" data-artist="Maribelle" data-country="Netherlands" data-song="Ik hou van jou" data-year="1984" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1984" src="images/1984-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Maribelle</b>
+Ik hou van jou
+1984</div>
+</div>
+</div>
+<!-- 1983 -->
+<div class="video-item" data-artist="Bernadette" data-country="Netherlands" data-song="Sing Me a Song" data-year="1983" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1983" src="images/1983-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Bernadette</b>
+Sing Me a Song
+1983</div>
+</div>
+</div>
+<!-- 1982 -->
+<div class="video-item" data-artist="Bill van Dijk" data-country="Netherlands" data-song="Jij en ik" data-year="1982" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1982" src="images/1982-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Bill van Dijk</b>
+Jij en ik
+1982</div>
+</div>
+</div>
+<!-- 1981 -->
+<div class="video-item" data-artist="Linda Williams" data-country="Netherlands" data-song="Het is een wonder" data-year="1981" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1981" src="images/1981-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Linda Williams</b>
+Het is een wonder
+1981</div>
+</div>
+</div>
+<!-- 1980 -->
+<div class="video-item" data-artist="Maggie MacNeal" data-country="Netherlands" data-song="Amsterdam" data-year="1980" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1980" src="images/1980-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Maggie MacNeal</b>
+Amsterdam
+1980</div>
+</div>
+</div>
+<!-- 1979 -->
+<div class="video-item" data-artist="Xandra" data-country="Netherlands" data-song="Colorado" data-year="1979" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1979" src="images/1979-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Xandra</b>
+Colorado
+1979</div>
+</div>
+</div>
+<!-- 1978 -->
+<div class="video-item" data-artist="Harmony" data-country="Netherlands" data-song="t Is OK" data-year="1978" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1978" src="images/1978-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Harmony</b>
+t Is OK
+1978</div>
+</div>
+</div>
+<!-- 1977 -->
+<div class="video-item" data-artist="Heddy Lester" data-country="Netherlands" data-song="De mallemolen" data-year="1977" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1977" src="images/1977-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Heddy Lester</b>
+De mallemolen
+1977</div>
+</div>
+</div>
+<!-- 1976 -->
+<div class="video-item" data-artist="Sandra Reemer" data-country="Netherlands" data-song="The Party Is Over Now" data-year="1976" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1976" src="images/1976-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Sandra Reemer</b>
+The Party Is Over Now
+1976</div>
+</div>
+</div>
+<!-- 1975 -->
+<div class="video-item" data-artist="Teach-In" data-country="Netherlands" data-song="Ding-a-dong" data-year="1975" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Oj8dGg_mtEF1f0KjGItCzARzLdB7bcqm/')">
+<div class="preview-container">
+<img alt="Albania 1975" src="images/1975-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Teach-In</b>
+Ding-a-dong
+1975</div>
+</div>
+</div>
+<!-- 1974 -->
+<div class="video-item" data-artist="Mouth and MacNeal" data-country="Netherlands" data-song="I See a Star" data-year="1974" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1974" src="images/1974-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Mouth and MacNeal</b>
+I See a Star
+1974</div>
+</div>
+</div>
+<!-- 1973 -->
+<div class="video-item" data-artist="Ben Cramer" data-country="Netherlands" data-song="De oude muzikant" data-year="1973" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1973" src="images/1973-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Ben Cramer</b>
+De oude muzikant
+1973</div>
+</div>
+</div>
+<!-- 1972 -->
+<div class="video-item" data-artist="Sandra and Andres" data-country="Netherlands" data-song="Als het om de liefde gaat" data-year="1972" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1972" src="images/1972-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Sandra and Andres</b>
+Als het om de liefde gaat
+1972</div>
+</div>
+</div>
+<!-- 1971 -->
+<div class="video-item" data-artist="Saskia and Serge" data-country="Netherlands" data-song="Tijd" data-year="1971" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1971" src="images/1971-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Saskia and Serge</b>
+Tijd
+1971</div>
+</div>
+</div>
+<!-- 1970 -->
+<div class="video-item" data-artist="Patricia and Hearts of Soul" data-country="Netherlands" data-song="Waterman" data-year="1970" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1970" src="images/1970-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Patricia and Hearts of Soul</b>
+Waterman
+1970</div>
+</div>
+</div>
+<!-- 1969 -->
+<div class="video-item" data-artist="Lenny Kuhr" data-country="Netherlands" data-song="De troubadour" data-year="1969" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1NmQbvvULiyCogQMwme7FMKuhFw3tonb-/')">
+<div class="preview-container">
+<img alt="Albania 1969" src="images/1969-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Lenny Kuhr</b>
+De troubadour
+1969</div>
+</div>
+</div>
+<!-- 1968 -->
+<div class="video-item" data-artist="Ronnie Tober" data-country="Netherlands" data-song="Morgen" data-year="1968" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1968" src="images/1968-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Ronnie Tober</b>
+Morgen
+1968</div>
+</div>
+</div>
+<!-- 1967 -->
+<div class="video-item" data-artist="Thérèse Steinmetz" data-country="Netherlands" data-song="Ringe-dinge" data-year="1967" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1967" src="images/1967-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Thérèse Steinmetz</b>
+Ringe-dinge
+1967</div>
+</div>
+</div>
+<!-- 1966 -->
+<div class="video-item" data-artist="Milly Scott" data-country="Netherlands" data-song="Fernando en Philippo" data-year="1966" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1966" src="images/1966-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Milly Scott</b>
+Fernando en Philippo
+1966</div>
+</div>
+</div>
+<!-- 1965 -->
+<div class="video-item" data-artist="Conny Vandenbos" data-country="Netherlands" data-song="Het is genoeg" data-year="1965" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1965" src="images/1965-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Conny Vandenbos</b>
+Het is genoeg
+1965</div>
+</div>
+</div>
+<!-- 1964 -->
+<div class="video-item" data-artist="Anneke Grönloh" data-country="Netherlands" data-song="Jij bent mijn leven" data-year="1964" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1964" src="images/1964-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Anneke Grönloh</b>
+Jij bent mijn leven
+1964</div>
+</div>
+</div>
+<!-- 1963 -->
+<div class="video-item" data-artist="Annie Palmen" data-country="Netherlands" data-song="Een speeldoos" data-year="1963" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1963" src="images/1963-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Annie Palmen</b>
+Een speeldoos
+1963</div>
+</div>
+</div>
+<!-- 1962 -->
+<div class="video-item" data-artist="De Spelbrekers" data-country="Netherlands" data-song="Katinka" data-year="1962" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1962" src="images/1962-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>De Spelbrekers</b>
+Katinka
+1962</div>
+</div>
+</div>
+<!-- 1961 -->
+<div class="video-item" data-artist="Greetje Kauffeld" data-country="Netherlands" data-song="Wat een dag" data-year="1961" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1961" src="images/1961-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Greetje Kauffeld</b>
+Wat een dag
+1961</div>
+</div>
+</div>
+<!-- 1960 -->
+<div class="video-item" data-artist="Rudi Carrell" data-country="Netherlands" data-song="Wat een geluk" data-year="1960" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1960" src="images/1960-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Rudi Carrell</b>
+Wat een geluk
+1960</div>
+</div>
+</div>
+<!-- 1959 -->
+<div class="video-item" data-artist="Teddy Scholten" data-country="Netherlands" data-song="Een beetje" data-year="1959" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1MJ_gMHsAqrhtwJGeucyFPOnZYBCbjzug/')">
+<div class="preview-container">
+<img alt="Albania 1959" src="images/1959-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Teddy Scholten</b>
+Een beetje
+1959</div>
+</div>
+</div>
+<!-- 1958 -->
+<div class="video-item" data-artist="Corry Brokken" data-country="Netherlands" data-song="Heel de wereld" data-year="1958" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1958" src="images/1958-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Corry Brokken</b>
+Heel de wereld
+1958</div>
+</div>
+</div>
+<!-- 1957 -->
+<div class="video-item" data-artist="Corry Brokken" data-country="Netherlands" data-song="Net als toen" data-year="1957" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1S5MuarCe5YQSskW2ZQ01-JrRo1fEysxV/')">
+<div class="preview-container">
+<img alt="Albania 1957" src="images/1957-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Corry Brokken</b>
+Net als toen
+1957</div>
+</div>
+</div>
+<!-- 1956 (2) -->
+<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1956" src="images/1956_2-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>
+<!-- 1956 (1) -->
+<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1956" src="images/1956_1-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>
+<!-- END OF VIDEOS -->
+</div>
+</div>
+</div>
+<!-- MODAL -->
+<div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+<div class="modal-content">
+<span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+<video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;"></video>
+<iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" id="modalIframe" style="display: none;"></iframe>
+</div>
+</div>
+<!-- FOOTER -->
+<footer class="site-footer">
+<div class="footer-line"></div>
+<div class="footer-branding">
+<div class="footer-flag">
+<img alt="United Kingdom" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/gb.png">
+</img></div>
+<span class="footer-title">Douze Points</span>
+</div>
+<div class="footer-links">
+<a href="about.html">About</a>
+<a href="contact.html">Contact Us</a>
+<a href="faq.html">FAQ</a>
+<a href="privacy.html">Privacy Policy</a>
+</div>
+</footer>
+<script>
+    function GDriveOpenModalWithVideo(videoUrl, titleText) {
+      const modal = document.getElementById("videoModal");
+      const video = document.getElementById("modalVideo");
+      const iframe = document.getElementById("modalIframe");
+      modal.style.display = "flex";
+      video.style.display = "none";
+      iframe.style.display = "none";
+      video.pause();
+      iframe.src = "";
+      if (videoUrl.includes('drive.google.com')) {
+        const match = videoUrl.match(/\/d\/(.*?)\//);
+        if (match && match[1]) {
+          iframe.src = `https://drive.google.com/file/d/${match[1]}/preview`;
+          iframe.style.display = "block";
+        }
+      } else {
+        video.src = videoUrl;
+        video.style.display = "block";
+        video.play();
+      }
+    }
+
+    function GDriveCloseModal(event) {
+      event.stopPropagation();
+      const modal = document.getElementById("videoModal");
+      const video = document.getElementById("modalVideo");
+      const iframe = document.getElementById("modalIframe");
+      video.pause();
+      video.src = "";
+      iframe.src = "";
+      modal.style.display = "none";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<!-- Import Raleway typeface -->
+<link href="https://fonts.googleapis.com/css2?family=Raleway&amp;display=swap" rel="stylesheet"/>
+<title>Douze Points | Albania</title>
+<script src="countries.js" type="text/javascript"></script>
+<style>
+    
+
+    body {
+      font-family: 'Raleway', sans-serif;
+      margin: 0;
+      background: #141414;
+      color: #fff;
+    }
+
+    .banner-static {
+      width: 100%;
+      height: 400px;
+      overflow: hidden;
+    }
+    
+    .banner-static img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }      
+      .banner-image.active {
+      opacity: 1;
+      z-index: 2;
+    }
+    /* Overlay layout */
+    .header-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .home-link {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .header-links {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .header-links a {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .header-links a:hover {
+      color: #e50914;
+    }
+
+    .banner-title img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .banner-title h2 {
+      font-size: 2rem;
+      color: black;
+      margin: 0;
+    }
+    
+    .banner-text h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .banner-text p {
+      font-size: 1rem;
+      margin: 0.3rem 0;
+    }
+
+    .banner-divider {
+      width: 100%;
+      height: 1px;
+      background-color: #e50914;
+      }
+    
+    .container {
+          display: flex;
+        }
+
+    .sidebar {
+      width: 220px;
+      padding: 10px;
+      background-color: #111;
+      color: white;
+      font-size: 14px;
+      height: auto;
+      overflow: visible;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar-row a {
+      text-decoration: none;
+      color: white;
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar-row {
+      margin: 5px 0;
+    }
+
+    .sidebar a:hover {
+      background-color: #e50914;
+      border-radius: 8px;
+    }
+
+    .sidebar img {
+      width: 22px;
+      height: 22px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 20px;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .video-item {
+      cursor: pointer;
+      background-color: #1a1a1a;
+      padding: 10px;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .video-item:hover {
+      transform: scale(1.05);
+    }
+
+    .preview-container {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+      overflow: hidden;
+      border-radius: 6px;
+    }
+
+    .preview-container img,
+    .preview-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .preview-container video {
+      display: none;
+    }
+    
+    .preview-container.has-video:hover video {
+      display: block;
+    }
+    
+    .preview-container.has-video:hover img {
+      display: none;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      position: relative;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .modal-content video,
+    .modal-content iframe {
+      width: 81vw;
+      height: 81vh;
+    }
+
+    .close-button {
+      position: absolute;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 40px;
+      top: -20px;
+      right: -20px;
+      z-index: 9999;
+      border-radius: 50%;
+    }
+
+    .site-footer {
+      margin-top: 3rem;
+      padding: 2rem 1rem;
+      text-align: center;
+      color: #ccc;
+      font-size: 0.85rem;
+      background-color: #141414;
+    }
+
+    .footer-line {
+      width: 90%;
+      height: 1px;
+      background-color: #e50914;
+      margin: 0 auto 1rem auto;
+    }
+
+    .footer-branding {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      gap: 10px;
+    }
+
+    .footer-flag {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .footer-flag img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .footer-title {
+      font-size: 1rem;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .footer-links a {
+      color: #ccc;
+      margin: 0 10px;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .footer-links a:hover {
+      color: #e50914;
+      text-decoration: underline;
+    }
+
+    .video-title-with-icon {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      gap: 8px;
+      color: white;
+      font-size: 0.8rem;
+    }
+      
+    .icon-placeholder {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: #444;
+      object-fit: cover;
+      margin-left: 8px;
+    }
+
+    .video-title-text {
+      line-height: 1.2;
+      }
+
+    .video-title-text a {
+      text-decoration: none; /* Remove underline */
+      color: inherit;         /* Inherit color from surrounding text */
+    }
+
+  </style>
+</head>
+<body oncontextmenu="return false">
+<!-- HEADER -->
+<header class="main-header">
+<div class="header-overlay">
+<div class="header-links">
+<a class="home-link" href="index.html">Home</a>
+<a class="home-link" href="countries.html">Countries</a>
+<a class="home-link" href="edition-2024.html">Editions</a>
+</div>
+</div>
+<div class="banner-static">
+<img alt="Banner" src="https://euroflix.s3.eu-north-1.amazonaws.com/banners/al.png"/>
+</div>
+</header>
+<!--  red dividing line -->
+<div class="banner-divider"></div>
+<!-- Main Content Layout -->
+<div class="container">
+<div class="sidebar" id="sidebar-container"></div>
+<div class="main-content">
+<div class="grid-container">
+<!-- 2024 -->
+<div class="video-item" data-artist="Angelina Mango" data-country="Italy" data-song="La noia" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1ltftafBgi50oeW3VZLjhBgESk3MnZioP/')">
+<div class="preview-container">
+<img alt="Albania 2024" src="images/2024-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Angelina Mango</b>
+La noia
+2024</div>
+</div>
+</div>
+<!-- 2023 -->
+<div class="video-item" data-artist="Marco Mengoni" data-country="Italy" data-song="Due vite" data-year="2023" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1i6iPYoKQVrsIwSnjJH0D4zhmcRs22S2s/')">
+<div class="preview-container">
+<img alt="Albania 2023" src="images/2023-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Marco Mengoni</b>
+Due vite
+2023</div>
+</div>
+</div>
+<!-- 2022 -->
+<div class="video-item" data-artist="Mahmood and Blanco" data-country="Italy" data-song="Brividi" data-year="2022" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1WHVfj1q0XN4iHkc14_ffChNo4kBtjzfg/')">
+<div class="preview-container">
+<img alt="Albania 2022" src="images/2022-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Mahmood and Blanco</b>
+Brividi
+2022</div>
+</div>
+</div>
+<!-- 2021 -->
+<div class="video-item" data-artist="Måneskin" data-country="Italy" data-song="Zitti e buoni" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1GfB2FmS9E9KA3mzD5Dh7D2GWAV3ejHLe/')">
+<div class="preview-container">
+<img alt="Albania 2021" src="images/2021-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Måneskin</b>
+Zitti e buoni
+2021</div>
+</div>
+</div>
+<!-- 2020 -->
+<div class="video-item" data-artist="Mahmood" data-country="Italy" data-song="Soldi" data-year="2020" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1DUHPEnTNeZZGekReLvjj-VSLBioqcc8O/')">
+<div class="preview-container">
+<img alt="Albania 2020" src="images/2020-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Mahmood</b>
+Soldi
+2020</div>
+</div>
+</div>
+<!-- 2019 -->
+<div class="video-item" data-artist="Mahmood" data-country="Italy" data-song="Soldi" data-year="2019" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/16RIbsQhDBTVZKLZmxRtNXk8SoUalO3_4/')">
+<div class="preview-container">
+<img alt="Albania 2019" src="images/2019-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Mahmood</b>
+Soldi
+2019</div>
+</div>
+</div>
+<!-- 2018 -->
+<div class="video-item" data-artist="Ermal Meta and Fabrizio Moro" data-country="Italy" data-song="Non mi avete fatto niente" data-year="2018" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1k2QloNBUwiGd4uoOB-kiWtI1HcGONDls/')">
+<div class="preview-container">
+<img alt="Albania 2018" src="images/2018-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Ermal Meta and Fabrizio Moro</b>
+Non mi avete fatto niente
+2018</div>
+</div>
+</div>
+<!-- 2017 -->
+<div class="video-item" data-artist="Francesco Gabbani" data-country="Italy" data-song="Occidentali's Karma" data-year="2017" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1wmZ3TAvLsci2iywFlmqOXlTM7ToZ1RrY/')">
+<div class="preview-container">
+<img alt="Albania 2017" src="images/2017-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Francesco Gabbani</b>
+Occidentali's Karma
+2017</div>
+</div>
+</div>
+<!-- 2016 -->
+<div class="video-item" data-artist="Francesca Michielin" data-country="Italy" data-song="No Degree of Separation" data-year="2016" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1gkSFMqNWHMrRQF78CHyzbzDXbybnMb4j/')">
+<div class="preview-container">
+<img alt="Albania 2016" src="images/2016-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Francesca Michielin</b>
+No Degree of Separation
+2016</div>
+</div>
+</div>
+<!-- 2015 -->
+<div class="video-item" data-artist="Il Volo" data-country="Italy" data-song="Grande amore" data-year="2015" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 2015" src="images/2015-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Il Volo</b>
+Grande amore
+2015</div>
+</div>
+</div>
+<!-- 2014 -->
+<div class="video-item" data-artist="Emma" data-country="Italy" data-song="La mia città" data-year="2014" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1n6lkpjWxdntXAl-G__tT17flf03CTAcV/')">
+<div class="preview-container">
+<img alt="Albania 2014" src="images/2014-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Emma</b>
+La mia città
+2014</div>
+</div>
+</div>
+<!-- 2013 -->
+<div class="video-item" data-artist="Marco Mengoni" data-country="Italy" data-song="L'essenziale" data-year="2013" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1JziiTe7984WwmvXFYWUh9MoxU4Tqv8h5/')">
+<div class="preview-container">
+<img alt="Albania 2013" src="images/2013-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Marco Mengoni</b>
+L'essenziale
+2013</div>
+</div>
+</div>
+<!-- 2012 -->
+<div class="video-item" data-artist="Nina Zilli" data-country="Italy" data-song="L'amore è femmina (Out of Love)" data-year="2012" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/12rgbopEUmaHU1HQbHF4AxmEzpLUwg6LQ/')">
+<div class="preview-container">
+<img alt="Albania 2012" src="images/2012-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Nina Zilli</b>
+L'amore è femmina (Out of Love)
+2012</div>
+</div>
+</div>
+<!-- 2011 -->
+<div class="video-item" data-artist="Raphael Gualazzi" data-country="Italy" data-song="Madness of Love" data-year="2011" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Xb71X9znFaP08FrqGMGj92yf9X5_S2xG/')">
+<div class="preview-container">
+<img alt="Albania 2011" src="images/2011-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Raphael Gualazzi</b>
+Madness of Love
+2011</div>
+</div>
+</div>
+<!-- 2010 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 2010" src="images/2010-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2009 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 2009" src="images/2009-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2008 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 2008" src="images/2008-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2007 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 2007" src="images/2007-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2006 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 2006" src="images/2006-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2005 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 2005" src="images/2005-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2004 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 2004" src="images/2004-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2003 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 2003" src="images/2003-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2002 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 2002" src="images/2002-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2001 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 2001" src="images/2001-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2000 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 2000" src="images/2000-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1999 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1999" src="images/1999-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1998 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1998" src="images/1998-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1997 -->
+<div class="video-item" data-artist="Jalisse" data-country="Italy" data-song="Fiumi di parole" data-year="1997" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1r2KnmgwDFgkJdK73vJcSUVAouVK2lXZP/')">
+<div class="preview-container">
+<img alt="Albania 1997" src="images/1997-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Jalisse</b>
+Fiumi di parole
+1997</div>
+</div>
+</div>
+<!-- 1996 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1996" src="images/1996-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1995 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1995" src="images/1995-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1994 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1994" src="images/1994-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1993 -->
+<div class="video-item" data-artist="Enrico Ruggeri" data-country="Italy" data-song="Sole d'Europa" data-year="1993" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/15XSEJorSpKpk2wM-U35FFhNoB61Zh-ek/')">
+<div class="preview-container">
+<img alt="Albania 1993" src="images/1993-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Enrico Ruggeri</b>
+Sole d'Europa
+1993</div>
+</div>
+</div>
+<!-- 1992 -->
+<div class="video-item" data-artist="Mia Martini" data-country="Italy" data-song="Rapsodia" data-year="1992" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1N8GK4tOYAqa4_GdNM-g0JqaCWXlAwpcn/')">
+<div class="preview-container">
+<img alt="Albania 1992" src="images/1992-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Mia Martini</b>
+Rapsodia
+1992</div>
+</div>
+</div>
+<!-- 1991 -->
+<div class="video-item" data-artist="Peppino di Capri" data-country="Italy" data-song="Comme è ddoce 'o mare" data-year="1991" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1yJCie0dxQfbBztA3aB1nxeZ5P-hBQzwo/')">
+<div class="preview-container">
+<img alt="Albania 1991" src="images/1991-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Peppino di Capri</b>
+Comme è ddoce 'o mare
+1991</div>
+</div>
+</div>
+<!-- 1990 -->
+<div class="video-item" data-artist="Toto Cutugno" data-country="Italy" data-song="Insieme: 1992" data-year="1990" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o8VvMp62MlKn3Ej7yl6kHbDiUOFOozvg/')">
+<div class="preview-container">
+<img alt="Albania 1990" src="images/1990-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Toto Cutugno</b>
+Insieme: 1992
+1990</div>
+</div>
+</div>
+<!-- 1989 -->
+<div class="video-item" data-artist="Anna Oxa and Fausto Leali" data-country="Italy" data-song="Avrei voluto" data-year="1989" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/12CQVxqfVyYmxatySphjTY56pSs9BxDjy/')">
+<div class="preview-container">
+<img alt="Albania 1989" src="images/1989-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Anna Oxa and Fausto Leali</b>
+Avrei voluto
+1989</div>
+</div>
+</div>
+<!-- 1988 -->
+<div class="video-item" data-artist="Luca Barbarossa" data-country="Italy" data-song="Ti scrivo" data-year="1988" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1IDu6V06OVWwnQrr1nx6araH-3ISrL_Tx/')">
+<div class="preview-container">
+<img alt="Albania 1988" src="images/1988-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Luca Barbarossa</b>
+Ti scrivo
+1988</div>
+</div>
+</div>
+<!-- 1987 -->
+<div class="video-item" data-artist="Umberto Tozzi and Raf" data-country="Italy" data-song="Gente di mare" data-year="1987" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/15EWsQmbJARGzfypgcRWI-bOVU71k7Qnl/')">
+<div class="preview-container">
+<img alt="Albania 1987" src="images/1987-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Umberto Tozzi and Raf</b>
+Gente di mare
+1987</div>
+</div>
+</div>
+<!-- 1986 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1986" src="images/1986-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1985 -->
+<div class="video-item" data-artist="Al Bano and Romina Power" data-country="Italy" data-song="Magic, Oh Magic" data-year="1985" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1985" src="images/1985-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Al Bano and Romina Power</b>
+Magic, Oh Magic
+1985</div>
+</div>
+</div>
+<!-- 1984 -->
+<div class="video-item" data-artist="Alice and Franco Battiato" data-country="Italy" data-song="I treni di Tozeur" data-year="1984" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1984" src="images/1984-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Alice and Franco Battiato</b>
+I treni di Tozeur
+1984</div>
+</div>
+</div>
+<!-- 1983 -->
+<div class="video-item" data-artist="Riccardo Fogli" data-country="Italy" data-song="Per Lucia" data-year="1983" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1983" src="images/1983-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Riccardo Fogli</b>
+Per Lucia
+1983</div>
+</div>
+</div>
+<!-- 1982 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1982" src="images/1982-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1981 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1981" src="images/1981-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1980 -->
+<div class="video-item" data-artist="Alan Sorrenti" data-country="Italy" data-song="Non so che darei" data-year="1980" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1980" src="images/1980-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Alan Sorrenti</b>
+Non so che darei
+1980</div>
+</div>
+</div>
+<!-- 1979 -->
+<div class="video-item" data-artist="Matia Bazar" data-country="Italy" data-song="Raggio di luna" data-year="1979" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1979" src="images/1979-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Matia Bazar</b>
+Raggio di luna
+1979</div>
+</div>
+</div>
+<!-- 1978 -->
+<div class="video-item" data-artist="Ricchi e Poveri" data-country="Italy" data-song="Questo amore" data-year="1978" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1978" src="images/1978-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Ricchi e Poveri</b>
+Questo amore
+1978</div>
+</div>
+</div>
+<!-- 1977 -->
+<div class="video-item" data-artist="Mia Martini" data-country="Italy" data-song="Libera" data-year="1977" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1977" src="images/1977-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Mia Martini</b>
+Libera
+1977</div>
+</div>
+</div>
+<!-- 1976 -->
+<div class="video-item" data-artist="Romina and Al Bano" data-country="Italy" data-song="We'll Live It All Again" data-year="1976" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1976" src="images/1976-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Romina and Al Bano</b>
+We'll Live It All Again
+1976</div>
+</div>
+</div>
+<!-- 1975 -->
+<div class="video-item" data-artist="Wess and Dori Ghezzi" data-country="Italy" data-song="Era" data-year="1975" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1975" src="images/1975-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Wess and Dori Ghezzi</b>
+Era
+1975</div>
+</div>
+</div>
+<!-- 1974 -->
+<div class="video-item" data-artist="Gigliola Cinquetti" data-country="Italy" data-song="Sì" data-year="1974" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1974" src="images/1974-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Gigliola Cinquetti</b>
+Sì
+1974</div>
+</div>
+</div>
+<!-- 1973 -->
+<div class="video-item" data-artist="Massimo Ranieri" data-country="Italy" data-song="Chi sarà con te" data-year="1973" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1973" src="images/1973-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Massimo Ranieri</b>
+Chi sarà con te
+1973</div>
+</div>
+</div>
+<!-- 1972 -->
+<div class="video-item" data-artist="Nicola Di Bari" data-country="Italy" data-song="I giorni dell'arcobaleno" data-year="1972" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1972" src="images/1972-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Nicola Di Bari</b>
+I giorni dell'arcobaleno
+1972</div>
+</div>
+</div>
+<!-- 1971 -->
+<div class="video-item" data-artist="Massimo Ranieri" data-country="Italy" data-song="L'amore è un attimo" data-year="1971" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1971" src="images/1971-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Massimo Ranieri</b>
+L'amore è un attimo
+1971</div>
+</div>
+</div>
+<!-- 1970 -->
+<div class="video-item" data-artist="Gianni Morandi" data-country="Italy" data-song="Occhi di ragazza" data-year="1970" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1970" src="images/1970-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Gianni Morandi</b>
+Occhi di ragazza
+1970</div>
+</div>
+</div>
+<!-- 1969 -->
+<div class="video-item" data-artist="Iva Zanicchi" data-country="Italy" data-song="Due grosse lacrime bianche" data-year="1969" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1969" src="images/1969-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Iva Zanicchi</b>
+Due grosse lacrime bianche
+1969</div>
+</div>
+</div>
+<!-- 1968 -->
+<div class="video-item" data-artist="Sergio Endrigo" data-country="Italy" data-song="Marianne" data-year="1968" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1968" src="images/1968-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Sergio Endrigo</b>
+Marianne
+1968</div>
+</div>
+</div>
+<!-- 1967 -->
+<div class="video-item" data-artist="Claudio Villa" data-country="Italy" data-song="Non andare più lontano" data-year="1967" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1967" src="images/1967-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Claudio Villa</b>
+Non andare più lontano
+1967</div>
+</div>
+</div>
+<!-- 1966 -->
+<div class="video-item" data-artist="Domenico Modugno" data-country="Italy" data-song="Dio, come ti amo" data-year="1966" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1966" src="images/1966-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Domenico Modugno</b>
+Dio, come ti amo
+1966</div>
+</div>
+</div>
+<!-- 1965 -->
+<div class="video-item" data-artist="Bobby Solo" data-country="Italy" data-song="Se piangi, se ridi" data-year="1965" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1965" src="images/1965-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Bobby Solo</b>
+Se piangi, se ridi
+1965</div>
+</div>
+</div>
+<!-- 1964 -->
+<div class="video-item" data-artist="Gigliola Cinquetti" data-country="Italy" data-song="Non ho l'età" data-year="1964" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Q-rULHUF59NU3V_GrgdSZ6tLerfrPv2D/')">
+<div class="preview-container">
+<img alt="Albania 1964" src="images/1964-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Gigliola Cinquetti</b>
+Non ho l'età
+1964</div>
+</div>
+</div>
+<!-- 1963 -->
+<div class="video-item" data-artist="Emilio Pericoli" data-country="Italy" data-song="Uno per tutte" data-year="1963" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1963" src="images/1963-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Emilio Pericoli</b>
+Uno per tutte
+1963</div>
+</div>
+</div>
+<!-- 1962 -->
+<div class="video-item" data-artist="Claudio Villa" data-country="Italy" data-song="Addio, addio" data-year="1962" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1962" src="images/1962-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Claudio Villa</b>
+Addio, addio
+1962</div>
+</div>
+</div>
+<!-- 1961 -->
+<div class="video-item" data-artist="Betty Curtis" data-country="Italy" data-song="Al di là" data-year="1961" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1961" src="images/1961-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Betty Curtis</b>
+Al di là
+1961</div>
+</div>
+</div>
+<!-- 1960 -->
+<div class="video-item" data-artist="Renato Rascel" data-country="Italy" data-song="Romantica" data-year="1960" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1960" src="images/1960-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Renato Rascel</b>
+Romantica
+1960</div>
+</div>
+</div>
+<!-- 1959 -->
+<div class="video-item" data-artist="Domenico Modugno" data-country="Italy" data-song="Piove" data-year="1959" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1959" src="images/1959-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Domenico Modugno</b>
+Piove
+1959</div>
+</div>
+</div>
+<!-- 1958 -->
+<div class="video-item" data-artist="Domenico Modugno" data-country="Italy" data-song="Nel blu, dipinto di blu" data-year="1958" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1958" src="images/1958-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Domenico Modugno</b>
+Nel blu, dipinto di blu
+1958</div>
+</div>
+</div>
+<!-- 1957 -->
+<div class="video-item" data-artist="Nunzio Gallo" data-country="Italy" data-song="Corde della mia chitarra" data-year="1957" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1957" src="images/1957-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Nunzio Gallo</b>
+Corde della mia chitarra
+1957</div>
+</div>
+</div>
+<!-- 1956 (2) -->
+<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1956" src="images/1956_2-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>
+<!-- 1956 (1) -->
+<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1956" src="images/1956_1-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>
+<!-- END OF VIDEOS -->
+</div>
+</div>
+</div>
+<!-- MODAL -->
+<div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+<div class="modal-content">
+<span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+<video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;"></video>
+<iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" id="modalIframe" style="display: none;"></iframe>
+</div>
+</div>
+<!-- FOOTER -->
+<footer class="site-footer">
+<div class="footer-line"></div>
+<div class="footer-branding">
+<div class="footer-flag">
+<img alt="United Kingdom" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/gb.png">
+</img></div>
+<span class="footer-title">Douze Points</span>
+</div>
+<div class="footer-links">
+<a href="about.html">About</a>
+<a href="contact.html">Contact Us</a>
+<a href="faq.html">FAQ</a>
+<a href="privacy.html">Privacy Policy</a>
+</div>
+</footer>
+<script>
+    function GDriveOpenModalWithVideo(videoUrl, titleText) {
+      const modal = document.getElementById("videoModal");
+      const video = document.getElementById("modalVideo");
+      const iframe = document.getElementById("modalIframe");
+      modal.style.display = "flex";
+      video.style.display = "none";
+      iframe.style.display = "none";
+      video.pause();
+      iframe.src = "";
+      if (videoUrl.includes('drive.google.com')) {
+        const match = videoUrl.match(/\/d\/(.*?)\//);
+        if (match && match[1]) {
+          iframe.src = `https://drive.google.com/file/d/${match[1]}/preview`;
+          iframe.style.display = "block";
+        }
+      } else {
+        video.src = videoUrl;
+        video.style.display = "block";
+        video.play();
+      }
+    }
+
+    function GDriveCloseModal(event) {
+      event.stopPropagation();
+      const modal = document.getElementById("videoModal");
+      const video = document.getElementById("modalVideo");
+      const iframe = document.getElementById("modalIframe");
+      video.pause();
+      video.src = "";
+      iframe.src = "";
+      modal.style.display = "none";
+    }
+  </script>
+</body>
+</html>

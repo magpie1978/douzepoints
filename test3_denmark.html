@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<!-- Import Raleway typeface -->
+<link href="https://fonts.googleapis.com/css2?family=Raleway&amp;display=swap" rel="stylesheet"/>
+<title>Douze Points | Albania</title>
+<script src="countries.js" type="text/javascript"></script>
+<style>
+    
+
+    body {
+      font-family: 'Raleway', sans-serif;
+      margin: 0;
+      background: #141414;
+      color: #fff;
+    }
+
+    .banner-static {
+      width: 100%;
+      height: 400px;
+      overflow: hidden;
+    }
+    
+    .banner-static img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }      
+      .banner-image.active {
+      opacity: 1;
+      z-index: 2;
+    }
+    /* Overlay layout */
+    .header-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .home-link {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .header-links {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .header-links a {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .header-links a:hover {
+      color: #e50914;
+    }
+
+    .banner-title img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .banner-title h2 {
+      font-size: 2rem;
+      color: black;
+      margin: 0;
+    }
+    
+    .banner-text h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .banner-text p {
+      font-size: 1rem;
+      margin: 0.3rem 0;
+    }
+
+    .banner-divider {
+      width: 100%;
+      height: 1px;
+      background-color: #e50914;
+      }
+    
+    .container {
+          display: flex;
+        }
+
+    .sidebar {
+      width: 220px;
+      padding: 10px;
+      background-color: #111;
+      color: white;
+      font-size: 14px;
+      height: auto;
+      overflow: visible;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar-row a {
+      text-decoration: none;
+      color: white;
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar-row {
+      margin: 5px 0;
+    }
+
+    .sidebar a:hover {
+      background-color: #e50914;
+      border-radius: 8px;
+    }
+
+    .sidebar img {
+      width: 22px;
+      height: 22px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 20px;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .video-item {
+      cursor: pointer;
+      background-color: #1a1a1a;
+      padding: 10px;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .video-item:hover {
+      transform: scale(1.05);
+    }
+
+    .preview-container {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+      overflow: hidden;
+      border-radius: 6px;
+    }
+
+    .preview-container img,
+    .preview-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .preview-container video {
+      display: none;
+    }
+    
+    .preview-container.has-video:hover video {
+      display: block;
+    }
+    
+    .preview-container.has-video:hover img {
+      display: none;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      position: relative;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .modal-content video,
+    .modal-content iframe {
+      width: 81vw;
+      height: 81vh;
+    }
+
+    .close-button {
+      position: absolute;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 40px;
+      top: -20px;
+      right: -20px;
+      z-index: 9999;
+      border-radius: 50%;
+    }
+
+    .site-footer {
+      margin-top: 3rem;
+      padding: 2rem 1rem;
+      text-align: center;
+      color: #ccc;
+      font-size: 0.85rem;
+      background-color: #141414;
+    }
+
+    .footer-line {
+      width: 90%;
+      height: 1px;
+      background-color: #e50914;
+      margin: 0 auto 1rem auto;
+    }
+
+    .footer-branding {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      gap: 10px;
+    }
+
+    .footer-flag {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .footer-flag img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .footer-title {
+      font-size: 1rem;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .footer-links a {
+      color: #ccc;
+      margin: 0 10px;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .footer-links a:hover {
+      color: #e50914;
+      text-decoration: underline;
+    }
+
+    .video-title-with-icon {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      gap: 8px;
+      color: white;
+      font-size: 0.8rem;
+    }
+      
+    .icon-placeholder {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: #444;
+      object-fit: cover;
+      margin-left: 8px;
+    }
+
+    .video-title-text {
+      line-height: 1.2;
+      }
+
+    .video-title-text a {
+      text-decoration: none; /* Remove underline */
+      color: inherit;         /* Inherit color from surrounding text */
+    }
+
+  </style>
+</head>
+<body oncontextmenu="return false">
+<!-- HEADER -->
+<header class="main-header">
+<div class="header-overlay">
+<div class="header-links">
+<a class="home-link" href="index.html">Home</a>
+<a class="home-link" href="countries.html">Countries</a>
+<a class="home-link" href="edition-2024.html">Editions</a>
+</div>
+</div>
+<div class="banner-static">
+<img alt="Banner" src="https://euroflix.s3.eu-north-1.amazonaws.com/banners/al.png"/>
+</div>
+</header>
+<!--  red dividing line -->
+<div class="banner-divider"></div>
+<!-- Main Content Layout -->
+<div class="container">
+<div class="sidebar" id="sidebar-container"></div>
+<div class="main-content">
+<div class="grid-container">
+<!-- 2024 -->
+<div class="video-item" data-artist="Saba" data-country="Denmark" data-song="Sand" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/13a4M6VizwYQu6KRzqrpMidl9y4ZKdFda/')">
+<div class="preview-container">
+<img alt="Albania 2024" src="images/2024-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Saba</b>
+Sand
+2024</div>
+</div>
+</div>
+<!-- 2023 -->
+<div class="video-item" data-artist="Reiley" data-country="Denmark" data-song="Breaking My Heart" data-year="2023" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1I_p7jTbbpz5uqvKU1e3Z9R8svgIxN40p/')">
+<div class="preview-container">
+<img alt="Albania 2023" src="images/2023-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Reiley</b>
+Breaking My Heart
+2023</div>
+</div>
+</div>
+<!-- 2022 -->
+<div class="video-item" data-artist="Reddi" data-country="Denmark" data-song="The Show" data-year="2022" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1ENTf8omkabK8r7lD9_lVCMzRlXCJkXIs/')">
+<div class="preview-container">
+<img alt="Albania 2022" src="images/2022-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Reddi</b>
+The Show
+2022</div>
+</div>
+</div>
+<!-- 2021 -->
+<div class="video-item" data-artist="Fyr og Flamme" data-country="Denmark" data-song="Øve os på hinanden" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/17oOznqXAYSIZIiZT3lxnIqgzNeBKiCet/')">
+<div class="preview-container">
+<img alt="Albania 2021" src="images/2021-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Fyr og Flamme</b>
+Øve os på hinanden
+2021</div>
+</div>
+</div>
+<!-- 2020 -->
+<div class="video-item" data-artist="Leonora" data-country="Denmark" data-song="Love Is Forever" data-year="2020" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/109ES9rjYa4gBTms_NpIbhFlYNed-VfS5/')">
+<div class="preview-container">
+<img alt="Albania 2020" src="images/2020-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Leonora</b>
+Love Is Forever
+2020</div>
+</div>
+</div>
+<!-- 2019 -->
+<div class="video-item" data-artist="Leonora" data-country="Denmark" data-song="Love Is Forever" data-year="2019" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1voSJUZ5onoUC4bAHsSSaOOdBG5al6xBR/')">
+<div class="preview-container">
+<img alt="Albania 2019" src="images/2019-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Leonora</b>
+Love Is Forever
+2019</div>
+</div>
+</div>
+<!-- 2018 -->
+<div class="video-item" data-artist="Rasmussen" data-country="Denmark" data-song="Higher Ground" data-year="2018" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/138SRw3ehp3OOPVRbX8TmoMpro-ITV_uv/')">
+<div class="preview-container">
+<img alt="Albania 2018" src="images/2018-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Rasmussen</b>
+Higher Ground
+2018</div>
+</div>
+</div>
+<!-- 2017 -->
+<div class="video-item" data-artist="Anja" data-country="Denmark" data-song="Where I Am" data-year="2017" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1V1pYMaiJ9yPrWoJ0e2FD7pSU-G8lkLrq/')">
+<div class="preview-container">
+<img alt="Albania 2017" src="images/2017-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Anja</b>
+Where I Am
+2017</div>
+</div>
+</div>
+<!-- 2016 -->
+<div class="video-item" data-artist="Lighthouse X" data-country="Denmark" data-song="Soldiers of Love" data-year="2016" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Qsuc9Ri1Hj3yFgnJMPD2B_bqjc3fJt8j/')">
+<div class="preview-container">
+<img alt="Albania 2016" src="images/2016-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Lighthouse X</b>
+Soldiers of Love
+2016</div>
+</div>
+</div>
+<!-- 2015 -->
+<div class="video-item" data-artist="Anti Social Media" data-country="Denmark" data-song="The Way You Are" data-year="2015" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Zy85qo5K6EZcsHUuh2TtMcjf2nF05Vco/')">
+<div class="preview-container">
+<img alt="Albania 2015" src="images/2015-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Anti Social Media</b>
+The Way You Are
+2015</div>
+</div>
+</div>
+<!-- 2014 -->
+<div class="video-item" data-artist="Basim" data-country="Denmark" data-song="Cliche Love Song" data-year="2014" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1zHZ2wz73SNI387aeyGTK-FQs7dJBZe5i/')">
+<div class="preview-container">
+<img alt="Albania 2014" src="images/2014-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Basim</b>
+Cliche Love Song
+2014</div>
+</div>
+</div>
+<!-- 2013 -->
+<div class="video-item" data-artist="Emmelie de Forest" data-country="Denmark" data-song="Only Teardrops" data-year="2013" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1U398zMFilQHa2SgACpx9M7oIyUwfhkDR/')">
+<div class="preview-container">
+<img alt="Albania 2013" src="images/2013-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Emmelie de Forest</b>
+Only Teardrops
+2013</div>
+</div>
+</div>
+<!-- 2012 -->
+<div class="video-item" data-artist="Soluna Samay" data-country="Denmark" data-song="Should've Known Better" data-year="2012" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1gIA3HZB2YMvwhD-uBk-irBZBToElvXDs/')">
+<div class="preview-container">
+<img alt="Albania 2012" src="images/2012-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Soluna Samay</b>
+Should've Known Better
+2012</div>
+</div>
+</div>
+<!-- 2011 -->
+<div class="video-item" data-artist="A Friend in London" data-country="Denmark" data-song="New Tomorrow" data-year="2011" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Wzo73P4E0alqnDbQ3l9TInTSa0NfJ0ZR/')">
+<div class="preview-container">
+<img alt="Albania 2011" src="images/2011-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>A Friend in London</b>
+New Tomorrow
+2011</div>
+</div>
+</div>
+<!-- 2010 -->
+<div class="video-item" data-artist="Chanée and N'evergreen" data-country="Denmark" data-song="In a Moment like This" data-year="2010" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1VvgaZFOBQIZrUN3BiWfB0UYU6sowvnPT/')">
+<div class="preview-container">
+<img alt="Albania 2010" src="images/2010-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Chanée and N'evergreen</b>
+In a Moment like This
+2010</div>
+</div>
+</div>
+<!-- 2009 -->
+<div class="video-item" data-artist="Brinck" data-country="Denmark" data-song="Believe Again" data-year="2009" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o8wESWWt1RUAYeUIZs2iILO7FeKxWMLs/')">
+<div class="preview-container">
+<img alt="Albania 2009" src="images/2009-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Brinck</b>
+Believe Again
+2009</div>
+</div>
+</div>
+<!-- 2008 -->
+<div class="video-item" data-artist="Simon Mathew" data-country="Denmark" data-song="All Night Long" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1rCrAOpwPFvDubBctjx-7pD9bp2k4NYNl/')">
+<div class="preview-container">
+<img alt="Albania 2008" src="images/2008-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Simon Mathew</b>
+All Night Long
+2008</div>
+</div>
+</div>
+<!-- 2007 -->
+<div class="video-item" data-artist="DQ" data-country="Denmark" data-song="Drama Queen" data-year="2007" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Uvk5YewPJCH9VS6Roya5AC7VszCOp7Sc/')">
+<div class="preview-container">
+<img alt="Albania 2007" src="images/2007-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>DQ</b>
+Drama Queen
+2007</div>
+</div>
+</div>
+<!-- 2006 -->
+<div class="video-item" data-artist="Sidsel Ben Semmane" data-country="Denmark" data-song="Twist of Love" data-year="2006" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Dz9-riGXwliVzl6BvR3XM0l3FmVtbYKj/')">
+<div class="preview-container">
+<img alt="Albania 2006" src="images/2006-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Sidsel Ben Semmane</b>
+Twist of Love
+2006</div>
+</div>
+</div>
+<!-- 2005 -->
+<div class="video-item" data-artist="Jakob Sveistrup" data-country="Denmark" data-song="Talking to You" data-year="2005" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1oUuxiD4roJtc1NfSChb1FDpOtuMtD4ux/')">
+<div class="preview-container">
+<img alt="Albania 2005" src="images/2005-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Jakob Sveistrup</b>
+Talking to You
+2005</div>
+</div>
+</div>
+<!-- 2004 -->
+<div class="video-item" data-artist="Tomas Thordarson" data-country="Denmark" data-song="Shame on You" data-year="2004" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1E03b_bRvkkCjCz0_Jl6j64DD3zIVVXcM/')">
+<div class="preview-container">
+<img alt="Albania 2004" src="images/2004-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Tomas Thordarson</b>
+Shame on You
+2004</div>
+</div>
+</div>
+<!-- 2003 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 2003" src="images/2003-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2002 -->
+<div class="video-item" data-artist="Malene" data-country="Denmark" data-song="Tell Me Who You Are" data-year="2002" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1pJIZrrQ9itiiEaqSTBy5Gu9onpszEktV/')">
+<div class="preview-container">
+<img alt="Albania 2002" src="images/2002-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Malene</b>
+Tell Me Who You Are
+2002</div>
+</div>
+</div>
+<!-- 2001 -->
+<div class="video-item" data-artist="Rollo and King" data-country="Denmark" data-song="Never Ever Let You Go" data-year="2001" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/14QM2rDARghWg6gFF2kOn1BYHdmktREQE/')">
+<div class="preview-container">
+<img alt="Albania 2001" src="images/2001-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Rollo and King</b>
+Never Ever Let You Go
+2001</div>
+</div>
+</div>
+<!-- 2000 -->
+<div class="video-item" data-artist="Olsen Brothers" data-country="Denmark" data-song="Fly on the Wings of Love" data-year="2000" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1_oQ78ijweNvhgZcyYiKrdhOMv4I_64rF/')">
+<div class="preview-container">
+<img alt="Albania 2000" src="images/2000-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Olsen Brothers</b>
+Fly on the Wings of Love
+2000</div>
+</div>
+</div>
+<!-- 1999 -->
+<div class="video-item" data-artist="Trine Jepsen and Michael Teschl" data-country="Denmark" data-song="This Time I Mean It" data-year="1999" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1CLOPLE1xaIUOnvgpZ_UTrB3OVGzDKB7M/')">
+<div class="preview-container">
+<img alt="Albania 1999" src="images/1999-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Trine Jepsen and Michael Teschl</b>
+This Time I Mean It
+1999</div>
+</div>
+</div>
+<!-- 1998 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1998" src="images/1998-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1997 -->
+<div class="video-item" data-artist="Kølig Kaj" data-country="Denmark" data-song="Stemmen i mit liv" data-year="1997" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1eUJW0QziaxZye1AwL4cnHPLjFS56P-n_/')">
+<div class="preview-container">
+<img alt="Albania 1997" src="images/1997-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Kølig Kaj</b>
+Stemmen i mit liv
+1997</div>
+</div>
+</div>
+<!-- 1996 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1996" src="images/1996-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1995 -->
+<div class="video-item" data-artist="Aud Wilken" data-country="Denmark" data-song="Fra Mols til Skagen" data-year="1995" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1vpS-jRVqcdhnu9raPerclgwTTzhkd3mY/')">
+<div class="preview-container">
+<img alt="Albania 1995" src="images/1995-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Aud Wilken</b>
+Fra Mols til Skagen
+1995</div>
+</div>
+</div>
+<!-- 1994 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1994" src="images/1994-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1993 -->
+<div class="video-item" data-artist="Seebach Band" data-country="Denmark" data-song="Under stjernerne på himlen" data-year="1993" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1WFtRYf3m3V4FZb1M1d4dZoivP-FA2lNW/')">
+<div class="preview-container">
+<img alt="Albania 1993" src="images/1993-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Seebach Band</b>
+Under stjernerne på himlen
+1993</div>
+</div>
+</div>
+<!-- 1992 -->
+<div class="video-item" data-artist="Lotte Nilsson [da] and Kenny Lübcke [da]" data-country="Denmark" data-song="Alt det som ingen ser" data-year="1992" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1JNkfMQL_keS1yX9rvrGfjcRbfYMd7s1M/')">
+<div class="preview-container">
+<img alt="Albania 1992" src="images/1992-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Lotte Nilsson [da] and Kenny Lübcke [da]</b>
+Alt det som ingen ser
+1992</div>
+</div>
+</div>
+<!-- 1991 -->
+<div class="video-item" data-artist="Anders Frandsen" data-country="Denmark" data-song="Lige der hvor hjertet slår" data-year="1991" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1xf8IIch156Kdk-8NnRiHiu7VXvn9jHY-/')">
+<div class="preview-container">
+<img alt="Albania 1991" src="images/1991-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Anders Frandsen</b>
+Lige der hvor hjertet slår
+1991</div>
+</div>
+</div>
+<!-- 1990 -->
+<div class="video-item" data-artist="Lonnie Devantier" data-country="Denmark" data-song="Hallo Hallo" data-year="1990" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1nSjQglH0m-tgzikrE4QcCQqzhv2rixlw/')">
+<div class="preview-container">
+<img alt="Albania 1990" src="images/1990-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Lonnie Devantier</b>
+Hallo Hallo
+1990</div>
+</div>
+</div>
+<!-- 1989 -->
+<div class="video-item" data-artist="Birthe Kjær" data-country="Denmark" data-song="Vi maler byen rød" data-year="1989" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1AojLgKWOvw038fVpW-Ps1rxs_DnmMZ3p/')">
+<div class="preview-container">
+<img alt="Albania 1989" src="images/1989-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Birthe Kjær</b>
+Vi maler byen rød
+1989</div>
+</div>
+</div>
+<!-- 1988 -->
+<div class="video-item" data-artist="Hot Eyes" data-country="Denmark" data-song="Ka' du se hva' jeg sa'" data-year="1988" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1AyJ2xkwfZpbnC3H5f7THrC2JB0Kobw3f/')">
+<div class="preview-container">
+<img alt="Albania 1988" src="images/1988-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Hot Eyes</b>
+Ka' du se hva' jeg sa'
+1988</div>
+</div>
+</div>
+<!-- 1987 -->
+<div class="video-item" data-artist="Bandjo [da] with Anne-Cathrine Herdorf" data-country="Denmark" data-song="En lille melodi" data-year="1987" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1ii-AvJynRIe7ZIGNEruEcBb_SWADPbYu/')">
+<div class="preview-container">
+<img alt="Albania 1987" src="images/1987-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Bandjo [da] with Anne-Cathrine Herdorf</b>
+En lille melodi
+1987</div>
+</div>
+</div>
+<!-- 1986 -->
+<div class="video-item" data-artist="Lise Haavik" data-country="Denmark" data-song="Du er fuld af løgn" data-year="1986" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Akatp1EGrOqydCWfkKVDKKOgEXyx3oKU/')">
+<div class="preview-container">
+<img alt="Albania 1986" src="images/1986-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Lise Haavik</b>
+Du er fuld af løgn
+1986</div>
+</div>
+</div>
+<!-- 1985 -->
+<div class="video-item" data-artist="Hot Eyes" data-country="Denmark" data-song="Sku' du spørg' fra no'en" data-year="1985" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1985" src="images/1985-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Hot Eyes</b>
+Sku' du spørg' fra no'en
+1985</div>
+</div>
+</div>
+<!-- 1984 -->
+<div class="video-item" data-artist="Hot Eyes" data-country="Denmark" data-song="Det' lige det" data-year="1984" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1984" src="images/1984-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Hot Eyes</b>
+Det' lige det
+1984</div>
+</div>
+</div>
+<!-- 1983 -->
+<div class="video-item" data-artist="Gry Johansen" data-country="Denmark" data-song="Kloden drejer" data-year="1983" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1983" src="images/1983-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Gry Johansen</b>
+Kloden drejer
+1983</div>
+</div>
+</div>
+<!-- 1982 -->
+<div class="video-item" data-artist="Brixx" data-country="Denmark" data-song="Video-Video" data-year="1982" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1982" src="images/1982-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Brixx</b>
+Video-Video
+1982</div>
+</div>
+</div>
+<!-- 1981 -->
+<div class="video-item" data-artist="Tommy Seebach and Debbie Cameron" data-country="Denmark" data-song="Krøller eller ej" data-year="1981" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1981" src="images/1981-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Tommy Seebach and Debbie Cameron</b>
+Krøller eller ej
+1981</div>
+</div>
+</div>
+<!-- 1980 -->
+<div class="video-item" data-artist="Bamses Venner" data-country="Denmark" data-song="Tænker altid på dig" data-year="1980" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1980" src="images/1980-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Bamses Venner</b>
+Tænker altid på dig
+1980</div>
+</div>
+</div>
+<!-- 1979 -->
+<div class="video-item" data-artist="Tommy Seebach" data-country="Denmark" data-song="Disco Tango" data-year="1979" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1979" src="images/1979-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Tommy Seebach</b>
+Disco Tango
+1979</div>
+</div>
+</div>
+<!-- 1978 -->
+<div class="video-item" data-artist="Mabel" data-country="Denmark" data-song="Boom Boom" data-year="1978" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1978" src="images/1978-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Mabel</b>
+Boom Boom
+1978</div>
+</div>
+</div>
+<!-- 1977 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1977" src="images/1977-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1976 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1976" src="images/1976-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1975 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1975" src="images/1975-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1974 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1974" src="images/1974-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1973 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1973" src="images/1973-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1972 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1972" src="images/1972-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1971 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1971" src="images/1971-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1970 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1970" src="images/1970-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1969 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1969" src="images/1969-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1968 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1968" src="images/1968-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1967 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1967" src="images/1967-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1966 -->
+<div class="video-item" data-artist="Ulla Pia" data-country="Denmark" data-song="Stop – mens legen er go'" data-year="1966" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1966" src="images/1966-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Ulla Pia</b>
+Stop – mens legen er go'
+1966</div>
+</div>
+</div>
+<!-- 1965 -->
+<div class="video-item" data-artist="Birgit Brüel" data-country="Denmark" data-song="For din skyld" data-year="1965" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1965" src="images/1965-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Birgit Brüel</b>
+For din skyld
+1965</div>
+</div>
+</div>
+<!-- 1964 -->
+<div class="video-item" data-artist="Bjørn Tidmand" data-country="Denmark" data-song="Sangen om dig" data-year="1964" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1964" src="images/1964-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Bjørn Tidmand</b>
+Sangen om dig
+1964</div>
+</div>
+</div>
+<!-- 1963 -->
+<div class="video-item" data-artist="Grethe and Jørgen Ingmann" data-country="Denmark" data-song="Dansevise" data-year="1963" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/17oeioOrA-uWPIAznKv_byqN3Hb8KlY26/')">
+<div class="preview-container">
+<img alt="Albania 1963" src="images/1963-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Grethe and Jørgen Ingmann</b>
+Dansevise
+1963</div>
+</div>
+</div>
+<!-- 1962 -->
+<div class="video-item" data-artist="Ellen Winther" data-country="Denmark" data-song="Vuggevise" data-year="1962" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1962" src="images/1962-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Ellen Winther</b>
+Vuggevise
+1962</div>
+</div>
+</div>
+<!-- 1961 -->
+<div class="video-item" data-artist="Dario Campeotto" data-country="Denmark" data-song="Angelique" data-year="1961" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1961" src="images/1961-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Dario Campeotto</b>
+Angelique
+1961</div>
+</div>
+</div>
+<!-- 1960 -->
+<div class="video-item" data-artist="Katy Bødtger" data-country="Denmark" data-song="Det var en yndig tid" data-year="1960" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1960" src="images/1960-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Katy Bødtger</b>
+Det var en yndig tid
+1960</div>
+</div>
+</div>
+<!-- 1959 -->
+<div class="video-item" data-artist="Birthe Wilke" data-country="Denmark" data-song="Uh, jeg ville ønske jeg var dig" data-year="1959" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1959" src="images/1959-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Birthe Wilke</b>
+Uh, jeg ville ønske jeg var dig
+1959</div>
+</div>
+</div>
+<!-- 1958 -->
+<div class="video-item" data-artist="Raquel Rastenni" data-country="Denmark" data-song="Jeg rev et blad ud af min dagbog" data-year="1958" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1958" src="images/1958-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Raquel Rastenni</b>
+Jeg rev et blad ud af min dagbog
+1958</div>
+</div>
+</div>
+<!-- 1957 -->
+<div class="video-item" data-artist="Birthe Wilke and Gustav Winckler" data-country="Denmark" data-song="Skibet skal sejle i nat" data-year="1957" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Albania 1957" src="images/1957-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Birthe Wilke and Gustav Winckler</b>
+Skibet skal sejle i nat
+1957</div>
+</div>
+</div>
+<!-- 1956 (2) -->
+<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1956" src="images/1956_2-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>
+<!-- 1956 (1) -->
+<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Albania 1956" src="images/1956_1-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>
+<!-- END OF VIDEOS -->
+</div>
+</div>
+</div>
+<!-- MODAL -->
+<div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+<div class="modal-content">
+<span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+<video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;"></video>
+<iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" id="modalIframe" style="display: none;"></iframe>
+</div>
+</div>
+<!-- FOOTER -->
+<footer class="site-footer">
+<div class="footer-line"></div>
+<div class="footer-branding">
+<div class="footer-flag">
+<img alt="United Kingdom" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/gb.png">
+</img></div>
+<span class="footer-title">Douze Points</span>
+</div>
+<div class="footer-links">
+<a href="about.html">About</a>
+<a href="contact.html">Contact Us</a>
+<a href="faq.html">FAQ</a>
+<a href="privacy.html">Privacy Policy</a>
+</div>
+</footer>
+<script>
+    function GDriveOpenModalWithVideo(videoUrl, titleText) {
+      const modal = document.getElementById("videoModal");
+      const video = document.getElementById("modalVideo");
+      const iframe = document.getElementById("modalIframe");
+      modal.style.display = "flex";
+      video.style.display = "none";
+      iframe.style.display = "none";
+      video.pause();
+      iframe.src = "";
+      if (videoUrl.includes('drive.google.com')) {
+        const match = videoUrl.match(/\/d\/(.*?)\//);
+        if (match && match[1]) {
+          iframe.src = `https://drive.google.com/file/d/${match[1]}/preview`;
+          iframe.style.display = "block";
+        }
+      } else {
+        video.src = videoUrl;
+        video.style.display = "block";
+        video.play();
+      }
+    }
+
+    function GDriveCloseModal(event) {
+      event.stopPropagation();
+      const modal = document.getElementById("videoModal");
+      const video = document.getElementById("modalVideo");
+      const iframe = document.getElementById("modalIframe");
+      video.pause();
+      video.src = "";
+      iframe.src = "";
+      modal.style.display = "none";
+    }
+  </script>
+</body>
+</html>
