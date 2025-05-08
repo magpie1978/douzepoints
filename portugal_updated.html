@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<!-- Import Raleway typeface -->
+<link href="https://fonts.googleapis.com/css2?family=Raleway&amp;display=swap" rel="stylesheet"/>
+<title>Douze Points | Portugal</title>
+<script src="countries.js" type="text/javascript"></script>
+<style>
+    
+
+    body {
+      font-family: 'Raleway', sans-serif;
+      margin: 0;
+      background: #141414;
+      color: #fff;
+    }
+
+    .banner-static {
+      width: 100%;
+      height: 400px;
+      overflow: hidden;
+    }
+    
+    .banner-static img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }      
+      .banner-image.active {
+      opacity: 1;
+      z-index: 2;
+    }
+    /* Overlay layout */
+    .header-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .home-link {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .header-links {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .header-links a {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .header-links a:hover {
+      color: #e50914;
+    }
+
+    .banner-title img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .banner-title h2 {
+      font-size: 2rem;
+      color: black;
+      margin: 0;
+    }
+    
+    .banner-text h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .banner-text p {
+      font-size: 1rem;
+      margin: 0.3rem 0;
+    }
+
+    .banner-divider {
+      width: 100%;
+      height: 1px;
+      background-color: #e50914;
+      }
+    
+    .container {
+          display: flex;
+        }
+
+    .sidebar {
+      width: 220px;
+      padding: 10px;
+      background-color: #111;
+      color: white;
+      font-size: 14px;
+      height: auto;
+      overflow: visible;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar-row a {
+      text-decoration: none;
+      color: white;
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar-row {
+      margin: 5px 0;
+    }
+
+    .sidebar a:hover {
+      background-color: #e50914;
+      border-radius: 8px;
+    }
+
+    .sidebar img {
+      width: 22px;
+      height: 22px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 20px;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .video-item {
+      cursor: pointer;
+      background-color: #1a1a1a;
+      padding: 10px;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .video-item:hover {
+      transform: scale(1.05);
+    }
+
+    .preview-container {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+      overflow: hidden;
+      border-radius: 6px;
+    }
+
+    .preview-container img,
+    .preview-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .preview-container video {
+      display: none;
+    }
+    
+    .preview-container.has-video:hover video {
+      display: block;
+    }
+    
+    .preview-container.has-video:hover img {
+      display: none;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      position: relative;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .modal-content video,
+    .modal-content iframe {
+      width: 81vw;
+      height: 81vh;
+    }
+
+    .close-button {
+      position: absolute;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 40px;
+      top: -20px;
+      right: -20px;
+      z-index: 9999;
+      border-radius: 50%;
+    }
+
+    .site-footer {
+      margin-top: 3rem;
+      padding: 2rem 1rem;
+      text-align: center;
+      color: #ccc;
+      font-size: 0.85rem;
+      background-color: #141414;
+    }
+
+    .footer-line {
+      width: 90%;
+      height: 1px;
+      background-color: #e50914;
+      margin: 0 auto 1rem auto;
+    }
+
+    .footer-branding {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      gap: 10px;
+    }
+
+    .footer-flag {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .footer-flag img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .footer-title {
+      font-size: 1rem;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .footer-links a {
+      color: #ccc;
+      margin: 0 10px;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .footer-links a:hover {
+      color: #e50914;
+      text-decoration: underline;
+    }
+
+    .video-title-with-icon {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      gap: 8px;
+      color: white;
+      font-size: 0.8rem;
+    }
+      
+    .icon-placeholder {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: #444;
+      object-fit: cover;
+      margin-left: 8px;
+    }
+
+    .video-title-text {
+      line-height: 1.2;
+      }
+
+    .video-title-text a {
+      text-decoration: none; /* Remove underline */
+      color: inherit;         /* Inherit color from surrounding text */
+    }
+
+  </style>
+</head>
+<body oncontextmenu="return false">
+<!-- HEADER -->
+<header class="main-header">
+<div class="header-overlay">
+<div class="header-links">
+<a class="home-link" href="index.html">Home</a>
+<a class="home-link" href="countries.html">Countries</a>
+<a class="home-link" href="edition-2024.html">Editions</a>
+</div>
+</div>
+<div class="banner-static">
+<img alt="Banner" src="banners/pt.png"/>
+</div>
+</header>
+<!--  red dividing line -->
+<div class="banner-divider"></div>
+<!-- Main Content Layout -->
+<div class="container">
+<div class="sidebar" id="sidebar-container"></div>
+<div class="main-content">
+<div class="grid-container">
+<!-- 2024 -->
+<div class="video-item" data-artist="Iolanda" data-country="Portugal" data-song="Grito" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1zKmvKiVuKr5o8xeFoX860vFIngt0Tr1-/')">
+<div class="preview-container">
+<img alt="Portugal 2024" src="images/2024-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Iolanda</b><br/>Grito<br/>2024</div>
+</div>
+</div>
+<!-- 2023 -->
+<div class="video-item" data-artist="Mimicat" data-country="Portugal" data-song="Ai coração" data-year="2023" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1AW9ZZyRqMlE2pSAYaCtudFOIi5f7Bhgp/')">
+<div class="preview-container">
+<img alt="Portugal 2023" src="images/2023-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Mimicat</b><br/>Ai coração<br/>2023</div>
+</div>
+</div>
+<!-- 2022 -->
+<div class="video-item" data-artist="Maro" data-country="Portugal" data-song="Saudade, saudade" data-year="2022" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/17Xl4U9CCIZLOyZD6yeKfL1j7-Ac0nn48/')">
+<div class="preview-container">
+<img alt="Portugal 2022" src="images/2022-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Maro</b><br/>Saudade, saudade<br/>2022</div>
+</div>
+</div>
+<!-- 2021 -->
+<div class="video-item" data-artist="The Black Mamba" data-country="Portugal" data-song="Love Is on My Side" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/19ZF_SzUSfROnbFbjOUnRKyDtfZRSg7gX/')">
+<div class="preview-container">
+<img alt="Portugal 2021" src="images/2021-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>The Black Mamba</b><br/>Love Is on My Side<br/>2021</div>
+</div>
+</div>
+<!-- 2020 -->
+<div class="video-item" data-artist="Elisa" data-country="Portugal" data-song="Medo de sentir" data-year="2020" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1tOPN3pJ71J4Y9wnsRPsplr7Bgif6Xkr6/')">
+<div class="preview-container">
+<img alt="Portugal 2020" src="images/2020-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Elisa</b><br/>Medo de sentir<br/>2020</div>
+</div>
+</div>
+<!-- 2019 -->
+<div class="video-item" data-artist="Conan Osíris" data-country="Portugal" data-song="Telemóveis" data-year="2019" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1oakKCCpkr6BD890geHvKBbVYbO5boAJz/')">
+<div class="preview-container">
+<img alt="Portugal 2019" src="images/2019-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Conan Osíris</b><br/>Telemóveis<br/>2019</div>
+</div>
+</div>
+<!-- 2018 -->
+<div class="video-item" data-artist="Cláudia Pascoal" data-country="Portugal" data-song="O jardim" data-year="2018" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1sTW4JnITUJ5bgJjaImQrTDyWd3eAGY2F/')">
+<div class="preview-container">
+<img alt="Portugal 2018" src="images/2018-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Cláudia Pascoal</b><br/>O jardim<br/>2018</div>
+</div>
+</div>
+<!-- 2017 -->
+<div class="video-item" data-artist="Salvador Sobral" data-country="Portugal" data-song="Amar pelos dois" data-year="2017" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1wvf2gEwbPvw4cT1QPrLlE2UOIX9nEJdP/')">
+<div class="preview-container">
+<img alt="Portugal 2017" src="images/2017-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Salvador Sobral</b><br/>Amar pelos dois<br/>2017</div>
+</div>
+</div>
+<!-- 2016 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Portugal 2016" src="images/2016-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2015 -->
+<div class="video-item" data-artist="Leonor Andrade" data-country="Portugal" data-song="Há um mar que nos separa" data-year="2015" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1tjbd8JhVSgEVGfht5kF-hJZXYgFvN43s/')">
+<div class="preview-container">
+<img alt="Portugal 2015" src="images/2015-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Leonor Andrade</b><br/>Há um mar que nos separa<br/>2015</div>
+</div>
+</div>
+<!-- 2014 -->
+<div class="video-item" data-artist="Suzy" data-country="Portugal" data-song="Quero ser tua" data-year="2014" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1y1hoEhOQYaUGj73E06y-wC4K1QDg7CpO/')">
+<div class="preview-container">
+<img alt="Portugal 2014" src="images/2014-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Suzy</b><br/>Quero ser tua<br/>2014</div>
+</div>
+</div>
+<!-- 2013 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Portugal 2013" src="images/2013-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2012 -->
+<div class="video-item" data-artist="Filipa Sousa" data-country="Portugal" data-song="Vida minha" data-year="2012" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Zk3e4gaXywOtbULEwuwUden3TGDZVNJ1/')">
+<div class="preview-container">
+<img alt="Portugal 2012" src="images/2012-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Filipa Sousa</b><br/>Vida minha<br/>2012</div>
+</div>
+</div>
+<!-- 2011 -->
+<div class="video-item" data-artist="Homens da Luta" data-country="Portugal" data-song="A luta é alegria" data-year="2011" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1FDE6dHYo5uu2Num08mWWu1DKFjo4-lai/')">
+<div class="preview-container">
+<img alt="Portugal 2011" src="images/2011-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Homens da Luta</b><br/>A luta é alegria<br/>2011</div>
+</div>
+</div>
+<!-- 2010 -->
+<div class="video-item" data-artist="Filipa Azevedo" data-country="Portugal" data-song="Há dias assim" data-year="2010" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/17r9olnSDIR04rgIRtgcHU5YXXhEk6gcj/')">
+<div class="preview-container">
+<img alt="Portugal 2010" src="images/2010-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Filipa Azevedo</b><br/>Há dias assim<br/>2010</div>
+</div>
+</div>
+<!-- 2009 -->
+<div class="video-item" data-artist="Flor-de-Lis" data-country="Portugal" data-song="Todas as ruas do amor" data-year="2009" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1tvoqy7Q7qq1JWSSO2pdodnjXfwHZnRQE/')">
+<div class="preview-container">
+<img alt="Portugal 2009" src="images/2009-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Flor-de-Lis</b><br/>Todas as ruas do amor<br/>2009</div>
+</div>
+</div>
+<!-- 2008 -->
+<div class="video-item" data-artist="Vânia Fernandes" data-country="Portugal" data-song="Senhora do mar (negras águas)" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/12szn4aFFlnqQisFnduKlxJ-jBvKIJ4G3/')">
+<div class="preview-container">
+<img alt="Portugal 2008" src="images/2008-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Vânia Fernandes</b><br/>Senhora do mar (negras águas)<br/>2008</div>
+</div>
+</div>
+<!-- 2007 -->
+<div class="video-item" data-artist="Sabrina" data-country="Portugal" data-song="Dança comigo" data-year="2007" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1DXBLKvljelpkG9kOk0TJotps_141ghKB/')">
+<div class="preview-container">
+<img alt="Portugal 2007" src="images/2007-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Sabrina</b><br/>Dança comigo<br/>2007</div>
+</div>
+</div>
+<!-- 2006 -->
+<div class="video-item" data-artist="Nonstop" data-country="Portugal" data-song="Coisas de nada" data-year="2006" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1BFypndFzo_GS_5I4R2G7maAW1T9HPRZ6/')">
+<div class="preview-container">
+<img alt="Portugal 2006" src="images/2006-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Nonstop</b><br/>Coisas de nada<br/>2006</div>
+</div>
+</div>
+<!-- 2005 -->
+<div class="video-item" data-artist="2B" data-country="Portugal" data-song="Amar" data-year="2005" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1WT2Z6eUNI-ixUGBoGqpgKWfK7LmnfzZs/')">
+<div class="preview-container">
+<img alt="Portugal 2005" src="images/2005-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>2B</b><br/>Amar<br/>2005</div>
+</div>
+</div>
+<!-- 2004 -->
+<div class="video-item" data-artist="Sofia Vitória" data-country="Portugal" data-song="Foi magia" data-year="2004" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/160jkrFEe9volOiS15kUar8B0bhvBYcUC/')">
+<div class="preview-container">
+<img alt="Portugal 2004" src="images/2004-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Sofia Vitória</b><br/>Foi magia<br/>2004</div>
+</div>
+</div>
+<!-- 2003 -->
+<div class="video-item" data-artist="Rita Guerra" data-country="Portugal" data-song="Deixa-me sonhar" data-year="2003" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/17Sf04BfivdroDtTDMvhlta00-tXs25tB/')">
+<div class="preview-container">
+<img alt="Portugal 2003" src="images/2003-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Rita Guerra</b><br/>Deixa-me sonhar<br/>2003</div>
+</div>
+</div>
+<!-- 2002 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Portugal 2002" src="images/2002-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2001 -->
+<div class="video-item" data-artist="MTM" data-country="Portugal" data-song="Só sei ser feliz assim" data-year="2001" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1B4_OdFSZNexYow6fkPSDMSdvt2zwYBhY/')">
+<div class="preview-container">
+<img alt="Portugal 2001" src="images/2001-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>MTM</b><br/>Só sei ser feliz assim<br/>2001</div>
+</div>
+</div>
+<!-- 2000 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Portugal 2000" src="images/2000-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1999 -->
+<div class="video-item" data-artist="Rui Bandeira" data-country="Portugal" data-song="Como tudo começou" data-year="1999" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/13psZ4FMBf_S-sWaODi_30WQ1xRJmj7qB/')">
+<div class="preview-container">
+<img alt="Portugal 1999" src="images/1999-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Rui Bandeira</b><br/>Como tudo começou<br/>1999</div>
+</div>
+</div>
+<!-- 1998 -->
+<div class="video-item" data-artist="Alma Lusa" data-country="Portugal" data-song="Se eu te pudesse abraçar" data-year="1998" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1HEEO7mbPozybfTzulUVh0PiMTNUlupmz/')">
+<div class="preview-container">
+<img alt="Portugal 1998" src="images/1998-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Alma Lusa</b><br/>Se eu te pudesse abraçar<br/>1998</div>
+</div>
+</div>
+<!-- 1997 -->
+<div class="video-item" data-artist="Célia Lawson" data-country="Portugal" data-song="Antes do adeus" data-year="1997" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1JeAhNUAGrHExNReN5n7bgqK0aJ2QxIDd/')">
+<div class="preview-container">
+<img alt="Portugal 1997" src="images/1997-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Célia Lawson</b><br/>Antes do adeus<br/>1997</div>
+</div>
+</div>
+<!-- 1996 -->
+<div class="video-item" data-artist="Lúcia Moniz" data-country="Portugal" data-song="O meu coração não tem cor" data-year="1996" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/17-E1a2s-bO4DcRoEN1p8uQzdPmXHQmUF/')">
+<div class="preview-container">
+<img alt="Portugal 1996" src="images/1996-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Lúcia Moniz</b><br/>O meu coração não tem cor<br/>1996</div>
+</div>
+</div>
+<!-- 1995 -->
+<div class="video-item" data-artist="Tó Cruz" data-country="Portugal" data-song="Baunilha e chocolate" data-year="1995" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1_dZIzXirUZfSIbvgmrZYu2FSoEVbtAXW/')">
+<div class="preview-container">
+<img alt="Portugal 1995" src="images/1995-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Tó Cruz</b><br/>Baunilha e chocolate<br/>1995</div>
+</div>
+</div>
+<!-- 1994 -->
+<div class="video-item" data-artist="Sara" data-country="Portugal" data-song="Chamar a música" data-year="1994" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1tIhhWcKfafA1gMaSmhZXSz-C5TB-a0G0/')">
+<div class="preview-container">
+<img alt="Portugal 1994" src="images/1994-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Sara</b><br/>Chamar a música<br/>1994</div>
+</div>
+</div>
+<!-- 1993 -->
+<div class="video-item" data-artist="Anabela" data-country="Portugal" data-song="A cidade até ser dia" data-year="1993" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1odrRPxMjU2qTZi5CizMx2bLrbzMQ2Ro8/')">
+<div class="preview-container">
+<img alt="Portugal 1993" src="images/1993-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Anabela</b><br/>A cidade até ser dia<br/>1993</div>
+</div>
+</div>
+<!-- 1992 -->
+<div class="video-item" data-artist="Dina" data-country="Portugal" data-song="Amor d'água fresca" data-year="1992" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/16RjYyn-qOShtfvUOb2KJcm-ORhuocCTF/')">
+<div class="preview-container">
+<img alt="Portugal 1992" src="images/1992-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Dina</b><br/>Amor d'água fresca<br/>1992</div>
+</div>
+</div>
+<!-- 1991 -->
+<div class="video-item" data-artist="Dulce" data-country="Portugal" data-song="Lusitana paixão" data-year="1991" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/11834bHcLvjMjdeZDrl6OViDeczJKtzOX/')">
+<div class="preview-container">
+<img alt="Portugal 1991" src="images/1991-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Dulce</b><br/>Lusitana paixão<br/>1991</div>
+</div>
+</div>
+<!-- 1990 -->
+<div class="video-item" data-artist="Nucha" data-country="Portugal" data-song="Há sempre alguém" data-year="1990" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1dAKK4iMPCdpP4GxjNnfD-zIUfsA7nm1J/')">
+<div class="preview-container">
+<img alt="Portugal 1990" src="images/1990-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Nucha</b><br/>Há sempre alguém<br/>1990</div>
+</div>
+</div>
+<!-- 1989 -->
+<div class="video-item" data-artist="Da Vinci" data-country="Portugal" data-song="Conquistador" data-year="1989" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1mNag3Zf5-Zj2f6wm8hLL7cOf-wHooMTf/')">
+<div class="preview-container">
+<img alt="Portugal 1989" src="images/1989-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Da Vinci</b><br/>Conquistador<br/>1989</div>
+</div>
+</div>
+<!-- 1988 -->
+<div class="video-item" data-artist="Dora" data-country="Portugal" data-song="Voltarei" data-year="1988" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Oe7Q-A3HkhpgJTGnS78WAXdtfQNAid8p/')">
+<div class="preview-container">
+<img alt="Portugal 1988" src="images/1988-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Dora</b><br/>Voltarei<br/>1988</div>
+</div>
+</div>
+<!-- 1987 -->
+<div class="video-item" data-artist="Nevada" data-country="Portugal" data-song="Neste barco à vela" data-year="1987" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1GVyHDUatfqm_Bhk3587w5L6REGfDqxw5/')">
+<div class="preview-container">
+<img alt="Portugal 1987" src="images/1987-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Nevada</b><br/>Neste barco à vela<br/>1987</div>
+</div>
+</div>
+<!-- 1986 -->
+<div class="video-item" data-artist="Dora" data-country="Portugal" data-song="Não sejas mau p'ra mim" data-year="1986" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1OIiJ71Wp1Xa-C4odQHmgBt0Lm4yEX5q7/')">
+<div class="preview-container">
+<img alt="Portugal 1986" src="images/1986-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Dora</b><br/>Não sejas mau p'ra mim<br/>1986</div>
+</div>
+</div>
+<!-- 1985 -->
+<div class="video-item" data-artist="Adelaide" data-country="Portugal" data-song="Penso em ti, eu sei" data-year="1985" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1985" src="images/1985-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Adelaide</b><br/>Penso em ti, eu sei<br/>1985</div>
+</div>
+</div>
+<!-- 1984 -->
+<div class="video-item" data-artist="Maria Guinot" data-country="Portugal" data-song="Silêncio e tanta gente" data-year="1984" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1984" src="images/1984-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Maria Guinot</b><br/>Silêncio e tanta gente<br/>1984</div>
+</div>
+</div>
+<!-- 1983 -->
+<div class="video-item" data-artist="Armando Gama" data-country="Portugal" data-song="Esta balada que te dou" data-year="1983" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1983" src="images/1983-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Armando Gama</b><br/>Esta balada que te dou<br/>1983</div>
+</div>
+</div>
+<!-- 1982 -->
+<div class="video-item" data-artist="Doce" data-country="Portugal" data-song="Bem bom" data-year="1982" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1982" src="images/1982-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Doce</b><br/>Bem bom<br/>1982</div>
+</div>
+</div>
+<!-- 1981 -->
+<div class="video-item" data-artist="Carlos Paião" data-country="Portugal" data-song="Playback" data-year="1981" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1981" src="images/1981-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Carlos Paião</b><br/>Playback<br/>1981</div>
+</div>
+</div>
+<!-- 1980 -->
+<div class="video-item" data-artist="José Cid" data-country="Portugal" data-song="Um grande, grande amor" data-year="1980" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1980" src="images/1980-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>José Cid</b><br/>Um grande, grande amor<br/>1980</div>
+</div>
+</div>
+<!-- 1979 -->
+<div class="video-item" data-artist="Manuela Bravo" data-country="Portugal" data-song="Sobe, sobe, balão sobe" data-year="1979" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1979" src="images/1979-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Manuela Bravo</b><br/>Sobe, sobe, balão sobe<br/>1979</div>
+</div>
+</div>
+<!-- 1978 -->
+<div class="video-item" data-artist="Gemini" data-country="Portugal" data-song="Dai li dou" data-year="1978" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1978" src="images/1978-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Gemini</b><br/>Dai li dou<br/>1978</div>
+</div>
+</div>
+<!-- 1977 -->
+<div class="video-item" data-artist="Os Amigos" data-country="Portugal" data-song="Portugal no coração" data-year="1977" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1977" src="images/1977-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Os Amigos</b><br/>Portugal no coração<br/>1977</div>
+</div>
+</div>
+<!-- 1976 -->
+<div class="video-item" data-artist="Carlos do Carmo" data-country="Portugal" data-song="Uma flor de verde pinho" data-year="1976" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1976" src="images/1976-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Carlos do Carmo</b><br/>Uma flor de verde pinho<br/>1976</div>
+</div>
+</div>
+<!-- 1975 -->
+<div class="video-item" data-artist="Duarte Mendes" data-country="Portugal" data-song="Madrugada" data-year="1975" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1975" src="images/1975-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Duarte Mendes</b><br/>Madrugada<br/>1975</div>
+</div>
+</div>
+<!-- 1974 -->
+<div class="video-item" data-artist="Paulo de Carvalho" data-country="Portugal" data-song="E depois do adeus" data-year="1974" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1974" src="images/1974-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Paulo de Carvalho</b><br/>E depois do adeus<br/>1974</div>
+</div>
+</div>
+<!-- 1973 -->
+<div class="video-item" data-artist="Fernando Tordo" data-country="Portugal" data-song="Tourada" data-year="1973" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1973" src="images/1973-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Fernando Tordo</b><br/>Tourada<br/>1973</div>
+</div>
+</div>
+<!-- 1972 -->
+<div class="video-item" data-artist="Carlos Mendes" data-country="Portugal" data-song="A festa da vida" data-year="1972" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1972" src="images/1972-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Carlos Mendes</b><br/>A festa da vida<br/>1972</div>
+</div>
+</div>
+<!-- 1971 -->
+<div class="video-item" data-artist="Tonicha" data-country="Portugal" data-song="Menina do alto da serra" data-year="1971" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1971" src="images/1971-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Tonicha</b><br/>Menina do alto da serra<br/>1971</div>
+</div>
+</div>
+<!-- 1970 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Portugal 1970" src="images/1970-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1969 -->
+<div class="video-item" data-artist="Simone de Oliveira" data-country="Portugal" data-song="Desfolhada portuguesa" data-year="1969" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1969" src="images/1969-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Simone de Oliveira</b><br/>Desfolhada portuguesa<br/>1969</div>
+</div>
+</div>
+<!-- 1968 -->
+<div class="video-item" data-artist="Carlos Mendes" data-country="Portugal" data-song="Verão" data-year="1968" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1968" src="images/1968-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Carlos Mendes</b><br/>Verão<br/>1968</div>
+</div>
+</div>
+<!-- 1967 -->
+<div class="video-item" data-artist="Eduardo Nascimento" data-country="Portugal" data-song="O vento mudou" data-year="1967" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1967" src="images/1967-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Eduardo Nascimento</b><br/>O vento mudou<br/>1967</div>
+</div>
+</div>
+<!-- 1966 -->
+<div class="video-item" data-artist="Madalena Iglésias" data-country="Portugal" data-song="Ele e ela" data-year="1966" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1966" src="images/1966-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Madalena Iglésias</b><br/>Ele e ela<br/>1966</div>
+</div>
+</div>
+<!-- 1965 -->
+<div class="video-item" data-artist="Simone de Oliveira" data-country="Portugal" data-song="Sol de inverno" data-year="1965" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1965" src="images/1965-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Simone de Oliveira</b><br/>Sol de inverno<br/>1965</div>
+</div>
+</div>
+<!-- 1964 -->
+<div class="video-item" data-artist="António Calvário" data-country="Portugal" data-song="Oração" data-year="1964" onclick="GDriveOpenModalWithVideo('nan')">
+<div class="preview-container">
+<img alt="Portugal 1964" src="images/1964-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>António Calvário</b><br/>Oração<br/>1964</div>
+</div>
+</div>
+<!-- 1963 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Portugal 1963" src="images/1963-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1962 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Portugal 1962" src="images/1962-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1961 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Portugal 1961" src="images/1961-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1960 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Portugal 1960" src="images/1960-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1959 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Portugal 1959" src="images/1959-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1958 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Portugal 1958" src="images/1958-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1957 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Portugal 1957" src="images/1957-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1956 (2) -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Portugal 1956" src="images/1956_2-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1956 (1) -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="Portugal 1956" src="images/1956_1-PT.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="portugal.html">
+<img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- END OF VIDEOS -->
+</div>
+</div>
+</div>
+<!-- MODAL -->
+<div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+<div class="modal-content">
+<span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+<video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;"></video>
+<iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" id="modalIframe" style="display: none;"></iframe>
+</div>
+</div>
+<!-- FOOTER -->
+<footer class="site-footer">
+<div class="footer-line"></div>
+<div class="footer-branding">
+<div class="footer-flag">
+<img alt="United Kingdom" src="flags/gb.png"/></div>
+<span class="footer-title">Douze Points</span>
+</div>
+<div class="footer-links">
+<a href="about.html">About</a>
+<a href="contact.html">Contact Us</a>
+<a href="faq.html">FAQ</a>
+<a href="privacy.html">Privacy Policy</a>
+</div>
+</footer>
+<script>
+    function GDriveOpenModalWithVideo(videoUrl, titleText) {
+      const modal = document.getElementById("videoModal");
+      const video = document.getElementById("modalVideo");
+      const iframe = document.getElementById("modalIframe");
+      modal.style.display = "flex";
+      video.style.display = "none";
+      iframe.style.display = "none";
+      video.pause();
+      iframe.src = "";
+      if (videoUrl.includes('drive.google.com')) {
+        const match = videoUrl.match(/\/d\/(.*?)\//);
+        if (match && match[1]) {
+          iframe.src = `https://drive.google.com/file/d/${match[1]}/preview`;
+          iframe.style.display = "block";
+        }
+      } else {
+        video.src = videoUrl;
+        video.style.display = "block";
+        video.play();
+      }
+    }
+
+    function GDriveCloseModal(event) {
+      event.stopPropagation();
+      const modal = document.getElementById("videoModal");
+      const video = document.getElementById("modalVideo");
+      const iframe = document.getElementById("modalIframe");
+      video.pause();
+      video.src = "";
+      iframe.src = "";
+      modal.style.display = "none";
+    }
+  </script>
+</body>
+</html>
