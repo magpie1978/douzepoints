@@ -7,6 +7,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Raleway&amp;display=swap" rel="stylesheet"/>
 <title>Douze Points | Armenia</title>
 <script src="countries.js" type="text/javascript"></script>
+<script src="editions.js" type="text/javascript"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
 <style>
     
 
@@ -341,12 +344,27 @@
 </div>
 </header>
 <!--  red dividing line -->
-<div class="banner-divider"></div>
-<!-- Main Content Layout -->
-<div class="container">
-<div class="sidebar" id="sidebar-container"></div>
-<div class="main-content">
-<div class="grid-container">
+        <div class="banner-divider"></div>
+
+        <!-- Main Content Layout -->
+        <div class="container">
+            <div class="sidebar" id="sidebar-container"></div>
+                <div class="main-content">
+                    <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
+                        <div style="flex: 1;"></div> <!-- Push the sort-controls to the right -->
+                        <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
+                            <label for="sort-options">
+                                <i data-lucide="list-filter" style="margin-right: 15px;"></i>
+                            </label>
+                            <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
+                                <option value="year-asc">Year (asc)</option>
+                                <option value="year-desc">Year (desc)</option>
+                                <option value="artist">Artist Name</option>
+                                <option value="song">Song Title</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-container">
 <!-- 2024 -->
 <div class="video-item" data-artist="Ladaniva" data-country="Armenia" data-song="Jako" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Srwgf9ctTqZoCrHdNRaeswlTUzKKywcw/')">
 <div class="preview-container">
@@ -1249,5 +1267,7 @@
       modal.style.display = "none";
     }
   </script>
+        <script src="sorting.js" type="text/javascript"></script>
+
 </body>
 </html>
