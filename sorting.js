@@ -17,9 +17,9 @@
                 items.sort((a, b) => {
                   switch (value) {
                    case 'year-desc':
-                      return getAttr(b, 'data-year').localeCompare(getAttr(a, 'data-year'));
-                   case 'year-asc':
                       return getAttr(a, 'data-year').localeCompare(getAttr(b, 'data-year'));
+                   case 'year-asc':
+                      return getAttr(b, 'data-year').localeCompare(getAttr(a, 'data-year'));
                    case 'country':
                       return getAttr(a, 'data-country').localeCompare(getAttr(b, 'data-country'));
                     case 'country-desc':
