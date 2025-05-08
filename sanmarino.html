@@ -1,285 +1,1253 @@
-
 <!DOCTYPE html>
+
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <title>Douze Points | San Marino</title>
-
-    <link rel="stylesheet" type="text/css" href="countries.css">
-    <script src="countries.js" type="text/javascript"></script>
+<head>
+<meta charset="utf-8"/>
+<!-- Import Raleway typeface -->
+<link href="https://fonts.googleapis.com/css2?family=Raleway&amp;display=swap" rel="stylesheet"/>
+<title>Douze Points | San Marino</title>
+<script src="countries.js" type="text/javascript"></script>
+<style>
     
-  </head>
 
-  <body oncontextmenu="return false">
+    body {
+      font-family: 'Raleway', sans-serif;
+      margin: 0;
+      background: #141414;
+      color: #fff;
+    }
 
-    <!-- HEADER -->
-    <header class="main-header">
-      <div class="header-overlay">
-        <div class="header-links">
-          <a class="home-link" href="index.html">Home</a>
-          <a class="countries-link" href="countries.html">Countries</a>
-          <a class="home-link" href="edition-2024.html">Editions</a>
-        </div>
-      </div>
+    .banner-static {
+      width: 100%;
+      height: 400px;
+      overflow: hidden;
+    }
+    
+    .banner-static img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }      
+      .banner-image.active {
+      opacity: 1;
+      z-index: 2;
+    }
+    /* Overlay layout */
+    .header-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-      <div class="banner-static">
-        <img src="https://euroflix.s3.eu-north-1.amazonaws.com/banners/sm.png" alt="Banner">
-      </div>
-    </header>
+    .home-link {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .header-links {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .header-links a {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .header-links a:hover {
+      color: #e50914;
+    }
 
-    <!--  red dividing line -->
-    <div class="banner-divider"></div>
+    .banner-title img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
 
-    <div class="container">
+    .banner-title h2 {
+      font-size: 2rem;
+      color: black;
+      margin: 0;
+    }
+    
+    .banner-text h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .banner-text p {
+      font-size: 1rem;
+      margin: 0.3rem 0;
+    }
 
-            <!-- Display Sidebar from countries.js file -->
-      <div id="sidebar-container"></div>
+    .banner-divider {
+      width: 100%;
+      height: 1px;
+      background-color: #e50914;
+      }
+    
+    .container {
+          display: flex;
+        }
 
+    .sidebar {
+      width: 220px;
+      padding: 10px;
+      background-color: #111;
+      color: white;
+      font-size: 14px;
+      height: auto;
+      overflow: visible;
+    }
 
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar-row a {
+      text-decoration: none;
+      color: white;
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar-row {
+      margin: 5px 0;
+    }
+
+    .sidebar a:hover {
+      background-color: #e50914;
+      border-radius: 8px;
+    }
+
+    .sidebar img {
+      width: 22px;
+      height: 22px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 20px;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .video-item {
+      cursor: pointer;
+      background-color: #1a1a1a;
+      padding: 10px;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .video-item:hover {
+      transform: scale(1.05);
+    }
+
+    .preview-container {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+      overflow: hidden;
+      border-radius: 6px;
+    }
+
+    .preview-container img,
+    .preview-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .preview-container video {
+      display: none;
+    }
+    
+    .preview-container.has-video:hover video {
+      display: block;
+    }
+    
+    .preview-container.has-video:hover img {
+      display: none;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      position: relative;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .modal-content video,
+    .modal-content iframe {
+      width: 81vw;
+      height: 81vh;
+    }
+
+    .close-button {
+      position: absolute;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 40px;
+      top: -20px;
+      right: -20px;
+      z-index: 9999;
+      border-radius: 50%;
+    }
+
+    .site-footer {
+      margin-top: 3rem;
+      padding: 2rem 1rem;
+      text-align: center;
+      color: #ccc;
+      font-size: 0.85rem;
+      background-color: #141414;
+    }
+
+    .footer-line {
+      width: 90%;
+      height: 1px;
+      background-color: #e50914;
+      margin: 0 auto 1rem auto;
+    }
+
+    .footer-branding {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      gap: 10px;
+    }
+
+    .footer-flag {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .footer-flag img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .footer-title {
+      font-size: 1rem;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .footer-links a {
+      color: #ccc;
+      margin: 0 10px;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .footer-links a:hover {
+      color: #e50914;
+      text-decoration: underline;
+    }
+
+    .video-title-with-icon {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      gap: 8px;
+      color: white;
+      font-size: 0.8rem;
+    }
       
-    <!-- Main Content -->
-    <div class="main-content">
-      <div class="grid-section">
-        <div class="grid-container">
+    .icon-placeholder {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: #444;
+      object-fit: cover;
+      margin-left: 8px;
+    }
 
-          <!-- 2024 -->
-          <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-SM.mp4')">
-            <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-              <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-SM.jpeg" alt="San Marino 2024">
-              <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-SM.mp4" muted loop></video>
-            </div>
-            <div class="video-title-with-icon" onclick="event.stopPropagation()">
-              <a href="sanmarino.html">
-                <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png" alt="Flag">
-              </a>
-              <div class="video-title-text"><b>Megara</b><br>11:11<br>2024</div>
-            </div>
-          </div>
+    .video-title-text {
+      line-height: 1.2;
+      }
 
-          <!-- 2023 -->
-          <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2023/videos/2023-SM.mp4')">
-            <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-              <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2023/thumbs/2023-SM.jpeg" alt="San Marino 2023">
-              <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2023/videos/2023-SM.mp4" muted loop></video>
-            </div>
-            <div class="video-title-with-icon" onclick="event.stopPropagation()">
-              <a href="sanmarino.html">
-                <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png" alt="Flag">
-              </a>
-              <div class="video-title-text"><b>Piqued Jacks</b><br>Like An Animal<br>2023</div>
-            </div>
-          </div>
+    .video-title-text a {
+      text-decoration: none; /* Remove underline */
+      color: inherit;         /* Inherit color from surrounding text */
+    }
 
-          <!-- 2022 -->
-          <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2022/videos/2022-SM.mp4')">
-            <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-              <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2022/thumbs/2022-SM.jpeg" alt="San Marino 2022">
-              <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2022/videos/2022-SM.mp4" muted loop></video>
-            </div>
-            <div class="video-title-with-icon" onclick="event.stopPropagation()">
-              <a href="sanmarino.html">
-                <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png" alt="Flag">
-              </a>
-              <div class="video-title-text"><b>Achille Lauro</b><br>Stripper<br>2022</div>
-            </div>
-          </div>
+  </style>
+</head>
+<body oncontextmenu="return false">
+<!-- HEADER -->
+<header class="main-header">
+<div class="header-overlay">
+<div class="header-links">
+<a class="home-link" href="index.html">Home</a>
+<a class="home-link" href="countries.html">Countries</a>
+<a class="home-link" href="edition-2024.html">Editions</a>
+</div>
+</div>
+<div class="banner-static">
+                <img alt="Banner" src="banners/sm.png"/>
+</div>
+</header>
+<!--  red dividing line -->
+<div class="banner-divider"></div>
+<!-- Main Content Layout -->
+<div class="container">
+<div class="sidebar" id="sidebar-container"></div>
+<div class="main-content">
+<div class="grid-container">
+<!-- 2024 -->
+<div class="video-item" data-artist="Megara" data-country="San Marino" data-song="11:11:00" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/12_UP_iDBZsphYVzshlze4AMdilu7oSu9/')">
+<div class="preview-container">
+<img alt="San Marino 2024" src="images/2024-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Megara</b><br>11:11<br>2024</div>
+</div>
+</div>
+<!-- 2023 -->
+<div class="video-item" data-artist="Piqued Jacks" data-country="San Marino" data-song="Like an Animal" data-year="2023" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1tbqQIZwOzxmyHsNrKaB5P7kARyF0_lbp/')">
+<div class="preview-container">
+<img alt="San Marino 2023" src="images/2023-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Piqued Jacks</b><br>Like an Animal<br>2023</div>
+</div>
+</div>
+<!-- 2022 -->
+<div class="video-item" data-artist="Achille Lauro" data-country="San Marino" data-song="Stripper" data-year="2022" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1-9e24B5-cN1uGak5vfEKLr1ksnx8DVt3/')">
+<div class="preview-container">
+<img alt="San Marino 2022" src="images/2022-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Achille Lauro</b><br>Stripper<br>2022</div>
+</div>
+</div>
+<!-- 2021 -->
+<div class="video-item" data-artist="Senhit[g]" data-country="San Marino" data-song="Adrenalina" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1BRQbR1IprsDq9fzEDzGePE-ymNwDber2/')">
+<div class="preview-container">
+<img alt="San Marino 2021" src="images/2021-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Senhit</b><br>Adrenalina<br>2021</div>
+</div>
+</div>
+<!-- 2020 -->
+<div class="video-item" data-artist="Senhit" data-country="San Marino" data-song="Freaky!" data-year="2020" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1THfgNbavF_Jz1hNxKUhyO0BWtBuLjdga/')">
+<div class="preview-container">
+<img alt="San Marino 2020" src="images/2020-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Senhit</b><br>Freaky!<br>2020</div>
+</div>
+</div>
+<!-- 2019 -->
+<div class="video-item" data-artist="Serhat" data-country="San Marino" data-song="Say Na Na Na" data-year="2019" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1QwcHwSRfuFh1qxMwf-voEK4C-Cjb_VS3/')">
+<div class="preview-container">
+<img alt="San Marino 2019" src="images/2019-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Serhat</b><br>Say Na Na Na<br>2019</div>
+</div>
+</div>
+<!-- 2018 -->
+<div class="video-item" data-artist="Jessikafeat.Jenifer Brening" data-country="San Marino" data-song="Who We Are" data-year="2018" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1E3rBR0bMUyecLzs-TG6C0vq7XyzRIQdG/')">
+<div class="preview-container">
+<img alt="San Marino 2018" src="images/2018-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Jessikafeat.Jenifer Brening</b><br>Who We Are<br>2018</div>
+</div>
+</div>
+<!-- 2017 -->
+<div class="video-item" data-artist="Valentina Monetta and Jimmie Wilson" data-country="San Marino" data-song="Spirit of the Night" data-year="2017" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1go0hTfv4kmpn1AElA-IBmRQb5ISqHjwj/')">
+<div class="preview-container">
+<img alt="San Marino 2017" src="images/2017-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Valentina Monetta and Jimmie Wilson</b><br>Spirit of the Night<br>2017</div>
+</div>
+</div>
+<!-- 2016 -->
+<div class="video-item" data-artist="Serhat" data-country="San Marino" data-song="I Didn't Know" data-year="2016" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/13pfnFFJnlQa3-shjbdO5imLdqH_WsN8h/')">
+<div class="preview-container">
+<img alt="San Marino 2016" src="images/2016-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Serhat</b><br>I Didn't Know<br>2016</div>
+</div>
+</div>
+<!-- 2015 -->
+<div class="video-item" data-artist="Anita Simoncini and Michele Perniola" data-country="San Marino" data-song="Chain of Lights" data-year="2015" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Ew3G0FWk0hqDuoTOCAZzUWKqVi58D9gh/')">
+<div class="preview-container">
+<img alt="San Marino 2015" src="images/2015-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Anita Simoncini and Michele Perniola</b><br>Chain of Lights<br>2015</div>
+</div>
+</div>
+<!-- 2014 -->
+<div class="video-item" data-artist="Valentina Monetta" data-country="San Marino" data-song="Maybe" data-year="2014" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1dvqPgXcMbfBjXSbaXj8qZa2rjnT3WYBP/')">
+<div class="preview-container">
+<img alt="San Marino 2014" src="images/2014-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Valentina Monetta</b><br>Maybe<br>2014</div>
+</div>
+</div>
+<!-- 2013 -->
+<div class="video-item" data-artist="Valentina Monetta" data-country="San Marino" data-song="Crisalide" data-year="2013" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1NFJUZmOCRGPBmE2VDZaUQw5aCYj8trAF/')">
+<div class="preview-container">
+<img alt="San Marino 2013" src="images/2013-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Valentina Monetta</b><br>Crisalide<br>2013</div>
+</div>
+</div>
+<!-- 2012 -->
+<div class="video-item" data-artist="Valentina Monetta" data-country="San Marino" data-song="The Social Network Song (Oh Oh – Uh – Oh Oh)" data-year="2012" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1XlCZJREqtOTtVj8eEyX8rXQx-qO04W5U/')">
+<div class="preview-container">
+<img alt="San Marino 2012" src="images/2012-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Valentina Monetta</b><br>The Social Network Song (Oh Oh – Uh – Oh Oh)<br>2012</div>
+</div>
+</div>
+<!-- 2011 -->
+<div class="video-item" data-artist="Senit" data-country="San Marino" data-song="Stand By" data-year="2011" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1PxBCAaarU6E10Hg9LICRUIuxr3f_YHT_/')">
+<div class="preview-container">
+<img alt="San Marino 2011" src="images/2011-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Senit</b><br>Stand By<br>2011</div>
+</div>
+</div>
+<!-- 2010 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 2010" src="images/2010-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2009 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 2009" src="images/2009-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2008 -->
+<div class="video-item" data-artist="Miodio" data-country="San Marino" data-song="Complice" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/184kN2AtaV68oSnWxdKeGhXMyUiZOT60-/')">
+<div class="preview-container">
+<img alt="San Marino 2008" src="images/2008-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Miodio</b><br>Complice<br>2008</div>
+</div>
+</div>
+<!-- 2007 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 2007" src="images/2007-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2006 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 2006" src="images/2006-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2005 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 2005" src="images/2005-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2004 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 2004" src="images/2004-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2003 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 2003" src="images/2003-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2002 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 2002" src="images/2002-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2001 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 2001" src="images/2001-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 2000 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 2000" src="images/2000-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1999 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1999" src="images/1999-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1998 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1998" src="images/1998-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1997 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1997" src="images/1997-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1996 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1996" src="images/1996-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1995 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1995" src="images/1995-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1994 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1994" src="images/1994-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1993 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1993" src="images/1993-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1992 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1992" src="images/1992-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1991 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1991" src="images/1991-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1990 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1990" src="images/1990-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1989 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1989" src="images/1989-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1988 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1988" src="images/1988-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1987 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1987" src="images/1987-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1986 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1986" src="images/1986-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1985 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1985" src="images/1985-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1984 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1984" src="images/1984-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1983 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1983" src="images/1983-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1982 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1982" src="images/1982-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1981 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1981" src="images/1981-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1980 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1980" src="images/1980-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1979 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1979" src="images/1979-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1978 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1978" src="images/1978-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1977 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1977" src="images/1977-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1976 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1976" src="images/1976-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1975 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1975" src="images/1975-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1974 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1974" src="images/1974-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1973 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1973" src="images/1973-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1972 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1972" src="images/1972-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1971 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1971" src="images/1971-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1970 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1970" src="images/1970-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1969 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1969" src="images/1969-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1968 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1968" src="images/1968-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1967 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1967" src="images/1967-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1966 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1966" src="images/1966-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1965 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1965" src="images/1965-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1964 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1964" src="images/1964-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1963 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1963" src="images/1963-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1962 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1962" src="images/1962-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1961 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1961" src="images/1961-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1960 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1960" src="images/1960-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1959 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1959" src="images/1959-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1958 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1958" src="images/1958-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1957 -->
+<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1957" src="images/1957-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>-->
+<!-- 1956 (2) --
+<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1956" src="images/1956_2-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>
+<!-- 1956 (1) --
+<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+<div class="preview-container">
+<img alt="San Marino 1956" src="images/1956_1-SM.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="sanmarino.html">
+<img alt="Flag" class="icon-placeholder" src="flags/sm.png"/>
+</a>
+<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
+</div>
+</div>
+<!-- END OF VIDEOS -->
+</div>
+</div>
+</div>
+<!-- MODAL -->
+<div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+<div class="modal-content">
+<span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+<video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;"></video>
+<iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" id="modalIframe" style="display: none;"></iframe>
+</div>
+</div>
+<!-- FOOTER -->
+<footer class="site-footer">
+<div class="footer-line"></div>
+<div class="footer-branding">
+<div class="footer-flag">
 
-          <!-- 2021 -->
-          <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2021/videos/2021-SM.mp4')">
-            <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-              <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2021/thumbs/2021-SM.jpeg" alt="San Marino 2021">
-              <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2021/videos/2021-SM.mp4" muted loop></video>
-            </div>
-            <div class="video-title-with-icon" onclick="event.stopPropagation()">
-              <a href="sanmarino.html">
-                <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png" alt="Flag">
-              </a>
-              <div class="video-title-text"><b>Senhit</b><br>Adrenalina<br>2021</div>
-            </div>
-          </div>
+<img alt="United Kingdom" src="flags/gb.png"/></img></div>
+<span class="footer-title">Douze Points</span>
+</div>
+<div class="footer-links">
+<a href="about.html">About</a>
+<a href="contact.html">Contact Us</a>
+<a href="faq.html">FAQ</a>
+<a href="privacy.html">Privacy Policy</a>
+</div>
+</footer>
+<script>
+    function GDriveOpenModalWithVideo(videoUrl, titleText) {
+      const modal = document.getElementById("videoModal");
+      const video = document.getElementById("modalVideo");
+      const iframe = document.getElementById("modalIframe");
+      modal.style.display = "flex";
+      video.style.display = "none";
+      iframe.style.display = "none";
+      video.pause();
+      iframe.src = "";
+      if (videoUrl.includes('drive.google.com')) {
+        const match = videoUrl.match(/\/d\/(.*?)\//);
+        if (match && match[1]) {
+          iframe.src = `https://drive.google.com/file/d/${match[1]}/preview`;
+          iframe.style.display = "block";
+        }
+      } else {
+        video.src = videoUrl;
+        video.style.display = "block";
+        video.play();
+      }
+    }
 
-          <!-- 2020 -->
-          <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2020/videos/2020-SM.mp4')">
-            <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-              <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2020/thumbs/2020-SM.jpeg" alt="San Marino 2020">
-              <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2020/videos/2020-SM.mp4" muted loop></video>
-            </div>
-            <div class="video-title-with-icon" onclick="event.stopPropagation()">
-              <a href="sanmarino.html">
-                <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png" alt="Flag">
-              </a>
-              <div class="video-title-text"><b>Senhit</b><br>Freaky!<br>2020</div>
-            </div>
-          </div>
-
-          <!-- 2019 -->
-          <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2019/videos/2019-SM.mp4')">
-            <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-              <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2019/thumbs/2019-SM.jpeg" alt="San Marino 2019">
-              <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2019/videos/2019-SM.mp4" muted loop></video>
-            </div>
-            <div class="video-title-with-icon" onclick="event.stopPropagation()">
-              <a href="sanmarino.html">
-                <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png" alt="Flag">
-              </a>
-              <div class="video-title-text"><b>Serhat</b><br>Say Na Na Na<br>2019</div>
-            </div>
-          </div>
-
-          <!-- 2018 -->
-          <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2018/videos/2018-SM.mp4')">
-            <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-              <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2018/thumbs/2018-SM.jpeg" alt="San Marino 2018">
-              <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2018/videos/2018-SM.mp4" muted loop></video>
-            </div>
-            <div class="video-title-with-icon" onclick="event.stopPropagation()">
-              <a href="sanmarino.html">
-                <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png" alt="Flag">
-              </a>
-              <div class="video-title-text"><b>Jessika feat. Jenifer Brening</b><br>Who We Are<br>2018</div>
-            </div>
-          </div>
-
-          <!-- 2017 -->
-          <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2017/videos/2017-SM.mp4')">
-            <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-              <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2017/thumbs/2017-SM.jpeg" alt="San Marino 2017">
-              <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2017/videos/2017-SM.mp4" muted loop></video>
-            </div>
-            <div class="video-title-with-icon" onclick="event.stopPropagation()">
-              <a href="sanmarino.html">
-                <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png" alt="Flag">
-              </a>
-              <div class="video-title-text"><b>Valentina Monetta and Jimmie Wilson</b><br>Spirit of the Night<br>2017</div>
-            </div>
-          </div>
-
-          <!-- 2016 -->          
-          <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2016/videos/2016-SM.mp4')">
-            <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-              <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2016/thumbs/2016-SM.jpeg" alt="San Marino 2016">
-              <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2016/videos/2016-SM.mp4" muted loop></video>
-            </div>
-            <div class="video-title-with-icon" onclick="event.stopPropagation()">
-              <a href="sanmarino.html">
-                <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png" alt="Flag">
-              </a>
-              <div class="video-title-text"><b>Serhat</b><br>I Didn't Know<br>2016</div>
-            </div>
-          </div>
-
-          <!-- 2015 -->          
-          <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2015/videos/2015-SM.mp4')">
-            <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-              <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2015/thumbs/2015-SM.jpeg" alt="San Marino 2015">
-              <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2015/videos/2015-SM.mp4" muted loop></video>
-            </div>
-            <div class="video-title-with-icon" onclick="event.stopPropagation()">
-              <a href="sanmarino.html">
-                <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png" alt="Flag">
-              </a>
-              <div class="video-title-text"><b>Anita Simoncini and Michele Perniola</b><br>Chain of Lights<br>2015</div>
-            </div>
-          </div>
-
-          <!-- 2014 -->          
-          <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2014/videos/2014-SM.mp4')">
-            <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-              <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2014/thumbs/2014-SM.jpeg" alt="San Marino 2014">
-              <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2014/videos/2014-SM.mp4" muted loop></video>
-            </div>
-            <div class="video-title-with-icon" onclick="event.stopPropagation()">
-              <a href="sanmarino.html">
-                <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png" alt="Flag">
-              </a>
-              <div class="video-title-text"><b>Valentina Monetta</b><br>Maybe<br>2014</div>
-            </div>
-          </div>
-
-          <!-- 2013 -->          
-          <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2013/videos/2013-SM.mp4')">
-            <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-              <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2013/thumbs/2013-SM.jpeg" alt="San Marino 2013">
-              <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2013/videos/2013-SM.mp4" muted loop></video>
-            </div>
-            <div class="video-title-with-icon" onclick="event.stopPropagation()">
-              <a href="sanmarino.html">
-                <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png" alt="Flag">
-              </a>
-              <div class="video-title-text"><b>Valentina Monetta</b><br>Crisalide (Vola)<br>2013</div>
-            </div>
-          </div>
-
-          <!-- 2012 -->          
-          <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2012/videos/2012-SM.mp4')">
-            <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-              <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2012/thumbs/2012-SM.jpeg" alt="San Marino 2012">
-              <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2012/videos/2012-SM.mp4" muted loop></video>
-            </div>
-            <div class="video-title-with-icon" onclick="event.stopPropagation()">
-              <a href="sanmarino.html">
-                <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png" alt="Flag">
-              </a>
-              <div class="video-title-text"><b>Valentina Monetta</b><br>The Social Network Song (Oh Oh – Uh – Oh Oh)<br>2012</div>
-            </div>
-          </div>
-
-          <!-- 2011 -->          
-          <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2011/videos/2011-SM.mp4')">
-            <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-              <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2011/thumbs/2011-SM.jpeg" alt="San Marino 2011">
-              <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2011/videos/2011-SM.mp4" muted loop></video>
-            </div>
-            <div class="video-title-with-icon" onclick="event.stopPropagation()">
-              <a href="sanmarino.html">
-                <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png" alt="Flag">
-              </a>
-              <div class="video-title-text"><b>Senit</b><br>Stand By<br>2011</div>
-            </div>
-          </div>
-
-
-          <!-- 2008 -->          
-          <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-SM.mp4')">
-            <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
-              <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-SM.jpeg" alt="San Marino 2008">
-              <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-SM.mp4" muted loop></video>
-            </div>
-            <div class="video-title-with-icon" onclick="event.stopPropagation()">
-              <a href="sanmarino.html">
-                <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png" alt="Flag">
-              </a>
-              <div class="video-title-text"><b>Miodio</b><br>Complice<br>2008</div>
-            </div>
-          </div>
-          
-        </div> <!-- end of grid-container -->
-      </div> <!-- end of grid-section -->
-    </div> <!-- end of main-content -->
-  </div> <!-- end of container -->
-
-  <!-- Modal (used by JS) -->
-  <div id="videoModal" class="modal" onclick="closeModal(event)">
-    <span class="modal-close" onclick="closeModal(event)">&times;</span>
-    <video id="modalVideo" controls autoplay controlsList="nodownload"></video>
-  </div>
-
-
-  <footer class="site-footer">
-    <div class="footer-line"></div>
-    <div class="footer-branding">
-      <div class="footer-flag">
-        <img src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/gb.png" alt="United Kingdom" />
-      </div>
-      <span class="footer-title">Douze Points</span>
-    </div>
-    <div class="footer-links">
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact Us</a>
-      <a href="faq.html">FAQ</a>
-      <a href="privacy.html">Privacy Policy</a>
-    </div>
-  </footer>
-    
-  </body>
+    function GDriveCloseModal(event) {
+      event.stopPropagation();
+      const modal = document.getElementById("videoModal");
+      const video = document.getElementById("modalVideo");
+      const iframe = document.getElementById("modalIframe");
+      video.pause();
+      video.src = "";
+      iframe.src = "";
+      modal.style.display = "none";
+    }
+  </script>
+</body>
 </html>
