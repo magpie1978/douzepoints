@@ -24,17 +24,18 @@
       <div class="banner-static">
         <img src="https://euroflix.s3.eu-north-1.amazonaws.com/banners/al.png" alt="Banner">
       </div>
+
+      
     </header>
 
-    <!--  red diviing line -->
+    <!--  red dividing line -->
     <div class="banner-divider"></div>
 
     <div class="container">
 
-            <!-- Display Sidebar from countries.js file -->
+      <!-- Display Sidebar from countries.js file -->
       <div id="sidebar-container"></div>
-
-
+      
       
     <!-- Main Content -->
     <div class="main-content">
@@ -42,16 +43,16 @@
         <div class="grid-container">
 
           <!-- 2024 -->
-          <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AL.mp4')">
+            <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AL.mp4')">
             <div class="preview-container" onmouseover="showPreview(this)" onmouseout="hidePreview(this)">
               <img src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/thumbs/2024-AL.jpeg" alt="Albania 2024">
-              <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AL.mp4" muted loop></video>
+              <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2024/videos/2024-AL.mp4" muted loop></video>  
             </div>
             <div class="video-title-with-icon" onclick="event.stopPropagation()">
               <a href="albania.html">
                 <img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/al.png" alt="Flag">
               </a>
-              <div class="video-title-text"><b>Besa</b><br>Titan<br>2024</div>
+              <div class="video-title-text"><b>Besa</b><br>Titan<br><a href="edition-2024.html">2024</a></div>
             </div>
           </div>
 
@@ -345,12 +346,11 @@
     <video id="modalVideo" controls autoplay controlsList="nodownload"></video>
   </div>
 
-
   <footer class="site-footer">
     <div class="footer-line"></div>
     <div class="footer-branding">
       <div class="footer-flag">
-        <img src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/gb.png" alt="United Kingdom" />
+                        <img alt="United Kingdom" src="flags/gb.png"/></img>
       </div>
       <span class="footer-title">Douze Points</span>
     </div>
