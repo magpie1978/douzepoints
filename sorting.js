@@ -16,7 +16,11 @@
             
                 items.sort((a, b) => {
                   switch (value) {
-                    case 'country':
+                   case 'year-asc':
+                      return getAttr(a, 'data-year').localeCompare(getAttr(b, 'data-year'));
+                   case 'year-desc':
+                      return getAttr(b, 'data-year').localeCompare(getAttr(a, 'data-year'));
+                   case 'country':
                       return getAttr(a, 'data-country').localeCompare(getAttr(b, 'data-country'));
                     case 'country-desc':
                       return getAttr(b, 'data-country').localeCompare(getAttr(a, 'data-country'));
