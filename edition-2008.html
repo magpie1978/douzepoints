@@ -1,15 +1,336 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
     <head>
         <meta charset="utf-8"/>
+
+        <!-- Import Raleway typeface -->
+        <link href="https://fonts.googleapis.com/css2?family=Raleway&amp;display=swap" rel="stylesheet"/>
+
         <title>Douze Points | Belgrade 2008</title>
 
-        <!-- STYLE SHEETS & SCIPTING-->
-        <link rel="stylesheet" type="text/css" href="editions.css">
-        <script src="editions.js" type="text/javascript"></script>
+        <script src="countries.js" type="text/javascript"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+
+        <style>
+    
+
+            body {
+              font-family: 'Raleway', sans-serif;
+              margin: 0;
+              background: #141414;
+              color: #fff;
+            }
         
+            .banner-static {
+              width: 100%;
+              height: 400px;
+              overflow: hidden;
+            }
+            
+            .banner-static img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }      
+              .banner-image.active {
+              opacity: 1;
+              z-index: 2;
+            }
+            /* Overlay layout */
+            .header-overlay {
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              padding: 20px;
+              z-index: 3;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            }
+        
+            .home-link {
+              color: #fff;
+              font-size: 1rem;
+              font-weight: bold;
+              text-decoration: none;
+            }
+            
+            .header-actions {
+              display: flex;
+              align-items: center;
+              gap: 20px;
+            }
+            
+            .header-links {
+              display: flex;
+              gap: 20px;
+            }
+            
+            .header-links a {
+              color: #fff;
+              font-size: 1rem;
+              font-weight: bold;
+              text-decoration: none;
+            }
+            
+            .header-links a:hover {
+              color: #e50914;
+            }
+        
+            .banner-title img {
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+              object-fit: cover;
+            }
+        
+            .banner-title h2 {
+              font-size: 2rem;
+              color: black;
+              margin: 0;
+            }
+            
+            .banner-text h2 {
+              font-size: 2rem;
+              margin-bottom: 0.5rem;
+            }
+            
+            .banner-text p {
+              font-size: 1rem;
+              margin: 0.3rem 0;
+            }
+        
+            .banner-divider {
+              width: 100%;
+              height: 1px;
+              background-color: #e50914;
+              }
+            
+            .container {
+                  display: flex;
+                }
+        
+            .sidebar {
+              width: 220px;
+              padding: 10px;
+              background-color: #111;
+              color: white;
+              font-size: 14px;
+              height: auto;
+              overflow: visible;
+            }
+        
+            .sidebar a {
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              color: #fff;
+              text-decoration: none;
+              padding: 8px 12px;
+              border-radius: 8px;
+              transition: background-color 0.3s;
+            }
+        
+            .sidebar-row a {
+              text-decoration: none;
+              color: white;
+              display: flex;
+              align-items: center;
+            }
+        
+            .sidebar-row {
+              margin: 5px 0;
+            }
+        
+            .sidebar a:hover {
+              background-color: #e50914;
+              border-radius: 8px;
+            }
+        
+            .sidebar img {
+              width: 22px;
+              height: 22px;
+              object-fit: cover;
+              border-radius: 50%;
+            }
+        
+            .main-content {
+              flex-grow: 1;
+              padding: 20px;
+            }
+        
+            .grid-container {
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 20px;
+            }
+        
+            .video-item {
+              cursor: pointer;
+              background-color: #1a1a1a;
+              padding: 10px;
+              border-radius: 8px;
+              overflow: hidden;
+              transition: transform 0.3s ease;
+            }
+        
+            .video-item:hover {
+              transform: scale(1.05);
+            }
+        
+            .preview-container {
+              position: relative;
+              width: 100%;
+              padding-top: 56.25%; /* 16:9 */
+              overflow: hidden;
+              border-radius: 6px;
+            }
+        
+            .preview-container img,
+            .preview-container video {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+            
+            .preview-container video {
+              display: none;
+            }
+            
+            .preview-container.has-video:hover video {
+              display: block;
+            }
+            
+            .preview-container.has-video:hover img {
+              display: none;
+            }
+            
+            .modal {
+              display: none;
+              position: fixed;
+              z-index: 9999;
+              left: 0;
+              top: 0;
+              width: 100vw;
+              height: 100vh;
+              background-color: rgba(0, 0, 0, 0.9);
+              justify-content: center;
+              align-items: center;
+            }
+        
+            .modal-content {
+              position: relative;
+              max-width: 100%;
+              max-height: 100%;
+            }
+        
+            .modal-content video,
+            .modal-content iframe {
+              width: 81vw;
+              height: 81vh;
+            }
+        
+            .close-button {
+              position: absolute;
+              color: #fff;
+              font-weight: bold;
+              cursor: pointer;
+              font-size: 40px;
+              top: -20px;
+              right: -20px;
+              z-index: 9999;
+              border-radius: 50%;
+            }
+        
+            .site-footer {
+              margin-top: 3rem;
+              padding: 2rem 1rem;
+              text-align: center;
+              color: #ccc;
+              font-size: 0.85rem;
+              background-color: #141414;
+            }
+        
+            .footer-line {
+              width: 90%;
+              height: 1px;
+              background-color: #e50914;
+              margin: 0 auto 1rem auto;
+            }
+        
+            .footer-branding {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-bottom: 1rem;
+              gap: 10px;
+            }
+        
+            .footer-flag {
+              width: 26px;
+              height: 26px;
+              border-radius: 50%;
+              overflow: hidden;
+            }
+        
+            .footer-flag img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+        
+            .footer-title {
+              font-size: 1rem;
+              color: #fff;
+              font-weight: bold;
+            }
+        
+            .footer-links a {
+              color: #ccc;
+              margin: 0 10px;
+              text-decoration: none;
+              font-size: 0.85rem;
+            }
+        
+            .footer-links a:hover {
+              color: #e50914;
+              text-decoration: underline;
+            }
+        
+            .video-title-with-icon {
+              display: flex;
+              align-items: center;
+              margin-top: 10px;
+              gap: 8px;
+              color: white;
+              font-size: 0.8rem;
+            }
+              
+            .icon-placeholder {
+              width: 24px;
+              height: 24px;
+              border-radius: 50%;
+              background-color: #444;
+              object-fit: cover;
+              margin-left: 8px;
+            }
+        
+            .video-title-text {
+              line-height: 1.2;
+              }
+        
+            .video-title-text a {
+              text-decoration: none; /* Remove underline */
+              color: inherit;         /* Inherit color from surrounding text */
+            }
+
+        </style>
     </head>
 
     <body oncontextmenu="return false">
@@ -25,7 +346,7 @@
             </div> <!-- end of header-overlay div -->
     
             <div class="banner-static">
-                <img alt="Banner" src="https://euroflix.s3.eu-north-1.amazonaws.com/banners/edition-2008.png"/>
+                <img alt="Banner" src="/banners/2008.png"/>
             </div>
         </header>
         
@@ -35,1586 +356,418 @@
         <div class="container">
 
             <!-- Display Sidebar from editions.js file -->
-            <div id="sidebar-container"></div>   
+            <div id="sidebar-container"></div>
+
                 <script src="sidebar_editions.js" type="text/javascript"></script>
+
             
         <!-- MAIN CONTENT -->
         
             <div class="main-content">
-                <div class="grid-section">
-                    <div class="header-bar">
+                <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
                         <div style="flex: 1;"></div> <!-- Push the sort-controls to the right -->
                         <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
                             <label for="sort-options">
-                                <i data-lucide="list-filter" style="margin-right: 5px;"></i>
+                                <i data-lucide="list-filter" style="margin-right: 15px;"></i>
                             </label>
-                            <select id="sort-options" style="width: 160px; padding: 5px; font-size: 14px;">
-                                <option value="country">Country (A–Z)</option>
-                                <option value="country-desc">Country (Z–A)</option>
+                            <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
+                                <option value="year-asc">Year (asc)</option>
+                                <option value="year-desc">Year (desc)</option>
                                 <option value="artist">Artist Name</option>
                                 <option value="song">Song Title</option>
                             </select>
                         </div>
                     </div>
-                    
-                    <br/><br/>
                 
                     <div class="grid-container">
                 
                         <!--  VIDEOS  -->
-
-                            <!-- ALBANIA -->
-                            <div class="video-item" 
-                                data-country="Albania" 
-                                data-artist="Olta Boka" 
-                                data-song="Zemrën e lamë peng"
-                                data-final-place="17"
-                                data-semi-place="9"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-AL.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Albania" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-AL.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-AL.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="albania">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/al.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Olta Boka<br/>Zemrën e lamë peng<br/></div>
-                                </div>
-                            </div>
-
-                            <!-- ANDORRA -->
-                            <div class="video-item" 
-                                data-country="Andorra" 
-                                data-artist="Gisela" 
-                                data-song="Casanova"
-                                data-final-place=""
-                                data-semi-place="16"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-AD.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Albania" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-AD.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-AD.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="andorra">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ad.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Gisela<br/>Casanova<br/></div>
-                                </div>
-                            </div>
-
-                            <!-- ARMENIA -->
-                            <div class="video-item" 
-                                data-country="Armenia" 
-                                data-artist="Sirusho" 
-                                data-song="Qélé, Qélé"
-                                data-final-place="4"
-                                data-semi-place="2"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-AM.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Armenia" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-AM.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-AM.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="armenia">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/am.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Sirusho<br/>Qélé, Qélé<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- AUSTRALIA --
-                            <div class="video-item" 
-                                data-country="Australia" 
-                                data-artist="" 
-                                data-song=""
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-AU.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Australia" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-AU.jpeg"/>
-                                        <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-AU.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="australia">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/au.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Artist<br/>Title<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- AUSTRIA --
-                            <div class="video-item" 
-                                data-country="Austria" 
-                                data-artist="" 
-                                data-song=""
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-AT.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Austria" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-AT.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-AT.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="austria">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/at.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Artist<br/>Title<br/></div>
-                                </div>
-                            </div>
-                            
-
-                            <!-- AZERBAIJAN -->
-                            <div class="video-item" 
-                                data-country="Azerbaijan" 
-                                data-artist="Elnur and Samir" 
-                                data-song="Day After Day"
-                                data-final-place="8"
-                                data-semi-place="6"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-AZ.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Azerbaijan" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-AZ.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-AZ.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="azerbaijan">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/az.png"/>
-                                    </a>
-                            
-                                     <div class="video-title-text">Elnur and Samir<br/>Day After Day<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- BELARUS -->
-                            <div class="video-item" 
-                                data-country="Belarus" 
-                                data-artist="Ruslan Alehno" 
-                                data-song="Hasta la vista"
-                                data-final-place=""
-                                data-semi-place="17"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-BY.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Azerbaijan" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-BY.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-BY.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="belarus">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/by.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Ruslan Alehno<br/>Hasta la vista<br/></div>
-                                </div>
-                            </div>
-            
-                            
-                            <!-- BELGIUM -->
-                            <div class="video-item" 
-                                data-country="Belgium" 
-                                data-artist="Ishtar" 
-                                data-song="O Julissi"
-                                data-final-place=""
-                                data-semi-place="17"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-GE.mp4')">
-                                
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Belgium" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-BE.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-BE.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="belgium">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/be.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Ishtar<br/>O Julissi<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- BOSNIA & HERCEGOVINA -->
-                            <div class="video-item" 
-                                data-country="Bosnia-Hercegovina" 
-                                data-artist="Laka" 
-                                data-song="Pokušaj"
-                                data-final-place="10"
-                                data-semi-place="9"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-BA.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Bosnia-Hercegovina" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-BA.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-BA.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="bosnia-hercegovina">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ba.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Laka<br/>Pokušaj<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- BULGARIA -->
-                            <div class="video-item" 
-                                data-country="Bulgaria" 
-                                data-artist="Deep Zone and Balthazar" 
-                                data-song="DJ, Take Me Away"
-                                data-final-place=""
-                                data-semi-place="11"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-BG.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Azerbaijan" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-BG.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-BG.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="bulgaria">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/bg.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Deep Zone and Balthazar<br/>DJ, Take Me Away<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- CROATIA -->
-                            <div class="video-item" 
-                                data-country="Croatia" 
-                                data-artist="Kraljevi ulice and 75 Cents" 
-                                data-song="Romanca"
-                                data-final-place="21"
-                                data-semi-place="4"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-HR.mp4')">
-                                
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Croatia" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-HR.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-HR.mp4"></video>
-                                </div>
-                                
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="croatia">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/hr.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Kraljevi ulice and 75 Cents<br/>Romanca<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- CYPRUS -->
-                            <div class="video-item" 
-                                data-country="Cyprus"
-                                data-artist="Evdokia Kadi" 
-                                data-song="Femme Fatale"
-                                data-final-place=""
-                                data-semi-place="15"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-CY.mp4')">
-                                
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Cyprus" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-CY.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-CY.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="cyprus.html">
-                                    <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/cy.png"/>
-                                    </a>
-                                    
-                                    <div class="video-title-text">Evdokia Kadi<br/>Femme Fatale<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- CZECHIA -->
-                            <div class="video-item" 
-                                data-country="Czechia" 
-                                data-artist="Laka" 
-                                data-song="Pokušaj"
-                                data-final-place=""
-                                data-semi-place=""
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-CZ.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Czechia" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-CZ.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-CZ.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="czechia">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/cz.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Laka<br/>Pokušaj<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- DENMARK -->
-                            <div class="video-item" 
-                                data-country="Denmark" 
-                                data-artist="Simon Mathew" 
-                                data-song="All Night Long"
-                                data-final-place="15"
-                                data-semi-place="3"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-DK.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Denmark" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-DK.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-DK.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="denmark">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/dk.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Simon Mathew<br/>All Night Long<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- ESTONIA -->
-                            <div class="video-item" 
-                                data-country="Estonia" 
-                                data-artist="Kreisiraadio" 
-                                data-song="Leto svet"
-                                data-final-place=""
-                                data-semi-place="18"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-EE.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Estonia" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-EE.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-EE.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="estonia">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ee.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Kreisiraadio<br/>Leto svet<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- FINLAND -->
-                            <div class="video-item" 
-                                data-country="Finland" 
-                                data-artist="Teräsbetoni" 
-                                data-song="Missä miehet ratsastaa"
-                                data-final-place="22"
-                                data-semi-place="8"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-FI.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Finland" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-FI.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-FI.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="finland">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/fi.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Teräsbetoni<br/>Missä miehet ratsastaa<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- FRANCE -->
-                            <div class="video-item" 
-                                data-country="France" 
-                                data-artist="Sébastien Tellier" 
-                                data-song="Divine"
-                                data-final-place="19"
-                                data-semi-place=""
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-FR.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="France" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-FR.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-FR.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="france">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/fr.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Sébastien Tellier<br/>Divine<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- GEORGIA -->
-                            <div class="video-item" 
-                                data-country="Georgia" 
-                                data-artist="Diana Gurtskaya" 
-                                data-song="Peace Will Come"
-                                data-final-place="11"
-                                data-semi-place="5"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-GE.mp4')">
-                                
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Georgia" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-GE.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-GE.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="georgia">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ge.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Diana Gurtskaya<br/>Peace Will Come<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- GERMANY -->
-                            <div class="video-item" 
-                                data-country="Germany" 
-                                data-artist="No Angels" 
-                                data-song="Disappear"
-                                data-final-place="23"
-                                data-semi-place=""
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-DE.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Germany" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-DE.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-DE.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="germany">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/de.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">No Angels<br/>Disappear<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!--GREECE -->
-                            <div class="video-item" 
-                                data-country="Greece" 
-                                data-artist="Kalomira" 
-                                data-song="Secret Combination"
-                                data-final-place="3"
-                                data-semi-place="1"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-GR.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Greece" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-GR.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-GR.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="greece">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/gr.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Kalomira<br/>Secret Combination<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- HUNGARY -->
-                            <div class="video-item" 
-                                data-country="Hungary" 
-                                data-artist="Csézy" 
-                                data-song="Candlelight"
-                                data-final-place=""
-                                data-semi-place="19"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-HU.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Hungary" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-HU.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-HU.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="hungary">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/hu.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Csézy<br/>Candlelight<br/></div>
-                                </div>
-                            </div>
-
-                             <!-- ICELAND-->
-                            <div class="video-item" 
-                                data-country="Iceland" 
-                                data-artist="Euroband" 
-                                data-song="This Is My Life"
-                                data-final-place="14"
-                                data-semi-place="8"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-IS.mp4')">
-                                
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Iceland" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-IS.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-IS.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="iceland">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/is.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Euroband<br/>This Is My Life<br/></div>
-                                </div>
-                            </div>
-
-                            <!-- IRELAND -->
-                            <div class="video-item" 
-                                data-country="Ireland" 
-                                data-artist="Dustin the Turkey" 
-                                data-song="Irelande Douze Pointe"
-                                data-final-place=""
-                                data-semi-place="15"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-IE.mp4')">
-                                
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Ireland" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-IE.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-IE.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="ireland">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ie.png"/>
-                                    </a>
-                                    
-                                    <div class="video-title-text">Dustin the Turkey<br/>Irelande Douze Pointe<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- ISRAEL -->
-                            <div class="video-item" 
-                                data-country="Israel" 
-                                data-artist="Boaz" 
-                                data-song="The Fire in Your Eyes"
-                                data-final-place="9"
-                                data-semi-place="5"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-IL.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Israel" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-IL.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-IL.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="israel">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/il.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Boaz<br/>The Fire in Your Eyes<br/></div>
-                                </div>
-                            </div>
-
-                            <!-- ITALY --
-                            <div class="video-item" 
-                                data-country="Italy" 
-                                data-artist="" 
-                                data-song=""
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-IT.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Italy" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-IT.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-IT.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="italy">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/it.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Artist<br/>Title<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- LATVIA -->
-                            <div class="video-item" 
-                                data-country="Latvia" 
-                                data-artist="Pirates of the Sea" 
-                                data-song="Wolves of the Sea"
-                                data-final-place="12"
-                                data-semi-place="6"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-LV.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Latvia" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-LV.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-LV.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="latvia">
-                                    <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/lv.png"/>
-                                </a>
-                            
-                                    <div class="video-title-text">Pirates of the Sea<br/>Wolves of the Sea<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- LITHUANIA -->
-                            <div class="video-item"
-                                data-country="Lithuania" 
-                                data-artist="Jeronimas Milius" 
-                                data-song="Nomads in the Night"
-                                data-final-place=""
-                                data-semi-place="16"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-LT.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Lithuania" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-LT.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-LT.mp4"></video>
-                                </div>
-                                
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="lithuania">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/lt.png"/>
-                                    </a>
-                                    
-                                    <div class="video-title-text">Jeronimas Milius<br/>Nomads in the Night<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- LUXEMBOURG --
-                            <div class="video-item" 
-                                data-country="Luxembourg" 
-                                data-artist="" 
-                                data-song=""
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-LU.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Luxembourg" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-LU.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-LU.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="luxembourg">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/lu.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Artist<br/>Title<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- MALTA -->
-                            <div class="video-item" 
-                                data-country="Malta" 
-                                data-artist="Morena" 
-                                data-song="Vodka"
-                                data-final-place=""
-                                data-semi-place="14"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-MT.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Malta" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-MT.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-MT.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="malta">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/mt.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Morena<br/>Vodka<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- MOLDOVA -->
-                            <div class="video-item" 
-                                data-country="Moldova" 
-                                data-artist="Geta Burlacu" 
-                                data-song="A Century of Love"
-                                data-final-place=""
-                                data-semi-place="12"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-MD.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Moldova" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-MD.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-MD.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="moldova">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/md.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Geta Burlacu<br/>A Century of Love<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- MONACO 
-                            <div class="video-item" 
-                                data-country="Monaco" 
-                                data-artist="" 
-                                data-song=""
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-MC.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Monaco" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-MC.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-MC.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="monaco">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/mc.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Artist<br/>Title<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- MONTENEGRO -->
-                            <div class="video-item" 
-                                data-country="Montenegro" 
-                                data-artist="Stefan Filipović" 
-                                data-song="Zauvijek volim te"
-                                data-final-place=""
-                                data-semi-place="14"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-ME.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Montenegro" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-ME.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-ME.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="montenegro">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/me.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Stefan Filipović<br/>Zauvijek volim te<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- MOROCCO 
-                            <div class="video-item" 
-                                data-country="Morocco" 
-                                data-artist="" 
-                                data-song=""
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-MA.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Morocco" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-MA.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-MA.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="morocco">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ma.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Artist<br/>Title<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- NETHERLANDS -->
-                            <div class="video-item" 
-                                data-country="Netherlands" 
-                                data-artist="Hind" 
-                                data-song="Your Heart Belongs to Me"
-                                data-final-place=""
-                                data-semi-place="13"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-NL.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Netherlands" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-NL.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-NL.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="netherlands">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/nl.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Hind<br/>Your Heart Belongs to Me<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- NORTH MACEDONIA -->
-                            <div class="video-item" 
-                                data-country="North Macedonia" 
-                                data-artist="Tamara, Vrčak and Adrijan" 
-                                data-song="Let Me Love You"
-                                data-final-place=""
-                                data-semi-place="10"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-MK.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="North Macedonia" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-MK.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-MK.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="north-macedonia">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/mk.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Tamara, Vrčak and Adrijan<br/>Let Me Love You<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- NORWAY -->
-                            <div class="video-item" 
-                                data-country="Norway" 
-                                data-artist="Maria" 
-                                data-song="Hold On Be Strong"
-                                data-final-place="5"
-                                data-semi-place="4"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-NO.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Norway" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-NO.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-NO.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="norway">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/no.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Maria<br/>Hold On Be Strong<br/></div>
-                                </div>
-                            </div>
-                                
-
-                            <!-- POLAND -->
-                            <div class="video-item" 
-                                data-country="Poland" 
-                                data-artist="Isis Gee" 
-                                data-song="For Life"
-                                data-final-place="24"
-                                data-semi-place=""
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-PL.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Poland" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-PL.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-PL.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="poland">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/pl.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Isis Gee<br/>For Life<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!--PORTUGAL -->
-                            <div class="video-item" 
-                                data-country="Portugal" 
-                                data-artist="Vânia Fernandes" 
-                                data-song="Senhora do mar (negras águas)"
-                                data-final-place="13"
-                                data-semi-place="2"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-PT.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Portugal" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-PT.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-PT.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="portugal">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/pt.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Vânia Fernandes<br/>Senhora do mar (negras águas)<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- ROMANIA -->
-                            <div class="video-item" 
-                                data-country="Romania" 
-                                data-artist="Nico and Vlad" 
-                                data-song="Pe-o margine de lume"
-                                data-final-place="20"
-                                data-semi-place="7"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-RO.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Romania" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-RO.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-RO.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="romania">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ro.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Nico and Vlad<br/>Pe-o margine de lume<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- RUSSIA -->
-                            <div class="video-item" 
-                                data-country="Russia" 
-                                data-artist="Dima Bilan" 
-                                data-song="Believe"
-                                data-final-place="1"
-                                data-semi-place="3"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-RU.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Russia" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-RU.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-RU.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="russia">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ru.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Dima Bilan<br/>Believe<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- SAN MARINO -->
-                            <div class="video-item" 
-                                data-country="San Marino" 
-                                data-artist="Miodio" 
-                                data-song="Complice"
-                                data-final-place=""
-                                data-semi-place="19"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-SM.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="San Marino" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-SM.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-SM.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="sanmarino">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sm.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Miodio<br/>Complice<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- SERBIA -->
-                            <div class="video-item" 
-                                data-country="Serbia" 
-                                data-artist="Jelena Tomaševićfeat.Bora Dugić" 
-                                data-song="Oro"
-                                data-final-place="6"
-                                data-semi-place=""  
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-RS.mp4')">
-                                
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Serbia 2015 - Teya Dora" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-RS.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-RS.mp4"></video>
-                                </div>
-                                
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="Serbia">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/rs.png"/>
-                                    </a>
-                                    
-                                    <div class="video-title-text">Jelena Tomaševićfeat.Bora Dugić<br/>Oro<br/></div>
-                                </div>
-                            </div>    
-
-
-                            <!-- SERBIA & MONTENEGRO 
-                            <div class="video-item" 
-                                data-country="Serbia & Montenegro" 
-                                data-artist="" 
-                                data-song=""
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-CS.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Serbia & Montenegro" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-CS.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-CS.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="serbia-montenegro">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/cs.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Artist<br/>Title<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- SLOVAKIA 
-                            <div class="video-item" 
-                                data-country="Slovakia" 
-                                data-artist="" 
-                                data-song=""
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-SK.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Slovakia" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-SK.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-SK.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="slovakia">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/sk.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Artist<br/>Title<br/></div>
-                                </div>
-                            </div>
-
-                            <!-- SLOVENIA -->
-                            <div class="video-item" 
-                                data-country="Slovenia" 
-                                data-artist="Rebeka Dremelj" 
-                                data-song="Vrag naj vzame"
-                                data-final-place=""
-                                data-semi-place="11"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-SI.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Slovenia" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-SI.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-SI.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="slovenia">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/si.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Rebeka Dremelj<br/>Vrag naj vzame<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- SPAIN -->
-                            <div class="video-item" 
-                                data-country="Spain" 
-                                data-artist="Rodolfo Chikilicuatre" 
-                                data-song="Baila el Chiki Chiki"
-                                data-final-place="16"
-                                data-semi-place=""
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-ES.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Spain" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-ES.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-ES.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="spain">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/es.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Rodolfo Chikilicuatre<br/>Baila el Chiki Chiki<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- SWEDEN -->
-                            <div class="video-item" 
-                                data-country="Sweden" 
-                                data-artist="Charlotte Perrelli" 
-                                data-song="Hero"
-                                data-final-place="18"
-                                data-semi-place=""
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-SE.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Sweden" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-SE.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-SE.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="sweden">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/se.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Charlotte Perrelli<br/>Hero<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- SWITZERLAND -->
-                            <div class="video-item" 
-                                data-country="Switzerland" 
-                                data-artist="Paolo Meneguzzi" 
-                                data-song="Era stupendo"
-                                data-final-place=""
-                                data-semi-place="13"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-CH.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Switzerland" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-CH.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-CH.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="switzerland">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ch.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Paolo Meneguzzi<br/>Era stupendo<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- TURKEY -->
-                            <div class="video-item" 
-                                data-country="Turkey" 
-                                data-artist="Mor ve Ötesi" 
-                                data-song="Deli"
-                                data-final-place="7"
-                                data-semi-place="7"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-TK.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Turkey" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-TK.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-TK.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="turkey">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/tk.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Mor ve Ötesi<br/>Deli<br/></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- UKRAINE -->
-                            <div class="video-item" 
-                                data-country="Ukraine" 
-                                data-artist="Ani Lorak" 
-                                data-song="Shady Lady"
-                                data-final-place="2"
-                                data-semi-place="1"
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-UA.mp4')">
-                                
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Ukraine" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-UA.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-UA.mp4"></video>
-                                </div>
                         
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="ukraine">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/ua.png"/>
-                                    </a>
-                                
-                                    <div class="video-title-text">Ani Lorak<br/>Shady Lady<br/></div>
-                                </div>
-                            </div>
-
-
-                            <!-- UNITED KINGDOM -->
-                            <div class="video-item" 
-                                data-country="United Kingdom" 
-                                data-artist="Andy Abraham" 
-                                data-song="Even If"
-                                data-final-place="25"
-                                data-semi-place=""
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-GB.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="United Kingdom" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-GB.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-GB.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="unitedkingdom">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/gb.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Andy Abraham<br/>Even If<br/></div>
-                                </div>
-                            </div>
-
-                            <!-- YUGOSLAVIA 
-                            <div class="video-item" 
-                                data-country="Yugoslavia" 
-                                data-artist="" 
-                                data-song=""
-                                data-final-jury-points="" 
-                                data-final-televote-points="" 
-                                data-final-total-points="" 
-                                data-semifinal-jury-points="" 
-                                data-semifinal-televote-points="" 
-                                data-semifinal-total-points="" 
-                                onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-YU.mp4')">
-                            
-                                <div class="preview-container" onmouseout="hidePreview(this)" onmouseover="showPreview(this)">
-                                    <img alt="Yugoslavia" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/thumbs/2008-YU.jpeg"/>
-                                    <video loop="" muted="" src="https://euroflix.s3.eu-north-1.amazonaws.com/2008/videos/2008-YU.mp4"></video>
-                                </div>
-                            
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="yugoslavia">
-                                        <img alt="Flag" class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/yu.png"/>
-                                    </a>
-                            
-                                    <div class="video-title-text">Artist<br/>Title<br/></div>
-                                </div>
-                            </div> -->
-
-
+                        <!-- Albania -->
+                        <div class="video-item" data-artist="Olta Boka" data-country="Albania" data-song="Zemrën e lamë peng" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1xmSA6kf3hRwgaWFl0tUHv2adLkhdDSh-/')">
+                          <div class="preview-container"><img alt="Albania 2008" src="images/2008-AL.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Albania.html"><img alt="Flag" class="icon-placeholder" src="flags/al.png"/></a>
+                            <div class="video-title-text"><b>Olta Boka</b><br>Zemrën e lamë peng<br>Albania</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Andorra -->
+                        <div class="video-item" data-artist="Gisela" data-country="Andorra" data-song="Casanova" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1cyDK44vd5glWtFMz3MCjH0jpWh9yZ4Rw/')">
+                          <div class="preview-container"><img alt="Andorra 2008" src="images/2008-AD.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Andorra.html"><img alt="Flag" class="icon-placeholder" src="flags/ad.png"/></a>
+                            <div class="video-title-text"><b>Gisela</b><br>Casanova<br>Andorra</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Armenia -->
+                        <div class="video-item" data-artist="Sirusho" data-country="Armenia" data-song="Qélé, Qélé" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1NsJrjVG2SaYmuU477HVs_2iTp6dN-n-P/')">
+                          <div class="preview-container"><img alt="Armenia 2008" src="images/2008-AM.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Armenia.html"><img alt="Flag" class="icon-placeholder" src="flags/am.png"/></a>
+                            <div class="video-title-text"><b>Sirusho</b><br>Qélé, Qélé<br>Armenia</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Azerbaijan -->
+                        <div class="video-item" data-artist="Elnur and Samir" data-country="Azerbaijan" data-song="Day After Day" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1XJNZ7G5H75C_deOogRw4rjUwH8rx2DGB/')">
+                          <div class="preview-container"><img alt="Azerbaijan 2008" src="images/2008-AZ.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Azerbaijan.html"><img alt="Flag" class="icon-placeholder" src="flags/az.png"/></a>
+                            <div class="video-title-text"><b>Elnur and Samir</b><br>Day After Day<br>Azerbaijan</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Belarus -->
+                        <div class="video-item" data-artist="Ruslan Alehno" data-country="Belarus" data-song="Hasta la vista" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/138nDwBMBSfb-C7FyJ00A_Y41bWbioQ2Q/')">
+                          <div class="preview-container"><img alt="Belarus 2008" src="images/2008-BY.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Belarus.html"><img alt="Flag" class="icon-placeholder" src="flags/by.png"/></a>
+                            <div class="video-title-text"><b>Ruslan Alehno</b><br>Hasta la vista<br>Belarus</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Belgium -->
+                        <div class="video-item" data-artist="Ishtar" data-country="Belgium" data-song="O Julissi" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/18J4v7PVcOJHo2CTGRv_oDJJNCX5rfLtx/')">
+                          <div class="preview-container"><img alt="Belgium 2008" src="images/2008-BE.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Belgium.html"><img alt="Flag" class="icon-placeholder" src="flags/be.png"/></a>
+                            <div class="video-title-text"><b>Ishtar</b><br>O Julissi<br>Belgium</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Bulgaria -->
+                        <div class="video-item" data-artist="Deep Zone and Balthazar" data-country="Bulgaria" data-song="DJ, Take Me Away" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1yor1fp57UsQlzR_anfzcgShR9XdFdDcZ/')">
+                          <div class="preview-container"><img alt="Bulgaria 2008" src="images/2008-BG.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Bulgaria.html"><img alt="Flag" class="icon-placeholder" src="flags/bg.png"/></a>
+                            <div class="video-title-text"><b>Deep Zone and Balthazar</b><br>DJ, Take Me Away<br>Bulgaria</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Croatia -->
+                        <div class="video-item" data-artist="Kraljevi ulice and 75 Cents" data-country="Croatia" data-song="Romanca" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1i9d0YQO1nh930b_yQxMUBU2fiqjX8NGd/')">
+                          <div class="preview-container"><img alt="Croatia 2008" src="images/2008-HR.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Croatia.html"><img alt="Flag" class="icon-placeholder" src="flags/hr.png"/></a>
+                            <div class="video-title-text"><b>Kraljevi ulice and 75 Cents</b><br>Romanca<br>Croatia</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Cyprus -->
+                        <div class="video-item" data-artist="Evdokia Kadi" data-country="Cyprus" data-song="Femme Fatale" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1UM9-g-gQ7TCmTHcVkpVmJwhB7-UWI9LE/')">
+                          <div class="preview-container"><img alt="Cyprus 2008" src="images/2008-CY.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Cyprus.html"><img alt="Flag" class="icon-placeholder" src="flags/cy.png"/></a>
+                            <div class="video-title-text"><b>Evdokia Kadi</b><br>Femme Fatale<br>Cyprus</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Czechia -->
+                        <div class="video-item" data-artist="Tereza Kerndlová" data-country="Czechia" data-song="Have Some Fun" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1_4JtLDuHfAbHfb0CD-ang0yUk65xu_CN/')">
+                          <div class="preview-container"><img alt="Czechia 2008" src="images/2008-CZ.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Czechia.html"><img alt="Flag" class="icon-placeholder" src="flags/cz.png"/></a>
+                            <div class="video-title-text"><b>Tereza Kerndlová</b><br>Have Some Fun<br>Czechia</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Denmark -->
+                        <div class="video-item" data-artist="Simon Mathew" data-country="Denmark" data-song="All Night Long" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1rCrAOpwPFvDubBctjx-7pD9bp2k4NYNl/')">
+                          <div class="preview-container"><img alt="Denmark 2008" src="images/2008-DK.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Denmark.html"><img alt="Flag" class="icon-placeholder" src="flags/dk.png"/></a>
+                            <div class="video-title-text"><b>Simon Mathew</b><br>All Night Long<br>Denmark</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Estonia -->
+                        <div class="video-item" data-artist="Kreisiraadio" data-country="Estonia" data-song="Leto svet" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1q9sb7QNjYIXBrhGfdOknGDkul-ROudMi/')">
+                          <div class="preview-container"><img alt="Estonia 2008" src="images/2008-EE.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Estonia.html"><img alt="Flag" class="icon-placeholder" src="flags/ee.png"/></a>
+                            <div class="video-title-text"><b>Kreisiraadio</b><br>Leto svet<br>Estonia</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Finland -->
+                        <div class="video-item" data-artist="Teräsbetoni" data-country="Finland" data-song="Missä miehet ratsastaa" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1FZYOOsW65_MqbpTx9t4X9L4iO7Q2NWuF/')">
+                          <div class="preview-container"><img alt="Finland 2008" src="images/2008-FI.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Finland.html"><img alt="Flag" class="icon-placeholder" src="flags/fi.png"/></a>
+                            <div class="video-title-text"><b>Teräsbetoni</b><br>Missä miehet ratsastaa<br>Finland</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Georgia -->
+                        <div class="video-item" data-artist="Diana Gurtskaya" data-country="Georgia" data-song="Peace Will Come" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1TG24silFa-3I51B5tmt-XziOPwHfCWu6/')">
+                          <div class="preview-container"><img alt="Georgia 2008" src="images/2008-GE.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Georgia.html"><img alt="Flag" class="icon-placeholder" src="flags/ge.png"/></a>
+                            <div class="video-title-text"><b>Diana Gurtskaya</b><br>Peace Will Come<br>Georgia</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Greece -->
+                        <div class="video-item" data-artist="Kalomira" data-country="Greece" data-song="Secret Combination" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1kpX3gcL-P_1JLg10r7hciQYXnBbRSA4a/')">
+                          <div class="preview-container"><img alt="Greece 2008" src="images/2008-GR.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Greece.html"><img alt="Flag" class="icon-placeholder" src="flags/gr.png"/></a>
+                            <div class="video-title-text"><b>Kalomira</b><br>Secret Combination<br>Greece</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Hungary -->
+                        <div class="video-item" data-artist="Csézy" data-country="Hungary" data-song="Candlelight" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Tjh8HFHZpdVywsL8cCbmOXO-wtBJgjbX/')">
+                          <div class="preview-container"><img alt="Hungary 2008" src="images/2008-HU.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Hungary.html"><img alt="Flag" class="icon-placeholder" src="flags/hu.png"/></a>
+                            <div class="video-title-text"><b>Csézy</b><br>Candlelight<br>Hungary</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Iceland -->
+                        <div class="video-item" data-artist="Euroband" data-country="Iceland" data-song="This Is My Life" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1ATRPVSyxO1MCHe4OynRQDeHNCDIH5OsI/')">
+                          <div class="preview-container"><img alt="Iceland 2008" src="images/2008-IS.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Iceland.html"><img alt="Flag" class="icon-placeholder" src="flags/is.png"/></a>
+                            <div class="video-title-text"><b>Euroband</b><br>This Is My Life<br>Iceland</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Ireland -->
+                        <div class="video-item" data-artist="Dustin the Turkey" data-country="Ireland" data-song="Irelande Douze Pointe" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1J4q-ySQKah_Iv5YFiauXeaC92Hn3lgPa/')">
+                          <div class="preview-container"><img alt="Ireland 2008" src="images/2008-IE.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Ireland.html"><img alt="Flag" class="icon-placeholder" src="flags/ie.png"/></a>
+                            <div class="video-title-text"><b>Dustin the Turkey</b><br>Irelande Douze Pointe<br>Ireland</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Latvia -->
+                        <div class="video-item" data-artist="Pirates of the Sea" data-country="Latvia" data-song="Wolves of the Sea" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1esFfUcU7tAjjzHdagM7vw-k69Mgq7bF1/')">
+                          <div class="preview-container"><img alt="Latvia 2008" src="images/2008-LV.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Latvia.html"><img alt="Flag" class="icon-placeholder" src="flags/lv.png"/></a>
+                            <div class="video-title-text"><b>Pirates of the Sea</b><br>Wolves of the Sea<br>Latvia</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Lithuania -->
+                        <div class="video-item" data-artist="Jeronimas Milius" data-country="Lithuania" data-song="Nomads in the Night" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1VKAAMy9aFAIWVVnrNrdrf0y19yRwawqS/')">
+                          <div class="preview-container"><img alt="Lithuania 2008" src="images/2008-LT.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Lithuania.html"><img alt="Flag" class="icon-placeholder" src="flags/lt.png"/></a>
+                            <div class="video-title-text"><b>Jeronimas Milius</b><br>Nomads in the Night<br>Lithuania</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Malta -->
+                        <div class="video-item" data-artist="Morena" data-country="Malta" data-song="Vodka" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1buCXU_T6qeV5v6r2cVJ_jZ5JI1Yi-WXb/')">
+                          <div class="preview-container"><img alt="Malta 2008" src="images/2008-MT.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Malta.html"><img alt="Flag" class="icon-placeholder" src="flags/mt.png"/></a>
+                            <div class="video-title-text"><b>Morena</b><br>Vodka<br>Malta</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Moldova -->
+                        <div class="video-item" data-artist="Geta Burlacu" data-country="Moldova" data-song="A Century of Love" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1z2-Xwv9JB0v26aO8heLqjpqShX8EJHQK/')">
+                          <div class="preview-container"><img alt="Moldova 2008" src="images/2008-MD.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Moldova.html"><img alt="Flag" class="icon-placeholder" src="flags/md.png"/></a>
+                            <div class="video-title-text"><b>Geta Burlacu</b><br>A Century of Love<br>Moldova</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Montenegro -->
+                        <div class="video-item" data-artist="Stefan Filipović" data-country="Montenegro" data-song="Zauvijek volim te" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1gTQm6BEmld94WV6SXMZ8treA9d0QJyB7/')">
+                          <div class="preview-container"><img alt="Montenegro 2008" src="images/2008-ME.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Montenegro.html"><img alt="Flag" class="icon-placeholder" src="flags/me.png"/></a>
+                            <div class="video-title-text"><b>Stefan Filipović</b><br>Zauvijek volim te<br>Montenegro</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Netherlands -->
+                        <div class="video-item" data-artist="Hind" data-country="Netherlands" data-song="Your Heart Belongs to Me" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1c_laV19VDj0_tpPXUFq3vxtZcwUnGy2Y/')">
+                          <div class="preview-container"><img alt="Netherlands 2008" src="images/2008-NL.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Netherlands.html"><img alt="Flag" class="icon-placeholder" src="flags/nl.png"/></a>
+                            <div class="video-title-text"><b>Hind</b><br>Your Heart Belongs to Me<br>Netherlands</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Norway -->
+                        <div class="video-item" data-artist="Maria" data-country="Norway" data-song="Hold On Be Strong" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1bzRf3NyEZqcP9_wruP-Qnuh2I0dz3lFK/')">
+                          <div class="preview-container"><img alt="Norway 2008" src="images/2008-NO.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Norway.html"><img alt="Flag" class="icon-placeholder" src="flags/no.png"/></a>
+                            <div class="video-title-text"><b>Maria</b><br>Hold On Be Strong<br>Norway</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Poland -->
+                        <div class="video-item" data-artist="Isis Gee" data-country="Poland" data-song="For Life" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Kbw3l684ZUvJIVsuMnG4G4F7TGpQDhMw/')">
+                          <div class="preview-container"><img alt="Poland 2008" src="images/2008-PL.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Poland.html"><img alt="Flag" class="icon-placeholder" src="flags/pl.png"/></a>
+                            <div class="video-title-text"><b>Isis Gee</b><br>For Life<br>Poland</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Portugal -->
+                        <div class="video-item" data-artist="Vânia Fernandes" data-country="Portugal" data-song="Senhora do mar (negras águas)" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/12szn4aFFlnqQisFnduKlxJ-jBvKIJ4G3/')">
+                          <div class="preview-container"><img alt="Portugal 2008" src="images/2008-PT.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Portugal.html"><img alt="Flag" class="icon-placeholder" src="flags/pt.png"/></a>
+                            <div class="video-title-text"><b>Vânia Fernandes</b><br>Senhora do mar (negras águas)<br>Portugal</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Romania -->
+                        <div class="video-item" data-artist="Nico and Vlad" data-country="Romania" data-song="Pe-o margine de lume" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1g7Z9_dsEmmN_2EkOb_sV_t650t-1GwRo/')">
+                          <div class="preview-container"><img alt="Romania 2008" src="images/2008-RO.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Romania.html"><img alt="Flag" class="icon-placeholder" src="flags/ro.png"/></a>
+                            <div class="video-title-text"><b>Nico and Vlad</b><br>Pe-o margine de lume<br>Romania</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Russia -->
+                        <div class="video-item" data-artist="Dima Bilan" data-country="Russia" data-song="Believe" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1TSBuD6avFh7GSfYIzsoQpsX32cNP-nB2/')">
+                          <div class="preview-container"><img alt="Russia 2008" src="images/2008-RU.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Russia.html"><img alt="Flag" class="icon-placeholder" src="flags/ru.png"/></a>
+                            <div class="video-title-text"><b>Dima Bilan</b><br>Believe<br>Russia</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- San Marino -->
+                        <div class="video-item" data-artist="Miodio" data-country="San Marino" data-song="Complice" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/184kN2AtaV68oSnWxdKeGhXMyUiZOT60-/')">
+                          <div class="preview-container"><img alt="San Marino 2008" src="images/2008-SM.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="San Marino.html"><img alt="Flag" class="icon-placeholder" src="flags/sm.png"/></a>
+                            <div class="video-title-text"><b>Miodio</b><br>Complice<br>San Marino</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Slovenia -->
+                        <div class="video-item" data-artist="Rebeka Dremelj" data-country="Slovenia" data-song="Vrag naj vzame" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Tzk1__PxHHdqcPPHQsLOYbO_05jNyOyd/')">
+                          <div class="preview-container"><img alt="Slovenia 2008" src="images/2008-SI.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Slovenia.html"><img alt="Flag" class="icon-placeholder" src="flags/si.png"/></a>
+                            <div class="video-title-text"><b>Rebeka Dremelj</b><br>Vrag naj vzame<br>Slovenia</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Sweden -->
+                        <div class="video-item" data-artist="Charlotte Perrelli" data-country="Sweden" data-song="Hero" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1BmbVKyUcIj_rV0EWnTVlF-GYIzckthj7/')">
+                          <div class="preview-container"><img alt="Sweden 2008" src="images/2008-SE.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Sweden.html"><img alt="Flag" class="icon-placeholder" src="flags/se.png"/></a>
+                            <div class="video-title-text"><b>Charlotte Perrelli</b><br>Hero<br>Sweden</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Switzerland -->
+                        <div class="video-item" data-artist="Paolo Meneguzzi" data-country="Switzerland" data-song="Era stupendo" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1-2w-FMp4qTDlxASUWVn7FkhELSgSPRTX/')">
+                          <div class="preview-container"><img alt="Switzerland 2008" src="images/2008-CH.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Switzerland.html"><img alt="Flag" class="icon-placeholder" src="flags/ch.png"/></a>
+                            <div class="video-title-text"><b>Paolo Meneguzzi</b><br>Era stupendo<br>Switzerland</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Turkey -->
+                        <div class="video-item" data-artist="Mor ve Ötesi" data-country="Turkey" data-song="Deli" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1jP3_vSlMZN_CUO1n0-Eow2Qwn8xswsVF/')">
+                          <div class="preview-container"><img alt="Turkey 2008" src="images/2008-TK.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Turkey.html"><img alt="Flag" class="icon-placeholder" src="flags/tk.png"/></a>
+                            <div class="video-title-text"><b>Mor ve Ötesi</b><br>Deli<br>Turkey</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Ukraine -->
+                        <div class="video-item" data-artist="Ani Lorak" data-country="Ukraine" data-song="Shady Lady" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1L_wIqKGJJOPlCvvdugflzFAO9hYDqMwy/')">
+                          <div class="preview-container"><img alt="Ukraine 2008" src="images/2008-UA.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Ukraine.html"><img alt="Flag" class="icon-placeholder" src="flags/ua.png"/></a>
+                            <div class="video-title-text"><b>Ani Lorak</b><br>Shady Lady<br>Ukraine</div>
+                          </div>
+                        </div>
+                        
+                        
+                        <!-- Israel -->
+                        <div class="video-item" data-artist="Boaz" data-country="Israel" data-song="The Fire in Your Eyes" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1TSRx7cQ5JFv1j1FR6bv-ymZfn8ftrAB0/')">
+                          <div class="preview-container"><img alt="Israel 2008" src="images/2008-IL.jpeg"/></div>
+                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="Israel.html"><img alt="Flag" class="icon-placeholder" src="flags/il.png"/></a>
+                            <div class="video-title-text"><b>Boaz</b><br>The Fire in Your Eyes<br>Israel</div>
+                          </div>
+                        </div>
+                        
                         </div> <!-- end of grid-container -->
                     </div> <!-- end of grid-section -->
             </div> <!-- end of main-content -->
         </div> <!-- end of container -->
         
+        <!-- MODAL -->
+        <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+            <div class="modal-content">
+                <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+                <video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;"></video>
+                <iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" id="modalIframe" style="display: none;"></iframe>
+            </div>
+        </div>
         
-        <!-- Modal (used by JS) -->
+        <!-- Modal (used by JS) -
         <div class="modal" id="videoModal" onclick="closeModal(event)">
             <span class="modal-close" onclick="closeModal(event)">×</span>
             <video autoplay="" controls="" controlslist="nodownload" id="modalVideo"></video>
         </div>
+        -->
     
         <footer class="site-footer">
             <div class="footer-line"></div>
             <div class="footer-branding">
                 <div class="footer-flag">
-                    <img alt="United Kingdom" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/gb.png"/>
+                    <img alt="United Kingdom" src="/flags/gb.png"/>
                 </div>
                 <span class="footer-title">Douze Points</span>
             </div>
@@ -1625,7 +778,42 @@
                 <a href="privacy.html">Privacy Policy</a>
             </div>
         </footer>
-    
+
+        <script>
+            function GDriveOpenModalWithVideo(videoUrl, titleText) {
+              const modal = document.getElementById("videoModal");
+              const video = document.getElementById("modalVideo");
+              const iframe = document.getElementById("modalIframe");
+              modal.style.display = "flex";
+              video.style.display = "none";
+              iframe.style.display = "none";
+              video.pause();
+              iframe.src = "";
+              if (videoUrl.includes('drive.google.com')) {
+                const match = videoUrl.match(/\/d\/(.*?)\//);
+                if (match && match[1]) {
+                  iframe.src = `https://drive.google.com/file/d/${match[1]}/preview`;
+                  iframe.style.display = "block";
+                }
+              } else {
+                video.src = videoUrl;
+                video.style.display = "block";
+                video.play();
+              }
+            }
+
+            function GDriveCloseModal(event) {
+              event.stopPropagation();
+              const modal = document.getElementById("videoModal");
+              const video = document.getElementById("modalVideo");
+              const iframe = document.getElementById("modalIframe");
+              video.pause();
+              video.src = "";
+              iframe.src = "";
+              modal.style.display = "none";
+            }
+        </script>
+        
         <script> 
             /* lucide icon script */ 
             lucide.createIcons();
