@@ -87,13 +87,16 @@ h4 {
 }
 */
 
-.carousel-track::-webkit-scrollbar {
-  display: none;
+.carousel-track {
+  display: flex;
+  gap: 10px; /* controls spacing between items */
+  scroll-behavior: smooth;
 }
 
 .video-item {
-  flex: 0 0 calc(20% - 20px); /* 5 per view with spacing */
-  margin: 10px;
+  flex: 0 0 20%;
+  box-sizing: border-box;
+  padding: 10px;
   background: #1f1f1f;
   border-radius: 6px;
   overflow: hidden;
