@@ -1,12 +1,3 @@
-/*  LOGIN SCRIPT */
-if (sessionStorage.getItem("loggedIn") !== "true") {
-  window.location.href = "login.html";
-}
-/* if (sessionStorage.getItem("loggedIn") !== "true") { */
-/*  window.location.href = "login.html"; */
-/*} */
-
-
 function scrollCarousel(direction, trackId) {
   const track = document.getElementById(trackId);
   const itemWidth = track.querySelector('.video-item').offsetWidth + 20; // includes margin
