@@ -14,17 +14,44 @@ h4 {
  margin: 0 0 10px 10px;
 }
 
+.carousel-container {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 16px; /* Adjust spacing between videos */
+  scroll-behavior: smooth;
+}
+
+.carousel-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/*
+.video-item {
+  flex: 0 0 calc(20% - 13px); /* 5 items per row with gap accounted */
+  box-sizing: border-box;
+}
+/*
+
 .carousel-section {
   width: 90%;
   max-width: 1200px;
   margin: 0 auto 50px auto;
 }
 
+/*
 .carousel-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
 }
+*/
 
 .carousel-button {
   background: transparent;
@@ -41,12 +68,14 @@ h4 {
   transform: scale(1.2);
 }
 
+/*
 .carousel-container {
   position: relative;
   width: 90%;
   max-width: 1200px;
   overflow: hidden;
 }
+
 
 .carousel-track {
   display: flex;
@@ -56,6 +85,7 @@ h4 {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
+*/
 
 .carousel-track::-webkit-scrollbar {
   display: none;
