@@ -1,16 +1,335 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
     <head>
         <meta charset="utf-8"/>
-        <title>Douze Points | Rotterdam 2021</title>
 
-        <!-- STYLE SHEETS & SCIPTING-->
-        <link rel="stylesheet" type="text/css" href="editions.css">
-        <script src="editions.js" type="text/javascript"></script>
+        <!-- Import Raleway typeface -->
+        <link href="https://fonts.googleapis.com/css2?family=Raleway&amp;display=swap" rel="stylesheet"/>
+
+        <title>Douze Points | Malmö 2024</title>
+
+        <script src="countries.js" type="text/javascript"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+
+        <style>
+    
+
+            body {
+              font-family: 'Raleway', sans-serif;
+              margin: 0;
+              background: #141414;
+              color: #fff;
+            }
         
+            .banner-static {
+              width: 100%;
+              height: 400px;
+              overflow: hidden;
+            }
+            
+            .banner-static img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }      
+              .banner-image.active {
+              opacity: 1;
+              z-index: 2;
+            }
+            /* Overlay layout */
+            .header-overlay {
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              padding: 20px;
+              z-index: 3;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            }
+        
+            .home-link {
+              color: #fff;
+              font-size: 1rem;
+              font-weight: bold;
+              text-decoration: none;
+            }
+            
+            .header-actions {
+              display: flex;
+              align-items: center;
+              gap: 20px;
+            }
+            
+            .header-links {
+              display: flex;
+              gap: 20px;
+            }
+            
+            .header-links a {
+              color: #fff;
+              font-size: 1rem;
+              font-weight: bold;
+              text-decoration: none;
+            }
+            
+            .header-links a:hover {
+              color: #e50914;
+            }
+        
+            .banner-title img {
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+              object-fit: cover;
+            }
+        
+            .banner-title h2 {
+              font-size: 2rem;
+              color: black;
+              margin: 0;
+            }
+            
+            .banner-text h2 {
+              font-size: 2rem;
+              margin-bottom: 0.5rem;
+            }
+            
+            .banner-text p {
+              font-size: 1rem;
+              margin: 0.3rem 0;
+            }
+        
+            .banner-divider {
+              width: 100%;
+              height: 1px;
+              background-color: #e50914;
+              }
+            
+            .container {
+                  display: flex;
+                }
+        
+            .sidebar {
+              width: 220px;
+              padding: 10px;
+              background-color: #111;
+              color: white;
+              font-size: 14px;
+              height: auto;
+              overflow: visible;
+            }
+        
+            .sidebar a {
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              color: #fff;
+              text-decoration: none;
+              padding: 8px 12px;
+              border-radius: 8px;
+              transition: background-color 0.3s;
+            }
+        
+            .sidebar-row a {
+              text-decoration: none;
+              color: white;
+              display: flex;
+              align-items: center;
+            }
+        
+            .sidebar-row {
+              margin: 5px 0;
+            }
+        
+            .sidebar a:hover {
+              background-color: #e50914;
+              border-radius: 8px;
+            }
+        
+            .sidebar img {
+              width: 22px;
+              height: 22px;
+              object-fit: cover;
+              border-radius: 50%;
+            }
+        
+            .main-content {
+              flex-grow: 1;
+              padding: 20px;
+            }
+        
+            .grid-container {
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 20px;
+            }
+        
+            .video-item {
+              cursor: pointer;
+              background-color: #1a1a1a;
+              padding: 10px;
+              border-radius: 8px;
+              overflow: hidden;
+              transition: transform 0.3s ease;
+            }
+        
+            .video-item:hover {
+              transform: scale(1.05);
+            }
+        
+            .preview-container {
+              position: relative;
+              width: 100%;
+              padding-top: 56.25%; /* 16:9 */
+              overflow: hidden;
+              border-radius: 6px;
+            }
+        
+            .preview-container img,
+            .preview-container video {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+            
+            .preview-container video {
+              display: none;
+            }
+            
+            .preview-container.has-video:hover video {
+              display: block;
+            }
+            
+            .preview-container.has-video:hover img {
+              display: none;
+            }
+            
+            .modal {
+              display: none;
+              position: fixed;
+              z-index: 9999;
+              left: 0;
+              top: 0;
+              width: 100vw;
+              height: 100vh;
+              background-color: rgba(0, 0, 0, 0.9);
+              justify-content: center;
+              align-items: center;
+            }
+        
+            .modal-content {
+              position: relative;
+              max-width: 100%;
+              max-height: 100%;
+            }
+        
+            .modal-content video,
+            .modal-content iframe {
+              width: 81vw;
+              height: 81vh;
+            }
+        
+            .close-button {
+              position: absolute;
+              color: #fff;
+              font-weight: bold;
+              cursor: pointer;
+              font-size: 40px;
+              top: -20px;
+              right: -20px;
+              z-index: 9999;
+              border-radius: 50%;
+            }
+        
+            .site-footer {
+              margin-top: 3rem;
+              padding: 2rem 1rem;
+              text-align: center;
+              color: #ccc;
+              font-size: 0.85rem;
+              background-color: #141414;
+            }
+        
+            .footer-line {
+              width: 90%;
+              height: 1px;
+              background-color: #e50914;
+              margin: 0 auto 1rem auto;
+            }
+        
+            .footer-branding {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-bottom: 1rem;
+              gap: 10px;
+            }
+        
+            .footer-flag {
+              width: 26px;
+              height: 26px;
+              border-radius: 50%;
+              overflow: hidden;
+            }
+        
+            .footer-flag img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+        
+            .footer-title {
+              font-size: 1rem;
+              color: #fff;
+              font-weight: bold;
+            }
+        
+            .footer-links a {
+              color: #ccc;
+              margin: 0 10px;
+              text-decoration: none;
+              font-size: 0.85rem;
+            }
+        
+            .footer-links a:hover {
+              color: #e50914;
+              text-decoration: underline;
+            }
+        
+            .video-title-with-icon {
+              display: flex;
+              align-items: center;
+              margin-top: 10px;
+              gap: 8px;
+              color: white;
+              font-size: 0.8rem;
+            }
+              
+            .icon-placeholder {
+              width: 24px;
+              height: 24px;
+              border-radius: 50%;
+              background-color: #444;
+              object-fit: cover;
+              margin-left: 8px;
+            }
+        
+            .video-title-text {
+              line-height: 1.2;
+              }
+        
+            .video-title-text a {
+              text-decoration: none; /* Remove underline */
+              color: inherit;         /* Inherit color from surrounding text */
+            }
+
+        </style>
     </head>
 
     <body oncontextmenu="return false">
@@ -26,7 +345,7 @@
             </div> <!-- end of header-overlay div -->
     
             <div class="banner-static">
-                <img alt="Banner" src="https://euroflix.s3.eu-north-1.amazonaws.com/banners/edition-2021.png"/>
+                <img alt="Banner" src="/banners/2024.png"/>
             </div>
         </header>
         
@@ -36,9 +355,10 @@
         <div class="container">
 
             <!-- Display Sidebar from editions.js file -->
-            <div id="sidebar-container"></div>   
+            <div id="sidebar-container"></div>
+
                 <script src="sidebar_editions.js" type="text/javascript"></script>
-        
+
             
         <!-- MAIN CONTENT -->
         
@@ -64,6 +384,7 @@
                     <div class="grid-container">
                 
                         <!--  VIDEOS  -->
+
                         <!-- Albania -->
                         <div class="video-item" data-artist="Anxhela Peristeri" data-country="Albania" data-song="Karma" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1dUiBHLE9JYQFt9_aVb1yswuKFb6pAkaC/')">
                           <div class="preview-container"><img alt="Albania 2021" src="images/2021-AL.jpeg"/></div>
@@ -72,6 +393,7 @@
                             <div class="video-title-text"><b>Anxhela Peristeri</b><br>Karma<br>Albania</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Australia -->
                         <div class="video-item" data-artist="Montaigne" data-country="Australia" data-song="Technicolour" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1oXiT2NMBClf8WBJenv_8rpuuuyZ2LKqb/')">
@@ -82,6 +404,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- Austria -->
                         <div class="video-item" data-artist="Vincent Bueno" data-country="Austria" data-song="Amen" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1K0no6bkpAA0Nd_6MW_m3ba_M22k1-f25/')">
                           <div class="preview-container"><img alt="Austria 2021" src="images/2021-AT.jpeg"/></div>
@@ -90,6 +413,7 @@
                             <div class="video-title-text"><b>Vincent Bueno</b><br>Amen<br>Austria</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Azerbaijan -->
                         <div class="video-item" data-artist="Efendi" data-country="Azerbaijan" data-song="Mata Hari" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1D0D527Wb7id0konps6VEhyDJT6Myx3vc/')">
@@ -100,6 +424,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- Belgium -->
                         <div class="video-item" data-artist="Hooverphonic" data-country="Belgium" data-song="The Wrong Place" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1yyWmlM-bGlqHz_kMiAN3QDqhSQZbPHby/')">
                           <div class="preview-container"><img alt="Belgium 2021" src="images/2021-BE.jpeg"/></div>
@@ -108,6 +433,7 @@
                             <div class="video-title-text"><b>Hooverphonic</b><br>The Wrong Place<br>Belgium</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Bulgaria -->
                         <div class="video-item" data-artist="Victoria" data-country="Bulgaria" data-song="Growing Up Is Getting Old" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1qd-Mj5H6dqJQsPM0dBiZaOklURdEP8XF/')">
@@ -118,6 +444,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- Croatia -->
                         <div class="video-item" data-artist="Albina" data-country="Croatia" data-song="Tick-Tock" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1-HOZdG_V8Uio0qC83fD7QBhT1A3AFJZh/')">
                           <div class="preview-container"><img alt="Croatia 2021" src="images/2021-HR.jpeg"/></div>
@@ -126,6 +453,7 @@
                             <div class="video-title-text"><b>Albina</b><br>Tick-Tock<br>Croatia</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Cyprus -->
                         <div class="video-item" data-artist="Elena Tsagrinou" data-country="Cyprus" data-song="El Diablo" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/17Ju2CiC-Sv6i3Ay69Ccv5bt2OTNnmZlh/')">
@@ -136,6 +464,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- Czechia -->
                         <div class="video-item" data-artist="Benny Cristo" data-country="Czechia" data-song="Omaga" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1TdU2InGdg9VC9TJVQSH8P5IyauynZIIL/')">
                           <div class="preview-container"><img alt="Czechia 2021" src="images/2021-CZ.jpeg"/></div>
@@ -144,6 +473,7 @@
                             <div class="video-title-text"><b>Benny Cristo</b><br>Omaga<br>Czechia</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Denmark -->
                         <div class="video-item" data-artist="Fyr og Flamme" data-country="Denmark" data-song="Øve os på hinanden" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/17oOznqXAYSIZIiZT3lxnIqgzNeBKiCet/')">
@@ -154,6 +484,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- Estonia -->
                         <div class="video-item" data-artist="Uku Suviste" data-country="Estonia" data-song="The Lucky One" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1lZ8Y6CHn9JkskxCcXH2dOmTwNrDZHk_g/')">
                           <div class="preview-container"><img alt="Estonia 2021" src="images/2021-EE.jpeg"/></div>
@@ -162,6 +493,7 @@
                             <div class="video-title-text"><b>Uku Suviste</b><br>The Lucky One<br>Estonia</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Finland -->
                         <div class="video-item" data-artist="Blind Channel" data-country="Finland" data-song="Dark Side" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1vxX44r7g30yy8ukjun_E1wIszvr0VjDL/')">
@@ -172,6 +504,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- France -->
                         <div class="video-item" data-artist="Barbara Pravi" data-country="France" data-song="Voilà" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/120GFPUlpH6Ff2IBMouWVd2mv71bLVDPV/')">
                           <div class="preview-container"><img alt="France 2021" src="images/2021-FR.jpeg"/></div>
@@ -180,6 +513,7 @@
                             <div class="video-title-text"><b>Barbara Pravi</b><br>Voilà<br>France</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Georgia -->
                         <div class="video-item" data-artist="Tornike Kipiani" data-country="Georgia" data-song="You" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1TYetronFIIPr3Lz4a6HrqLe-zSGPLg_n/')">
@@ -190,6 +524,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- Germany -->
                         <div class="video-item" data-artist="Jendrik" data-country="Germany" data-song="I Don't Feel Hate" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1R1v7IH0cRPKWpuCcY3zk5kYWigcSDLV5/')">
                           <div class="preview-container"><img alt="Germany 2021" src="images/2021-DE.jpeg"/></div>
@@ -198,6 +533,7 @@
                             <div class="video-title-text"><b>Jendrik</b><br>I Don't Feel Hate<br>Germany</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Greece -->
                         <div class="video-item" data-artist="Stefania" data-country="Greece" data-song="Last Dance" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1a2REvctfHkkbfB5IoTf-GNjPCjOdQqlA/')">
@@ -208,6 +544,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- Iceland -->
                         <div class="video-item" data-artist="Daði og Gagnamagnið" data-country="Iceland" data-song="10 Years" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1adb4_BR7pp0E8JWblynRoOlW11RqyYrt/')">
                           <div class="preview-container"><img alt="Iceland 2021" src="images/2021-IS.jpeg"/></div>
@@ -216,6 +553,7 @@
                             <div class="video-title-text"><b>Daði og Gagnamagnið</b><br>10 Years<br>Iceland</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Ireland -->
                         <div class="video-item" data-artist="Lesley Roy" data-country="Ireland" data-song="Maps" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1afFyENH_pk1jWDqPIlIPHHGpJYg0t2fT/')">
@@ -226,6 +564,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- Italy -->
                         <div class="video-item" data-artist="Måneskin" data-country="Italy" data-song="Zitti e buoni" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1GfB2FmS9E9KA3mzD5Dh7D2GWAV3ejHLe/')">
                           <div class="preview-container"><img alt="Italy 2021" src="images/2021-IT.jpeg"/></div>
@@ -234,6 +573,7 @@
                             <div class="video-title-text"><b>Måneskin</b><br>Zitti e buoni<br>Italy</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Latvia -->
                         <div class="video-item" data-artist="Samanta Tīna" data-country="Latvia" data-song="The Moon Is Rising" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1EY_L3DbDbunV3Dq7ecisO248cVQaqZxp/')">
@@ -244,6 +584,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- Lithuania -->
                         <div class="video-item" data-artist="The Roop" data-country="Lithuania" data-song="Discoteque" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1hxMuTTh9rJRriH3iICpKzPLWKye4bUzX/')">
                           <div class="preview-container"><img alt="Lithuania 2021" src="images/2021-LT.jpeg"/></div>
@@ -252,6 +593,7 @@
                             <div class="video-title-text"><b>The Roop</b><br>Discoteque<br>Lithuania</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Malta -->
                         <div class="video-item" data-artist="Destiny" data-country="Malta" data-song="Je me casse" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1LgM4v2Hcow7SksDsQxG9HSpnLOYUtVsT/')">
@@ -262,6 +604,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- Moldova -->
                         <div class="video-item" data-artist="Natalia Gordienko" data-country="Moldova" data-song="Sugar" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1OqxvA8rRMXUD4RSvn8V_SUj_2aI9G0BP/')">
                           <div class="preview-container"><img alt="Moldova 2021" src="images/2021-MD.jpeg"/></div>
@@ -270,6 +613,7 @@
                             <div class="video-title-text"><b>Natalia Gordienko</b><br>Sugar<br>Moldova</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Netherlands -->
                         <div class="video-item" data-artist="Jeangu Macrooy" data-country="Netherlands" data-song="Birth of a New Age" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/15Z7D7ujRrAPboxux_K-q7AETyG6J5FRE/')">
@@ -280,14 +624,6 @@
                           </div>
                         </div>
                         
-                        <!-- North Macedonia -->
-                        <div class="video-item" data-artist="Vasil" data-country="North Macedonia" data-song="Here I Stand" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1542W8fVyYp7-Oji7wuwQPzqRUEondGye/')">
-                          <div class="preview-container"><img alt="North Macedonia 2021" src="images/2021-MK.jpeg"/></div>
-                          <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                            <a href="North Macedonia.html"><img alt="Flag" class="icon-placeholder" src="flags/mk.png"/></a>
-                            <div class="video-title-text"><b>Vasil</b><br>Here I Stand<br>North Macedonia</div>
-                          </div>
-                        </div>
                         
                         <!-- Norway -->
                         <div class="video-item" data-artist="Tix" data-country="Norway" data-song="Fallen Angel" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Mntcp8HnZTcszhpYI47HeFIxQxKCnRv-/')">
@@ -298,6 +634,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- Poland -->
                         <div class="video-item" data-artist="Rafał" data-country="Poland" data-song="The Ride" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1b04hF7T5eYclLDFXvawF5qnVQZ9_J6jK/')">
                           <div class="preview-container"><img alt="Poland 2021" src="images/2021-PL.jpeg"/></div>
@@ -306,6 +643,7 @@
                             <div class="video-title-text"><b>Rafał</b><br>The Ride<br>Poland</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Portugal -->
                         <div class="video-item" data-artist="The Black Mamba" data-country="Portugal" data-song="Love Is on My Side" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/19ZF_SzUSfROnbFbjOUnRKyDtfZRSg7gX/')">
@@ -316,6 +654,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- Romania -->
                         <div class="video-item" data-artist="Roxen" data-country="Romania" data-song="Amnesia" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1PzRG8dSRfjV8SzdeWPWYytoUDlPOcr_I/')">
                           <div class="preview-container"><img alt="Romania 2021" src="images/2021-RO.jpeg"/></div>
@@ -324,6 +663,7 @@
                             <div class="video-title-text"><b>Roxen</b><br>Amnesia<br>Romania</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Russia -->
                         <div class="video-item" data-artist="Manizha" data-country="Russia" data-song="Russian Woman" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1JuZnft0blJUWUaVF8w_PYKnYh0oZJtk-/')">
@@ -334,6 +674,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- San Marino -->
                         <div class="video-item" data-artist="Senhit" data-country="San Marino" data-song="Adrenalina" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1BRQbR1IprsDq9fzEDzGePE-ymNwDber2/')">
                           <div class="preview-container"><img alt="San Marino 2021" src="images/2021-SM.jpeg"/></div>
@@ -342,6 +683,7 @@
                             <div class="video-title-text"><b>Senhit</b><br>Adrenalina<br>San Marino</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Serbia -->
                         <div class="video-item" data-artist="Hurricane" data-country="Serbia" data-song="Loco loco" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1gZE3cXYB51MNjWhc-ewGr4hpQj7PayF3/')">
@@ -352,6 +694,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- Slovenia -->
                         <div class="video-item" data-artist="Ana Soklič" data-country="Slovenia" data-song="Amen" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1BU_JauVvz9MESmBi18909vKYsnosliKN/')">
                           <div class="preview-container"><img alt="Slovenia 2021" src="images/2021-SI.jpeg"/></div>
@@ -360,6 +703,7 @@
                             <div class="video-title-text"><b>Ana Soklič</b><br>Amen<br>Slovenia</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Spain -->
                         <div class="video-item" data-artist="Blas Cantó" data-country="Spain" data-song="Voy a quedarme" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1PXnA84xnzDs9MUEYdhyNFQuvH14IBYbT/')">
@@ -370,6 +714,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- Sweden -->
                         <div class="video-item" data-artist="Tusse" data-country="Sweden" data-song="Voices" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1rUV_FVJmLRjpg1dq75prMnR8bh7TQUL0/')">
                           <div class="preview-container"><img alt="Sweden 2021" src="images/2021-SE.jpeg"/></div>
@@ -378,6 +723,7 @@
                             <div class="video-title-text"><b>Tusse</b><br>Voices<br>Sweden</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Switzerland -->
                         <div class="video-item" data-artist="Gjon's Tears" data-country="Switzerland" data-song="Tout l'univers" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1oC35LeXiaY5UEkGRHTI8RXzPlTUz7c3U/')">
@@ -388,6 +734,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- Ukraine -->
                         <div class="video-item" data-artist="Go_A" data-country="Ukraine" data-song="Shum" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1AOfXaySQZI341k292yWCUcSHglnSHmt0/')">
                           <div class="preview-container"><img alt="Ukraine 2021" src="images/2021-UA.jpeg"/></div>
@@ -397,6 +744,7 @@
                           </div>
                         </div>
                         
+                        
                         <!-- United Kingdom -->
                         <div class="video-item" data-artist="James Newman" data-country="United Kingdom" data-song="Embers" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Y_Av7DonKpGU-hTgKOYxJ8UQMqekLOb8/')">
                           <div class="preview-container"><img alt="United Kingdom 2021" src="images/2021-GB.jpeg"/></div>
@@ -405,6 +753,7 @@
                             <div class="video-title-text"><b>James Newman</b><br>Embers<br>United Kingdom</div>
                           </div>
                         </div>
+                        
                         
                         <!-- Israel -->
                         <div class="video-item" data-artist="Eden Alene" data-country="Israel" data-song="Set Me Free" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1UvoKH8MgT_drItvnE23V65-0Z172yQox/')">
@@ -416,23 +765,33 @@
                         </div>
 
 
+
                         </div> <!-- end of grid-container -->
                     </div> <!-- end of grid-section -->
             </div> <!-- end of main-content -->
         </div> <!-- end of container -->
         
+        <!-- MODAL -->
+        <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+            <div class="modal-content">
+                <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+                <video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;"></video>
+                <iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" id="modalIframe" style="display: none;"></iframe>
+            </div>
+        </div>
         
-        <!-- Modal (used by JS) -->
+        <!-- Modal (used by JS) -
         <div class="modal" id="videoModal" onclick="closeModal(event)">
             <span class="modal-close" onclick="closeModal(event)">×</span>
             <video autoplay="" controls="" controlslist="nodownload" id="modalVideo"></video>
         </div>
+        -->
     
         <footer class="site-footer">
             <div class="footer-line"></div>
             <div class="footer-branding">
                 <div class="footer-flag">
-                    <img alt="United Kingdom" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/gb.png"/>
+                    <img alt="United Kingdom" src="/flags/gb.png"/>
                 </div>
                 <span class="footer-title">Douze Points</span>
             </div>
@@ -443,7 +802,42 @@
                 <a href="privacy.html">Privacy Policy</a>
             </div>
         </footer>
-    
+
+        <script>
+            function GDriveOpenModalWithVideo(videoUrl, titleText) {
+              const modal = document.getElementById("videoModal");
+              const video = document.getElementById("modalVideo");
+              const iframe = document.getElementById("modalIframe");
+              modal.style.display = "flex";
+              video.style.display = "none";
+              iframe.style.display = "none";
+              video.pause();
+              iframe.src = "";
+              if (videoUrl.includes('drive.google.com')) {
+                const match = videoUrl.match(/\/d\/(.*?)\//);
+                if (match && match[1]) {
+                  iframe.src = `https://drive.google.com/file/d/${match[1]}/preview`;
+                  iframe.style.display = "block";
+                }
+              } else {
+                video.src = videoUrl;
+                video.style.display = "block";
+                video.play();
+              }
+            }
+
+            function GDriveCloseModal(event) {
+              event.stopPropagation();
+              const modal = document.getElementById("videoModal");
+              const video = document.getElementById("modalVideo");
+              const iframe = document.getElementById("modalIframe");
+              video.pause();
+              video.src = "";
+              iframe.src = "";
+              modal.style.display = "none";
+            }
+        </script>
+        
         <script> 
             /* lucide icon script */ 
             lucide.createIcons();
