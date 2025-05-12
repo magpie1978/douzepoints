@@ -3,7 +3,7 @@
 /*  window.location.href = "login.html"; */
 /*} */
 
-           
+/*         
 function scrollCarousel(direction, trackId) {
   const track = document.getElementById(trackId);
   const itemWidth = track.querySelector('.video-item').offsetWidth + 20; // includes margin
@@ -13,6 +13,17 @@ function scrollCarousel(direction, trackId) {
   left: direction * scrollAmount,
   behavior: 'smooth'
   });
+}
+*/
+
+function scrollCarousel(direction, carouselId) {
+  const track = document.getElementById(carouselId);
+  const item = track.querySelector('.video-item');
+  const itemStyle = window.getComputedStyle(item);
+  const itemWidth = item.offsetWidth + parseInt(itemStyle.marginRight || 0);
+
+  const scrollAmount = itemWidth * 5;
+  track.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
 }
 
 
