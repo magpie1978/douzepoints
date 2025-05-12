@@ -14,10 +14,7 @@ h4 {
  margin: 0 0 10px 10px;
 }
 
-.carousel-container {
-  overflow-x: hidden;
-  width: 100%;
-}
+
 
 .carousel-track {
   display: flex;
@@ -68,7 +65,7 @@ h4 {
   transform: scale(1.2);
 }
 
-/*
+
 .carousel-container {
   position: relative;
   width: 90%;
@@ -94,7 +91,7 @@ h4 {
 }
 
 .video-item {
-  flex: 0 0 20%;
+  flex: 0 0 15%;
   box-sizing: border-box;
   padding: 10px;
   background: #1f1f1f;
