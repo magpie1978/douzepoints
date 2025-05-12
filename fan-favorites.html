@@ -385,12 +385,20 @@
 </div> <!-- end of main-content -->
 </div> <!-- end of container -->
 
-<!-- Modal (used by JS) -->
+<!-- Modal (used by JS) -
 <div id="videoModal" class="modal" onclick="closeModal(event)">
 <span class="modal-close" onclick="closeModal(event)">&times;</span>
 <video id="modalVideo" controls autoplay controlsList="nodownload"></video>
 </div>
 
+<!-- MODAL -->
+<div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+<div class="modal-content">
+<span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+<video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;"></video>
+<iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" id="modalIframe" style="display: none;"></iframe>
+</div>
+</div>
 
 <footer class="site-footer">
 <div class="footer-line"></div>
