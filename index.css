@@ -34,7 +34,7 @@ h4 {
 
 /*
 .video-item {
-  flex: 0 0 calc(20% - 13px); /* 5 items per row with gap accounted */
+  flex: 0 0 calc(20% - 13px); /* 5 items per row with gap accounted 
   box-sizing: border-box;
 }
 /*
