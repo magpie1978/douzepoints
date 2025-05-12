@@ -186,7 +186,8 @@
               overflow: hidden;
               border-radius: 6px;
             }
-        
+
+
             .preview-container img,
             .preview-container video {
               position: absolute;
@@ -208,6 +209,7 @@
             .preview-container.has-video:hover img {
               display: none;
             }
+              
             
             .modal {
               display: none;
@@ -328,6 +330,8 @@
               color: inherit;         /* Inherit color from surrounding text */
             }
 
+
+              
         </style>
   </head>
 
@@ -366,7 +370,7 @@
 
           <!-- NEW 2024 -->
           <div class="video-item" data-artist="Nemo" data-country="Switzerland" data-song="The Code" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1acrsiid7jjxvQxu-UfNg9OjCVsDmd0TU/')">
-          <div class="preview-container">
+          <div class="preview-container has-video">
           <img alt="Switzerland 2024" src="/images/2024-CH.jpeg"/>
           </div>
           <div class="video-title-with-icon" onclick="event.stopPropagation()">
