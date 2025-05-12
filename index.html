@@ -35,15 +35,10 @@
 </div>
 
 <div class="banner-static">
-<img src="https://euroflix.s3.eu-north-1.amazonaws.com/banners/douzepoints.png" alt="Banner">
+        <img alt="Banner" src="banners/douzepoints.png"/>
 </div>
 
-      <!-- <div class="banner-text">
-        <h2>Welcome to Douze Points</h2>
-        <p>Your home for all Eurovision performances.</p>
-        <p>Watch, search, and save your favorites.</p>
-        <br>
-      </div> -->
+
 </header>
 
 <!--  red dividing line -->
@@ -68,22 +63,33 @@
 
 
 <!-- 2014 - AUSTRIA -->
-<div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2014/videos/2014-AT.mp4')">
-<div class="preview-container"
-onmouseover="showPreview(this)"
-onmouseout="hidePreview(this)">
-<img src="https://euroflix.s3.eu-north-1.amazonaws.com/2014/thumbs/2014-AT.jpeg" alt="Ukraine 2016 - Jamala">
-<video src="https://euroflix.s3.eu-north-1.amazonaws.com/2014/videos/2014-AT.mp4" muted loop></video>
+<!--<div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2014/videos/2014-AT.mp4')"> -->
+<div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1kRN5_a2SiKgf_tyeDMRo3bsmXV4g0Yet/')">
+        <div class="preview-container"
+<img alt="Albania 2024" src="images/2024-AL.jpeg"/>
+<!-- <video src="https://euroflix.s3.eu-north-1.amazonaws.com/2014/videos/2014-AT.mp4" muted loop></video>-->
 </div>
 <div class="video-title-with-icon" onclick="event.stopPropagation()">
 <a href="belgium.html">
-<img class="icon-placeholder" src="https://euroflix.s3.eu-north-1.amazonaws.com/flags/at.png" alt="Flag">
+<img class="icon-placeholder" src="flags/al.png" alt="Flag">
 </a>
 <div class="video-title-text"><b>Conchita Wurst</b><br>Rise Like A Phoenix<br>2014</div>
 </div>
 </div>
 
-
+<!--
+<div class="video-item" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1kRN5_a2SiKgf_tyeDMRo3bsmXV4g0Yet/')">
+<div class="preview-container">
+<img alt="Albania 2024" src="images/2024-AL.jpeg"/>
+</div>
+<div class="video-title-with-icon" onclick="event.stopPropagation()">
+<a href="albania.html">
+<img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+</a>
+<div class="video-title-text"><b>Besa</b><br/>Titan<br/>2024</div>
+</div>
+</div>
+-->
 
 <!-- 2015 - SWEDEN -->
 <div class="video-item" onclick="openModalWithVideo('https://euroflix.s3.eu-north-1.amazonaws.com/2015/videos/2015-SE.mp4')">
@@ -1096,11 +1102,21 @@ onmouseout="hidePreview(this)">
 </div>
 <!-- END OF CAROUSEL 3 -->
 
-<!-- Modal (used by JS) -->
+<!-- Modal (used by JS) -
 <div class="modal" id="videoModal" onclick="closeModal(event)">
 <span class="modal-close" onclick="closeModal(event)">×</span>
 <video autoplay="" controls="" controlslist="nodownload" id="modalVideo"></video>
 </div>
+
+<!-- MODAL -->
+<div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+    <div class="modal-content">
+        <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+        <video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;"></video>
+        <iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" id="modalIframe" style="display: none;"></iframe>
+    </div>
+</div>
+
 
 <footer class="site-footer">
 <div class="footer-line"></div>
@@ -1117,5 +1133,45 @@ onmouseout="hidePreview(this)">
 <a href="privacy.html">Privacy Policy</a>
 </div>
 </footer>
+
+        <script>
+            function GDriveOpenModalWithVideo(videoUrl, titleText) {
+              const modal = document.getElementById("videoModal");
+              const video = document.getElementById("modalVideo");
+              const iframe = document.getElementById("modalIframe");
+              modal.style.display = "flex";
+              video.style.display = "none";
+              iframe.style.display = "none";
+              video.pause();
+              iframe.src = "";
+              if (videoUrl.includes('drive.google.com')) {
+                const match = videoUrl.match(/\/d\/(.*?)\//);
+                if (match && match[1]) {
+                  iframe.src = `https://drive.google.com/file/d/${match[1]}/preview`;
+                  iframe.style.display = "block";
+                }
+              } else {
+                video.src = videoUrl;
+                video.style.display = "block";
+                video.play();
+              }
+            }
+
+            function GDriveCloseModal(event) {
+              event.stopPropagation();
+              const modal = document.getElementById("videoModal");
+              const video = document.getElementById("modalVideo");
+              const iframe = document.getElementById("modalIframe");
+              video.pause();
+              video.src = "";
+              iframe.src = "";
+              modal.style.display = "none";
+            }
+
+            
+            /* lucide icon script */ 
+            lucide.createIcons();
+
+        </script>
 </body>
 </html>
