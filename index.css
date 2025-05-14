@@ -1,7 +1,9 @@
-body {
+body(
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /* font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; */
   font-family: 'Raleway', sans-serif;
   margin: 0;
+   
 
   background: #141414;
   color: #fff;
@@ -14,17 +16,41 @@ h4 {
  margin: 0 0 10px 10px;
 }
 
+
+
+.carousel-track {
+  display: flex;
+  gap: 16px; /* Adjust spacing between videos */
+  scroll-behavior: smooth;
+}
+
+.carousel-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/*
+.video-item {
+  flex: 0 0 calc(20% - 13px); /* 5 items per row with gap accounted 
+  box-sizing: border-box;
+}
+/*
+
 .carousel-section {
   width: 90%;
   max-width: 1200px;
   margin: 0 auto 50px auto;
 }
 
+/*
 .carousel-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
 }
+*/
 
 .carousel-button {
   background: transparent;
@@ -41,12 +67,14 @@ h4 {
   transform: scale(1.2);
 }
 
+
 .carousel-container {
   position: relative;
   width: 90%;
   max-width: 1200px;
   overflow: hidden;
 }
+
 
 .carousel-track {
   display: flex;
@@ -56,12 +84,20 @@ h4 {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
+*/
 
+.carousel-track {
+  display: flex;
+  gap: 10px; /* controls spacing between items */
+  scroll-behavior: smooth;
 .carousel-track::-webkit-scrollbar {
   display: none;
 }
 
 .video-item {
+  flex: 0 0 15%;
+  box-sizing: border-box;
+  padding: 10px;
   flex: 0 0 calc(20% - 20px); /* 5 per view with spacing */
   margin: 10px;
   background: #1f1f1f;
@@ -144,20 +180,12 @@ h4 {
   width: 100vw;
   height: 100vh;
   overflow: auto;
-/*  overflow: auto; */
   background-color: rgba(0, 0, 0, 0.9);
   justify-content: center;
   align-items: center;
 }
 
 .modal-content {
-  .modal-content {
-      position: relative;
-      max-width: 100%;
-      max-height: 100%;
-    }
-
-/* .modal-content { */
   position: relative;
   background-color: #000;
   padding: 20px;
@@ -169,44 +197,21 @@ h4 {
 }
 
 .modal-content video {
-.modal-content video,
-.modal-content iframe {
-  width: 81vw;
-  height: 81vh;
-}
-
-/* .modal-content video {
   max-width: 100%;
   max-height: 80vh;
 }
-*/
 
-.close-button {
-  position: absolute;
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 40px;
-  top: -20px;
-  right: -20px;
-  z-index: 9999;
-  border-radius: 50%;
-}
-
-/*
 .close-button {
   position: absolute;
   color: #fff;
   font-weight: bold;
   cursor: pointer;
   font-size: 40px;  /* Increase the size */
-  font-size: 40px;
   top: 10px;
   right: 20px;
   z-index: 9999;
   border-radius: 50%;
 }
-*/
 
 .section-header {
   display: flex;
@@ -239,6 +244,7 @@ h4 {
 }
 
 
+      
 
 /*  BANNER CAROUSEL */
 .main-header {
@@ -247,6 +253,7 @@ h4 {
   height: 400px;
   overflow: hidden;
 }
+      
 
 .banner-static {
   width: 100%;
@@ -261,6 +268,7 @@ h4 {
   object-fit: cover;
   display: block;
 }      
+               
 
 .banner-image.active {
   opacity: 1;
