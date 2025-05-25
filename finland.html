@@ -1,352 +1,41 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<head>
-<meta charset="utf-8"/>
-<!-- Import Raleway typeface -->
-<link href="https://fonts.googleapis.com/css2?family=Raleway&amp;display=swap" rel="stylesheet"/>
-<title>Douze Points | Finland</title>
-<script src="countries.js" type="text/javascript"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <head>
+        <meta charset="utf-8"/>
 
-<style>
+        <!-- Import Raleway typeface -->
+        <link href="https://fonts.googleapis.com/css2?family=Raleway&amp;display=swap" rel="stylesheet"/>
+        
+        <title>Douze Points | Finland</title>
+        
+        <link rel="stylesheet" type="text/css" href="countries2.css">
+        <script src="https://unpkg.com/lucide@latest"></script>
+    </head>
     
+    <body oncontextmenu="return false">
 
-    body {
-      font-family: 'Raleway', sans-serif;
-      margin: 0;
-      background: #141414;
-      color: #fff;
-    }
-
-    .banner-static {
-      width: 100%;
-      height: 400px;
-      overflow: hidden;
-    }
-    
-    .banner-static img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }      
-      .banner-image.active {
-      opacity: 1;
-      z-index: 2;
-    }
-    /* Overlay layout */
-    .header-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      padding: 20px;
-      z-index: 3;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .home-link {
-      color: #fff;
-      font-size: 1rem;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    
-    .header-links {
-      display: flex;
-      gap: 20px;
-    }
-    
-    .header-links a {
-      color: #fff;
-      font-size: 1rem;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    
-    .header-links a:hover {
-      color: #e50914;
-    }
-
-    .banner-title img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .banner-title h2 {
-      font-size: 2rem;
-      color: black;
-      margin: 0;
-    }
-    
-    .banner-text h2 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-    
-    .banner-text p {
-      font-size: 1rem;
-      margin: 0.3rem 0;
-    }
-
-    .banner-divider {
-      width: 100%;
-      height: 1px;
-      background-color: #e50914;
-      }
-    
-    .container {
-          display: flex;
-        }
-
-    .sidebar {
-      width: 220px;
-      padding: 10px;
-      background-color: #111;
-      color: white;
-      font-size: 14px;
-      height: auto;
-      overflow: visible;
-    }
-
-    .sidebar a {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #fff;
-      text-decoration: none;
-      padding: 8px 12px;
-      border-radius: 8px;
-      transition: background-color 0.3s;
-    }
-
-    .sidebar-row a {
-      text-decoration: none;
-      color: white;
-      display: flex;
-      align-items: center;
-    }
-
-    .sidebar-row {
-      margin: 5px 0;
-    }
-
-    .sidebar a:hover {
-      background-color: #e50914;
-      border-radius: 8px;
-    }
-
-    .sidebar img {
-      width: 22px;
-      height: 22px;
-      object-fit: cover;
-      border-radius: 50%;
-    }
-
-    .main-content {
-      flex-grow: 1;
-      padding: 20px;
-    }
-
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-    }
-
-    .video-item {
-      cursor: pointer;
-      background-color: #1a1a1a;
-      padding: 10px;
-      border-radius: 8px;
-      overflow: hidden;
-      transition: transform 0.3s ease;
-    }
-
-    .video-item:hover {
-      transform: scale(1.05);
-    }
-
-    .preview-container {
-      position: relative;
-      width: 100%;
-      padding-top: 56.25%; /* 16:9 */
-      overflow: hidden;
-      border-radius: 6px;
-    }
-
-    .preview-container img,
-    .preview-container video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    .preview-container video {
-      display: none;
-    }
-    
-    .preview-container.has-video:hover video {
-      display: block;
-    }
-    
-    .preview-container.has-video:hover img {
-      display: none;
-    }
-    
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0, 0, 0, 0.9);
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      position: relative;
-      max-width: 100%;
-      max-height: 100%;
-    }
-
-    .modal-content video,
-    .modal-content iframe {
-      width: 81vw;
-      height: 81vh;
-    }
-
-    .close-button {
-      position: absolute;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 40px;
-      top: -20px;
-      right: -20px;
-      z-index: 9999;
-      border-radius: 50%;
-    }
-
-    .site-footer {
-      margin-top: 3rem;
-      padding: 2rem 1rem;
-      text-align: center;
-      color: #ccc;
-      font-size: 0.85rem;
-      background-color: #141414;
-    }
-
-    .footer-line {
-      width: 90%;
-      height: 1px;
-      background-color: #e50914;
-      margin: 0 auto 1rem auto;
-    }
-
-    .footer-branding {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1rem;
-      gap: 10px;
-    }
-
-    .footer-flag {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      overflow: hidden;
-    }
-
-    .footer-flag img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .footer-title {
-      font-size: 1rem;
-      color: #fff;
-      font-weight: bold;
-    }
-
-    .footer-links a {
-      color: #ccc;
-      margin: 0 10px;
-      text-decoration: none;
-      font-size: 0.85rem;
-    }
-
-    .footer-links a:hover {
-      color: #e50914;
-      text-decoration: underline;
-    }
-
-    .video-title-with-icon {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
-      gap: 8px;
-      color: white;
-      font-size: 0.8rem;
-    }
-      
-    .icon-placeholder {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background-color: #444;
-      object-fit: cover;
-      margin-left: 8px;
-    }
-
-    .video-title-text {
-      line-height: 1.2;
-      }
-
-    .video-title-text a {
-      text-decoration: none; /* Remove underline */
-      color: inherit;         /* Inherit color from surrounding text */
-    }
-
-  </style>
-</head>
-<body oncontextmenu="return false">
-<!-- HEADER -->
-<header class="main-header">
-<div class="header-overlay">
-<div class="header-links">
-<a class="home-link" href="index.html">Home</a>
-<a class="home-link" href="countries.html">Countries</a>
-<a class="home-link" href="edition-2024.html">Editions</a>
-</div>
-</div>
-<div class="banner-static">
+        <!-- HEADER -->
+        <header class="main-header">
+            <div class="header-overlay">
+                <div class="header-links">
+                    <a class="home-link" href="index.html">Home</a>
+                    <a class="home-link" href="countries.html">Countries</a>
+                    <a class="home-link" href="edition-2025.html">Editions</a>
+                </div>
+            </div>
+            <div class="banner-static">
                 <img alt="Banner" src="banners/fi.png"/>
-</div>
-</header>
-<!--  red dividing line -->
-<div class="banner-divider"></div>
-<!-- Main Content Layout -->
-<div class="container">
- <!-- Sidebar -->
+            </div>
+        </header>
+
+        <!--  red dividing line -->
+        <div class="banner-divider"></div>
+
+        <!-- Main Content Layout -->
+        <div class="container">
+            
+            <!-- Sidebar -->
             <div class="sidebar">
               <div class="sidebar-row">
                 <a href="albania.html"><img class="flag-icon" src="flags/al.png" alt="Albania">Albania</a>
@@ -507,9 +196,7 @@
             </div> 
             <!-- end of sidebar -->
 
-
-
-<div class="main-content">
+                <div class="main-content">
                     <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
                         <div style="flex: 1;"></div> <!-- Push the sort-controls to the right -->
                         <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
@@ -524,8 +211,10 @@
                             </select>
                         </div>
                     </div>
+                    <div class="grid-container">
 
-<div class="grid-container">
+
+
 <!-- 2024 -->
 <div class="video-item" data-artist="Windows95man[h]" data-country="Finland" data-song="No Rules!" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Y0DLtGZkEuWBHQC3ddKDkQvQ38M7IGi9/')">
 <div class="preview-container">
@@ -778,18 +467,7 @@
 <div class="video-title-text"><b>Jari Sillanpää</b><br>Takes 2 to Tango<br>2004</div>
 </div>
 </div>
-<!-- 2003 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Finland 2003" src="images/2003-FI.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="finland.html">
-<img alt="Flag" class="icon-placeholder" src="flags/fi.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
+
 <!-- 2002 -->
 <div class="video-item" data-artist="Laura" data-country="Finland" data-song="Addicted to You" data-year="2002" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1iGOoShLQPUiJbyfZCDP5Cx-oht1S_vyY/')">
 <div class="preview-container">
@@ -802,18 +480,7 @@
 <div class="video-title-text"><b>Laura</b><br>Addicted to You<br>2002</div>
 </div>
 </div>
-<!-- 2001 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Finland 2001" src="images/2001-FI.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="finland.html">
-<img alt="Flag" class="icon-placeholder" src="flags/fi.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
+
 <!-- 2000 -->
 <div class="video-item" data-artist="Nina Åström" data-country="Finland" data-song="A Little Bit" data-year="2000" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1QJ_FJ71gsEh5hWTOFhXM5tFpVPijsX-b/')">
 <div class="preview-container">
@@ -826,18 +493,7 @@
 <div class="video-title-text"><b>Nina Åström</b><br>A Little Bit<br>2000</div>
 </div>
 </div>
-<!-- 1999 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Finland 1999" src="images/1999-FI.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="finland.html">
-<img alt="Flag" class="icon-placeholder" src="flags/fi.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
+
 <!-- 1998 -->
 <div class="video-item" data-artist="Edea" data-country="Finland" data-song="Aava" data-year="1998" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1YgcYWhgn9O62L2rIAJeavO5yRP979r4y/')">
 <div class="preview-container">
@@ -850,18 +506,7 @@
 <div class="video-title-text"><b>Edea</b><br>Aava<br>1998</div>
 </div>
 </div>
-<!-- 1997 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Finland 1997" src="images/1997-FI.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="finland.html">
-<img alt="Flag" class="icon-placeholder" src="flags/fi.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
+
 <!-- 1996 -->
 <div class="video-item" data-artist="Jasmine" data-country="Finland" data-song="Niin kaunis on taivas" data-year="1996" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/14G-9IdZLVYAKF2Ky4kR2gbxUItl3-heQ/')">
 <div class="preview-container">
@@ -874,18 +519,7 @@
 <div class="video-title-text"><b>Jasmine</b><br>Niin kaunis on taivas<br>1996</div>
 </div>
 </div>
-<!-- 1995 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Finland 1995" src="images/1995-FI.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="finland.html">
-<img alt="Flag" class="icon-placeholder" src="flags/fi.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
+
 <!-- 1994 -->
 <div class="video-item" data-artist="CatCat" data-country="Finland" data-song="Bye Bye Baby" data-year="1994" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1e4JkZSjIOfWNpzcXQN7V_Lt9Xq9QDrxe/')">
 <div class="preview-container">
@@ -1174,18 +808,7 @@
 <div class="video-title-text"><b>Markku Aro and Koivisto Sisters [fi]</b><br>Tie uuteen päivään<br>1971</div>
 </div>
 </div>
-<!-- 1970 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Finland 1970" src="images/1970-FI.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="finland.html">
-<img alt="Flag" class="icon-placeholder" src="flags/fi.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
+
 <!-- 1969 -->
 <div class="video-item" data-artist="Jarkko and Laura" data-country="Finland" data-song="Kuin silloin ennen" data-year="1969" onclick="GDriveOpenModalWithVideo('nan')">
 <div class="preview-container">
@@ -1294,146 +917,44 @@
 <div class="video-title-text"><b>Laila Kinnunen</b><br>Valoa ikkunassa<br>1961</div>
 </div>
 </div>
-<!-- 1960 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Finland 1960" src="images/1960-FI.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="finland.html">
-<img alt="Flag" class="icon-placeholder" src="flags/fi.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1959 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Finland 1959" src="images/1959-FI.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="finland.html">
-<img alt="Flag" class="icon-placeholder" src="flags/fi.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1958 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Finland 1958" src="images/1958-FI.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="finland.html">
-<img alt="Flag" class="icon-placeholder" src="flags/fi.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1957 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Finland 1957" src="images/1957-FI.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="finland.html">
-<img alt="Flag" class="icon-placeholder" src="flags/fi.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1956 (2) --
-<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Finland 1956" src="images/1956_2-FI.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="finland.html">
-<img alt="Flag" class="icon-placeholder" src="flags/fi.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>
-<!-- 1956 (1) --
-<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Finland 1956" src="images/1956_1-FI.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="finland.html">
-<img alt="Flag" class="icon-placeholder" src="flags/fi.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>
+
 <!-- END OF VIDEOS -->
 </div>
 </div>
 </div>
-<!-- MODAL -->
-<div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
-<div class="modal-content">
-<span class="close-button" onclick="GDriveCloseModal(event)">×</span>
-<video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;"></video>
-<iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" id="modalIframe" style="display: none;"></iframe>
-</div>
-</div>
-<!-- FOOTER -->
-<footer class="site-footer">
-<div class="footer-line"></div>
-<div class="footer-branding">
-<div class="footer-flag">
+        <!-- MODAL -->
+        <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+            <div class="modal-content">
+                <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+                <video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
+                <iframe allow="autoplay; encrypted-media" frameborder="0" id="modalIframe" style="display: none;" sandbox="allow-scripts allow-same-origin"></iframe>
+            </div>
+        </div>
 
-<img alt="United Kingdom" src="flags/gb.png"/></img></div>
-<span class="footer-title">Douze Points</span>
-</div>
-<div class="footer-links">
-<a href="about.html">About</a>
-<a href="contact.html">Contact Us</a>
-<a href="faq.html">FAQ</a>
-<a href="privacy.html">Privacy Policy</a>
-</div>
-</footer>
-<script>
-    function GDriveOpenModalWithVideo(videoUrl, titleText) {
-      const modal = document.getElementById("videoModal");
-      const video = document.getElementById("modalVideo");
-      const iframe = document.getElementById("modalIframe");
-      modal.style.display = "flex";
-      video.style.display = "none";
-      iframe.style.display = "none";
-      video.pause();
-      iframe.src = "";
-      if (videoUrl.includes('drive.google.com')) {
-        const match = videoUrl.match(/\/d\/(.*?)\//);
-        if (match && match[1]) {
-          iframe.src = `https://drive.google.com/file/d/${match[1]}/preview`;
-          iframe.style.display = "block";
-        }
-      } else {
-        video.src = videoUrl;
-        video.style.display = "block";
-        video.play();
-      }
-    }
+        
+        <!-- FOOTER -->
+        <footer class="site-footer">
+            <div class="footer-line"></div>
+            <div class="footer-branding">
+                <div class="footer-flag">
+                    <img alt="United Kingdom" src="flags/gb.png"/>
+                </div>
+                <span class="footer-title">Douze Points</span>
+            </div>
+            <div class="footer-links">
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact Us</a>
+                <a href="faq.html">FAQ</a>
+                <a href="privacy.html">Privacy Policy</a>
+            </div>
+        </footer>
 
-    function GDriveCloseModal(event) {
-      event.stopPropagation();
-      const modal = document.getElementById("videoModal");
-      const video = document.getElementById("modalVideo");
-      const iframe = document.getElementById("modalIframe");
-      video.pause();
-      video.src = "";
-      iframe.src = "";
-      modal.style.display = "none";
-    }
+        
+        <script src="modal.js" type="text/javascript"></script>
+        <script src="sorting.js" type="text/javascript"></script>
 
-    /* lucide icon script */ 
-            lucide.createIcons();
-
-    
-  </script>
-    <script src="sorting.js" type="text/javascript"></script>
-
-</body>
+        
+    </body>
 </html>
+
+
