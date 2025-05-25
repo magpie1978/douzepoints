@@ -30,3 +30,19 @@ function GDriveCloseModal(event) {
   iframe.src = "";
   modal.style.display = "none";
 }
+
+function showPreview(container) {
+  const video = container.querySelector('video');
+  const img = container.querySelector('img');
+  img.style.display = 'none';
+  video.style.display = 'block';
+  video.play();
+}
+
+function hidePreview(container) {
+  const video = container.querySelector('video');
+  const img = container.querySelector('img');
+  video.pause();
+  video.style.display = 'none';
+  img.style.display = 'block';
+}
