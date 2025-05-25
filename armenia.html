@@ -196,280 +196,279 @@
             </div> 
             <!-- end of sidebar -->
 
-                <div class="main-content">
-                    <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
-                        <div style="flex: 1;"></div> <!-- Push the sort-controls to the right -->
-                        <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
-                            <label for="sort-options">
-                                <i data-lucide="list-filter" style="margin-right: 15px;"></i>
-                            </label>
-                            <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
-                                <option value="year-asc">Year (asc)</option>
-                                <option value="year-desc">Year (desc)</option>
-                                <option value="artist">Artist Name</option>
-                                <option value="song">Song Title</option>
-                            </select>
+            <div class="main-content">
+                <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
+                    <div style="flex: 1;"></div> <!-- Push the sort-controls to the right -->
+                    <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
+                        <label for="sort-options">
+                            <i data-lucide="list-filter" style="margin-right: 15px;"></i>
+                        </label>
+                        <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
+                            <option value="year-asc">Year (asc)</option>
+                            <option value="year-desc">Year (desc)</option>
+                            <option value="artist">Artist Name</option>
+                            <option value="song">Song Title</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-container">
+
+                    <!-- 2024 -->
+                    <div class="video-item" data-artist="Ladaniva" data-country="Armenia" data-song="Jako" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Srwgf9ctTqZoCrHdNRaeswlTUzKKywcw/')">
+                        <div class="preview-container">
+                            <img alt="Armemia 2024" src="images/2024-AM.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="armemia.html">
+                                <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
+                            </a>
+                            <div class="video-title-text"><b>Ladaniva</b><br>Jako<br>2024</div>
                         </div>
                     </div>
-                    <div class="grid-container">
-
-                        <!-- 2024 -->
-                        <div class="video-item" data-artist="Ladaniva" data-country="Armenia" data-song="Jako" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Srwgf9ctTqZoCrHdNRaeswlTUzKKywcw/')">
-                            <div class="preview-container">
-                                <img alt="Armemia 2024" src="images/2024-AM.jpeg"/>
-                            </div>
-                            <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                <a href="armemia.html">
-                                    <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
-                                </a>
-                                <div class="video-title-text"><b>Ladaniva</b><br>Jako<br>2024</div>
-                            </div>
-                        </div>
                         
-                        <!-- 2023 -->
-                        <div class="video-item" data-artist="Brunette" data-country="Armenia" data-song="Future Lover" data-year="2023" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1gGNym23zYIckz1zghrtkqKuFp2pSEUIt/')">
-                        <div class="preview-container">
-                        <img alt="Armemia 2023" src="images/2023-AM.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="armemia.html">
-                        <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Brunette</b><br>Future Lover<br>2023</div>
-                        </div>
-                        </div>
-                        
-                        <!-- 2022 -->
-                        <div class="video-item" data-artist="Rosa Linn" data-country="Armenia" data-song="Snap" data-year="2022" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1B0jmpzjoKEABLghDHhjJSojeB8WVPKKh/')">
-                        <div class="preview-container">
-                        <img alt="Armemia 2022" src="images/2022-AM.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="armemia.html">
-                        <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Rosa Linn</b><br>Snap<br>2022</div>
-                        </div>
-                        </div>
-                        
-                        <!-- 2020 -->
-                        <div class="video-item" data-artist="Athena Manoukian" data-country="Armenia" data-song="Chains on You" data-year="2020" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1lFjJwQe6a_DOlzBqi-FR6PmK60UFxIak/')">
-                        <div class="preview-container">
-                        <img alt="Armemia 2020" src="images/2020-AM.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="armemia.html">
-                        <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Athena Manoukian</b><br>Chains on You<br>2020</div>
-                        </div>
-                        </div>
-                        
-                        <!-- 2019 -->
-                        <div class="video-item" data-artist="Srbuk" data-country="Armenia" data-song="Walking Out" data-year="2019" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1MMtUhqnukU9hQeqNZ2Wl3PrLnLo3fwT0/')">
-                        <div class="preview-container">
-                        <img alt="Armemia 2019" src="images/2019-AM.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="armemia.html">
-                        <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Srbuk</b><br>Walking Out<br>2019</div>
-                        </div>
-                        </div>
-                        
-                        <!-- 2018 -->
-                        <div class="video-item" data-artist="Sevak Khanagyan" data-country="Armenia" data-song="Qami" data-year="2018" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1mB8gOnP7aHIEzDmBdAK18CAnz1o28-Q-/')">
-                        <div class="preview-container">
-                        <img alt="Armemia 2018" src="images/2018-AM.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="armemia.html">
-                        <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Sevak Khanagyan</b><br>Qami<br>2018</div>
-                        </div>
-                        </div>
-                        
-                        <!-- 2017 -->
-                        <div class="video-item" data-artist="Artsvik" data-country="Armenia" data-song="Fly with Me" data-year="2017" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1VWKxl_u-aWUpxcrBYV7TdmDGXHFKg01W/')">
-                        <div class="preview-container">
-                        <img alt="Armemia 2017" src="images/2017-AM.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="armemia.html">
-                        <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Artsvik</b><br>Fly with Me<br>2017</div>
-                        </div>
-                        </div>
-                        
-                        <!-- 2016 -->
-                        <div class="video-item" data-artist="Iveta Mukuchyan" data-country="Armenia" data-song="LoveWave" data-year="2016" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1rxBGDSpLsv5GrMm8wNit8C-EpI7urWmV/')">
-                        <div class="preview-container">
-                        <img alt="Armemia 2016" src="images/2016-AM.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="armemia.html">
-                        <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Iveta Mukuchyan</b><br>LoveWave<br>2016</div>
-                        </div>
-                        </div>
-                        
-                        <!-- 2015 -->
-                        <div class="video-item" data-artist="Genealogy" data-country="Armenia" data-song="Face the Shadow" data-year="2015" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1LCv448cF3Q_um8I27WSoSeMeAXrkGhyK/')">
-                        <div class="preview-container">
-                        <img alt="Armemia 2015" src="images/2015-AM.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="armemia.html">
-                        <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Genealogy</b><br>Face the Shadow<br>2015</div>
-                        </div>
-                        </div>
-                        
-                        <!-- 2014 -->
-                        <div class="video-item" data-artist="Aram Mp3" data-country="Armenia" data-song="Not Alone" data-year="2014" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/139ajV-KETbyoc7vic9X_2A3WAiUvxDem/')">
-                        <div class="preview-container">
-                        <img alt="Armemia 2014" src="images/2014-AM.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="armemia.html">
-                        <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Aram Mp3</b><br>Not Alone<br>2014</div>
-                        </div>
-                        </div>
-                        
-                        <!-- 2013 -->
-                        <div class="video-item" data-artist="Dorians" data-country="Armenia" data-song="Lonely Planet" data-year="2013" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1UXCKeiPnObD7TW2pm8PHG3BFzd8Q4zL6/')">
-                        <div class="preview-container">
-                        <img alt="Armemia 2013" src="images/2013-AM.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="armemia.html">
-                        <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Dorians</b><br>Lonely Planet<br>2013</div>
-                        </div>
-                        </div>
-                        
-                        <!-- 2011 -->
-                        <div class="video-item" data-artist="Emmy" data-country="Armenia" data-song="Boom Boom" data-year="2011" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Xp4aq-36sfLK0HYw23H-7V4ITRAgW23X/')">
-                        <div class="preview-container">
-                        <img alt="Armemia 2011" src="images/2011-AM.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="armemia.html">
-                        <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Emmy</b><br>Boom Boom<br>2011</div>
-                        </div>
-                        </div>
-                        
-                        <!-- 2010 -->
-                        <div class="video-item" data-artist="Eva Rivas" data-country="Armenia" data-song="Apricot Stone" data-year="2010" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1miJhdfuXcQa-xclWS5_yR2YJ_yspFG_H/')">
-                        <div class="preview-container">
-                        <img alt="Armemia 2010" src="images/2010-AM.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="armemia.html">
-                        <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Eva Rivas</b><br>Apricot Stone<br>2010</div>
-                        </div>
-                        </div>
-                        
-                        <!-- 2009 -->
-                        <div class="video-item" data-artist="Inga and Anush" data-country="Armenia" data-song="Jan Jan" data-year="2009" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1rWbEM2AIjY7MsYNQ6ADxS6Yqo8cTjmP7/')">
-                        <div class="preview-container">
-                        <img alt="Armemia 2009" src="images/2009-AM.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="armemia.html">
-                        <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Inga and Anush</b><br>Jan Jan<br>2009</div>
-                        </div>
-                        </div>
-                        
-                        <!-- 2008 -->
-                        <div class="video-item" data-artist="Sirusho" data-country="Armenia" data-song="Qélé, Qélé" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1NsJrjVG2SaYmuU477HVs_2iTp6dN-n-P/')">
-                        <div class="preview-container">
-                        <img alt="Armemia 2008" src="images/2008-AM.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="armemia.html">
-                        <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Sirusho</b><br>Qélé, Qélé<br>2008</div>
-                        </div>
-                        </div>
-                        
-                        <!-- 2007 -->
-                        <div class="video-item" data-artist="Hayko" data-country="Armenia" data-song="Anytime You Need" data-year="2007" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Bi3xVcnLGz_hbpAM3eaLZ68L2titA8oj/')">
-                        <div class="preview-container">
-                        <img alt="Armemia 2007" src="images/2007-AM.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="armemia.html">
-                        <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Hayko</b><br>Anytime You Need<br>2007</div>
-                        </div>
-                        </div>
-                        
-                        <!-- 2006 -->
-                        <div class="video-item" data-artist="André" data-country="Armenia" data-song="Without Your Love" data-year="2006" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1YNJZtDe7Jez4kf0EjKsrHSfIu8oHaIuQ/')">
-                            <div class="preview-container">
-                                <img alt="Armemia 2006" src="images/2006-AM.jpeg"/>
-                            </div>
-                            <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                <a href="armemia.html">
-                                    <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
-                                </a>
-                                <div class="video-title-text"><b>André</b><br>Without Your Love<br>2006</div>
-                            </div>
-                        </div>
-
-                        <!-- MODAL -->
-                        <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
-                            <div class="modal-content">
-                                <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
-                                <video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
-                                <iframe allow="autoplay; encrypted-media" frameborder="0" id="modalIframe" style="display: none;" sandbox="allow-scripts allow-same-origin"></iframe>
-                            </div>
-                        </div>
-
-                        <!-- END OF VIDEOS -->
+                    <!-- 2023 -->
+                    <div class="video-item" data-artist="Brunette" data-country="Armenia" data-song="Future Lover" data-year="2023" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1gGNym23zYIckz1zghrtkqKuFp2pSEUIt/')">
+                    <div class="preview-container">
+                    <img alt="Armemia 2023" src="images/2023-AM.jpeg"/>
                     </div>
+                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                    <a href="armemia.html">
+                    <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
+                    </a>
+                    <div class="video-title-text"><b>Brunette</b><br>Future Lover<br>2023</div>
+                    </div>
+                    </div>
+                    
+                    <!-- 2022 -->
+                    <div class="video-item" data-artist="Rosa Linn" data-country="Armenia" data-song="Snap" data-year="2022" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1B0jmpzjoKEABLghDHhjJSojeB8WVPKKh/')">
+                    <div class="preview-container">
+                    <img alt="Armemia 2022" src="images/2022-AM.jpeg"/>
+                    </div>
+                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                    <a href="armemia.html">
+                    <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
+                    </a>
+                    <div class="video-title-text"><b>Rosa Linn</b><br>Snap<br>2022</div>
+                    </div>
+                    </div>
+                    
+                    <!-- 2020 -->
+                    <div class="video-item" data-artist="Athena Manoukian" data-country="Armenia" data-song="Chains on You" data-year="2020" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1lFjJwQe6a_DOlzBqi-FR6PmK60UFxIak/')">
+                    <div class="preview-container">
+                    <img alt="Armemia 2020" src="images/2020-AM.jpeg"/>
+                    </div>
+                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                    <a href="armemia.html">
+                    <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
+                    </a>
+                    <div class="video-title-text"><b>Athena Manoukian</b><br>Chains on You<br>2020</div>
+                    </div>
+                    </div>
+                    
+                    <!-- 2019 -->
+                    <div class="video-item" data-artist="Srbuk" data-country="Armenia" data-song="Walking Out" data-year="2019" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1MMtUhqnukU9hQeqNZ2Wl3PrLnLo3fwT0/')">
+                    <div class="preview-container">
+                    <img alt="Armemia 2019" src="images/2019-AM.jpeg"/>
+                    </div>
+                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                    <a href="armemia.html">
+                    <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
+                    </a>
+                    <div class="video-title-text"><b>Srbuk</b><br>Walking Out<br>2019</div>
+                    </div>
+                    </div>
+                    
+                    <!-- 2018 -->
+                    <div class="video-item" data-artist="Sevak Khanagyan" data-country="Armenia" data-song="Qami" data-year="2018" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1mB8gOnP7aHIEzDmBdAK18CAnz1o28-Q-/')">
+                    <div class="preview-container">
+                    <img alt="Armemia 2018" src="images/2018-AM.jpeg"/>
+                    </div>
+                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                    <a href="armemia.html">
+                    <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
+                    </a>
+                    <div class="video-title-text"><b>Sevak Khanagyan</b><br>Qami<br>2018</div>
+                    </div>
+                    </div>
+                    
+                    <!-- 2017 -->
+                    <div class="video-item" data-artist="Artsvik" data-country="Armenia" data-song="Fly with Me" data-year="2017" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1VWKxl_u-aWUpxcrBYV7TdmDGXHFKg01W/')">
+                    <div class="preview-container">
+                    <img alt="Armemia 2017" src="images/2017-AM.jpeg"/>
+                    </div>
+                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                    <a href="armemia.html">
+                    <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
+                    </a>
+                    <div class="video-title-text"><b>Artsvik</b><br>Fly with Me<br>2017</div>
+                    </div>
+                    </div>
+                    
+                    <!-- 2016 -->
+                    <div class="video-item" data-artist="Iveta Mukuchyan" data-country="Armenia" data-song="LoveWave" data-year="2016" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1rxBGDSpLsv5GrMm8wNit8C-EpI7urWmV/')">
+                    <div class="preview-container">
+                    <img alt="Armemia 2016" src="images/2016-AM.jpeg"/>
+                    </div>
+                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                    <a href="armemia.html">
+                    <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
+                    </a>
+                    <div class="video-title-text"><b>Iveta Mukuchyan</b><br>LoveWave<br>2016</div>
+                    </div>
+                    </div>
+                    
+                    <!-- 2015 -->
+                    <div class="video-item" data-artist="Genealogy" data-country="Armenia" data-song="Face the Shadow" data-year="2015" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1LCv448cF3Q_um8I27WSoSeMeAXrkGhyK/')">
+                    <div class="preview-container">
+                    <img alt="Armemia 2015" src="images/2015-AM.jpeg"/>
+                    </div>
+                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                    <a href="armemia.html">
+                    <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
+                    </a>
+                    <div class="video-title-text"><b>Genealogy</b><br>Face the Shadow<br>2015</div>
+                    </div>
+                    </div>
+                    
+                    <!-- 2014 -->
+                    <div class="video-item" data-artist="Aram Mp3" data-country="Armenia" data-song="Not Alone" data-year="2014" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/139ajV-KETbyoc7vic9X_2A3WAiUvxDem/')">
+                    <div class="preview-container">
+                    <img alt="Armemia 2014" src="images/2014-AM.jpeg"/>
+                    </div>
+                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                    <a href="armemia.html">
+                    <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
+                    </a>
+                    <div class="video-title-text"><b>Aram Mp3</b><br>Not Alone<br>2014</div>
+                    </div>
+                    </div>
+                    
+                    <!-- 2013 -->
+                    <div class="video-item" data-artist="Dorians" data-country="Armenia" data-song="Lonely Planet" data-year="2013" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1UXCKeiPnObD7TW2pm8PHG3BFzd8Q4zL6/')">
+                    <div class="preview-container">
+                    <img alt="Armemia 2013" src="images/2013-AM.jpeg"/>
+                    </div>
+                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                    <a href="armemia.html">
+                    <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
+                    </a>
+                    <div class="video-title-text"><b>Dorians</b><br>Lonely Planet<br>2013</div>
+                    </div>
+                    </div>
+                    
+                    <!-- 2011 -->
+                    <div class="video-item" data-artist="Emmy" data-country="Armenia" data-song="Boom Boom" data-year="2011" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Xp4aq-36sfLK0HYw23H-7V4ITRAgW23X/')">
+                    <div class="preview-container">
+                    <img alt="Armemia 2011" src="images/2011-AM.jpeg"/>
+                    </div>
+                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                    <a href="armemia.html">
+                    <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
+                    </a>
+                    <div class="video-title-text"><b>Emmy</b><br>Boom Boom<br>2011</div>
+                    </div>
+                    </div>
+                    
+                    <!-- 2010 -->
+                    <div class="video-item" data-artist="Eva Rivas" data-country="Armenia" data-song="Apricot Stone" data-year="2010" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1miJhdfuXcQa-xclWS5_yR2YJ_yspFG_H/')">
+                    <div class="preview-container">
+                    <img alt="Armemia 2010" src="images/2010-AM.jpeg"/>
+                    </div>
+                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                    <a href="armemia.html">
+                    <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
+                    </a>
+                    <div class="video-title-text"><b>Eva Rivas</b><br>Apricot Stone<br>2010</div>
+                    </div>
+                    </div>
+                    
+                    <!-- 2009 -->
+                    <div class="video-item" data-artist="Inga and Anush" data-country="Armenia" data-song="Jan Jan" data-year="2009" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1rWbEM2AIjY7MsYNQ6ADxS6Yqo8cTjmP7/')">
+                    <div class="preview-container">
+                    <img alt="Armemia 2009" src="images/2009-AM.jpeg"/>
+                    </div>
+                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                    <a href="armemia.html">
+                    <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
+                    </a>
+                    <div class="video-title-text"><b>Inga and Anush</b><br>Jan Jan<br>2009</div>
+                    </div>
+                    </div>
+                    
+                    <!-- 2008 -->
+                    <div class="video-item" data-artist="Sirusho" data-country="Armenia" data-song="Qélé, Qélé" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1NsJrjVG2SaYmuU477HVs_2iTp6dN-n-P/')">
+                    <div class="preview-container">
+                    <img alt="Armemia 2008" src="images/2008-AM.jpeg"/>
+                    </div>
+                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                    <a href="armemia.html">
+                    <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
+                    </a>
+                    <div class="video-title-text"><b>Sirusho</b><br>Qélé, Qélé<br>2008</div>
+                    </div>
+                    </div>
+                    
+                    <!-- 2007 -->
+                    <div class="video-item" data-artist="Hayko" data-country="Armenia" data-song="Anytime You Need" data-year="2007" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Bi3xVcnLGz_hbpAM3eaLZ68L2titA8oj/')">
+                    <div class="preview-container">
+                    <img alt="Armemia 2007" src="images/2007-AM.jpeg"/>
+                    </div>
+                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                    <a href="armemia.html">
+                    <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
+                    </a>
+                    <div class="video-title-text"><b>Hayko</b><br>Anytime You Need<br>2007</div>
+                    </div>
+                    </div>
+                    
+                    <!-- 2006 -->
+                    <div class="video-item" data-artist="André" data-country="Armenia" data-song="Without Your Love" data-year="2006" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1YNJZtDe7Jez4kf0EjKsrHSfIu8oHaIuQ/')">
+                        <div class="preview-container">
+                            <img alt="Armemia 2006" src="images/2006-AM.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="armemia.html">
+                                <img alt="Flag" class="icon-placeholder" src="flags/am.png"/>
+                            </a>
+                            <div class="video-title-text"><b>André</b><br>Without Your Love<br>2006</div>
+                        </div>
+                    </div>
+
+                    <!-- MODAL -->
+                    <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+                        <div class="modal-content">
+                            <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+                            <video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
+                            <iframe allow="autoplay; encrypted-media" frameborder="0" id="modalIframe" style="display: none;" sandbox="allow-scripts allow-same-origin"></iframe>
+                        </div>
+                    </div>
+
+                    <!-- END OF VIDEOS -->
                 </div>
             </div>
+        </div>
         
-            <!-- FOOTER -->
-            <footer class="site-footer">
-                <div class="footer-line"></div>
-                <div class="footer-branding">
-                    <div class="footer-flag">
-                        <img alt="United Kingdom" src="flags/gb.png"/>
-                    </div>
-                    <span class="footer-title">Douze Points</span>
+        <!-- FOOTER -->
+        <footer class="site-footer">
+            <div class="footer-line"></div>
+            <div class="footer-branding">
+                <div class="footer-flag">
+                    <img alt="United Kingdom" src="flags/gb.png"/>
                 </div>
-                <div class="footer-links">
-                    <a href="about.html">About</a>
-                    <a href="contact.html">Contact Us</a>
-                    <a href="faq.html">FAQ</a>
-                    <a href="privacy.html">Privacy Policy</a>
-                </div>
-            </footer>
+                <span class="footer-title">Douze Points</span>
+            </div>
+            <div class="footer-links">
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact Us</a>
+                <a href="faq.html">FAQ</a>
+                <a href="privacy.html">Privacy Policy</a>
+            </div>
+        </footer>
 
 
-            <script src="modal.js" type="text/javascript"></script>
-            <script src="sorting.js" type="text/javascript"></script>
-
-
+        <script src="modal.js" type="text/javascript"></script>
+        <script src="sorting.js" type="text/javascript"></script>
+        
     </body>
 </html>
 
