@@ -1,352 +1,41 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<head>
-<meta charset="utf-8"/>
-<!-- Import Raleway typeface -->
-<link href="https://fonts.googleapis.com/css2?family=Raleway&amp;display=swap" rel="stylesheet"/>
-<title>Douze Points | Croatia</title>
-<script src="countries.js" type="text/javascript"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <head>
+        <meta charset="utf-8"/>
 
-<style>
+        <!-- Import Raleway typeface -->
+        <link href="https://fonts.googleapis.com/css2?family=Raleway&amp;display=swap" rel="stylesheet"/>
+        
+        <title>Douze Points | Croatia</title>
+        
+        <link rel="stylesheet" type="text/css" href="countries2.css">
+        <script src="https://unpkg.com/lucide@latest"></script>
+    </head>
     
+    <body oncontextmenu="return false">
 
-    body {
-      font-family: 'Raleway', sans-serif;
-      margin: 0;
-      background: #141414;
-      color: #fff;
-    }
-
-    .banner-static {
-      width: 100%;
-      height: 400px;
-      overflow: hidden;
-    }
-    
-    .banner-static img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }      
-      .banner-image.active {
-      opacity: 1;
-      z-index: 2;
-    }
-    /* Overlay layout */
-    .header-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      padding: 20px;
-      z-index: 3;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .home-link {
-      color: #fff;
-      font-size: 1rem;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    
-    .header-links {
-      display: flex;
-      gap: 20px;
-    }
-    
-    .header-links a {
-      color: #fff;
-      font-size: 1rem;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    
-    .header-links a:hover {
-      color: #e50914;
-    }
-
-    .banner-title img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .banner-title h2 {
-      font-size: 2rem;
-      color: black;
-      margin: 0;
-    }
-    
-    .banner-text h2 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-    
-    .banner-text p {
-      font-size: 1rem;
-      margin: 0.3rem 0;
-    }
-
-    .banner-divider {
-      width: 100%;
-      height: 1px;
-      background-color: #e50914;
-      }
-    
-    .container {
-          display: flex;
-        }
-
-    .sidebar {
-      width: 220px;
-      padding: 10px;
-      background-color: #111;
-      color: white;
-      font-size: 14px;
-      height: auto;
-      overflow: visible;
-    }
-
-    .sidebar a {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #fff;
-      text-decoration: none;
-      padding: 8px 12px;
-      border-radius: 8px;
-      transition: background-color 0.3s;
-    }
-
-    .sidebar-row a {
-      text-decoration: none;
-      color: white;
-      display: flex;
-      align-items: center;
-    }
-
-    .sidebar-row {
-      margin: 5px 0;
-    }
-
-    .sidebar a:hover {
-      background-color: #e50914;
-      border-radius: 8px;
-    }
-
-    .sidebar img {
-      width: 22px;
-      height: 22px;
-      object-fit: cover;
-      border-radius: 50%;
-    }
-
-    .main-content {
-      flex-grow: 1;
-      padding: 20px;
-    }
-
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-    }
-
-    .video-item {
-      cursor: pointer;
-      background-color: #1a1a1a;
-      padding: 10px;
-      border-radius: 8px;
-      overflow: hidden;
-      transition: transform 0.3s ease;
-    }
-
-    .video-item:hover {
-      transform: scale(1.05);
-    }
-
-    .preview-container {
-      position: relative;
-      width: 100%;
-      padding-top: 56.25%; /* 16:9 */
-      overflow: hidden;
-      border-radius: 6px;
-    }
-
-    .preview-container img,
-    .preview-container video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    .preview-container video {
-      display: none;
-    }
-    
-    .preview-container.has-video:hover video {
-      display: block;
-    }
-    
-    .preview-container.has-video:hover img {
-      display: none;
-    }
-    
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0, 0, 0, 0.9);
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      position: relative;
-      max-width: 100%;
-      max-height: 100%;
-    }
-
-    .modal-content video,
-    .modal-content iframe {
-      width: 81vw;
-      height: 81vh;
-    }
-
-    .close-button {
-      position: absolute;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 40px;
-      top: -20px;
-      right: -20px;
-      z-index: 9999;
-      border-radius: 50%;
-    }
-
-    .site-footer {
-      margin-top: 3rem;
-      padding: 2rem 1rem;
-      text-align: center;
-      color: #ccc;
-      font-size: 0.85rem;
-      background-color: #141414;
-    }
-
-    .footer-line {
-      width: 90%;
-      height: 1px;
-      background-color: #e50914;
-      margin: 0 auto 1rem auto;
-    }
-
-    .footer-branding {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1rem;
-      gap: 10px;
-    }
-
-    .footer-flag {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      overflow: hidden;
-    }
-
-    .footer-flag img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .footer-title {
-      font-size: 1rem;
-      color: #fff;
-      font-weight: bold;
-    }
-
-    .footer-links a {
-      color: #ccc;
-      margin: 0 10px;
-      text-decoration: none;
-      font-size: 0.85rem;
-    }
-
-    .footer-links a:hover {
-      color: #e50914;
-      text-decoration: underline;
-    }
-
-    .video-title-with-icon {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
-      gap: 8px;
-      color: white;
-      font-size: 0.8rem;
-    }
-      
-    .icon-placeholder {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background-color: #444;
-      object-fit: cover;
-      margin-left: 8px;
-    }
-
-    .video-title-text {
-      line-height: 1.2;
-      }
-
-    .video-title-text a {
-      text-decoration: none; /* Remove underline */
-      color: inherit;         /* Inherit color from surrounding text */
-    }
-
-  </style>
-</head>
-<body oncontextmenu="return false">
-<!-- HEADER -->
-<header class="main-header">
-<div class="header-overlay">
-<div class="header-links">
-<a class="home-link" href="index.html">Home</a>
-<a class="home-link" href="countries.html">Countries</a>
-<a class="home-link" href="edition-2024.html">Editions</a>
-</div>
-</div>
-<div class="banner-static">
+        <!-- HEADER -->
+        <header class="main-header">
+            <div class="header-overlay">
+                <div class="header-links">
+                    <a class="home-link" href="index.html">Home</a>
+                    <a class="home-link" href="countries.html">Countries</a>
+                    <a class="home-link" href="edition-2025.html">Editions</a>
+                </div>
+            </div>
+            <div class="banner-static">
                 <img alt="Banner" src="banners/hr.png"/>
-</div>
-</header>
-<!--  red dividing line -->
-<div class="banner-divider"></div>
-<!-- Main Content Layout -->
-<div class="container">
-     <!-- Sidebar -->
+            </div>
+        </header>
+
+        <!--  red dividing line -->
+        <div class="banner-divider"></div>
+
+        <!-- Main Content Layout -->
+        <div class="container">
+            
+            <!-- Sidebar -->
             <div class="sidebar">
               <div class="sidebar-row">
                 <a href="albania.html"><img class="flag-icon" src="flags/al.png" alt="Albania">Albania</a>
@@ -507,9 +196,7 @@
             </div> 
             <!-- end of sidebar -->
 
-
-
-<div class="main-content">
+                <div class="main-content">
                     <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
                         <div style="flex: 1;"></div> <!-- Push the sort-controls to the right -->
                         <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
@@ -524,918 +211,406 @@
                             </select>
                         </div>
                     </div>
+                    <div class="grid-container">
 
-<div class="grid-container">
-<!-- 2024 -->
-<div class="video-item" data-artist="Baby Lasagna" data-country="Croatia" data-song="Rim Tim Tagi Dim" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1zkNRScAvFdZu6i88EDB9sIZeH9Y06M2p/')">
-<div class="preview-container">
-<img alt="Croatia 2024" src="images/2024-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Baby Lasagna</b><br>Rim Tim Tagi Dim<br>2024</div>
-</div>
-</div>
-<!-- 2023 -->
-<div class="video-item" data-artist="Let 3" data-country="Croatia" data-song="Mama ŠČ!" data-year="2023" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1QMSQbWPa2tsp1kzJAs47RJMzBjuU4eve/')">
-<div class="preview-container">
-<img alt="Croatia 2023" src="images/2023-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Let 3</b><br>Mama ŠČ!<br>2023</div>
-</div>
-</div>
-<!-- 2022 -->
-<div class="video-item" data-artist="Mia Dimšić" data-country="Croatia" data-song="Guilty Pleasure" data-year="2022" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1luOXbXkNawKFhTxVJvVQxUNDDcSOeaK5/')">
-<div class="preview-container">
-<img alt="Croatia 2022" src="images/2022-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Mia Dimšić</b><br>Guilty Pleasure<br>2022</div>
-</div>
-</div>
-<!-- 2021 -->
-<div class="video-item" data-artist="Albina" data-country="Croatia" data-song="Tick-Tock" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1-HOZdG_V8Uio0qC83fD7QBhT1A3AFJZh/')">
-<div class="preview-container">
-<img alt="Croatia 2021" src="images/2021-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Albina</b><br>Tick-Tock<br>2021</div>
-</div>
-</div>
-<!-- 2020 -->
-<div class="video-item" data-artist="Damir Kedžo" data-country="Croatia" data-song="Divlji vjetre" data-year="2020" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1tQMs-9bglZWQipu9fJcGxAkO_adaq9Zp/')">
-<div class="preview-container">
-<img alt="Croatia 2020" src="images/2020-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Damir Kedžo</b><br>Divlji vjetre<br>2020</div>
-</div>
-</div>
-<!-- 2019 -->
-<div class="video-item" data-artist="Roko" data-country="Croatia" data-song="The Dream" data-year="2019" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1MIgGZvCXUuP30Ux_ZeqUdaZN6Voj21-o/')">
-<div class="preview-container">
-<img alt="Croatia 2019" src="images/2019-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Roko</b><br>The Dream<br>2019</div>
-</div>
-</div>
-<!-- 2018 -->
-<div class="video-item" data-artist="Franka" data-country="Croatia" data-song="Crazy" data-year="2018" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1ePWcDYGD_36siON45kRzkK-wuynVu-cy/')">
-<div class="preview-container">
-<img alt="Croatia 2018" src="images/2018-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Franka</b><br>Crazy<br>2018</div>
-</div>
-</div>
-<!-- 2017 -->
-<div class="video-item" data-artist="Jacques Houdek" data-country="Croatia" data-song="My Friend" data-year="2017" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1jB42zCffMkBnHRJzGep0UYx6kpHywfTq/')">
-<div class="preview-container">
-<img alt="Croatia 2017" src="images/2017-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Jacques Houdek</b><br>My Friend<br>2017</div>
-</div>
-</div>
-<!-- 2016 -->
-<div class="video-item" data-artist="Nina Kraljić" data-country="Croatia" data-song="Lighthouse" data-year="2016" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Jg5t7byaQCY5nvPhvEQWwcgffjYKTTFd/')">
-<div class="preview-container">
-<img alt="Croatia 2016" src="images/2016-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Nina Kraljić</b><br>Lighthouse<br>2016</div>
-</div>
-</div>
-<!-- 2015 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 2015" src="images/2015-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 2014 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 2014" src="images/2014-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 2013 -->
-<div class="video-item" data-artist="Klapa s Mora" data-country="Croatia" data-song="Mižerja" data-year="2013" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1b9hLmeqBwS7TQeH5UqhFTnVUJeRFtM1q/')">
-<div class="preview-container">
-<img alt="Croatia 2013" src="images/2013-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Klapa s Mora</b><br>Mižerja<br>2013</div>
-</div>
-</div>
-<!-- 2012 -->
-<div class="video-item" data-artist="Nina Badrić" data-country="Croatia" data-song="Nebo" data-year="2012" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1fyR-eek1BHA8xdx0eE7lY4_xQagjbX-l/')">
-<div class="preview-container">
-<img alt="Croatia 2012" src="images/2012-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Nina Badrić</b><br>Nebo<br>2012</div>
-</div>
-</div>
-<!-- 2011 -->
-<div class="video-item" data-artist="Daria" data-country="Croatia" data-song="Celebrate" data-year="2011" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1GWJE0eMV0RZAJTlwpGFAyTA_XsiDBQga/')">
-<div class="preview-container">
-<img alt="Croatia 2011" src="images/2011-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Daria</b><br>Celebrate<br>2011</div>
-</div>
-</div>
-<!-- 2010 -->
-<div class="video-item" data-artist="Feminnem" data-country="Croatia" data-song="Lako je sve" data-year="2010" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Rp41DJ-LXMLKKHupl3F-ovv2hCsdGwH_/')">
-<div class="preview-container">
-<img alt="Croatia 2010" src="images/2010-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Feminnem</b><br>Lako je sve<br>2010</div>
-</div>
-</div>
-<!-- 2009 -->
-<div class="video-item" data-artist="Igor Cukrov feat. Andrea" data-country="Croatia" data-song="Lijepa Tena" data-year="2009" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1-v6YQFsHp_IhtFyZPzRM5sZt_CC7FhP8/')">
-<div class="preview-container">
-<img alt="Croatia 2009" src="images/2009-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Igor Cukrov feat. Andrea</b><br>Lijepa Tena<br>2009</div>
-</div>
-</div>
-<!-- 2008 -->
-<div class="video-item" data-artist="Kraljevi ulice and 75 Cents" data-country="Croatia" data-song="Romanca" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1i9d0YQO1nh930b_yQxMUBU2fiqjX8NGd/')">
-<div class="preview-container">
-<img alt="Croatia 2008" src="images/2008-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Kraljevi ulice and 75 Cents</b><br>Romanca<br>2008</div>
-</div>
-</div>
-<!-- 2007 -->
-<div class="video-item" data-artist="Dragonfly feat. Dado Topić" data-country="Croatia" data-song="Vjerujem u ljubav" data-year="2007" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1uQNPtJwSc3G-87hxRcH8Y2wMV37TJXwG/')">
-<div class="preview-container">
-<img alt="Croatia 2007" src="images/2007-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Dragonfly feat. Dado Topić</b><br>Vjerujem u ljubav<br>2007</div>
-</div>
-</div>
-<!-- 2006 -->
-<div class="video-item" data-artist="Severina" data-country="Croatia" data-song="Moja štikla" data-year="2006" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1OqKfpWG-fxL5YBSdst_thebZogXXdCg8/')">
-<div class="preview-container">
-<img alt="Croatia 2006" src="images/2006-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Severina</b><br>Moja štikla<br>2006</div>
-</div>
-</div>
-<!-- 2005 -->
-<div class="video-item" data-artist="Boris Novković feat. Lado Members" data-country="Croatia" data-song="Vukovi umiru sami" data-year="2005" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1CfledWZzvXWxo4_4tJckqnme-HoTzRP1/')">
-<div class="preview-container">
-<img alt="Croatia 2005" src="images/2005-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Boris Novković feat. Lado Members</b><br>Vukovi umiru sami<br>2005</div>
-</div>
-</div>
-<!-- 2004 -->
-<div class="video-item" data-artist="Ivan Mikulić" data-country="Croatia" data-song="You Are the Only One" data-year="2004" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/11xsacvOOpHdRyNvHZ8KiPJYaqdZ8e5pJ/')">
-<div class="preview-container">
-<img alt="Croatia 2004" src="images/2004-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Ivan Mikulić</b><br>You Are the Only One<br>2004</div>
-</div>
-</div>
-<!-- 2003 -->
-<div class="video-item" data-artist="Claudia Beni" data-country="Croatia" data-song="Više nisam tvoja" data-year="2003" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1skPsxDoa0pkJfOdZKefV8WzXmwCJ7dNd/')">
-<div class="preview-container">
-<img alt="Croatia 2003" src="images/2003-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Claudia Beni</b><br>Više nisam tvoja<br>2003</div>
-</div>
-</div>
-<!-- 2002 -->
-<div class="video-item" data-artist="Vesna Pisarović" data-country="Croatia" data-song="Everything I Want" data-year="2002" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1sX_-jSX-Ayp8PLdrjQ0r4tHK511PkjER/')">
-<div class="preview-container">
-<img alt="Croatia 2002" src="images/2002-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Vesna Pisarović</b><br>Everything I Want<br>2002</div>
-</div>
-</div>
-<!-- 2001 -->
-<div class="video-item" data-artist="Vanna" data-country="Croatia" data-song="Strings of My Heart" data-year="2001" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1VPycCRxJnnR7KQ2lF8O-vqwJ__VT8E82/')">
-<div class="preview-container">
-<img alt="Croatia 2001" src="images/2001-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Vanna</b><br>Strings of My Heart<br>2001</div>
-</div>
-</div>
-<!-- 2000 -->
-<div class="video-item" data-artist="Goran Karan" data-country="Croatia" data-song="Kad zaspu anđeli" data-year="2000" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1i2b5Ly57rTU5ygco57STmGr9-_s8N0dr/')">
-<div class="preview-container">
-<img alt="Croatia 2000" src="images/2000-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Goran Karan</b><br>Kad zaspu anđeli<br>2000</div>
-</div>
-</div>
-<!-- 1999 -->
-<div class="video-item" data-artist="Doris Dragović" data-country="Croatia" data-song="Marija Magdalena" data-year="1999" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1RoQu4ml31YvCrp1GnR_Y_m2jFCbAGgEI/')">
-<div class="preview-container">
-<img alt="Croatia 1999" src="images/1999-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Doris Dragović</b><br>Marija Magdalena<br>1999</div>
-</div>
-</div>
-<!-- 1998 -->
-<div class="video-item" data-artist="Danijela" data-country="Croatia" data-song="Neka mi ne svane" data-year="1998" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1P2hMMpY3FF7exdlniagiMo9g8JmjSH-X/')">
-<div class="preview-container">
-<img alt="Croatia 1998" src="images/1998-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Danijela</b><br>Neka mi ne svane<br>1998</div>
-</div>
-</div>
-<!-- 1997 -->
-<div class="video-item" data-artist="E.N.I." data-country="Croatia" data-song="Probudi me" data-year="1997" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1N_Ziy_7ucvASyZh_B-9KRgqBbQVasSZk/')">
-<div class="preview-container">
-<img alt="Croatia 1997" src="images/1997-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>E.N.I.</b><br>Probudi me<br>1997</div>
-</div>
-</div>
-<!-- 1996 -->
-<div class="video-item" data-artist="Maja Blagdan" data-country="Croatia" data-song="Sveta ljubav" data-year="1996" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Wm1b_yluL-L3qDl58LpvZgvN8wkJM2ym/')">
-<div class="preview-container">
-<img alt="Croatia 1996" src="images/1996-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Maja Blagdan</b><br>Sveta ljubav<br>1996</div>
-</div>
-</div>
-<!-- 1995 -->
-<div class="video-item" data-artist="Magazin and Lidija" data-country="Croatia" data-song="Nostalgija" data-year="1995" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/19m08acCJKH9iyeRiBFMyZ2zydkkvUki4/')">
-<div class="preview-container">
-<img alt="Croatia 1995" src="images/1995-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Magazin and Lidija</b><br>Nostalgija<br>1995</div>
-</div>
-</div>
-<!-- 1994 -->
-<div class="video-item" data-artist="Tony Cetinski" data-country="Croatia" data-song="Nek' ti bude ljubav sva" data-year="1994" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1hqQAsdfeE-4fuELCpdTIreBRkjTQ70lm/')">
-<div class="preview-container">
-<img alt="Croatia 1994" src="images/1994-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Tony Cetinski</b><br>Nek' ti bude ljubav sva<br>1994</div>
-</div>
-</div>
-<!-- 1993 -->
-<div class="video-item" data-artist="Put" data-country="Croatia" data-song="Don't Ever Cry" data-year="1993" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/12FozMwqrkcu7V4V0lNB7o1pYjwwDr6JD/')">
-<div class="preview-container">
-<img alt="Croatia 1993" src="images/1993-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Put</b><br>Don't Ever Cry<br>1993</div>
-</div>
-</div>
-<!-- 1992 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1992" src="images/1992-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1991 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1991" src="images/1991-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1990 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1990" src="images/1990-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1989 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1989" src="images/1989-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1988 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1988" src="images/1988-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1987 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1987" src="images/1987-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1986 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1986" src="images/1986-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1985 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1985" src="images/1985-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1984 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1984" src="images/1984-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1983 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1983" src="images/1983-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1982 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1982" src="images/1982-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1981 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1981" src="images/1981-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1980 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1980" src="images/1980-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1979 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1979" src="images/1979-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1978 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1978" src="images/1978-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1977 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1977" src="images/1977-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1976 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1976" src="images/1976-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1975 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1975" src="images/1975-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1974 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1974" src="images/1974-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1973 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1973" src="images/1973-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1972 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1972" src="images/1972-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1971 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1971" src="images/1971-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1970 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1970" src="images/1970-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1969 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1969" src="images/1969-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1968 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1968" src="images/1968-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1967 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1967" src="images/1967-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1966 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1966" src="images/1966-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1965 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1965" src="images/1965-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1964 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1964" src="images/1964-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1963 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1963" src="images/1963-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1962 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1962" src="images/1962-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1961 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1961" src="images/1961-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1960 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1960" src="images/1960-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1959 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1959" src="images/1959-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1958 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1958" src="images/1958-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1957 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1957" src="images/1957-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1956 (2) --
-<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1956" src="images/1956_2-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>
-<!-- 1956 (1) --
-<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Croatia 1956" src="images/1956_1-HR.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="croatia.html">
-<img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>
+                        <!-- 2024 -->
+                        <div class="video-item" data-artist="Baby Lasagna" data-country="Croatia" data-song="Rim Tim Tagi Dim" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1zkNRScAvFdZu6i88EDB9sIZeH9Y06M2p/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2024" src="images/2024-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Baby Lasagna</b><br>Rim Tim Tagi Dim<br>2024</div>
+                        </div>
+                        </div>
+                        <!-- 2023 -->
+                        <div class="video-item" data-artist="Let 3" data-country="Croatia" data-song="Mama ŠČ!" data-year="2023" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1QMSQbWPa2tsp1kzJAs47RJMzBjuU4eve/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2023" src="images/2023-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Let 3</b><br>Mama ŠČ!<br>2023</div>
+                        </div>
+                        </div>
+                        <!-- 2022 -->
+                        <div class="video-item" data-artist="Mia Dimšić" data-country="Croatia" data-song="Guilty Pleasure" data-year="2022" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1luOXbXkNawKFhTxVJvVQxUNDDcSOeaK5/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2022" src="images/2022-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Mia Dimšić</b><br>Guilty Pleasure<br>2022</div>
+                        </div>
+                        </div>
+                        <!-- 2021 -->
+                        <div class="video-item" data-artist="Albina" data-country="Croatia" data-song="Tick-Tock" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1-HOZdG_V8Uio0qC83fD7QBhT1A3AFJZh/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2021" src="images/2021-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Albina</b><br>Tick-Tock<br>2021</div>
+                        </div>
+                        </div>
+                        <!-- 2020 -->
+                        <div class="video-item" data-artist="Damir Kedžo" data-country="Croatia" data-song="Divlji vjetre" data-year="2020" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1tQMs-9bglZWQipu9fJcGxAkO_adaq9Zp/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2020" src="images/2020-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Damir Kedžo</b><br>Divlji vjetre<br>2020</div>
+                        </div>
+                        </div>
+                        <!-- 2019 -->
+                        <div class="video-item" data-artist="Roko" data-country="Croatia" data-song="The Dream" data-year="2019" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1MIgGZvCXUuP30Ux_ZeqUdaZN6Voj21-o/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2019" src="images/2019-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Roko</b><br>The Dream<br>2019</div>
+                        </div>
+                        </div>
+                        <!-- 2018 -->
+                        <div class="video-item" data-artist="Franka" data-country="Croatia" data-song="Crazy" data-year="2018" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1ePWcDYGD_36siON45kRzkK-wuynVu-cy/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2018" src="images/2018-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Franka</b><br>Crazy<br>2018</div>
+                        </div>
+                        </div>
+                        <!-- 2017 -->
+                        <div class="video-item" data-artist="Jacques Houdek" data-country="Croatia" data-song="My Friend" data-year="2017" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1jB42zCffMkBnHRJzGep0UYx6kpHywfTq/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2017" src="images/2017-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Jacques Houdek</b><br>My Friend<br>2017</div>
+                        </div>
+                        </div>
+                        <!-- 2016 -->
+                        <div class="video-item" data-artist="Nina Kraljić" data-country="Croatia" data-song="Lighthouse" data-year="2016" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Jg5t7byaQCY5nvPhvEQWwcgffjYKTTFd/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2016" src="images/2016-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Nina Kraljić</b><br>Lighthouse<br>2016</div>
+                        </div>
+                        </div>
+                        <!-- 2013 -->
+                        <div class="video-item" data-artist="Klapa s Mora" data-country="Croatia" data-song="Mižerja" data-year="2013" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1b9hLmeqBwS7TQeH5UqhFTnVUJeRFtM1q/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2013" src="images/2013-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Klapa s Mora</b><br>Mižerja<br>2013</div>
+                        </div>
+                        </div>
+                        <!-- 2012 -->
+                        <div class="video-item" data-artist="Nina Badrić" data-country="Croatia" data-song="Nebo" data-year="2012" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1fyR-eek1BHA8xdx0eE7lY4_xQagjbX-l/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2012" src="images/2012-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Nina Badrić</b><br>Nebo<br>2012</div>
+                        </div>
+                        </div>
+                        <!-- 2011 -->
+                        <div class="video-item" data-artist="Daria" data-country="Croatia" data-song="Celebrate" data-year="2011" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1GWJE0eMV0RZAJTlwpGFAyTA_XsiDBQga/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2011" src="images/2011-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Daria</b><br>Celebrate<br>2011</div>
+                        </div>
+                        </div>
+                        <!-- 2010 -->
+                        <div class="video-item" data-artist="Feminnem" data-country="Croatia" data-song="Lako je sve" data-year="2010" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Rp41DJ-LXMLKKHupl3F-ovv2hCsdGwH_/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2010" src="images/2010-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Feminnem</b><br>Lako je sve<br>2010</div>
+                        </div>
+                        </div>
+                        <!-- 2009 -->
+                        <div class="video-item" data-artist="Igor Cukrov feat. Andrea" data-country="Croatia" data-song="Lijepa Tena" data-year="2009" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1-v6YQFsHp_IhtFyZPzRM5sZt_CC7FhP8/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2009" src="images/2009-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Igor Cukrov feat. Andrea</b><br>Lijepa Tena<br>2009</div>
+                        </div>
+                        </div>
+                        <!-- 2008 -->
+                        <div class="video-item" data-artist="Kraljevi ulice and 75 Cents" data-country="Croatia" data-song="Romanca" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1i9d0YQO1nh930b_yQxMUBU2fiqjX8NGd/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2008" src="images/2008-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Kraljevi ulice and 75 Cents</b><br>Romanca<br>2008</div>
+                        </div>
+                        </div>
+                        <!-- 2007 -->
+                        <div class="video-item" data-artist="Dragonfly feat. Dado Topić" data-country="Croatia" data-song="Vjerujem u ljubav" data-year="2007" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1uQNPtJwSc3G-87hxRcH8Y2wMV37TJXwG/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2007" src="images/2007-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Dragonfly feat. Dado Topić</b><br>Vjerujem u ljubav<br>2007</div>
+                        </div>
+                        </div>
+                        <!-- 2006 -->
+                        <div class="video-item" data-artist="Severina" data-country="Croatia" data-song="Moja štikla" data-year="2006" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1OqKfpWG-fxL5YBSdst_thebZogXXdCg8/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2006" src="images/2006-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Severina</b><br>Moja štikla<br>2006</div>
+                        </div>
+                        </div>
+                        <!-- 2005 -->
+                        <div class="video-item" data-artist="Boris Novković feat. Lado Members" data-country="Croatia" data-song="Vukovi umiru sami" data-year="2005" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1CfledWZzvXWxo4_4tJckqnme-HoTzRP1/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2005" src="images/2005-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Boris Novković feat. Lado Members</b><br>Vukovi umiru sami<br>2005</div>
+                        </div>
+                        </div>
+                        <!-- 2004 -->
+                        <div class="video-item" data-artist="Ivan Mikulić" data-country="Croatia" data-song="You Are the Only One" data-year="2004" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/11xsacvOOpHdRyNvHZ8KiPJYaqdZ8e5pJ/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2004" src="images/2004-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Ivan Mikulić</b><br>You Are the Only One<br>2004</div>
+                        </div>
+                        </div>
+                        <!-- 2003 -->
+                        <div class="video-item" data-artist="Claudia Beni" data-country="Croatia" data-song="Više nisam tvoja" data-year="2003" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1skPsxDoa0pkJfOdZKefV8WzXmwCJ7dNd/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2003" src="images/2003-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Claudia Beni</b><br>Više nisam tvoja<br>2003</div>
+                        </div>
+                        </div>
+                        <!-- 2002 -->
+                        <div class="video-item" data-artist="Vesna Pisarović" data-country="Croatia" data-song="Everything I Want" data-year="2002" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1sX_-jSX-Ayp8PLdrjQ0r4tHK511PkjER/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2002" src="images/2002-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Vesna Pisarović</b><br>Everything I Want<br>2002</div>
+                        </div>
+                        </div>
+                        <!-- 2001 -->
+                        <div class="video-item" data-artist="Vanna" data-country="Croatia" data-song="Strings of My Heart" data-year="2001" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1VPycCRxJnnR7KQ2lF8O-vqwJ__VT8E82/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2001" src="images/2001-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Vanna</b><br>Strings of My Heart<br>2001</div>
+                        </div>
+                        </div>
+                        <!-- 2000 -->
+                        <div class="video-item" data-artist="Goran Karan" data-country="Croatia" data-song="Kad zaspu anđeli" data-year="2000" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1i2b5Ly57rTU5ygco57STmGr9-_s8N0dr/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 2000" src="images/2000-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Goran Karan</b><br>Kad zaspu anđeli<br>2000</div>
+                        </div>
+                        </div>
+                        <!-- 1999 -->
+                        <div class="video-item" data-artist="Doris Dragović" data-country="Croatia" data-song="Marija Magdalena" data-year="1999" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1RoQu4ml31YvCrp1GnR_Y_m2jFCbAGgEI/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 1999" src="images/1999-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Doris Dragović</b><br>Marija Magdalena<br>1999</div>
+                        </div>
+                        </div>
+                        <!-- 1998 -->
+                        <div class="video-item" data-artist="Danijela" data-country="Croatia" data-song="Neka mi ne svane" data-year="1998" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1P2hMMpY3FF7exdlniagiMo9g8JmjSH-X/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 1998" src="images/1998-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Danijela</b><br>Neka mi ne svane<br>1998</div>
+                        </div>
+                        </div>
+                        <!-- 1997 -->
+                        <div class="video-item" data-artist="E.N.I." data-country="Croatia" data-song="Probudi me" data-year="1997" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1N_Ziy_7ucvASyZh_B-9KRgqBbQVasSZk/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 1997" src="images/1997-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>E.N.I.</b><br>Probudi me<br>1997</div>
+                        </div>
+                        </div>
+                        <!-- 1996 -->
+                        <div class="video-item" data-artist="Maja Blagdan" data-country="Croatia" data-song="Sveta ljubav" data-year="1996" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Wm1b_yluL-L3qDl58LpvZgvN8wkJM2ym/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 1996" src="images/1996-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Maja Blagdan</b><br>Sveta ljubav<br>1996</div>
+                        </div>
+                        </div>
+                        <!-- 1995 -->
+                        <div class="video-item" data-artist="Magazin and Lidija" data-country="Croatia" data-song="Nostalgija" data-year="1995" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/19m08acCJKH9iyeRiBFMyZ2zydkkvUki4/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 1995" src="images/1995-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Magazin and Lidija</b><br>Nostalgija<br>1995</div>
+                        </div>
+                        </div>
+                        <!-- 1994 -->
+                        <div class="video-item" data-artist="Tony Cetinski" data-country="Croatia" data-song="Nek' ti bude ljubav sva" data-year="1994" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1hqQAsdfeE-4fuELCpdTIreBRkjTQ70lm/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 1994" src="images/1994-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Tony Cetinski</b><br>Nek' ti bude ljubav sva<br>1994</div>
+                        </div>
+                        </div>
+                        <!-- 1993 -->
+                        <div class="video-item" data-artist="Put" data-country="Croatia" data-song="Don't Ever Cry" data-year="1993" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/12FozMwqrkcu7V4V0lNB7o1pYjwwDr6JD/')">
+                        <div class="preview-container">
+                        <img alt="Croatia 1993" src="images/1993-HR.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="croatia.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Put</b><br>Don't Ever Cry<br>1993</div>
+                        </div>
+                        </div>
+
 <!-- END OF VIDEOS -->
 </div>
 </div>
 </div>
-<!-- MODAL -->
-<div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
-<div class="modal-content">
-<span class="close-button" onclick="GDriveCloseModal(event)">×</span>
-<video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;"></video>
-<iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" id="modalIframe" style="display: none;"></iframe>
-</div>
-</div>
-<!-- FOOTER -->
-<footer class="site-footer">
-<div class="footer-line"></div>
-<div class="footer-branding">
-<div class="footer-flag">
+        <!-- MODAL -->
+        <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+            <div class="modal-content">
+                <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+                <video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
+                <iframe allow="autoplay; encrypted-media" frameborder="0" id="modalIframe" style="display: none;" sandbox="allow-scripts allow-same-origin"></iframe>
+            </div>
+        </div>
 
-<img alt="United Kingdom" src="flags/gb.png"/></img></div>
-<span class="footer-title">Douze Points</span>
-</div>
-<div class="footer-links">
-<a href="about.html">About</a>
-<a href="contact.html">Contact Us</a>
-<a href="faq.html">FAQ</a>
-<a href="privacy.html">Privacy Policy</a>
-</div>
-</footer>
-<script>
-    function GDriveOpenModalWithVideo(videoUrl, titleText) {
-      const modal = document.getElementById("videoModal");
-      const video = document.getElementById("modalVideo");
-      const iframe = document.getElementById("modalIframe");
-      modal.style.display = "flex";
-      video.style.display = "none";
-      iframe.style.display = "none";
-      video.pause();
-      iframe.src = "";
-      if (videoUrl.includes('drive.google.com')) {
-        const match = videoUrl.match(/\/d\/(.*?)\//);
-        if (match && match[1]) {
-          iframe.src = `https://drive.google.com/file/d/${match[1]}/preview`;
-          iframe.style.display = "block";
-        }
-      } else {
-        video.src = videoUrl;
-        video.style.display = "block";
-        video.play();
-      }
-    }
+        
+        <!-- FOOTER -->
+        <footer class="site-footer">
+            <div class="footer-line"></div>
+            <div class="footer-branding">
+                <div class="footer-flag">
+                    <img alt="United Kingdom" src="flags/gb.png"/>
+                </div>
+                <span class="footer-title">Douze Points</span>
+            </div>
+            <div class="footer-links">
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact Us</a>
+                <a href="faq.html">FAQ</a>
+                <a href="privacy.html">Privacy Policy</a>
+            </div>
+        </footer>
 
-    function GDriveCloseModal(event) {
-      event.stopPropagation();
-      const modal = document.getElementById("videoModal");
-      const video = document.getElementById("modalVideo");
-      const iframe = document.getElementById("modalIframe");
-      video.pause();
-      video.src = "";
-      iframe.src = "";
-      modal.style.display = "none";
-    }
+        
+        <script src="modal.js" type="text/javascript"></script>
+        <script src="sorting.js" type="text/javascript"></script>
 
-    /* lucide icon script */ 
-            lucide.createIcons();
-    
-  </script>
-     <script src="sorting.js" type="text/javascript"></script>
-
-
-
-
-</body>
+        
+    </body>
 </html>
+
+
