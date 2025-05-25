@@ -1,353 +1,39 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<head>
-<meta charset="utf-8"/>
-<!-- Import Raleway typeface -->
-<link href="https://fonts.googleapis.com/css2?family=Raleway&amp;display=swap" rel="stylesheet"/>
-<title>Douze Points | Belgium</title>
-<script src="countries.js" type="text/javascript"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <head>
+        <meta charset="utf-8"/>
 
-<style>
+        <!-- Import Raleway typeface -->
+        <link href="https://fonts.googleapis.com/css2?family=Raleway&amp;display=swap" rel="stylesheet"/>
+        
+        <title>Douze Points | Belgium</title>
+        
+        <link rel="stylesheet" type="text/css" href="countries2.css">
+        <script src="https://unpkg.com/lucide@latest"></script>
+    </head>
     
+    <body oncontextmenu="return false">
 
-    body {
-      font-family: 'Raleway', sans-serif;
-      margin: 0;
-      background: #141414;
-      color: #fff;
-    }
-
-    .banner-static {
-      width: 100%;
-      height: 400px;
-      overflow: hidden;
-    }
-    
-    .banner-static img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }      
-      .banner-image.active {
-      opacity: 1;
-      z-index: 2;
-    }
-    /* Overlay layout */
-    .header-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      padding: 20px;
-      z-index: 3;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .home-link {
-      color: #fff;
-      font-size: 1rem;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    
-    .header-links {
-      display: flex;
-      gap: 20px;
-    }
-    
-    .header-links a {
-      color: #fff;
-      font-size: 1rem;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    
-    .header-links a:hover {
-      color: #e50914;
-    }
-
-    .banner-title img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .banner-title h2 {
-      font-size: 2rem;
-      color: black;
-      margin: 0;
-    }
-    
-    .banner-text h2 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-    
-    .banner-text p {
-      font-size: 1rem;
-      margin: 0.3rem 0;
-    }
-
-    .banner-divider {
-      width: 100%;
-      height: 1px;
-      background-color: #e50914;
-      }
-    
-    .container {
-          display: flex;
-        }
-
-    .sidebar {
-      width: 220px;
-      padding: 10px;
-      background-color: #111;
-      color: white;
-      font-size: 14px;
-      height: auto;
-      overflow: visible;
-    }
-
-    .sidebar a {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #fff;
-      text-decoration: none;
-      padding: 8px 12px;
-      border-radius: 8px;
-      transition: background-color 0.3s;
-    }
-
-    .sidebar-row a {
-      text-decoration: none;
-      color: white;
-      display: flex;
-      align-items: center;
-    }
-
-    .sidebar-row {
-      margin: 5px 0;
-    }
-
-    .sidebar a:hover {
-      background-color: #e50914;
-      border-radius: 8px;
-    }
-
-    .sidebar img {
-      width: 22px;
-      height: 22px;
-      object-fit: cover;
-      border-radius: 50%;
-    }
-
-    .main-content {
-      flex-grow: 1;
-      padding: 20px;
-    }
-
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-    }
-
-    .video-item {
-      cursor: pointer;
-      background-color: #1a1a1a;
-      padding: 10px;
-      border-radius: 8px;
-      overflow: hidden;
-      transition: transform 0.3s ease;
-    }
-
-    .video-item:hover {
-      transform: scale(1.05);
-    }
-
-    .preview-container {
-      position: relative;
-      width: 100%;
-      padding-top: 56.25%; /* 16:9 */
-      overflow: hidden;
-      border-radius: 6px;
-    }
-
-    .preview-container img,
-    .preview-container video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    .preview-container video {
-      display: none;
-    }
-    
-    .preview-container.has-video:hover video {
-      display: block;
-    }
-    
-    .preview-container.has-video:hover img {
-      display: none;
-    }
-    
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0, 0, 0, 0.9);
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      position: relative;
-      max-width: 100%;
-      max-height: 100%;
-    }
-
-    .modal-content video,
-    .modal-content iframe {
-      width: 81vw;
-      height: 81vh;
-    }
-
-    .close-button {
-      position: absolute;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 40px;
-      top: -20px;
-      right: -20px;
-      z-index: 9999;
-      border-radius: 50%;
-    }
-
-    .site-footer {
-      margin-top: 3rem;
-      padding: 2rem 1rem;
-      text-align: center;
-      color: #ccc;
-      font-size: 0.85rem;
-      background-color: #141414;
-    }
-
-    .footer-line {
-      width: 90%;
-      height: 1px;
-      background-color: #e50914;
-      margin: 0 auto 1rem auto;
-    }
-
-    .footer-branding {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1rem;
-      gap: 10px;
-    }
-
-    .footer-flag {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      overflow: hidden;
-    }
-
-    .footer-flag img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .footer-title {
-      font-size: 1rem;
-      color: #fff;
-      font-weight: bold;
-    }
-
-    .footer-links a {
-      color: #ccc;
-      margin: 0 10px;
-      text-decoration: none;
-      font-size: 0.85rem;
-    }
-
-    .footer-links a:hover {
-      color: #e50914;
-      text-decoration: underline;
-    }
-
-    .video-title-with-icon {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
-      gap: 8px;
-      color: white;
-      font-size: 0.8rem;
-    }
-      
-    .icon-placeholder {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background-color: #444;
-      object-fit: cover;
-      margin-left: 8px;
-    }
-
-    .video-title-text {
-      line-height: 1.2;
-      }
-
-    .video-title-text a {
-      text-decoration: none; /* Remove underline */
-      color: inherit;         /* Inherit color from surrounding text */
-    }
-
-  </style>
-</head>
-<body oncontextmenu="return false">
-<!-- HEADER -->
-<header class="main-header">
-<div class="header-overlay">
-<div class="header-links">
-<a class="home-link" href="index.html">Home</a>
-<a class="home-link" href="countries.html">Countries</a>
-<a class="home-link" href="edition-2024.html">Editions</a>
-</div>
-</div>
-<div class="banner-static">
+        <!-- HEADER -->
+        <header class="main-header">
+            <div class="header-overlay">
+                <div class="header-links">
+                    <a class="home-link" href="index.html">Home</a>
+                    <a class="home-link" href="countries.html">Countries</a>
+                    <a class="home-link" href="edition-2025.html">Editions</a>
+                </div>
+            </div>
+            <div class="banner-static">
                 <img alt="Banner" src="banners/be.png"/>
-</div>
-</header>
-<!--  red dividing line -->
-<div class="banner-divider"></div>
-<!-- Main Content Layout -->
-<div class="container">
+            </div>
+        </header>
 
-                <!-- <div class="sidebar" id="sidebar-container"></div> -->
+        <!--  red dividing line -->
+        <div class="banner-divider"></div>
+
+        <!-- Main Content Layout -->
+        <div class="container">
             
             <!-- Sidebar -->
             <div class="sidebar">
@@ -510,9 +196,8 @@
             </div> 
             <!-- end of sidebar -->
 
-    
-    <div class="main-content">
-        <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
+                <div class="main-content">
+                    <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
                         <div style="flex: 1;"></div> <!-- Push the sort-controls to the right -->
                         <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
                             <label for="sort-options">
@@ -526,917 +211,853 @@
                             </select>
                         </div>
                     </div>
+                    <div class="grid-container">
 
-<div class="grid-container">
-<!-- 2024 -->
-<div class="video-item" data-artist="Mustii" data-country="Belgium" data-song="Before the Party's Over" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1bgLhETpc7VsUujfHZNtIcVeZCVuLM3Di/')">
-<div class="preview-container">
-<img alt="Belgium 2024" src="images/2024-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Mustii</b><br>Before the Party's Over<br>2024</div>
-</div>
-</div>
-<!-- 2023 -->
-<div class="video-item" data-artist="Gustaph" data-country="Belgium" data-song="Because of You" data-year="2023" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/11KT1OsPyeDvjijG4Onl4F-t6aRGhDAuq/')">
-<div class="preview-container">
-<img alt="Belgium 2023" src="images/2023-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Gustaph</b><br>Because of You<br>2023</div>
-</div>
-</div>
-<!-- 2022 -->
-<div class="video-item" data-artist="Jérémie Makiese" data-country="Belgium" data-song="Miss You" data-year="2022" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1mgKex27bTrDGcLwEmIlk3EMYrAC-iBc9/')">
-<div class="preview-container">
-<img alt="Belgium 2022" src="images/2022-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Jérémie Makiese</b><br>Miss You<br>2022</div>
-</div>
-</div>
-<!-- 2021 -->
-<div class="video-item" data-artist="Hooverphonic" data-country="Belgium" data-song="The Wrong Place" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1yyWmlM-bGlqHz_kMiAN3QDqhSQZbPHby/')">
-<div class="preview-container">
-<img alt="Belgium 2021" src="images/2021-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Hooverphonic</b><br>The Wrong Place<br>2021</div>
-</div>
-</div>
-<!-- 2020 -->
-<div class="video-item" data-artist="Hooverphonic" data-country="Belgium" data-song="Release Me" data-year="2020" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1GsBuptaCZ3KISlA03298KE7nfcpYiVB3/')">
-<div class="preview-container">
-<img alt="Belgium 2020" src="images/2020-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Hooverphonic</b><br>Release Me<br>2020</div>
-</div>
-</div>
-<!-- 2019 -->
-<div class="video-item" data-artist="Eliot" data-country="Belgium" data-song="Wake Up" data-year="2019" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1a9g3ZafQUGdScfusDY2CTRdhZmt_ZDxv/')">
-<div class="preview-container">
-<img alt="Belgium 2019" src="images/2019-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Eliot</b><br>Wake Up<br>2019</div>
-</div>
-</div>
-<!-- 2018 -->
-<div class="video-item" data-artist="Sennek" data-country="Belgium" data-song="A Matter of Time" data-year="2018" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Fgdo9GeW8dXLS0KOK1C9vjSqKVOSjX2X/')">
-<div class="preview-container">
-<img alt="Belgium 2018" src="images/2018-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Sennek</b><br>A Matter of Time<br>2018</div>
-</div>
-</div>
-<!-- 2017 -->
-<div class="video-item" data-artist="Blanche" data-country="Belgium" data-song="City Lights" data-year="2017" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1yGNx9-vRr-xqibRvaL9PWWLqY7SyHdlg/')">
-<div class="preview-container">
-<img alt="Belgium 2017" src="images/2017-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Blanche</b><br>City Lights<br>2017</div>
-</div>
-</div>
-<!-- 2016 -->
-<div class="video-item" data-artist="Laura Tesoro" data-country="Belgium" data-song="What's the Pressure" data-year="2016" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1c8w3b31k6ihh3HdhD4WW1crFugqXEBf4/')">
-<div class="preview-container">
-<img alt="Belgium 2016" src="images/2016-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Laura Tesoro</b><br>What's the Pressure<br>2016</div>
-</div>
-</div>
-<!-- 2015 -->
-<div class="video-item" data-artist="Loïc Nottet" data-country="Belgium" data-song="Rhythm Inside" data-year="2015" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1vbRo3BR2m_bZLG5pbXfNcKU8wBsDYEKA/')">
-<div class="preview-container">
-<img alt="Belgium 2015" src="images/2015-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Loïc Nottet</b><br>Rhythm Inside<br>2015</div>
-</div>
-</div>
-<!-- 2014 -->
-<div class="video-item" data-artist="Axel Hirsoux" data-country="Belgium" data-song="Mother" data-year="2014" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/12l2DBZXPC7IWyQi_COCSaePEitpqsx2s/')">
-<div class="preview-container">
-<img alt="Belgium 2014" src="images/2014-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Axel Hirsoux</b><br>Mother<br>2014</div>
-</div>
-</div>
-<!-- 2013 -->
-<div class="video-item" data-artist="Roberto Bellarosa" data-country="Belgium" data-song="Love Kills" data-year="2013" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1QzVMKRmbRhpAsR5UVx8-EEIMeKcam2DX/')">
-<div class="preview-container">
-<img alt="Belgium 2013" src="images/2013-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Roberto Bellarosa</b><br>Love Kills<br>2013</div>
-</div>
-</div>
-<!-- 2012 -->
-<div class="video-item" data-artist="Iris" data-country="Belgium" data-song="Would You?" data-year="2012" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1LMVi8xNOpe0hW451aT0vDKASLgGtbimM/')">
-<div class="preview-container">
-<img alt="Belgium 2012" src="images/2012-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Iris</b><br>Would You?<br>2012</div>
-</div>
-</div>
-<!-- 2011 -->
-<div class="video-item" data-artist="Witloof Bay" data-country="Belgium" data-song="With Love Baby" data-year="2011" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Nagj-Mj6hgIXFiOVbrbvQwYa9Cowek3M/')">
-<div class="preview-container">
-<img alt="Belgium 2011" src="images/2011-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Witloof Bay</b><br>With Love Baby<br>2011</div>
-</div>
-</div>
-<!-- 2010 -->
-<div class="video-item" data-artist="Tom Dice" data-country="Belgium" data-song="Me and My Guitar" data-year="2010" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1dJvEChqhBQQW0SIYe7y6DF869J4EsM8Z/')">
-<div class="preview-container">
-<img alt="Belgium 2010" src="images/2010-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Tom Dice</b><br>Me and My Guitar<br>2010</div>
-</div>
-</div>
-<!-- 2009 -->
-<div class="video-item" data-artist="Copycat" data-country="Belgium" data-song="Copycat" data-year="2009" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1BzwnW8TCOM6rkvMgT9jK79F-l7NHNJAq/')">
-<div class="preview-container">
-<img alt="Belgium 2009" src="images/2009-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Copycat</b><br>Copycat<br>2009</div>
-</div>
-</div>
-<!-- 2008 -->
-<div class="video-item" data-artist="Ishtar" data-country="Belgium" data-song="O Julissi" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/18J4v7PVcOJHo2CTGRv_oDJJNCX5rfLtx/')">
-<div class="preview-container">
-<img alt="Belgium 2008" src="images/2008-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Ishtar</b><br>O Julissi<br>2008</div>
-</div>
-</div>
-<!-- 2007 -->
-<div class="video-item" data-artist="The KMG's" data-country="Belgium" data-song="LovePower" data-year="2007" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1S9aTR2Qk0JAOfRc7yFw6YoIABy84MGe-/')">
-<div class="preview-container">
-<img alt="Belgium 2007" src="images/2007-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>The KMG's</b><br>LovePower<br>2007</div>
-</div>
-</div>
-<!-- 2006 -->
-<div class="video-item" data-artist="Kate Ryan" data-country="Belgium" data-song="Je t'adore" data-year="2006" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1sADeMDDazUtJ46IeRkySFdFxPj43vSjr/')">
-<div class="preview-container">
-<img alt="Belgium 2006" src="images/2006-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Kate Ryan</b><br>Je t'adore<br>2006</div>
-</div>
-</div>
-<!-- 2005 -->
-<div class="video-item" data-artist="Nuno Resende" data-country="Belgium" data-song="Le Grand Soir" data-year="2005" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1YbiZE3RRImUOFaQaUuhVkDRNVoC8PpA-/')">
-<div class="preview-container">
-<img alt="Belgium 2005" src="images/2005-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Nuno Resende</b><br>Le Grand Soir<br>2005</div>
-</div>
-</div>
-<!-- 2004 -->
-<div class="video-item" data-artist="Xandee" data-country="Belgium" data-song="1 Life" data-year="2004" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1TS77l57RI8HedqtCBkjFGQc1k_-NJbjx/')">
-<div class="preview-container">
-<img alt="Belgium 2004" src="images/2004-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Xandee</b><br>1 Life<br>2004</div>
-</div>
-</div>
-<!-- 2003 -->
-<div class="video-item" data-artist="Urban Trad" data-country="Belgium" data-song="Sanomi" data-year="2003" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1ziMoXzmfaX-Al4jftCUFv7L4mTusvxEt/')">
-<div class="preview-container">
-<img alt="Belgium 2003" src="images/2003-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Urban Trad</b><br>Sanomi<br>2003</div>
-</div>
-</div>
-<!-- 2002 -->
-<div class="video-item" data-artist="Sergio and the Ladies" data-country="Belgium" data-song="Sister" data-year="2002" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1HeyILs_yKW23M6_NpP0mReBP87bv7pmu/')">
-<div class="preview-container">
-<img alt="Belgium 2002" src="images/2002-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Sergio and the Ladies</b><br>Sister<br>2002</div>
-</div>
-</div>
-<!-- 2001 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Belgium 2001" src="images/2001-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 2000 -->
-<div class="video-item" data-artist="Nathalie Sorce" data-country="Belgium" data-song="Envie de vivre" data-year="2000" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1XfLOvVaJX8QNRdLzOs3gGRhxqOzZTbug/')">
-<div class="preview-container">
-<img alt="Belgium 2000" src="images/2000-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Nathalie Sorce</b><br>Envie de vivre<br>2000</div>
-</div>
-</div>
-<!-- 1999 -->
-<div class="video-item" data-artist="Vanessa Chinitor" data-country="Belgium" data-song="Like the Wind" data-year="1999" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1kP3AjWFU9ut_Rofo0tOWkj5sqMp8BEwO/')">
-<div class="preview-container">
-<img alt="Belgium 1999" src="images/1999-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Vanessa Chinitor</b><br>Like the Wind<br>1999</div>
-</div>
-</div>
-<!-- 1998 -->
-<div class="video-item" data-artist="Mélanie Cohl" data-country="Belgium" data-song="Dis oui" data-year="1998" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1bPuWIcEzSTxPq1zwhqwtJFuof8ZSV0vr/')">
-<div class="preview-container">
-<img alt="Belgium 1998" src="images/1998-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Mélanie Cohl</b><br>Dis oui<br>1998</div>
-</div>
-</div>
-<!-- 1997 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Belgium 1997" src="images/1997-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1996 -->
-<div class="video-item" data-artist="Lisa del Bo" data-country="Belgium" data-song="Liefde is een kaartspel" data-year="1996" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1SDVObxlrL-naCoANWz0qpQxyziKFRW9z/')">
-<div class="preview-container">
-<img alt="Belgium 1996" src="images/1996-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Lisa del Bo</b><br>Liefde is een kaartspel<br>1996</div>
-</div>
-</div>
-<!-- 1995 -->
-<div class="video-item" data-artist="Frédéric Etherlinck" data-country="Belgium" data-song="La voix est libre" data-year="1995" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1rdm0jvLe5_wpu5S4MTFqrBYaZKK1tFpQ/')">
-<div class="preview-container">
-<img alt="Belgium 1995" src="images/1995-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Frédéric Etherlinck</b><br>La voix est libre<br>1995</div>
-</div>
-</div>
-<!-- 1994 -->
-<!--<div class="video-item" data-artist="" data-country="" data-song="" data-year="" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Belgium 1994" src="images/1994-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Artist</b><br/>Title<br/>Year</div>
-</div>
-</div>-->
-<!-- 1993 -->
-<div class="video-item" data-artist="Barbara" data-country="Belgium" data-song="Iemand als jij" data-year="1993" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1GMi9PLOUVE0UvcPTVEo_3gM00qyG8vFY/')">
-<div class="preview-container">
-<img alt="Belgium 1993" src="images/1993-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Barbara</b><br>Iemand als jij<br>1993</div>
-</div>
-</div>
-<!-- 1992 -->
-<div class="video-item" data-artist="Morgane" data-country="Belgium" data-song="Nous on veut des violons" data-year="1992" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1yJBECiLbtu5ueluaxXiTK5ICw6Kohh_0/')">
-<div class="preview-container">
-<img alt="Belgium 1992" src="images/1992-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Morgane</b><br>Nous on veut des violons<br>1992</div>
-</div>
-</div>
-<!-- 1991 -->
-<div class="video-item" data-artist="Clouseau" data-country="Belgium" data-song="Geef het op" data-year="1991" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1FvP0ojjdQT5YAqv_s9-FpTqJ5Szrdfyt/')">
-<div class="preview-container">
-<img alt="Belgium 1991" src="images/1991-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Clouseau</b><br>Geef het op<br>1991</div>
-</div>
-</div>
-<!-- 1990 -->
-<div class="video-item" data-artist="Philippe Lafontaine" data-country="Belgium" data-song="Macédomienne" data-year="1990" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1utk0TPRQAgqPWjMN-1MJ93lHyOEsKBwN/')">
-<div class="preview-container">
-<img alt="Belgium 1990" src="images/1990-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Philippe Lafontaine</b><br>Macédomienne<br>1990</div>
-</div>
-</div>
-<!-- 1989 -->
-<div class="video-item" data-artist="Ingeborg" data-country="Belgium" data-song="Door de wind" data-year="1989" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1MqJUAh5rvSvQ9cxrTczRctpZ--ftBvd_/')">
-<div class="preview-container">
-<img alt="Belgium 1989" src="images/1989-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Ingeborg</b><br>Door de wind<br>1989</div>
-</div>
-</div>
-<!-- 1988 -->
-<div class="video-item" data-artist="Reynaert" data-country="Belgium" data-song="Laissez briller le soleil" data-year="1988" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1wjbpAKNkBy6rFNQdcVq9LOoU_O116xC-/')">
-<div class="preview-container">
-<img alt="Belgium 1988" src="images/1988-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Reynaert</b><br>Laissez briller le soleil<br>1988</div>
-</div>
-</div>
-<!-- 1987 -->
-<div class="video-item" data-artist="Liliane Saint-Pierre" data-country="Belgium" data-song="Soldiers of Love" data-year="1987" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1nYcViDnbDn0X_0meKHBEUk7lzS0xZxD3/')">
-<div class="preview-container">
-<img alt="Belgium 1987" src="images/1987-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Liliane Saint-Pierre</b><br>Soldiers of Love<br>1987</div>
-</div>
-</div>
-<!-- 1986 -->
-<div class="video-item" data-artist="Sandra Kim" data-country="Belgium" data-song="J'aime la vie" data-year="1986" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1p-Aobbz_iT0scRbRF7kFUw9OevdtZOp9/')">
-<div class="preview-container">
-<img alt="Belgium 1986" src="images/1986-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Sandra Kim</b><br>J'aime la vie<br>1986</div>
-</div>
-</div>
-<!-- 1985 -->
-<div class="video-item" data-artist="Linda Lepomme" data-country="Belgium" data-song="Laat me nu gaan" data-year="1985" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1985" src="images/1985-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Linda Lepomme</b><br>Laat me nu gaan<br>1985</div>
-</div>
-</div>
-<!-- 1984 -->
-<div class="video-item" data-artist="Jacques Zegers" data-country="Belgium" data-song="Avantila vie" data-year="1984" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1984" src="images/1984-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Jacques Zegers</b><br>Avantila vie<br>1984</div>
-</div>
-</div>
-<!-- 1983 -->
-<div class="video-item" data-artist="Pas de Deux" data-country="Belgium" data-song="Rendez-vous" data-year="1983" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1983" src="images/1983-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Pas de Deux</b><br>Rendez-vous<br>1983</div>
-</div>
-</div>
-<!-- 1982 -->
-<div class="video-item" data-artist="Stella" data-country="Belgium" data-song="Si tu aimes ma musique" data-year="1982" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1982" src="images/1982-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Stella</b><br>Si tu aimes ma musique<br>1982</div>
-</div>
-</div>
-<!-- 1981 -->
-<div class="video-item" data-artist="Emly Starr" data-country="Belgium" data-song="Samson" data-year="1981" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1981" src="images/1981-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Emly Starr</b><br>Samson<br>1981</div>
-</div>
-</div>
-<!-- 1980 -->
-<div class="video-item" data-artist="Telex" data-country="Belgium" data-song="Euro-Vision" data-year="1980" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1980" src="images/1980-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Telex</b><br>Euro-Vision<br>1980</div>
-</div>
-</div>
-<!-- 1979 -->
-<div class="video-item" data-artist="Micha Marah" data-country="Belgium" data-song="Hey Nana" data-year="1979" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1979" src="images/1979-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Micha Marah</b><br>Hey Nana<br>1979</div>
-</div>
-</div>
-<!-- 1978 -->
-<div class="video-item" data-artist="Jean Vallée" data-country="Belgium" data-song="L'amour ça fait chanter la vie" data-year="1978" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1978" src="images/1978-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Jean Vallée</b><br>L'amour ça fait chanter la vie<br>1978</div>
-</div>
-</div>
-<!-- 1977 -->
-<div class="video-item" data-artist="Dream Express" data-country="Belgium" data-song="A Million in One, Two, Three" data-year="1977" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1977" src="images/1977-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Dream Express</b><br>A Million in One, Two, Three<br>1977</div>
-</div>
-</div>
-<!-- 1976 -->
-<div class="video-item" data-artist="Pierre Rapsat" data-country="Belgium" data-song="Judy et Cie" data-year="1976" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1976" src="images/1976-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Pierre Rapsat</b><br>Judy et Cie<br>1976</div>
-</div>
-</div>
-<!-- 1975 -->
-<div class="video-item" data-artist="Ann Christy" data-country="Belgium" data-song="Gelukkig zijn" data-year="1975" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1975" src="images/1975-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Ann Christy</b><br>Gelukkig zijn<br>1975</div>
-</div>
-</div>
-<!-- 1974 -->
-<div class="video-item" data-artist="Jacques Hustin" data-country="Belgium" data-song="Fleur de liberté" data-year="1974" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1974" src="images/1974-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Jacques Hustin</b><br>Fleur de liberté<br>1974</div>
-</div>
-</div>
-<!-- 1973 -->
-<div class="video-item" data-artist="Nicole and Hugo" data-country="Belgium" data-song="Baby Baby" data-year="1973" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1973" src="images/1973-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Nicole and Hugo</b><br>Baby Baby<br>1973</div>
-</div>
-</div>
-<!-- 1972 -->
-<div class="video-item" data-artist="Serge and Christine Ghisoland" data-country="Belgium" data-song="À la folie ou pas du tout" data-year="1972" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1972" src="images/1972-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Serge and Christine Ghisoland</b><br>À la folie ou pas du tout<br>1972</div>
-</div>
-</div>
-<!-- 1971 -->
-<div class="video-item" data-artist="Jacques Raymond and Lily Castel" data-country="Belgium" data-song="Goeie morgen, morgen" data-year="1971" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1971" src="images/1971-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Jacques Raymond and Lily Castel</b><br>Goeie morgen, morgen<br>1971</div>
-</div>
-</div>
-<!-- 1970 -->
-<div class="video-item" data-artist="Jean Vallée" data-country="Belgium" data-song="Viens l'oublier" data-year="1970" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1970" src="images/1970-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Jean Vallée</b><br>Viens l'oublier<br>1970</div>
-</div>
-</div>
-<!-- 1969 -->
-<div class="video-item" data-artist="Louis Neefs" data-country="Belgium" data-song="Jennifer Jennings" data-year="1969" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1969" src="images/1969-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Louis Neefs</b><br>Jennifer Jennings<br>1969</div>
-</div>
-</div>
-<!-- 1968 -->
-<div class="video-item" data-artist="Claude Lombard" data-country="Belgium" data-song="Quand tu reviendras" data-year="1968" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1968" src="images/1968-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Claude Lombard</b><br>Quand tu reviendras<br>1968</div>
-</div>
-</div>
-<!-- 1967 -->
-<div class="video-item" data-artist="Louis Neefs" data-country="Belgium" data-song="Ik heb zorgen" data-year="1967" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1967" src="images/1967-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Louis Neefs</b><br>Ik heb zorgen<br>1967</div>
-</div>
-</div>
-<!-- 1966 -->
-<div class="video-item" data-artist="Tonia" data-country="Belgium" data-song="Un peu de poivre, un peu de sel" data-year="1966" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1966" src="images/1966-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Tonia</b><br>Un peu de poivre, un peu de sel<br>1966</div>
-</div>
-</div>
-<!-- 1965 -->
-<div class="video-item" data-artist="Lize Marke" data-country="Belgium" data-song="Als het weer lente is" data-year="1965" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1965" src="images/1965-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Lize Marke</b><br>Als het weer lente is<br>1965</div>
-</div>
-</div>
-<!-- 1964 -->
-<div class="video-item" data-artist="Robert Cogoi" data-country="Belgium" data-song="Près de ma rivière" data-year="1964" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1964" src="images/1964-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Robert Cogoi</b><br>Près de ma rivière<br>1964</div>
-</div>
-</div>
-<!-- 1963 -->
-<div class="video-item" data-artist="Jacques Raymond" data-country="Belgium" data-song="Waarom?" data-year="1963" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1963" src="images/1963-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Jacques Raymond</b><br>Waarom?<br>1963</div>
-</div>
-</div>
-<!-- 1962 -->
-<div class="video-item" data-artist="Fud Leclerc" data-country="Belgium" data-song="Ton nom" data-year="1962" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1962" src="images/1962-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Fud Leclerc</b><br>Ton nom<br>1962</div>
-</div>
-</div>
-<!-- 1961 -->
-<div class="video-item" data-artist="Bob Benny" data-country="Belgium" data-song="September, gouden roos" data-year="1961" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1961" src="images/1961-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Bob Benny</b><br>September, gouden roos<br>1961</div>
-</div>
-</div>
-<!-- 1960 -->
-<div class="video-item" data-artist="Fud Leclerc" data-country="Belgium" data-song="Mon amour pour toi" data-year="1960" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1960" src="images/1960-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Fud Leclerc</b><br>Mon amour pour toi<br>1960</div>
-</div>
-</div>
-<!-- 1959 -->
-<div class="video-item" data-artist="Bob Benny" data-country="Belgium" data-song="Hou toch van mij" data-year="1959" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1959" src="images/1959-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Bob Benny</b><br>Hou toch van mij<br>1959</div>
-</div>
-</div>
-<!-- 1958 -->
-<div class="video-item" data-artist="Fud Leclerc" data-country="Belgium" data-song="Ma petite chatte" data-year="1958" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1958" src="images/1958-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Fud Leclerc</b><br>Ma petite chatte<br>1958</div>
-</div>
-</div>
-<!-- 1957 -->
-<div class="video-item" data-artist="Bobbejaan Schoepen" data-country="Belgium" data-song="Straatdeuntje" data-year="1957" onclick="GDriveOpenModalWithVideo('nan')">
-<div class="preview-container">
-<img alt="Belgium 1957" src="images/1957-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Bobbejaan Schoepen</b><br>Straatdeuntje<br>1957</div>
-</div>
-</div>
-<!-- 1956 (2) -->
-<div class="video-item" data-artist="Fud Leclerc" data-country="Belgium" data-song="Messieurs les noyés de la Seine" data-year="1956" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Belgium 1956" src="images/1956_2-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Fud Leclerc</b><br/>Messieurs les noyés de la Seine<br/>1956</div>
-</div>
-</div>
-<!-- 1956 (1) -->
-<div class="video-item" data-artist="Mony Marc" data-country="Belgium" data-song="Le Plus Beau Jour de ma vie" data-year="1956" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
-<div class="preview-container">
-<img alt="Belgium 1956" src="images/1956_1-BE.jpeg"/>
-</div>
-<div class="video-title-with-icon" onclick="event.stopPropagation()">
-<a href="belgium.html">
-<img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
-</a>
-<div class="video-title-text"><b>Mony Marc</b><br/>Le Plus Beau Jour de ma vie<br/>1956</div>
-</div>
-</div>
-<!-- END OF VIDEOS -->
-</div>
-</div>
-</div>
-<!-- MODAL -->
-<div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
-<div class="modal-content">
-<span class="close-button" onclick="GDriveCloseModal(event)">×</span>
-<video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;"></video>
-<iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" id="modalIframe" style="display: none;"></iframe>
-</div>
-</div>
-<!-- FOOTER -->
-<footer class="site-footer">
-<div class="footer-line"></div>
-<div class="footer-branding">
-<div class="footer-flag">
+                        <!-- 2024 -->
+                        <div class="video-item" data-artist="Mustii" data-country="Belgium" data-song="Before the Party's Over" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1bgLhETpc7VsUujfHZNtIcVeZCVuLM3Di/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2024" src="images/2024-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Mustii</b><br>Before the Party's Over<br>2024</div>
+                        </div>
+                        </div>
+                        <!-- 2023 -->
+                        <div class="video-item" data-artist="Gustaph" data-country="Belgium" data-song="Because of You" data-year="2023" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/11KT1OsPyeDvjijG4Onl4F-t6aRGhDAuq/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2023" src="images/2023-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Gustaph</b><br>Because of You<br>2023</div>
+                        </div>
+                        </div>
+                        <!-- 2022 -->
+                        <div class="video-item" data-artist="Jérémie Makiese" data-country="Belgium" data-song="Miss You" data-year="2022" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1mgKex27bTrDGcLwEmIlk3EMYrAC-iBc9/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2022" src="images/2022-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Jérémie Makiese</b><br>Miss You<br>2022</div>
+                        </div>
+                        </div>
+                        <!-- 2021 -->
+                        <div class="video-item" data-artist="Hooverphonic" data-country="Belgium" data-song="The Wrong Place" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1yyWmlM-bGlqHz_kMiAN3QDqhSQZbPHby/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2021" src="images/2021-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Hooverphonic</b><br>The Wrong Place<br>2021</div>
+                        </div>
+                        </div>
+                        <!-- 2020 -->
+                        <div class="video-item" data-artist="Hooverphonic" data-country="Belgium" data-song="Release Me" data-year="2020" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1GsBuptaCZ3KISlA03298KE7nfcpYiVB3/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2020" src="images/2020-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Hooverphonic</b><br>Release Me<br>2020</div>
+                        </div>
+                        </div>
+                        <!-- 2019 -->
+                        <div class="video-item" data-artist="Eliot" data-country="Belgium" data-song="Wake Up" data-year="2019" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1a9g3ZafQUGdScfusDY2CTRdhZmt_ZDxv/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2019" src="images/2019-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Eliot</b><br>Wake Up<br>2019</div>
+                        </div>
+                        </div>
+                        <!-- 2018 -->
+                        <div class="video-item" data-artist="Sennek" data-country="Belgium" data-song="A Matter of Time" data-year="2018" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Fgdo9GeW8dXLS0KOK1C9vjSqKVOSjX2X/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2018" src="images/2018-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Sennek</b><br>A Matter of Time<br>2018</div>
+                        </div>
+                        </div>
+                        <!-- 2017 -->
+                        <div class="video-item" data-artist="Blanche" data-country="Belgium" data-song="City Lights" data-year="2017" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1yGNx9-vRr-xqibRvaL9PWWLqY7SyHdlg/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2017" src="images/2017-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Blanche</b><br>City Lights<br>2017</div>
+                        </div>
+                        </div>
+                        <!-- 2016 -->
+                        <div class="video-item" data-artist="Laura Tesoro" data-country="Belgium" data-song="What's the Pressure" data-year="2016" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1c8w3b31k6ihh3HdhD4WW1crFugqXEBf4/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2016" src="images/2016-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Laura Tesoro</b><br>What's the Pressure<br>2016</div>
+                        </div>
+                        </div>
+                        <!-- 2015 -->
+                        <div class="video-item" data-artist="Loïc Nottet" data-country="Belgium" data-song="Rhythm Inside" data-year="2015" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1vbRo3BR2m_bZLG5pbXfNcKU8wBsDYEKA/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2015" src="images/2015-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Loïc Nottet</b><br>Rhythm Inside<br>2015</div>
+                        </div>
+                        </div>
+                        <!-- 2014 -->
+                        <div class="video-item" data-artist="Axel Hirsoux" data-country="Belgium" data-song="Mother" data-year="2014" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/12l2DBZXPC7IWyQi_COCSaePEitpqsx2s/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2014" src="images/2014-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Axel Hirsoux</b><br>Mother<br>2014</div>
+                        </div>
+                        </div>
+                        <!-- 2013 -->
+                        <div class="video-item" data-artist="Roberto Bellarosa" data-country="Belgium" data-song="Love Kills" data-year="2013" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1QzVMKRmbRhpAsR5UVx8-EEIMeKcam2DX/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2013" src="images/2013-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Roberto Bellarosa</b><br>Love Kills<br>2013</div>
+                        </div>
+                        </div>
+                        <!-- 2012 -->
+                        <div class="video-item" data-artist="Iris" data-country="Belgium" data-song="Would You?" data-year="2012" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1LMVi8xNOpe0hW451aT0vDKASLgGtbimM/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2012" src="images/2012-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Iris</b><br>Would You?<br>2012</div>
+                        </div>
+                        </div>
+                        <!-- 2011 -->
+                        <div class="video-item" data-artist="Witloof Bay" data-country="Belgium" data-song="With Love Baby" data-year="2011" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Nagj-Mj6hgIXFiOVbrbvQwYa9Cowek3M/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2011" src="images/2011-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Witloof Bay</b><br>With Love Baby<br>2011</div>
+                        </div>
+                        </div>
+                        <!-- 2010 -->
+                        <div class="video-item" data-artist="Tom Dice" data-country="Belgium" data-song="Me and My Guitar" data-year="2010" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1dJvEChqhBQQW0SIYe7y6DF869J4EsM8Z/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2010" src="images/2010-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Tom Dice</b><br>Me and My Guitar<br>2010</div>
+                        </div>
+                        </div>
+                        <!-- 2009 -->
+                        <div class="video-item" data-artist="Copycat" data-country="Belgium" data-song="Copycat" data-year="2009" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1BzwnW8TCOM6rkvMgT9jK79F-l7NHNJAq/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2009" src="images/2009-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Copycat</b><br>Copycat<br>2009</div>
+                        </div>
+                        </div>
+                        <!-- 2008 -->
+                        <div class="video-item" data-artist="Ishtar" data-country="Belgium" data-song="O Julissi" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/18J4v7PVcOJHo2CTGRv_oDJJNCX5rfLtx/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2008" src="images/2008-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Ishtar</b><br>O Julissi<br>2008</div>
+                        </div>
+                        </div>
+                        <!-- 2007 -->
+                        <div class="video-item" data-artist="The KMG's" data-country="Belgium" data-song="LovePower" data-year="2007" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1S9aTR2Qk0JAOfRc7yFw6YoIABy84MGe-/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2007" src="images/2007-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>The KMG's</b><br>LovePower<br>2007</div>
+                        </div>
+                        </div>
+                        <!-- 2006 -->
+                        <div class="video-item" data-artist="Kate Ryan" data-country="Belgium" data-song="Je t'adore" data-year="2006" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1sADeMDDazUtJ46IeRkySFdFxPj43vSjr/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2006" src="images/2006-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Kate Ryan</b><br>Je t'adore<br>2006</div>
+                        </div>
+                        </div>
+                        <!-- 2005 -->
+                        <div class="video-item" data-artist="Nuno Resende" data-country="Belgium" data-song="Le Grand Soir" data-year="2005" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1YbiZE3RRImUOFaQaUuhVkDRNVoC8PpA-/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2005" src="images/2005-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Nuno Resende</b><br>Le Grand Soir<br>2005</div>
+                        </div>
+                        </div>
+                        <!-- 2004 -->
+                        <div class="video-item" data-artist="Xandee" data-country="Belgium" data-song="1 Life" data-year="2004" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1TS77l57RI8HedqtCBkjFGQc1k_-NJbjx/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2004" src="images/2004-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Xandee</b><br>1 Life<br>2004</div>
+                        </div>
+                        </div>
+                        <!-- 2003 -->
+                        <div class="video-item" data-artist="Urban Trad" data-country="Belgium" data-song="Sanomi" data-year="2003" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1ziMoXzmfaX-Al4jftCUFv7L4mTusvxEt/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2003" src="images/2003-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Urban Trad</b><br>Sanomi<br>2003</div>
+                        </div>
+                        </div>
+                        <!-- 2002 -->
+                        <div class="video-item" data-artist="Sergio and the Ladies" data-country="Belgium" data-song="Sister" data-year="2002" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1HeyILs_yKW23M6_NpP0mReBP87bv7pmu/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2002" src="images/2002-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Sergio and the Ladies</b><br>Sister<br>2002</div>
+                        </div>
+                        </div>
+                        
+                        <!-- 2000 -->
+                        <div class="video-item" data-artist="Nathalie Sorce" data-country="Belgium" data-song="Envie de vivre" data-year="2000" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1XfLOvVaJX8QNRdLzOs3gGRhxqOzZTbug/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 2000" src="images/2000-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Nathalie Sorce</b><br>Envie de vivre<br>2000</div>
+                        </div>
+                        </div>
+                        <!-- 1999 -->
+                        <div class="video-item" data-artist="Vanessa Chinitor" data-country="Belgium" data-song="Like the Wind" data-year="1999" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1kP3AjWFU9ut_Rofo0tOWkj5sqMp8BEwO/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1999" src="images/1999-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Vanessa Chinitor</b><br>Like the Wind<br>1999</div>
+                        </div>
+                        </div>
+                        <!-- 1998 -->
+                        <div class="video-item" data-artist="Mélanie Cohl" data-country="Belgium" data-song="Dis oui" data-year="1998" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1bPuWIcEzSTxPq1zwhqwtJFuof8ZSV0vr/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1998" src="images/1998-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Mélanie Cohl</b><br>Dis oui<br>1998</div>
+                        </div>
+                        </div>
+                        
+                        <!-- 1996 -->
+                        <div class="video-item" data-artist="Lisa del Bo" data-country="Belgium" data-song="Liefde is een kaartspel" data-year="1996" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1SDVObxlrL-naCoANWz0qpQxyziKFRW9z/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1996" src="images/1996-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Lisa del Bo</b><br>Liefde is een kaartspel<br>1996</div>
+                        </div>
+                        </div>
+                        <!-- 1995 -->
+                        <div class="video-item" data-artist="Frédéric Etherlinck" data-country="Belgium" data-song="La voix est libre" data-year="1995" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1rdm0jvLe5_wpu5S4MTFqrBYaZKK1tFpQ/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1995" src="images/1995-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Frédéric Etherlinck</b><br>La voix est libre<br>1995</div>
+                        </div>
+                        </div>
+                        
+                        <!-- 1993 -->
+                        <div class="video-item" data-artist="Barbara" data-country="Belgium" data-song="Iemand als jij" data-year="1993" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1GMi9PLOUVE0UvcPTVEo_3gM00qyG8vFY/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1993" src="images/1993-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Barbara</b><br>Iemand als jij<br>1993</div>
+                        </div>
+                        </div>
+                        <!-- 1992 -->
+                        <div class="video-item" data-artist="Morgane" data-country="Belgium" data-song="Nous on veut des violons" data-year="1992" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1yJBECiLbtu5ueluaxXiTK5ICw6Kohh_0/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1992" src="images/1992-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Morgane</b><br>Nous on veut des violons<br>1992</div>
+                        </div>
+                        </div>
+                        <!-- 1991 -->
+                        <div class="video-item" data-artist="Clouseau" data-country="Belgium" data-song="Geef het op" data-year="1991" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1FvP0ojjdQT5YAqv_s9-FpTqJ5Szrdfyt/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1991" src="images/1991-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Clouseau</b><br>Geef het op<br>1991</div>
+                        </div>
+                        </div>
+                        <!-- 1990 -->
+                        <div class="video-item" data-artist="Philippe Lafontaine" data-country="Belgium" data-song="Macédomienne" data-year="1990" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1utk0TPRQAgqPWjMN-1MJ93lHyOEsKBwN/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1990" src="images/1990-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Philippe Lafontaine</b><br>Macédomienne<br>1990</div>
+                        </div>
+                        </div>
+                        <!-- 1989 -->
+                        <div class="video-item" data-artist="Ingeborg" data-country="Belgium" data-song="Door de wind" data-year="1989" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1MqJUAh5rvSvQ9cxrTczRctpZ--ftBvd_/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1989" src="images/1989-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Ingeborg</b><br>Door de wind<br>1989</div>
+                        </div>
+                        </div>
+                        <!-- 1988 -->
+                        <div class="video-item" data-artist="Reynaert" data-country="Belgium" data-song="Laissez briller le soleil" data-year="1988" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1wjbpAKNkBy6rFNQdcVq9LOoU_O116xC-/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1988" src="images/1988-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Reynaert</b><br>Laissez briller le soleil<br>1988</div>
+                        </div>
+                        </div>
+                        <!-- 1987 -->
+                        <div class="video-item" data-artist="Liliane Saint-Pierre" data-country="Belgium" data-song="Soldiers of Love" data-year="1987" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1nYcViDnbDn0X_0meKHBEUk7lzS0xZxD3/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1987" src="images/1987-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Liliane Saint-Pierre</b><br>Soldiers of Love<br>1987</div>
+                        </div>
+                        </div>
+                        <!-- 1986 -->
+                        <div class="video-item" data-artist="Sandra Kim" data-country="Belgium" data-song="J'aime la vie" data-year="1986" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1p-Aobbz_iT0scRbRF7kFUw9OevdtZOp9/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1986" src="images/1986-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Sandra Kim</b><br>J'aime la vie<br>1986</div>
+                        </div>
+                        </div>
+                        <!-- 1985 -->
+                        <div class="video-item" data-artist="Linda Lepomme" data-country="Belgium" data-song="Laat me nu gaan" data-year="1985" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1985" src="images/1985-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Linda Lepomme</b><br>Laat me nu gaan<br>1985</div>
+                        </div>
+                        </div>
+                        <!-- 1984 -->
+                        <div class="video-item" data-artist="Jacques Zegers" data-country="Belgium" data-song="Avantila vie" data-year="1984" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1984" src="images/1984-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Jacques Zegers</b><br>Avantila vie<br>1984</div>
+                        </div>
+                        </div>
+                        <!-- 1983 -->
+                        <div class="video-item" data-artist="Pas de Deux" data-country="Belgium" data-song="Rendez-vous" data-year="1983" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1983" src="images/1983-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Pas de Deux</b><br>Rendez-vous<br>1983</div>
+                        </div>
+                        </div>
+                        <!-- 1982 -->
+                        <div class="video-item" data-artist="Stella" data-country="Belgium" data-song="Si tu aimes ma musique" data-year="1982" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1982" src="images/1982-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Stella</b><br>Si tu aimes ma musique<br>1982</div>
+                        </div>
+                        </div>
+                        <!-- 1981 -->
+                        <div class="video-item" data-artist="Emly Starr" data-country="Belgium" data-song="Samson" data-year="1981" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1981" src="images/1981-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Emly Starr</b><br>Samson<br>1981</div>
+                        </div>
+                        </div>
+                        <!-- 1980 -->
+                        <div class="video-item" data-artist="Telex" data-country="Belgium" data-song="Euro-Vision" data-year="1980" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1980" src="images/1980-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Telex</b><br>Euro-Vision<br>1980</div>
+                        </div>
+                        </div>
+                        <!-- 1979 -->
+                        <div class="video-item" data-artist="Micha Marah" data-country="Belgium" data-song="Hey Nana" data-year="1979" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1979" src="images/1979-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Micha Marah</b><br>Hey Nana<br>1979</div>
+                        </div>
+                        </div>
+                        <!-- 1978 -->
+                        <div class="video-item" data-artist="Jean Vallée" data-country="Belgium" data-song="L'amour ça fait chanter la vie" data-year="1978" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1978" src="images/1978-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Jean Vallée</b><br>L'amour ça fait chanter la vie<br>1978</div>
+                        </div>
+                        </div>
+                        <!-- 1977 -->
+                        <div class="video-item" data-artist="Dream Express" data-country="Belgium" data-song="A Million in One, Two, Three" data-year="1977" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1977" src="images/1977-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Dream Express</b><br>A Million in One, Two, Three<br>1977</div>
+                        </div>
+                        </div>
+                        <!-- 1976 -->
+                        <div class="video-item" data-artist="Pierre Rapsat" data-country="Belgium" data-song="Judy et Cie" data-year="1976" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1976" src="images/1976-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Pierre Rapsat</b><br>Judy et Cie<br>1976</div>
+                        </div>
+                        </div>
+                        <!-- 1975 -->
+                        <div class="video-item" data-artist="Ann Christy" data-country="Belgium" data-song="Gelukkig zijn" data-year="1975" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1975" src="images/1975-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Ann Christy</b><br>Gelukkig zijn<br>1975</div>
+                        </div>
+                        </div>
+                        <!-- 1974 -->
+                        <div class="video-item" data-artist="Jacques Hustin" data-country="Belgium" data-song="Fleur de liberté" data-year="1974" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1974" src="images/1974-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Jacques Hustin</b><br>Fleur de liberté<br>1974</div>
+                        </div>
+                        </div>
+                        <!-- 1973 -->
+                        <div class="video-item" data-artist="Nicole and Hugo" data-country="Belgium" data-song="Baby Baby" data-year="1973" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1973" src="images/1973-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Nicole and Hugo</b><br>Baby Baby<br>1973</div>
+                        </div>
+                        </div>
+                        <!-- 1972 -->
+                        <div class="video-item" data-artist="Serge and Christine Ghisoland" data-country="Belgium" data-song="À la folie ou pas du tout" data-year="1972" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1972" src="images/1972-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Serge and Christine Ghisoland</b><br>À la folie ou pas du tout<br>1972</div>
+                        </div>
+                        </div>
+                        <!-- 1971 -->
+                        <div class="video-item" data-artist="Jacques Raymond and Lily Castel" data-country="Belgium" data-song="Goeie morgen, morgen" data-year="1971" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1971" src="images/1971-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Jacques Raymond and Lily Castel</b><br>Goeie morgen, morgen<br>1971</div>
+                        </div>
+                        </div>
+                        <!-- 1970 -->
+                        <div class="video-item" data-artist="Jean Vallée" data-country="Belgium" data-song="Viens l'oublier" data-year="1970" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1970" src="images/1970-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Jean Vallée</b><br>Viens l'oublier<br>1970</div>
+                        </div>
+                        </div>
+                        <!-- 1969 -->
+                        <div class="video-item" data-artist="Louis Neefs" data-country="Belgium" data-song="Jennifer Jennings" data-year="1969" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1969" src="images/1969-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Louis Neefs</b><br>Jennifer Jennings<br>1969</div>
+                        </div>
+                        </div>
+                        <!-- 1968 -->
+                        <div class="video-item" data-artist="Claude Lombard" data-country="Belgium" data-song="Quand tu reviendras" data-year="1968" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1968" src="images/1968-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Claude Lombard</b><br>Quand tu reviendras<br>1968</div>
+                        </div>
+                        </div>
+                        <!-- 1967 -->
+                        <div class="video-item" data-artist="Louis Neefs" data-country="Belgium" data-song="Ik heb zorgen" data-year="1967" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1967" src="images/1967-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Louis Neefs</b><br>Ik heb zorgen<br>1967</div>
+                        </div>
+                        </div>
+                        <!-- 1966 -->
+                        <div class="video-item" data-artist="Tonia" data-country="Belgium" data-song="Un peu de poivre, un peu de sel" data-year="1966" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1966" src="images/1966-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Tonia</b><br>Un peu de poivre, un peu de sel<br>1966</div>
+                        </div>
+                        </div>
+                        <!-- 1965 -->
+                        <div class="video-item" data-artist="Lize Marke" data-country="Belgium" data-song="Als het weer lente is" data-year="1965" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1965" src="images/1965-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Lize Marke</b><br>Als het weer lente is<br>1965</div>
+                        </div>
+                        </div>
+                        <!-- 1964 -->
+                        <div class="video-item" data-artist="Robert Cogoi" data-country="Belgium" data-song="Près de ma rivière" data-year="1964" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1964" src="images/1964-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Robert Cogoi</b><br>Près de ma rivière<br>1964</div>
+                        </div>
+                        </div>
+                        <!-- 1963 -->
+                        <div class="video-item" data-artist="Jacques Raymond" data-country="Belgium" data-song="Waarom?" data-year="1963" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1963" src="images/1963-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Jacques Raymond</b><br>Waarom?<br>1963</div>
+                        </div>
+                        </div>
+                        <!-- 1962 -->
+                        <div class="video-item" data-artist="Fud Leclerc" data-country="Belgium" data-song="Ton nom" data-year="1962" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1962" src="images/1962-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Fud Leclerc</b><br>Ton nom<br>1962</div>
+                        </div>
+                        </div>
+                        <!-- 1961 -->
+                        <div class="video-item" data-artist="Bob Benny" data-country="Belgium" data-song="September, gouden roos" data-year="1961" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1961" src="images/1961-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Bob Benny</b><br>September, gouden roos<br>1961</div>
+                        </div>
+                        </div>
+                        <!-- 1960 -->
+                        <div class="video-item" data-artist="Fud Leclerc" data-country="Belgium" data-song="Mon amour pour toi" data-year="1960" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1960" src="images/1960-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Fud Leclerc</b><br>Mon amour pour toi<br>1960</div>
+                        </div>
+                        </div>
+                        <!-- 1959 -->
+                        <div class="video-item" data-artist="Bob Benny" data-country="Belgium" data-song="Hou toch van mij" data-year="1959" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1959" src="images/1959-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Bob Benny</b><br>Hou toch van mij<br>1959</div>
+                        </div>
+                        </div>
+                        <!-- 1958 -->
+                        <div class="video-item" data-artist="Fud Leclerc" data-country="Belgium" data-song="Ma petite chatte" data-year="1958" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1958" src="images/1958-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Fud Leclerc</b><br>Ma petite chatte<br>1958</div>
+                        </div>
+                        </div>
+                        <!-- 1957 -->
+                        <div class="video-item" data-artist="Bobbejaan Schoepen" data-country="Belgium" data-song="Straatdeuntje" data-year="1957" onclick="GDriveOpenModalWithVideo('nan')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1957" src="images/1957-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Bobbejaan Schoepen</b><br>Straatdeuntje<br>1957</div>
+                        </div>
+                        </div>
+                        <!-- 1956 (2) -->
+                        <div class="video-item" data-artist="Fud Leclerc" data-country="Belgium" data-song="Messieurs les noyés de la Seine" data-year="1956" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1956" src="images/1956_2-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Fud Leclerc</b><br/>Messieurs les noyés de la Seine<br/>1956</div>
+                        </div>
+                        </div>
+                        <!-- 1956 (1) -->
+                        <div class="video-item" data-artist="Mony Marc" data-country="Belgium" data-song="Le Plus Beau Jour de ma vie" data-year="1956" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/')">
+                        <div class="preview-container">
+                        <img alt="Belgium 1956" src="images/1956_1-BE.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                        <a href="belgium.html">
+                        <img alt="Flag" class="icon-placeholder" src="flags/be.png"/>
+                        </a>
+                        <div class="video-title-text"><b>Mony Marc</b><br/>Le Plus Beau Jour de ma vie<br/>1956</div>
+                        </div>
+                        </div>
+                        <!-- END OF VIDEOS -->
+                    </div>
+                </div>
+            </div>
+        
+            <!-- MODAL -->
+            <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+                <div class="modal-content">
+                    <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+                    <video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
+                    <iframe allow="autoplay; encrypted-media" frameborder="0" id="modalIframe" style="display: none;" sandbox="allow-scripts allow-same-origin"></iframe>
+                </div>
+            </div>
 
-<img alt="United Kingdom" src="flags/gb.png"/></img></div>
-<span class="footer-title">Douze Points</span>
-</div>
-<div class="footer-links">
-<a href="about.html">About</a>
-<a href="contact.html">Contact Us</a>
-<a href="faq.html">FAQ</a>
-<a href="privacy.html">Privacy Policy</a>
-</div>
-</footer>
-<script>
-    function GDriveOpenModalWithVideo(videoUrl, titleText) {
-      const modal = document.getElementById("videoModal");
-      const video = document.getElementById("modalVideo");
-      const iframe = document.getElementById("modalIframe");
-      modal.style.display = "flex";
-      video.style.display = "none";
-      iframe.style.display = "none";
-      video.pause();
-      iframe.src = "";
-      if (videoUrl.includes('drive.google.com')) {
-        const match = videoUrl.match(/\/d\/(.*?)\//);
-        if (match && match[1]) {
-          iframe.src = `https://drive.google.com/file/d/${match[1]}/preview`;
-          iframe.style.display = "block";
-        }
-      } else {
-        video.src = videoUrl;
-        video.style.display = "block";
-        video.play();
-      }
-    }
+        
+            <!-- FOOTER -->
+            <footer class="site-footer">
+                <div class="footer-line"></div>
+                <div class="footer-branding">
+                    <div class="footer-flag">
+                        <img alt="United Kingdom" src="flags/gb.png"/>
+                    </div>
+                    <span class="footer-title">Douze Points</span>
+                </div>
+                <div class="footer-links">
+                    <a href="about.html">About</a>
+                    <a href="contact.html">Contact Us</a>
+                    <a href="faq.html">FAQ</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                </div>
+            </footer>
 
-    function GDriveCloseModal(event) {
-      event.stopPropagation();
-      const modal = document.getElementById("videoModal");
-      const video = document.getElementById("modalVideo");
-      const iframe = document.getElementById("modalIframe");
-      video.pause();
-      video.src = "";
-      iframe.src = "";
-      modal.style.display = "none";
-    }
+        
+            <script src="modal.js" type="text/javascript"></script>
+            <script src="sorting.js" type="text/javascript"></script>
 
-    /* lucide icon script */ 
-            lucide.createIcons();
-    
-  </script>
-    <script src="sorting.js" type="text/javascript"></script>
-
-
-
-</body>
+        
+    </body>
 </html>
+
+
