@@ -481,10 +481,25 @@
             <div class="modal-content">
                 <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
                 <video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;"></video>
-                <iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" id="modalIframe" style="display: none;"></iframe>
+                <!-- <iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" id="modalIframe" style="display: none;"></iframe> -->
             </div>
         </div>
 
+
+        <!--NEW  MODAL -
+        <div class="modal" id="videoModal" onclick="closeModal(event)">
+            <div class="modal-content">
+                <span class="close-button" onclick="closeModal(event)">×</span>
+                    <video 
+                      autoplay 
+                      controls 
+                      controlslist="nodownload" 
+                      id="modalVideo" 
+                      style="display: none;" 
+                      oncontextmenu="return false">
+                    </video>
+              </div>
+        </div>
         
         <!-- FOOTER -->
         <footer class="site-footer">
