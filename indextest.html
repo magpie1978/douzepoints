@@ -37,17 +37,17 @@
     }
 
     .carousel-track {
-      display: flex;
-      transition: transform 0.5s ease;
-    }
+  display: flex;
+  gap: 0; /* remove gap */
+}
+
+    .carousel-track > .video-item:not(:nth-child(5n)) {
+  margin-right: 20px;
+}
 
     .video-item {
-      flex: 0 0 220px;
-      margin-right: 20px;
-      background: #1f1f1f;
-      border-radius: 6px;
-      overflow: hidden;
-    }
+  flex: 0 0 220px;
+}
 
     .video-item:last-child {
       margin-right: 0;
