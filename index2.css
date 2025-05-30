@@ -44,7 +44,7 @@ h4 {
 
 .carousel-container {
   position: relative;
-  width: 1180px; /* 5 items × 220px + 4 gaps × 20px */
+  width: 1180px; /* 220px * 5 items + 20px * 4 gaps */
   overflow: hidden;
 }
 
@@ -62,8 +62,12 @@ h4 {
 }
 
 
-.carousel-track::-webkit-scrollbar {
-  display: none;
+.carousel-track {
+  display: flex;
+  gap: 20px;
+  transition: transform 0.3s ease;
+  will-change: transform;
+  overflow: hidden; /* CRITICAL: prevent native scroll */
 }
 
 
