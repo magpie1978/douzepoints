@@ -10,7 +10,7 @@ function scrollCarousel(direction, trackId) {
 }
 
 
-function openModalWithVideo(videoUrl) {
+function REMOVEDopenModalWithVideo(videoUrl) {
   // Create modal
   const modal = document.createElement('div');
   modal.classList.add('modal');
@@ -66,14 +66,14 @@ document.body.appendChild(modal);
 
 
 
-function closeModal() {
+function REMOVEDcloseModal() {
  const modal = document.getElementById("videoModal");
  const container = document.getElementById("modalVideoContainer");
  modal.style.display = "none";
  container.innerHTML = "";
 }
 
-function showPreview(container) {
+function REMOVEDshowPreview(container) {
   const video = container.querySelector('video');
   const img = container.querySelector('img');
   img.style.display = 'none';
@@ -82,7 +82,7 @@ function showPreview(container) {
 }
 
 
-function hidePreview(container) {
+function REMOVEDhidePreview(container) {
   const video = container.querySelector('video');
   const img = container.querySelector('img');
   video.pause();
