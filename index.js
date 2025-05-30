@@ -9,27 +9,25 @@ function OLDscrollCarousel(direction, trackId) {
   });
 }
 
+const carouselPositions = {};
+
 function scrollCarousel(direction, trackId) {
   const track = document.getElementById(trackId);
-  const itemWidth = track.querySelector('.video-item').offsetWidth + 20;
+  const itemWidth = track.querySelector('.video-item').offsetWidth + 20; // item + gap
   const visibleItems = 5;
-  const scrollAmount = itemWidth * visibleItems;
+  const totalItems = track.querySelectorAll('.video-item').length;
+  const maxIndex = Math.ceil(totalItems / visibleItems) - 1;
 
-  const currentTransform = getComputedStyle(track).transform;
-  let currentX = 0;
-
-  if (currentTransform !== 'none') {
-    const match = currentTransform.match(/matrix\(1, 0, 0, 1, (-?\d+), 0\)/);
-    if (match) {
-      currentX = parseInt(match[1], 10);
-    }
+  // Init position tracker
+  if (!(trackId in carouselPositions)) {
+    carouselPositions[trackId] = 0;
   }
 
-  let newX = currentX - direction * scrollAmount;
+  // Update position
+  carouselPositions[trackId] += direction;
+  if (carouselPositions[trackId] < 0) carouselPositions[trackId] = 0;
+  if (carouselPositions[trackId] > maxIndex) carouselPositions[trackId] = maxIndex;
 
-  // Boundaries: prevent over-scrolling
-  const maxScroll = track.scrollWidth - scrollAmount;
-  newX = Math.min(0, Math.max(-maxScroll, newX));
-
-  track.style.transform = `translateX(${newX}px)`;
+  const offset = carouselPositions[trackId] * visibleItems * itemWidth;
+  track.style.transform = `translateX(-${offset}px)`;
 }
