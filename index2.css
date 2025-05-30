@@ -44,21 +44,23 @@ h4 {
 
 .carousel-container {
   position: relative;
-  width: 1180px; /* 5 x 220px + 4 x 20px gap */
+  width: 1180px; /* 5 items × 220px + 4 gaps × 20px */
   overflow: hidden;
-}
-
-
-.video-item {
-  flex: 0 0 220px;
 }
 
 .carousel-track {
   display: flex;
   gap: 20px;
-  transition: transform 0.3s ease;
+  transition: transform 0.5s ease;
   will-change: transform;
+  /* REMOVE scrolling */
+  overflow-x: unset;
 }
+
+.video-item {
+  flex: 0 0 220px;
+}
+
 
 .carousel-track::-webkit-scrollbar {
   display: none;
