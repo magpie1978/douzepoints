@@ -43,9 +43,9 @@ h4 {
 }
 
 .carousel-container {
-  position: relative;
-  width: 1180px; /* 220px * 5 items + 20px * 4 gaps */
+  width: 1180px; /* 5 items × 220px + 4 gaps × 20px */
   overflow: hidden;
+  margin: 0 auto;
 }
 
 .carousel-track {
@@ -53,12 +53,12 @@ h4 {
   gap: 20px;
   transition: transform 0.5s ease;
   will-change: transform;
-  /* REMOVE scrolling */
-  overflow-x: unset;
+  overflow: hidden; /* kill scroll */
 }
 
 .video-item {
   flex: 0 0 220px;
+  background: #1f1f1f;
 }
 
 
