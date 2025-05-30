@@ -13,10 +13,10 @@ const carouselPositions = {};
 
 function scrollCarousel(direction, trackId) {
   const track = document.getElementById(trackId);
-  const itemWidth = 220 + 20; // item width + gap
+  const itemWidth = 220 + 20; // 220 + margin-right
   const itemsPerView = 5;
   const totalItems = track.querySelectorAll('.video-item').length;
-  const maxIndex = Math.ceil(totalItems / itemsPerView) - 1;
+  const maxIndex = Math.floor((totalItems - 1) / itemsPerView);
 
   if (!carouselPositions[trackId]) {
     carouselPositions[trackId] = 0;
