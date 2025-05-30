@@ -9,25 +9,30 @@ function OLDscrollCarousel(direction, trackId) {
   });
 }
 
-const carouselPositions = {};
+const carouselStates = {};
 
 function scrollCarousel(direction, trackId) {
   const track = document.getElementById(trackId);
   const itemWidth = track.querySelector('.video-item').offsetWidth + 20; // item + gap
   const visibleItems = 5;
-  const totalItems = track.querySelectorAll('.video-item').length;
-  const maxIndex = Math.ceil(totalItems / visibleItems) - 1;
 
-  // Init position tracker
-  if (!(trackId in carouselPositions)) {
-    carouselPositions[trackId] = 0;
+  // Total number of items
+  const totalItems = track.querySelectorAll('.video-item').length;
+  const totalGroups = Math.ceil(totalItems / visibleItems);
+
+  // Track current scroll index per carousel
+  if (!(trackId in carouselStates)) {
+    carouselStates[trackId] = 0;
   }
 
-  // Update position
-  carouselPositions[trackId] += direction;
-  if (carouselPositions[trackId] < 0) carouselPositions[trackId] = 0;
-  if (carouselPositions[trackId] > maxIndex) carouselPositions[trackId] = maxIndex;
+  // Update index
+  carouselStates[trackId] += direction;
 
-  const offset = carouselPositions[trackId] * visibleItems * itemWidth;
-  track.style.transform = `translateX(-${offset}px)`;
+  if (carouselStates[trackId] < 0) carouselStates[trackId] = 0;
+  if (carouselStates[trackId] > totalGroups - 1) {
+    carouselStates[trackId] = totalGroups - 1;
+  }
+
+  const scrollX = carouselStates[trackId] * itemWidth * visibleItems;
+  track.style.transform = `translateX(-${scrollX}px)`;
 }
