@@ -41,7 +41,8 @@ h4 {
 
 .carousel-container {
   position: relative;
-  width: 1180px; /* 5 × 220px + 4 × 20px gap */
+  width: 100%;
+  max-width: 1200px;
   overflow: hidden;
 }
 
@@ -60,7 +61,7 @@ h4 {
 }
 
 .video-item {
-  flex: 0 0 220px;
+  flex: 0 0 calc((100% - 80px) / 5); /* 4 gaps of 20px between 5 items */
   margin: 0;
   background: #1f1f1f;
   border-radius: 6px;
