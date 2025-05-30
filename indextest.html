@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Exact 5-Item Carousel</title>
   <style>
     body {
@@ -12,7 +12,7 @@
     }
 
     .carousel-section {
-      width: 1180px;
+      width: 1180px; /* 5 × 220 + 4 × 20 */
       margin: 0 auto;
     }
 
@@ -32,25 +32,24 @@
     }
 
     .carousel-container {
-      width: 1180px; /* 5 * 220 + 4 * 20 spacing */
+      width: 1180px;
       overflow: hidden;
     }
 
     .carousel-track {
-  display: flex;
-  gap: 0; /* remove gap */
-}
-
-    .carousel-track > .video-item:not(:nth-child(5n)) {
-  margin-right: 20px;
-}
+      display: flex;
+      transition: transform 0.5s ease;
+    }
 
     .video-item {
-  flex: 0 0 220px;
-}
+      flex: 0 0 220px;
+      background: #1f1f1f;
+      border-radius: 6px;
+      overflow: hidden;
+    }
 
-    .video-item:last-child {
-      margin-right: 0;
+    .video-item + .video-item {
+      margin-left: 20px;
     }
 
     .preview-container {
@@ -68,13 +67,13 @@
 <body>
 
   <div class="carousel-section">
-    <h2>Fixed 5-Item Carousel</h2>
+    <h2>Fixed 5-Item Carousel (No Clipping)</h2>
     <div class="carousel-wrapper">
       <button class="carousel-button" onclick="scrollCarousel(-1, 'track')">&#10094;</button>
       <div class="carousel-container">
         <div class="carousel-track" id="track">
 
-          <!-- 12 Sample Items -->
+          <!-- 10 Sample Items -->
           <div class="video-item"><div class="preview-container"></div><div class="video-title">Video 1</div></div>
           <div class="video-item"><div class="preview-container"></div><div class="video-title">Video 2</div></div>
           <div class="video-item"><div class="preview-container"></div><div class="video-title">Video 3</div></div>
@@ -85,8 +84,6 @@
           <div class="video-item"><div class="preview-container"></div><div class="video-title">Video 8</div></div>
           <div class="video-item"><div class="preview-container"></div><div class="video-title">Video 9</div></div>
           <div class="video-item"><div class="preview-container"></div><div class="video-title">Video 10</div></div>
-          <div class="video-item"><div class="preview-container"></div><div class="video-title">Video 11</div></div>
-          <div class="video-item"><div class="preview-container"></div><div class="video-title">Video 12</div></div>
 
         </div>
       </div>
@@ -95,26 +92,23 @@
   </div>
 
   <script>
-    const carouselPositions = {};
+    const carouselStates = {};
 
     function scrollCarousel(direction, trackId) {
       const track = document.getElementById(trackId);
-      const itemWidth = 220 + 20; // item width + margin
+      const itemWidth = 220 + 20; // item width + margin-left
       const itemsPerView = 5;
       const totalItems = track.querySelectorAll('.video-item').length;
-      const totalGroups = Math.ceil(totalItems / itemsPerView);
+      const maxIndex = Math.floor((totalItems - 1) / itemsPerView);
 
-      if (!carouselPositions[trackId]) {
-        carouselPositions[trackId] = 0;
+      if (!(trackId in carouselStates)) {
+        carouselStates[trackId] = 0;
       }
 
-      carouselPositions[trackId] += direction;
-      if (carouselPositions[trackId] < 0) carouselPositions[trackId] = 0;
-      if (carouselPositions[trackId] > totalGroups - 1) {
-        carouselPositions[trackId] = totalGroups - 1;
-      }
+      carouselStates[trackId] += direction;
+      carouselStates[trackId] = Math.max(0, Math.min(carouselStates[trackId], maxIndex));
 
-      const offset = carouselPositions[trackId] * itemWidth * itemsPerView;
+      const offset = carouselStates[trackId] * itemWidth * itemsPerView;
       track.style.transform = `translateX(-${offset}px)`;
     }
   </script>
