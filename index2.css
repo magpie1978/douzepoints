@@ -44,10 +44,14 @@ h4 {
 
 .carousel-container {
   position: relative;
-  width: 1100px; /* 220px * 5 items */
+  width: 1180px;
   overflow: hidden;
 }
 
+
+.video-item {
+  flex: 0 0 220px;
+}
 
 .carousel-track {
   display: flex;
@@ -61,10 +65,6 @@ h4 {
 
 .carousel-track::-webkit-scrollbar {
   display: none;
-}
-
-.video-item {
-  flex: 0 0 220px; /* 5 items fit exactly */
 }
 
 
