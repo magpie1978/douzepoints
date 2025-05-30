@@ -42,10 +42,18 @@ h4 {
   transform: scale(1.2);
 }
 
+/*
 .carousel-container {
   position: relative;
   width: 90%;
   max-width: 1200px;
+  overflow: hidden;
+}
+*/
+
+.carousel-container {
+  position: relative;
+  width: calc((220px * 5) + (20px * 4)); /* 5 items + 4 gaps of 20px */
   overflow: hidden;
 }
 
