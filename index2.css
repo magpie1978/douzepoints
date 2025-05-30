@@ -41,8 +41,7 @@ h4 {
 
 .carousel-container {
   position: relative;
-  width: 90%;
-  max-width: 1200px;
+  width: 1180px; /* 5 × 220px + 4 × 20px gap */
   overflow: hidden;
 }
 
