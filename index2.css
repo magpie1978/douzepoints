@@ -44,14 +44,14 @@ h4 {
 
 .carousel-container {
   width: 1180px;
-  overflow: hidden;
-  margin: 0 auto;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 .carousel-track {
   display: flex;
-  transition: transform 0.5s ease;
-  will-change: transform;
+  width: max-content;
 }
 
 .video-item {
@@ -61,15 +61,6 @@ h4 {
 
 .video-item:last-child {
   margin-right: 0;
-}
-
-
-.carousel-track {
-  display: flex;
-  gap: 20px;
-  transition: transform 0.3s ease;
-  will-change: transform;
-  overflow: hidden; /* CRITICAL: prevent native scroll */
 }
 
 
