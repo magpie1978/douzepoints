@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Eurovision 1956 Data</title>
+  <title>Eurovision 1956 – Year, Country, Artist</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -24,37 +24,55 @@
   </style>
 </head>
 <body>
-  <h2>Eurovision Entries: 1956</h2>
-  <table id="sheet-table"></table>
+  <h2>Eurovision 1956 – Year, Country, Artist</h2>
+  <table id="sheet-table">
+    <thead>
+      <tr>
+        <th>Year</th>
+        <th>Country</th>
+        <th>Artist</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
   <script>
-    const sheetUrl = 'https://docs.google.com/spreadsheets/d/1NuTqO7-M6QFiWWdz0Nh_R1MOMIJDrdtEPB8J8ZSc6Hw/edit?usp=sharing'; // Replace with your actual published CSV link
+    const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT3NsJbFLtYWZSBn0WnfBYfO9CBqZfnMW4KIF9oT8DTzmvGX5SyQ03aaBeAMb0L_A0Cqdw81k679x5X/pub?output=csv';
 
     fetch(sheetUrl)
       .then(response => response.text())
       .then(csvText => {
         const rows = csvText.trim().split('\n').map(row => row.split(','));
-        const header = rows[0];
-        const yearIndex = header.indexOf('Year');
+        const headers = rows[0];
 
-        const filteredRows = rows.filter((row, i) => {
-          if (i === 0) return true; // Keep header
-          return row[yearIndex] === '1956';
-        });
+        const yearIdx = headers.indexOf('Year');
+        const countryIdx = headers.indexOf('Country');
+        const artistIdx = headers.indexOf('Artist');
 
-        const table = document.getElementById('sheet-table');
-        filteredRows.forEach((row, rowIndex) => {
-          const tr = document.createElement('tr');
-          row.forEach(cell => {
-            const td = document.createElement(rowIndex === 0 ? 'th' : 'td');
-            td.textContent = cell;
-            tr.appendChild(td);
-          });
-          table.appendChild(tr);
+        const tbody = document.querySelector('#sheet-table tbody');
+
+        rows.slice(1).forEach(row => {
+          if (row[yearIdx] === '1956') {
+            const tr = document.createElement('tr');
+
+            const yearCell = document.createElement('td');
+            yearCell.textContent = row[yearIdx];
+            tr.appendChild(yearCell);
+
+            const countryCell = document.createElement('td');
+            countryCell.textContent = row[countryIdx];
+            tr.appendChild(countryCell);
+
+            const artistCell = document.createElement('td');
+            artistCell.textContent = row[artistIdx];
+            tr.appendChild(artistCell);
+
+            tbody.appendChild(tr);
+          }
         });
       })
       .catch(error => {
-        console.error('Error loading sheet:', error);
+        console.error('Error loading or processing CSV:', error);
       });
   </script>
 </body>
