@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Google Sheets Data</title>
+  <title>Eurovision 1956 Data</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -24,19 +24,26 @@
   </style>
 </head>
 <body>
-  <h2>Google Sheets Data (Public)</h2>
+  <h2>Eurovision Entries: 1956</h2>
   <table id="sheet-table"></table>
 
   <script>
-    const sheetUrl = 'https://docs.google.com/spreadsheets/d/1NuTqO7-M6QFiWWdz0Nh_R1MOMIJDrdtEPB8J8ZSc6Hw/'; // Replace with your own published CSV URL
+    const sheetUrl = 'https://docs.google.com/spreadsheets/d/1NuTqO7-M6QFiWWdz0Nh_R1MOMIJDrdtEPB8J8ZSc6Hw/edit?usp=sharing'; // Replace with your actual published CSV link
 
     fetch(sheetUrl)
       .then(response => response.text())
       .then(csvText => {
         const rows = csvText.trim().split('\n').map(row => row.split(','));
+        const header = rows[0];
+        const yearIndex = header.indexOf('Year');
+
+        const filteredRows = rows.filter((row, i) => {
+          if (i === 0) return true; // Keep header
+          return row[yearIndex] === '1956';
+        });
 
         const table = document.getElementById('sheet-table');
-        rows.forEach((row, rowIndex) => {
+        filteredRows.forEach((row, rowIndex) => {
           const tr = document.createElement('tr');
           row.forEach(cell => {
             const td = document.createElement(rowIndex === 0 ? 'th' : 'td');
