@@ -54,6 +54,7 @@ h4 {
   width: max-content;
 }
 
+/* 
 .video-item {
   flex: 0 0 220px;
   margin-right: 20px;
@@ -70,6 +71,22 @@ h4 {
   box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
+*/
+
+video-item {
+  cursor: pointer;
+  background-color: #1a1a1a;
+  padding: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.video-item:hover {
+  transform: scale(1.05);
+}
+
+/* 
 .preview-container {
   width: 100%;
   height: 170px;
@@ -89,7 +106,39 @@ h4 {
 .preview-container video {
   display: none;
 }
+*/
 
+.preview-container {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 */
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.preview-container img,
+.preview-container video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.preview-container video {
+  display: none;
+}
+
+.preview-container.has-video:hover video {
+  display: block;
+}
+
+.preview-container.has-video:hover img {
+  display: none;
+}
+
+/* 
 .video-title {
   color: #e5e5e5;
   background: #1f1f1f;
@@ -126,6 +175,36 @@ h4 {
 .video-title-text {
   line-height: 1.2;
 }
+*/
+
+
+.video-title-with-icon {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  gap: 8px;
+  color: white;
+  font-size: 0.8rem;
+}
+  
+.icon-placeholder {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #444;
+  object-fit: cover;
+  margin-left: 8px;
+}
+
+.video-title-text {
+  line-height: 1.2;
+  }
+
+.video-title-text a {
+  text-decoration: none; /* Remove underline */
+  color: inherit;         /* Inherit color from surrounding text */
+}
+
 
 /* Modal Styles */
 .modal {
