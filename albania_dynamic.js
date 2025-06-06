@@ -1,3 +1,4 @@
+
 const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT3NsJbFLtYWZSBn0WnfBYfO9CBqZfnMW4KIF9oT8DTzmvGX5SyQ03aaBeAMb0L_A0Cqdw81k679x5X/pub?output=csv';
 
 fetch(sheetUrl)
@@ -19,7 +20,12 @@ fetch(sheetUrl)
         const year = row[yearIdx];
         const artist = row[artistIdx];
         const song = row[songIdx];
-        const video = row[videoIdx];
+        let video = row[videoIdx];
+
+        // Ensure Google Drive URL has trailing slash
+        if (video && !video.endsWith('/')) {
+          video += '/';
+        }
 
         const html = `
 <!-- ${year} -->
