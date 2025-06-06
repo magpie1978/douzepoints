@@ -27,7 +27,7 @@ function openModalWithVideo(videoUrl) {
              controls 
              controlsList="nodownload" 
              oncontextmenu="return false"
-             style="max-width: 100%; max-height: 80vh;"
+             style="width: 81vw; height: 81vh;"
              ></video>
     </div>
   `;
