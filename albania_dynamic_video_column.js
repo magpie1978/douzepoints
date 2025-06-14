@@ -1,13 +1,13 @@
 const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT3NsJbFLtYWZSBn0WnfBYfO9CBqZfnMW4KIF9oT8DTzmvGX5SyQ03aaBeAMb0L_A0Cqdw81k679x5X/pub?output=csv';
 
-// Convert Google Drive share link to embeddable link
-function convertGoogleDriveLink(url) {
+// Convert Google Drive share link to embed preview link
+function convertGoogleDriveLinkToEmbed(url) {
   if (!url) return '';
   const match = url.match(/\/d\/([^/]+)\//);
   if (match && match[1]) {
-    return `https://drive.google.com/uc?export=download&id=${match[1]}`;
+    return `https://drive.google.com/file/d/${match[1]}/preview`;
   }
-  return url; // fallback: return original if not matching
+  return url;
 }
 
 fetch(sheetUrl)
@@ -16,7 +16,6 @@ fetch(sheetUrl)
     const rows = csvText.trim().split('\n').map(row => row.split(','));
     const headers = rows[0];
 
-    // Map header names to index positions
     const yearIdx = headers.indexOf('Year');
     const countryIdx = headers.indexOf('Country');
     const artistIdx = headers.indexOf('Artist');
@@ -31,13 +30,12 @@ fetch(sheetUrl)
       const artist = row[artistIdx];
       const song = row[songIdx];
       const rawVideoUrl = row[videoIdx];
-      const video = convertGoogleDriveLink(rawVideoUrl);
+      const embedUrl = convertGoogleDriveLinkToEmbed(rawVideoUrl);
 
-      // Only process Albania entries
-      if (country === 'Albania' && video) {
+      if (country === 'Albania' && embedUrl) {
         const html = `
 <!-- ${year} -->
-<div class="video-item" data-artist="${artist}" data-country="${country}" data-song="${song}" data-year="${year}" onclick="GDriveOpenModalWithVideo('${video}')">
+<div class="video-item" data-artist="${artist}" data-country="${country}" data-song="${song}" data-year="${year}" onclick="GDriveOpenModalWithVideo('${embedUrl}')">
   <div class="preview-container">
     <img alt="${country} ${year}" src="images/${year}-AL.jpeg"/>
   </div>
