@@ -1,39 +1,30 @@
 const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT3NsJbFLtYWZSBn0WnfBYfO9CBqZfnMW4KIF9oT8DTzmvGX5SyQ03aaBeAMb0L_A0Cqdw81k679x5X/pub?output=csv';
 
-// Convert Google Drive share link to embed preview link
-function convertGoogleDriveLinkToEmbed(url) {
-  if (!url) return '';
-  const match = url.match(/\/d\/([^/]+)\//);
-  if (match && match[1]) {
-    return `https://drive.google.com/file/d/${match[1]}/preview`;
-  }
-  return url;
-}
+// Load PapaParse CSV parser
+const papaScript = document.createElement('script');
+papaScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js';
+document.head.appendChild(papaScript);
 
-fetch(sheetUrl)
-  .then(response => response.text())
-  .then(csvText => {
-    const rows = csvText.trim().split('\n').map(row => row.split(','));
-    const headers = rows[0];
+papaScript.onload = () => {
+  fetch(sheetUrl)
+    .then(response => response.text())
+    .then(csvText => {
+      const parsed = Papa.parse(csvText, { header: true });
+      const rows = parsed.data;
+      const container = document.querySelector('.grid-container');
 
-    const yearIdx = headers.indexOf('Year');
-    const countryIdx = headers.indexOf('Country');
-    const artistIdx = headers.indexOf('Artist');
-    const songIdx = headers.indexOf('Song');
-    const videoIdx = headers.indexOf('Video_URL');
+      rows.forEach(row => {
+        const year = row['Year'];
+        const country = row['Country'];
+        const artist = row['Artist'];
+        const song = row['Song'];
+        const rawVideoUrl = row['Video_URL'];
 
-    const container = document.querySelector('.grid-container');
+        if (country === 'Albania' && rawVideoUrl) {
+          const match = rawVideoUrl.match(/\/d\/([^/]+)\//);
+          const embedUrl = match ? `https://drive.google.com/file/d/${match[1]}/preview` : rawVideoUrl;
 
-    rows.slice(1).forEach(row => {
-      const year = row[yearIdx];
-      const country = row[countryIdx];
-      const artist = row[artistIdx];
-      const song = row[songIdx];
-      const rawVideoUrl = row[videoIdx];
-      const embedUrl = convertGoogleDriveLinkToEmbed(rawVideoUrl);
-
-      if (country === 'Albania' && embedUrl) {
-        const html = `
+          const html = `
 <!-- ${year} -->
 <div class="video-item" data-artist="${artist}" data-country="${country}" data-song="${song}" data-year="${year}" onclick="GDriveOpenModalWithVideo('${embedUrl}')">
   <div class="preview-container">
@@ -48,11 +39,12 @@ fetch(sheetUrl)
     </div>
   </div>
 </div>
-        `;
-        container.insertAdjacentHTML('beforeend', html);
-      }
+          `;
+          container.insertAdjacentHTML('beforeend', html);
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Failed to load Albania entries:', error);
     });
-  })
-  .catch(error => {
-    console.error('Failed to load Albania entries:', error);
-  });
+};
