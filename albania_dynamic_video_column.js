@@ -1,4 +1,3 @@
-
 const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT3NsJbFLtYWZSBn0WnfBYfO9CBqZfnMW4KIF9oT8DTzmvGX5SyQ03aaBeAMb0L_A0Cqdw81k679x5X/pub?output=csv';
 
 fetch(sheetUrl)
@@ -11,27 +10,30 @@ fetch(sheetUrl)
     const countryIdx = headers.indexOf('Country');
     const artistIdx = headers.indexOf('Artist');
     const songIdx = headers.indexOf('Song');
-    const videoIdx = headers.indexOf('Video'); // <-- Use explicit "Video" column
+    const videoIdx = headers.indexOf('Video_URL');  // <-- Updated to Video_URL
 
     const container = document.querySelector('.grid-container');
 
     rows.slice(1).forEach(row => {
-      if (row[countryIdx] === 'Albania') {
-        const year = row[yearIdx];
-        const artist = row[artistIdx];
-        const song = row[songIdx];
-        let video = row[videoIdx];
+      const year = row[yearIdx];
+      const country = row[countryIdx];
+      const artist = row[artistIdx];
+      const song = row[songIdx];
+      let video = row[videoIdx];
 
-        // Ensure Google Drive URL has trailing slash
+      // Only proceed if country is Albania
+      if (country === 'Albania') {
+
+        // Ensure Google Drive URL has trailing slash (optional)
         if (video && !video.endsWith('/')) {
           video += '/';
         }
 
         const html = `
 <!-- ${year} -->
-<div class="video-item" data-artist="${artist}" data-country="Albania" data-song="${song}" data-year="${year}" onclick="GDriveOpenModalWithVideo('${video}')">
+<div class="video-item" data-artist="${artist}" data-country="${country}" data-song="${song}" data-year="${year}" onclick="GDriveOpenModalWithVideo('${video}')">
   <div class="preview-container">
-    <img alt="Albania ${year}" src="images/${year}-AL.jpeg"/>
+    <img alt="${country} ${year}" src="images/${year}-AL.jpeg"/>
   </div>
   <div class="video-title-with-icon" onclick="event.stopPropagation()">
     <a href="albania.html">
