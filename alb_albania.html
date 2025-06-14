@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Douze Points | Albania</title>
+    <link rel="stylesheet" type="text/css" href="css/countries2.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script>
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(loadData);
+
+        function loadData() {
+            const sheetID = '1NuTqO7-M6QFiWWdz0Nh_R1MOMIJDrdtEPB8J8ZSc6Hw';
+            const query = new google.visualization.Query(
+                `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?gid=0`
+            );
+
+            query.setQuery('SELECT A, B, C, D, E, F');
+            query.send(handleQueryResponse);
+        }
+
+        function handleQueryResponse(response) {
+            if (response.isError()) {
+                console.error('Error fetching data: ' + response.getMessage());
+                return;
+            }
+
+            const data = response.getDataTable();
+            const container = document.getElementById("video-container");
+
+            for (let i = 0; i < data.getNumberOfRows(); i++) {
+                const year = data.getValue(i, 0);
+                const country = data.getValue(i, 1);
+                const artist = data.getValue(i, 2);
+                const song = data.getValue(i, 3);
+                const videoUrl = data.getValue(i, 4);
+                const countryCode = data.getValue(i, 5);
+
+                if (country === 'Albania') {
+                    const html = `
+                        <div class="video-item" 
+                            data-artist="${artist}" 
+                            data-country="${country}" 
+                            data-song="${song}" 
+                            data-year="${year}" 
+                            onclick="GDriveOpenModalWithVideo('${videoUrl}')">
+                            <div class="preview-container">
+                                <img alt="${country} ${year}" src="images/${year}-${countryCode}.jpeg"/>
+                            </div>
+                            <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                                <a href="albania.html">
+                                    <img alt="Flag" class="icon-placeholder" src="flags/${countryCode.toLowerCase()}.png"/>
+                                </a>
+                                <div class="video-title-text"><b>${artist}</b><br/>${song}<br/>${year}</div>
+                            </div>
+                        </div>`;
+                    container.insertAdjacentHTML("beforeend", html);
+                }
+            }
+        }
+    </script>
+</head>
+
+<body oncontextmenu="return false" data-country="al">
+    <div id="header-container"></div>
+    <div class="container">
+        <div id="sidebar-container"></div>
+        <script src="js/sidebar_countries.js" type="text/javascript"></script>
+
+        <div class="main-content">
+            <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
+                <div style="flex: 1;"></div>
+                <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
+                    <label for="sort-options">
+                        <i data-lucide="list-filter" style="margin-right: 15px;"></i>
+                    </label>
+                    <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
+                        <option value="year-asc">Year (asc)</option>
+                        <option value="year-desc">Year (desc)</option>
+                        <option value="artist">Artist Name</option>
+                        <option value="song">Song Title</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-container" id="video-container">
+                <!-- Albania videos will be inserted here dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+        <div class="modal-content">
+            <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+            <video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
+            <iframe allow="autoplay; encrypted-media" frameborder="0" id="modalIframe" style="display: none;" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+    </div>
+
+    <div id="footer"></div>
+    <script src="js/footer.js" type="text/javascript"></script>
+    <script src="js/modal.js" type="text/javascript"></script>
+    <script src="js/sorting.js" type="text/javascript"></script>
+    <script src="js/header.js" type="text/javascript"></script>
+</body>
+</html>
