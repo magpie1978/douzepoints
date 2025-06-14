@@ -10,7 +10,7 @@ function GDriveOpenModalWithVideo(videoUrl, titleText) {
   iframe.src = "";
 
   if (videoUrl.includes('drive.google.com')) {
-    // Use passed-in URL directly
+    // Use passed-in embed URL directly
     iframe.src = videoUrl;
     iframe.style.display = "block";
   } else {
