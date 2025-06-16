@@ -10,7 +10,6 @@
 
 <body oncontextmenu="return false" data-country="al">
 
-    <!-- HEADER FROM JS -->
     <div id="header-container"></div>
 
     <div class="container">
@@ -23,7 +22,7 @@
             </div>
 
             <div class="grid-container" id="video-container">
-                <!-- content will be populated dynamically -->
+                <!-- dynamically populated -->
             </div>
         </div>
     </div>
@@ -45,50 +44,51 @@
                     const container = document.getElementById("video-container");
 
                     data.forEach(row => {
-                        if (row.Country === "Albania") {
-                            const year = row.Year;
-                            const artist = row.Artist;
-                            const song = row.Song;
-                            const videoUrl = row.Video_URL;
+                        // FULL VALIDATION:
+                        if (!row || !row.Country || !row.Year || !row.Artist || row.Country.trim() !== "Albania") return;
 
-                            const videoItem = document.createElement("div");
-                            videoItem.className = "video-item";
-                            videoItem.setAttribute("data-artist", artist);
-                            videoItem.setAttribute("data-country", "Albania");
-                            videoItem.setAttribute("data-song", song);
-                            videoItem.setAttribute("data-year", year);
-                            videoItem.setAttribute("onclick", `GDriveOpenModalWithVideo('${videoUrl}')`);
+                        const year = row.Year.trim();
+                        const artist = row.Artist.trim();
+                        const song = row.Song ? row.Song.trim() : "";
+                        const videoUrl = row.Video_URL ? row.Video_URL.trim() : "";
 
-                            const previewContainer = document.createElement("div");
-                            previewContainer.className = "preview-container";
-                            const img = document.createElement("img");
-                            img.src = `images/${year}-AL.jpeg`;
-                            img.alt = `Albania ${year}`;
-                            previewContainer.appendChild(img);
+                        const videoItem = document.createElement("div");
+                        videoItem.className = "video-item";
+                        videoItem.setAttribute("data-artist", artist);
+                        videoItem.setAttribute("data-country", "Albania");
+                        videoItem.setAttribute("data-song", song);
+                        videoItem.setAttribute("data-year", year);
+                        videoItem.setAttribute("onclick", `GDriveOpenModalWithVideo('${videoUrl}')`);
 
-                            const titleWithIcon = document.createElement("div");
-                            titleWithIcon.className = "video-title-with-icon";
-                            titleWithIcon.setAttribute("onclick", "event.stopPropagation()");
+                        const previewContainer = document.createElement("div");
+                        previewContainer.className = "preview-container";
+                        const img = document.createElement("img");
+                        img.src = `images/${year}-AL.jpeg`;
+                        img.alt = `Albania ${year}`;
+                        previewContainer.appendChild(img);
 
-                            const a = document.createElement("a");
-                            a.href = "albania.html";
-                            const flagImg = document.createElement("img");
-                            flagImg.src = "flags/al.png";
-                            flagImg.className = "icon-placeholder";
-                            flagImg.alt = "Flag";
-                            a.appendChild(flagImg);
-                            titleWithIcon.appendChild(a);
+                        const titleWithIcon = document.createElement("div");
+                        titleWithIcon.className = "video-title-with-icon";
+                        titleWithIcon.setAttribute("onclick", "event.stopPropagation()");
 
-                            const titleText = document.createElement("div");
-                            titleText.className = "video-title-text";
-                            titleText.innerHTML = `<b>${artist}</b><br>${song}<br>${year}`;
-                            titleWithIcon.appendChild(titleText);
+                        const a = document.createElement("a");
+                        a.href = "albania.html";
+                        const flagImg = document.createElement("img");
+                        flagImg.src = "flags/al.png";
+                        flagImg.className = "icon-placeholder";
+                        flagImg.alt = "Flag";
+                        a.appendChild(flagImg);
+                        titleWithIcon.appendChild(a);
 
-                            videoItem.appendChild(previewContainer);
-                            videoItem.appendChild(titleWithIcon);
+                        const titleText = document.createElement("div");
+                        titleText.className = "video-title-text";
+                        titleText.innerHTML = `<b>${artist}</b><br>${song}<br>${year}`;
+                        titleWithIcon.appendChild(titleText);
 
-                            container.appendChild(videoItem);
-                        }
+                        videoItem.appendChild(previewContainer);
+                        videoItem.appendChild(titleWithIcon);
+
+                        container.appendChild(videoItem);
                     });
                 }
             });
@@ -97,11 +97,10 @@
         loadAlbaniaData();
     </script>
 
-    <!-- MODAL SECTION -->
     <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
         <div class="modal-content">
             <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
-            <video autoplay controls controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
+            <video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
             <iframe allow="autoplay; encrypted-media" frameborder="0" id="modalIframe" style="display: none;" sandbox="allow-scripts allow-same-origin"></iframe>
         </div>
     </div>
