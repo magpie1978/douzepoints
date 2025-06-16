@@ -5,7 +5,7 @@
     <title>Douze Points | Albania</title>
     <link rel="stylesheet" type="text/css" href="countries2.css">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script> <!-- PapaParse for CSV parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 
 <body oncontextmenu="return false" data-country="al">
@@ -32,10 +32,12 @@
     <div id="footer"></div>
     <script src="footer.js" type="text/javascript"></script>
 
-    <!-- DYNAMIC DATA LOADER -->
+    <!-- DATA LOADER -->
     <script>
     async function loadAlbaniaData() {
-        const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3NsJbFLtYWZSBn0WnfBYfO9CBqZfnMW4KIF9oT8DTzmvGX5SyQ03aaBeAMb0L_A0Cqdw81k679x5X/pub?output=csv";
+        const corsProxy = "https://corsproxy.io/?";
+        const csvUrl = corsProxy + "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3NsJbFLtYWZSBn0WnfBYfO9CBqZfnMW4KIF9oT8DTzmvGX5SyQ03aaBeAMb0L_A0Cqdw81k679x5X/pub?output=csv";
+
         const response = await fetch(csvUrl);
         const csvText = await response.text();
 
@@ -100,7 +102,7 @@
     loadAlbaniaData();
     </script>
 
-    <!-- MODAL (leave unchanged) -->
+    <!-- MODAL -->
     <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
         <div class="modal-content">
             <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
