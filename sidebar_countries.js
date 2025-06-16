@@ -11,6 +11,10 @@
 })();
 
 
+document.addEventListener("DOMContentLoaded", () => {
+    loadSidebarCountries();
+});
+
 async function loadSidebarCountries() {
     const csvUrl = "./data/DouzePoints.csv";
     const response = await fetch(csvUrl);
@@ -36,5 +40,3 @@ async function loadSidebarCountries() {
         }
     });
 }
-
-loadSidebarCountries();
