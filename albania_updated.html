@@ -26,7 +26,7 @@
                     </label>
                     <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
                         <option value="year-asc">Year (asc)</option>
-                        <option value="year-desc">Year (desc)</option>
+                        <option value="year-desc" selected>Year (desc)</option>
                         <option value="artist">Artist Name</option>
                         <option value="song">Song Title</option>
                     </select>
@@ -46,7 +46,7 @@
     <!-- DATA LOADER -->
     <script>
     async function loadAlbaniaData() {
-        const csvUrl = "./data/DouzePoints.csv";  // Relative path — safe on GitHub Pages + custom domain
+        const csvUrl = "./data/DouzePoints.csv";  // local file — no CORS
 
         const response = await fetch(csvUrl);
         const csvText = await response.text();
@@ -57,12 +57,18 @@
             transformHeader: header => header.replace(/^\uFEFF/, '').trim(),
             transform: value => value.trim(),
             complete: function(results) {
-                const data = results.data;
+                const rawData = results.data;
+
+                // Filter Albania entries
+                const data = rawData.filter(row => row.Country === "Albania");
+
+                // Sort by year DESCENDING
+                data.sort((a, b) => parseInt(b.Year) - parseInt(a.Year));
+
+                // Now build DOM
                 const container = document.getElementById("video-container");
 
                 data.forEach(row => {
-                    if (row.Country !== "Albania") return;
-
                     const year = row.Year;
                     const artist = row.Artist;
                     const song = row.Song;
@@ -105,9 +111,6 @@
                     videoItem.appendChild(titleWithIcon);
                     container.appendChild(videoItem);
                 });
-
-                // ✅ Fire custom event once DOM fully loaded
-                document.dispatchEvent(new Event("videosLoaded"));
             }
         });
     }
@@ -124,19 +127,10 @@
         </div>
     </div>
 
-    <!-- Core Logic -->
+    <!-- Other scripts -->
     <script src="modal.js" type="text/javascript"></script>
     <script src="sorting.js" type="text/javascript"></script>
     <script src="header.js" type="text/javascript"></script>
-
-    <!-- Default Sort Trigger -->
-    <script>
-    document.addEventListener("videosLoaded", function() {
-        if (typeof sortVideos === "function") {
-            sortVideos("year-desc");
-        }
-    });
-    </script>
 
 </body>
 </html>
