@@ -1,113 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <title>Douze Points | Albania</title>
-    <link rel="stylesheet" type="text/css" href="countries2.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-</head>
+async function loadAlbaniaData() {
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3NsJbFLtYWZSBn0WnfBYfO9CBqZfnMW4KIF9oT8DTzmvGX5SyQ03aaBeAMb0L_A0Cqdw81k679x5X/pub?output=csv";
+    const response = await fetch(csvUrl);
+    const csvText = await response.text();
 
-<body oncontextmenu="return false" data-country="al">
+    Papa.parse(csvText, {
+        header: true,
+        skipEmptyLines: true,
+        transformHeader: header => header.trim(),
+        transform: value => value.trim(),
+        complete: function(results) {
+            const data = results.data;
+            const container = document.getElementById("video-container");
 
-    <div id="header-container"></div>
+            data.forEach(row => {
+                if (row.Country !== "Albania") return;
 
-    <div class="container">
-        <div id="sidebar-container"></div>
-        <script src="sidebar_countries.js" type="text/javascript"></script>
+                const year = row.Year;
+                const artist = row.Artist;
+                const song = row.Song;
+                const videoUrl = row.Video_URL;
 
-        <div class="main-content">
-            <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
-                <div style="flex: 1;"></div>
-            </div>
+                const videoItem = document.createElement("div");
+                videoItem.className = "video-item";
+                videoItem.setAttribute("data-artist", artist);
+                videoItem.setAttribute("data-country", "Albania");
+                videoItem.setAttribute("data-song", song);
+                videoItem.setAttribute("data-year", year);
+                videoItem.setAttribute("onclick", `GDriveOpenModalWithVideo('${videoUrl}')`);
 
-            <div class="grid-container" id="video-container">
-                <!-- dynamically populated -->
-            </div>
-        </div>
-    </div>
+                const previewContainer = document.createElement("div");
+                previewContainer.className = "preview-container";
+                const img = document.createElement("img");
+                img.src = `images/${year}-AL.jpeg`;
+                img.alt = `Albania ${year}`;
+                previewContainer.appendChild(img);
 
-    <div id="footer"></div>
-    <script src="footer.js" type="text/javascript"></script>
+                const titleWithIcon = document.createElement("div");
+                titleWithIcon.className = "video-title-with-icon";
+                titleWithIcon.setAttribute("onclick", "event.stopPropagation()");
 
-    <script>
-        async function loadAlbaniaData() {
-            const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3NsJbFLtYWZSBn0WnfBYfO9CBqZfnMW4KIF9oT8DTzmvGX5SyQ03aaBeAMb0L_A0Cqdw81k679x5X/pub?output=csv";
-            const response = await fetch(csvUrl);
-            const csvText = await response.text();
+                const a = document.createElement("a");
+                a.href = "albania.html";
+                const flagImg = document.createElement("img");
+                flagImg.src = "flags/al.png";
+                flagImg.className = "icon-placeholder";
+                flagImg.alt = "Flag";
+                a.appendChild(flagImg);
+                titleWithIcon.appendChild(a);
 
-            Papa.parse(csvText, {
-                header: true,
-                skipEmptyLines: true,
-                complete: function(results) {
-                    const data = results.data;
-                    const container = document.getElementById("video-container");
+                const titleText = document.createElement("div");
+                titleText.className = "video-title-text";
+                titleText.innerHTML = `<b>${artist}</b><br>${song}<br>${year}`;
+                titleWithIcon.appendChild(titleText);
 
-                    data.forEach(row => {
-                        // FULL VALIDATION:
-                        if (!row || !row.Country || !row.Year || !row.Artist || row.Country.trim() !== "Albania") return;
-
-                        const year = row.Year.trim();
-                        const artist = row.Artist.trim();
-                        const song = row.Song ? row.Song.trim() : "";
-                        const videoUrl = row.Video_URL ? row.Video_URL.trim() : "";
-
-                        const videoItem = document.createElement("div");
-                        videoItem.className = "video-item";
-                        videoItem.setAttribute("data-artist", artist);
-                        videoItem.setAttribute("data-country", "Albania");
-                        videoItem.setAttribute("data-song", song);
-                        videoItem.setAttribute("data-year", year);
-                        videoItem.setAttribute("onclick", `GDriveOpenModalWithVideo('${videoUrl}')`);
-
-                        const previewContainer = document.createElement("div");
-                        previewContainer.className = "preview-container";
-                        const img = document.createElement("img");
-                        img.src = `images/${year}-AL.jpeg`;
-                        img.alt = `Albania ${year}`;
-                        previewContainer.appendChild(img);
-
-                        const titleWithIcon = document.createElement("div");
-                        titleWithIcon.className = "video-title-with-icon";
-                        titleWithIcon.setAttribute("onclick", "event.stopPropagation()");
-
-                        const a = document.createElement("a");
-                        a.href = "albania.html";
-                        const flagImg = document.createElement("img");
-                        flagImg.src = "flags/al.png";
-                        flagImg.className = "icon-placeholder";
-                        flagImg.alt = "Flag";
-                        a.appendChild(flagImg);
-                        titleWithIcon.appendChild(a);
-
-                        const titleText = document.createElement("div");
-                        titleText.className = "video-title-text";
-                        titleText.innerHTML = `<b>${artist}</b><br>${song}<br>${year}`;
-                        titleWithIcon.appendChild(titleText);
-
-                        videoItem.appendChild(previewContainer);
-                        videoItem.appendChild(titleWithIcon);
-
-                        container.appendChild(videoItem);
-                    });
-                }
+                videoItem.appendChild(previewContainer);
+                videoItem.appendChild(titleWithIcon);
+                container.appendChild(videoItem);
             });
         }
-
-        loadAlbaniaData();
-    </script>
-
-    <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
-        <div class="modal-content">
-            <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
-            <video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
-            <iframe allow="autoplay; encrypted-media" frameborder="0" id="modalIframe" style="display: none;" sandbox="allow-scripts allow-same-origin"></iframe>
-        </div>
-    </div>
-
-    <script src="modal.js" type="text/javascript"></script>
-    <script src="sorting.js" type="text/javascript"></script>
-    <script src="header.js" type="text/javascript"></script>
-
-</body>
-</html>
+    });
+}
