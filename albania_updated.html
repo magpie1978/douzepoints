@@ -35,8 +35,8 @@
     <!-- DATA LOADER -->
     <script>
     async function loadAlbaniaData() {
-        const corsProxy = "https://corsproxy.io/?";
-        const csvUrl = corsProxy + "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3NsJbFLtYWZSBn0WnfBYfO9CBqZfnMW4KIF9oT8DTzmvGX5SyQ03aaBeAMb0L_A0Cqdw81k679x5X/pub?output=csv";
+        // const csvUrl = "https://yourusername.github.io/yourrepo/data/ESC.csv";  // <-- update this path
+        const csvURL = "https://github.com/magpie1978/douzepoints/data/database.csv";
 
         const response = await fetch(csvUrl);
         const csvText = await response.text();
