@@ -20,17 +20,6 @@
         <div class="main-content">
             <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
                 <div style="flex: 1;"></div>
-                <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
-                        <label for="sort-options">
-                            <i data-lucide="list-filter" style="margin-right: 15px;"></i>
-                        </label>
-                        <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
-                            <option value="year-asc">Year (asc)</option>
-                            <option value="year-desc">Year (desc)</option>
-                            <option value="artist">Artist Name</option>
-                            <option value="song">Song Title</option>
-                        </select>
-                    </div>
             </div>
 
             <div class="grid-container" id="video-container">
@@ -44,82 +33,78 @@
     <script src="footer.js" type="text/javascript"></script>
 
     <!-- DATA LOADER -->
-<script>
-async function loadAlbaniaData() {
-    //const csvUrl = "https://yourusername.github.io/yourrepo/data/ESC.csv";
-    //const csvUrl = "https://magpie1978.github.io/douzepoints/data/DouzePoints.csv";
-    const csvUrl = "./data/DouzePoints.csv";
+    <script>
+    async function loadAlbaniaData() {
+        const csvUrl = "./data/DouzePoints.csv";  // local path — no CORS problems
 
-    const response = await fetch(csvUrl);
-    const csvText = await response.text();
+        const response = await fetch(csvUrl);
+        const csvText = await response.text();
 
-    console.log("Fetched CSV:", csvText);  // <-- debugging output
+        Papa.parse(csvText, {
+            header: true,
+            skipEmptyLines: true,
+            transformHeader: header => header.replace(/^\uFEFF/, '').trim(),
+            transform: value => value.trim(),
+            complete: function(results) {
+                const data = results.data;
+                const container = document.getElementById("video-container");
 
-    Papa.parse(csvText, {
-        header: true,
-        skipEmptyLines: true,
-        transformHeader: header => header.replace(/^\uFEFF/, '').trim(),
-        transform: value => value.trim(),
-        complete: function(results) {
-            console.log("Parsed data:", results.data); // <-- debugging output
+                data.forEach(row => {
+                    if (row.Country !== "Albania") return;
 
-            const data = results.data;
-            const container = document.getElementById("video-container");
+                    const year = row.Year;
+                    const artist = row.Artist;
+                    const song = row.Song;
+                    const videoUrl = row.Video_URL;
 
-            data.forEach(row => {
-                console.log("Row:", row); // <-- debugging each row
+                    const videoItem = document.createElement("div");
+                    videoItem.className = "video-item";
+                    videoItem.setAttribute("data-artist", artist);
+                    videoItem.setAttribute("data-country", "Albania");
+                    videoItem.setAttribute("data-song", song);
+                    videoItem.setAttribute("data-year", year);
+                    videoItem.setAttribute("onclick", `GDriveOpenModalWithVideo('${videoUrl}')`);
 
-                if (row.Country !== "Albania") return;
+                    const previewContainer = document.createElement("div");
+                    previewContainer.className = "preview-container";
+                    const img = document.createElement("img");
+                    img.src = `images/${year}-AL.jpeg`;
+                    img.alt = `Albania ${year}`;
+                    previewContainer.appendChild(img);
 
-                const year = row.Year;
-                const artist = row.Artist;
-                const song = row.Song;
-                const videoUrl = row.Video_URL;
+                    const titleWithIcon = document.createElement("div");
+                    titleWithIcon.className = "video-title-with-icon";
+                    titleWithIcon.setAttribute("onclick", "event.stopPropagation()");
 
-                const videoItem = document.createElement("div");
-                videoItem.className = "video-item";
-                videoItem.setAttribute("data-artist", artist);
-                videoItem.setAttribute("data-country", "Albania");
-                videoItem.setAttribute("data-song", song);
-                videoItem.setAttribute("data-year", year);
-                videoItem.setAttribute("onclick", `GDriveOpenModalWithVideo('${videoUrl}')`);
+                    const a = document.createElement("a");
+                    a.href = "albania.html";
+                    const flagImg = document.createElement("img");
+                    flagImg.src = "flags/al.png";
+                    flagImg.className = "icon-placeholder";
+                    flagImg.alt = "Flag";
+                    a.appendChild(flagImg);
+                    titleWithIcon.appendChild(a);
 
-                const previewContainer = document.createElement("div");
-                previewContainer.className = "preview-container";
-                const img = document.createElement("img");
-                img.src = `images/${year}-AL.jpeg`;
-                img.alt = `Albania ${year}`;
-                previewContainer.appendChild(img);
+                    const titleText = document.createElement("div");
+                    titleText.className = "video-title-text";
+                    titleText.innerHTML = `<b>${artist}</b><br>${song}<br>${year}`;
+                    titleWithIcon.appendChild(titleText);
 
-                const titleWithIcon = document.createElement("div");
-                titleWithIcon.className = "video-title-with-icon";
-                titleWithIcon.setAttribute("onclick", "event.stopPropagation()");
+                    videoItem.appendChild(previewContainer);
+                    videoItem.appendChild(titleWithIcon);
+                    container.appendChild(videoItem);
+                });
 
-                const a = document.createElement("a");
-                a.href = "albania.html";
-                const flagImg = document.createElement("img");
-                flagImg.src = "flags/al.png";
-                flagImg.className = "icon-placeholder";
-                flagImg.alt = "Flag";
-                a.appendChild(flagImg);
-                titleWithIcon.appendChild(a);
+                // ✅ Apply default sort AFTER data is loaded:
+                if (typeof sortVideos === "function") {
+                    sortVideos("year-desc");
+                }
+            }
+        });
+    }
 
-                const titleText = document.createElement("div");
-                titleText.className = "video-title-text";
-                titleText.innerHTML = `<b>${artist}</b><br>${song}<br>${year}`;
-                titleWithIcon.appendChild(titleText);
-
-                videoItem.appendChild(previewContainer);
-                videoItem.appendChild(titleWithIcon);
-                container.appendChild(videoItem);
-            });
-        }
-    });
-}
-
-loadAlbaniaData();
-</script>
-
+    loadAlbaniaData();
+    </script>
 
     <!-- MODAL -->
     <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
