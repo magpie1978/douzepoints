@@ -2,141 +2,125 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Douze Points | Country</title>
+    <title>ESCFlix - Country View</title>
     <link rel="stylesheet" type="text/css" href="countries2.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 
 <body oncontextmenu="return false">
 
-    <!-- HEADER -->
-    <div id="header-container"></div>
+    <!-- Dynamic banner -->
+    <div id="banner" style="display: flex; align-items: center; justify-content: center; height: 300px; font-size: 3em;">
+        Loading...
+    </div>
 
     <div class="container">
         <div id="sidebar-container"></div>
-        <script src="sidebar_countries.js" type="text/javascript"></script>
+        <script src="sidebar_countries.js"></script>
 
         <div class="main-content">
-            <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
+            <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px;">
                 <div style="flex: 1;"></div>
                 <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
                     <label for="sort-options">
-                        <i data-lucide="list-filter" style="margin-right: 15px;"></i>
+                        <i style="margin-right: 15px;">Sort:</i>
                     </label>
-                    <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
-                        <option value="year-asc">Year (asc)</option>
+                    <select id="sort-options">
                         <option value="year-desc" selected>Year (desc)</option>
-                        <option value="artist">Artist Name</option>
-                        <option value="song">Song Title</option>
+                        <option value="year-asc">Year (asc)</option>
+                        <option value="artist">Artist</option>
+                        <option value="song">Song</option>
                     </select>
                 </div>
             </div>
 
-            <div class="grid-container" id="video-container">
-                <!-- Content will be dynamically inserted here -->
-            </div>
+            <div class="grid-container" id="video-container"></div>
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <div id="footer"></div>
-    <script src="footer.js" type="text/javascript"></script>
-
-    <!-- UNIVERSAL DATA LOADER -->
     <script>
-    function getCountryFromURL() {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get("country");
-    }
+    const countryParam = new URLSearchParams(window.location.search).get("country");
 
     async function loadCountryData() {
-        const countryName = getCountryFromURL();
-        if (!countryName) {
-            document.getElementById("video-container").innerHTML = "<p>Country not specified.</p>";
-            return;
-        }
-
         const csvUrl = "./data/DouzePoints.csv";
-
         const response = await fetch(csvUrl);
         const csvText = await response.text();
 
         Papa.parse(csvText, {
             header: true,
             skipEmptyLines: true,
-            transformHeader: header => header.replace(/^\uFEFF/, '').trim(),
-            transform: value => value.trim(),
+            transformHeader: h => h.trim(),
+            transform: v => v.trim(),
             complete: function(results) {
-                const rawData = results.data;
+                const data = results.data.filter(row => row.Country === countryParam);
+                const countryCode = data[0]?.Country_Code?.toLowerCase();
 
-                const data = rawData.filter(row => row.Country === countryName);
+                document.getElementById("banner").innerHTML = `
+                    <img src="flags/${countryCode}.png" style="width:100px; height:100px; margin-right:20px;">
+                    ${countryParam}
+                `;
+
+                // Sort by default year desc
                 data.sort((a, b) => parseInt(b.Year) - parseInt(a.Year));
 
                 const container = document.getElementById("video-container");
+                container.innerHTML = '';
 
                 data.forEach(row => {
-                    const year = row.Year;
-                    const artist = row.Artist;
-                    const song = row.Song;
-                    const videoUrl = row.Video_URL;
-                    const countryCode = row.Country_Code.toLowerCase();
+                    const div = document.createElement("div");
+                    div.className = "video-item";
+                    div.setAttribute("data-year", row.Year);
+                    div.setAttribute("data-artist", row.Artist);
+                    div.setAttribute("data-song", row.Song);
 
-                    const videoItem = document.createElement("div");
-                    videoItem.className = "video-item";
-                    videoItem.setAttribute("data-artist", artist);
-                    videoItem.setAttribute("data-country", countryName);
-                    videoItem.setAttribute("data-song", song);
-                    videoItem.setAttribute("data-year", year);
-                    videoItem.setAttribute("onclick", `GDriveOpenModalWithVideo('${videoUrl}')`);
-
-                    const previewContainer = document.createElement("div");
-                    previewContainer.className = "preview-container";
-                    const img = document.createElement("img");
-                    img.src = `images/${year}-${countryCode.toUpperCase()}.jpeg`;
-                    img.alt = `${countryName} ${year}`;
-                    previewContainer.appendChild(img);
-
-                    const titleWithIcon = document.createElement("div");
-                    titleWithIcon.className = "video-title-with-icon";
-                    titleWithIcon.setAttribute("onclick", "event.stopPropagation()");
-
-                    const a = document.createElement("a");
-                    a.href = `country.html?country=${encodeURIComponent(countryName)}`;
-                    const flagImg = document.createElement("img");
-                    flagImg.src = `flags/${countryCode}.png`;
-                    flagImg.className = "icon-placeholder";
-                    flagImg.alt = "Flag";
-                    a.appendChild(flagImg);
-                    titleWithIcon.appendChild(a);
-
-                    const titleText = document.createElement("div");
-                    titleText.className = "video-title-text";
-                    titleText.innerHTML = `<b>${artist}</b><br>${song}<br>${year}`;
-                    titleWithIcon.appendChild(titleText);
-
-                    videoItem.appendChild(previewContainer);
-                    videoItem.appendChild(titleWithIcon);
-                    container.appendChild(videoItem);
+                    div.innerHTML = `
+                        <div class="preview-container">
+                            <img src="images/${row.Year}-${countryCode.toUpperCase()}.jpeg" alt="${row.Artist}"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="country.html?country=${countryParam}">
+                                <img class="icon-placeholder" src="flags/${countryCode}.png" alt="Flag">
+                            </a>
+                            <div class="video-title-text">
+                                <b>${row.Artist}</b><br>${row.Song}<br>${row.Year}
+                            </div>
+                        </div>
+                    `;
+                    div.onclick = () => GDriveOpenModalWithVideo(row.Video_URL);
+                    container.appendChild(div);
                 });
+
+                attachSorting();
             }
+        });
+    }
+
+    function attachSorting() {
+        const select = document.getElementById("sort-options");
+        select.addEventListener("change", function() {
+            const sortType = select.value;
+            const container = document.getElementById("video-container");
+            const items = Array.from(container.children);
+
+            if (sortType === "year-desc") {
+                items.sort((a,b) => parseInt(b.dataset.year) - parseInt(a.dataset.year));
+            } else if (sortType === "year-asc") {
+                items.sort((a,b) => parseInt(a.dataset.year) - parseInt(b.dataset.year));
+            } else if (sortType === "artist") {
+                items.sort((a,b) => a.dataset.artist.localeCompare(b.dataset.artist));
+            } else if (sortType === "song") {
+                items.sort((a,b) => a.dataset.song.localeCompare(b.dataset.song));
+            }
+
+            container.innerHTML = '';
+            items.forEach(item => container.appendChild(item));
         });
     }
 
     loadCountryData();
     </script>
 
-    <!-- MODAL -->
-    <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
-        <div class="modal-content">
-            <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
-            <video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
-            <iframe allow="autoplay; encrypted-media" frameborder="0" id="modalIframe" style="display: none;" sandbox="allow-scripts allow-same-origin"></iframe>
-        </div>
-    </div>
-
-    <script src="modal.js" type="text/javascript"></script>
-    <script src="sorting.js" type="text/javascript"></script>
-    <script src="header.js" type="text/javascript"></script>
+    <script src="modal.js"></script>
+    <script src="header.js"></script>
 </body>
 </html>
