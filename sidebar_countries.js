@@ -11,8 +11,6 @@
 //})();
 
 
-
-
 document.addEventListener("DOMContentLoaded", () => {
     loadSidebarCountries();
 });
@@ -44,7 +42,15 @@ async function loadSidebarCountries() {
 
                 const a = document.createElement("a");
                 a.href = `country.html?country=${encodeURIComponent(country)}`;
-                a.innerHTML = `<img class="flag-icon" src="flags/${countryCode}.png" alt="${country}">${country}`;
+
+                // ✅ This is the critical fix: apply the flag-icon class here
+                const img = document.createElement("img");
+                img.src = `flags/${countryCode}.png`;
+                img.alt = country;
+                img.className = "flag-icon";
+
+                a.appendChild(img);
+                a.appendChild(document.createTextNode(country));
 
                 div.appendChild(a);
                 sidebar.appendChild(div);
