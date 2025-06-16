@@ -1,352 +1,79 @@
 <!DOCTYPE html>
-
 <html lang="en">
-    <head>
-        <meta charset="utf-8"/>
-        
-        <title>Douze Points | Albania</title>
-        
-        <link rel="stylesheet" type="text/css" href="countries2.css">
-        <script src="https://unpkg.com/lucide@latest"></script>
-    </head>
-    
-    <body oncontextmenu="return false" data-country="al">
+<head>
+    <meta charset="utf-8"/>
+    <title>Douze Points | Albania</title>
+    <link rel="stylesheet" type="text/css" href="countries2.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
 
-        <!-- HEADER FROM JS -->
-        <div id="header-container"></div>
+<body oncontextmenu="return false" data-country="al">
 
-        
-        <!-- Main Content Layout -->
-        <div class="container">
-            
-            <!-- Display Sidebar from .js file -->
-            <div id="sidebar-container"></div>
-            <script src="sidebar_countries.js" type="text/javascript"></script>
+    <div id="header-container"></div>
 
-            
-            <div class="main-content">
-                <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
-                    <div style="flex: 1;"></div> <!-- Push the sort-controls to the right -->
-                    <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
-                        <label for="sort-options">
-                            <i data-lucide="list-filter" style="margin-right: 15px;"></i>
-                        </label>
-                        <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
-                            <option value="year-asc">Year (asc)</option>
-                            <option value="year-desc">Year (desc)</option>
-                            <option value="artist">Artist Name</option>
-                            <option value="song">Song Title</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="grid-container">
+    <div class="container">
+        <div id="sidebar-container"></div>
+        <script src="sidebar_countries.js" type="text/javascript"></script>
 
-                    <!-- 2025 -->
-                    <div class="video-item" data-artist="Shkodra Elektronike" data-country="Albania" data-song="Zjerm" data-year="2025" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1n5HKgFflFrDD6YmOu19g7zM2_mc8Zffz/')">
-                        <div class="preview-container"><img alt="Albania 2025" src="images/2025-AL.jpeg"/></div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                            <a href="albania.html"><img alt="Flag" class="icon-placeholder" src="flags/al.png"/></a>
-                            <div class="video-title-text"><b>Shkodra Elektronike</b><br>Zjerm<br>2025</div>
-                        </div>
-                    </div>
-                    
-                    <!-- 2024 -->
-                    <div class="video-item" data-artist="Besa" data-country="Albania" data-song="Titan" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1kRN5_a2SiKgf_tyeDMRo3bsmXV4g0Yet/')">
-                        <div class="preview-container">
-                            <img alt="Albania 2024" src="images/2024-AL.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                            <a href="albania.html">
-                                <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                            </a>
-                            <div class="video-title-text"><b>Besa</b><br/>Titan<br/>2024</div>
-                        </div>
-                    </div>
-                    
-                    <!-- 2023 -->
-                    <div class="video-item" data-artist="Albina and Familja Kelmendi" data-country="Albania" data-song="Duje" data-year="2023" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1m320fGjiYihEnOkSaF9pp3jD1kSW9YzP/')">
-                        <div class="preview-container">
-                            <img alt="Albania 2023" src="images/2023-AL.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                            <a href="albania.html">
-                                <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                            </a>
-                            <div class="video-title-text"><b>Albina and Familja Kelmendi</b><br/>Duje<br/>2023</div>
-                        </div>
-                    </div>
-                    
-                    <!-- 2022 -->
-                    <div class="video-item" data-artist="Ronela Hajati" data-country="Albania" data-song="Sekret" data-year="2022" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1mJMAJMSFxtnqOz9VS-92NquhSfJnx87f/')">
-                        <div class="preview-container">
-                            <img alt="Albania 2022" src="images/2022-AL.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                            <a href="albania.html">
-                                <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                            </a>
-                            <div class="video-title-text"><b>Ronela Hajati</b><br/>Sekret<br/>2022</div>
-                        </div>
-                    </div>
-                    
-                    <!-- 2021 -->
-                    <div class="video-item" data-artist="Anxhela Peristeri" data-country="Albania" data-song="Karma" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1dUiBHLE9JYQFt9_aVb1yswuKFb6pAkaC/')">
-                        <div class="preview-container">
-                            <img alt="Albania 2021" src="images/2021-AL.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                            <a href="albania.html">
-                                <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                            </a>
-                            <div class="video-title-text"><b>Anxhela Peristeri</b><br/>Karma<br/>2021</div>
-                        </div>
-                    </div>
-                    
-                    <!-- 2020 -->
-                    <div class="video-item" data-artist="Jonida Maliqi" data-country="Albania" data-song="Fall from the Sky" data-year="2020" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1kUXizFIgkSdlmFAyXxobSLl3PUaC3F7R/')">
-                        <div class="preview-container">
-                            <img alt="Albania 2020" src="images/2020-AL.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                            <a href="albania.html">
-                                <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                            </a>
-                            <div class="video-title-text"><b>Jonida Maliqi</b><br/>Fall from the Sky<br/>2020</div>
-                        </div>
-                    </div>
-                    
-                    <!-- 2019 -->
-                    <div class="video-item" data-artist="Jonida Maliqi" data-country="Albania" data-song="Ktheju tokës" data-year="2019" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1ACnEAcUy4AIG8tE8xnlEXNzheaq3VpNe/')">
-                        <div class="preview-container">
-                            <img alt="Albania 2019" src="images/2019-AL.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                            <a href="albania.html">
-                                <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                            </a>
-                            <div class="video-title-text"><b>Jonida Maliqi</b><br/>Ktheju tokës<br/>2019</div>
-                        </div>
-                    </div>
-                    
-                    <!-- 2018 -->
-                    <div class="video-item" data-artist="Eugent Bushpepa" data-country="Albania" data-song="Mall" data-year="2018" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1pZnOnIFz9pLR2z23wUhOQzxuJgVOMWEo/')">
-                        <div class="preview-container">
-                            <img alt="Albania 2018" src="images/2018-AL.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                            <a href="albania.html">
-                                <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                            </a>
-                            <div class="video-title-text"><b>Eugent Bushpepa</b><br/>Mall<br/>2018</div>
-                        </div>
-                    </div>
-                    
-                    <!-- 2017 -->
-                    <div class="video-item" data-artist="Lindita" data-country="Albania" data-song="World" data-year="2017" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Do9DEu8Lk4lmAzQ6Koj5PzDRioVcdtaS/')">
-                    <div class="preview-container">
-                    <img alt="Albania 2017" src="images/2017-AL.jpeg"/>
-                    </div>
-                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                    <a href="albania.html">
-                    <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                    </a>
-                    <div class="video-title-text"><b>Lindita</b><br/>World<br/>2017</div>
-                    </div>
-                    </div>
-                    
-                    <!-- 2016 -->
-                    <div class="video-item" data-artist="Eneda Tarifa" data-country="Albania" data-song="Fairytale" data-year="2016" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1cDTCCLoCyOUIWRA9p8stwA5t3iwJI85X/')">
-                    <div class="preview-container">
-                    <img alt="Albania 2016" src="images/2016-AL.jpeg"/>
-                    </div>
-                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                    <a href="albania.html">
-                    <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                    </a>
-                    <div class="video-title-text"><b>Eneda Tarifa</b><br/>Fairytale<br/>2016</div>
-                    </div>
-                    </div>
-                    
-                    <!-- 2015 -->
-                    <div class="video-item" data-artist="Elhaida Dani" data-country="Albania" data-song="I'm Alive" data-year="2015" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1l-X0oiEdMDg--7-QW2yBD0QZE0QgLdVt/')">
-                    <div class="preview-container">
-                    <img alt="Albania 2015" src="images/2015-AL.jpeg"/>
-                    </div>
-                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                    <a href="albania.html">
-                    <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                    </a>
-                    <div class="video-title-text"><b>Elhaida Dani</b><br/>I'm Alive<br/>2015</div>
-                    </div>
-                    </div>
-                    
-                    <!-- 2014 -->
-                    <div class="video-item" data-artist="Hersi" data-country="Albania" data-song="One Night's Anger" data-year="2014" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1o6AnTVJ5m6cglxTOS4o-U-LtFbg9Nflt/')">
-                    <div class="preview-container">
-                    <img alt="Albania 2014" src="images/2014-AL.jpeg"/>
-                    </div>
-                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                    <a href="albania.html">
-                    <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                    </a>
-                    <div class="video-title-text"><b>Hersi</b><br/>One Night's Anger<br/>2014</div>
-                    </div>
-                    </div>
-                    
-                    <!-- 2013 -->
-                    <div class="video-item" data-artist="Adrian Lulgjuraj and Bledar Sejko" data-country="Albania" data-song="Identitet" data-year="2013" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1RS4953hcZz3DYZWLrL1H4F5WgsnoYTzF/')">
-                    <div class="preview-container">
-                    <img alt="Albania 2013" src="images/2013-AL.jpeg"/>
-                    </div>
-                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                    <a href="albania.html">
-                    <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                    </a>
-                    <div class="video-title-text"><b>Adrian Lulgjuraj and Bledar Sejko</b><br/>Identitet<br/>2013</div>
-                    </div>
-                    </div>
-                    
-                    <!-- 2012 -->
-                    <div class="video-item" data-artist="Rona Nishliu" data-country="Albania" data-song="Suus" data-year="2012" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/19ErCta8RFzLBqPDM36j8_NCbqJmlS3T_/')">
-                    <div class="preview-container">
-                    <img alt="Albania 2012" src="images/2012-AL.jpeg"/>
-                    </div>
-                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                    <a href="albania.html">
-                    <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                    </a>
-                    <div class="video-title-text"><b>Rona Nishliu</b><br/>Suus<br/>2012</div>
-                    </div>
-                    </div>
-                    
-                    <!-- 2011 -->
-                    <div class="video-item" data-artist="Aurela Gaçe" data-country="Albania" data-song="Feel the Passion" data-year="2011" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1QAbwDvrePyPpYD02LLxA1yZylASMS-RA/')">
-                    <div class="preview-container">
-                    <img alt="Albania 2011" src="images/2011-AL.jpeg"/>
-                    </div>
-                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                    <a href="albania.html">
-                    <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                    </a>
-                    <div class="video-title-text"><b>Aurela Gaçe</b><br/>Feel the Passion<br/>2011</div>
-                    </div>
-                    </div>
-                    
-                    <!-- 2010 -->
-                    <div class="video-item" data-artist="Juliana Pasha" data-country="Albania" data-song="It's All About You" data-year="2010" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/15JY-OBkXNUFbANFuDQ2P2a_Oim3gPvJV/')">
-                    <div class="preview-container">
-                    <img alt="Albania 2010" src="images/2010-AL.jpeg"/>
-                    </div>
-                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                    <a href="albania.html">
-                    <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                    </a>
-                    <div class="video-title-text"><b>Juliana Pasha</b><br/>It's All About You<br/>2010</div>
-                    </div>
-                    </div>
-                    
-                    <!-- 2009 -->
-                    <div class="video-item" data-artist="Kejsi Tola" data-country="Albania" data-song="Carry Me in Your Dreams" data-year="2009" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1gZr2NjxRlDP-0VRIwX_cywc-aF3uikjW/')">
-                        <div class="preview-container">
-                            <img alt="Albania 2009" src="images/2009-AL.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                            <a href="albania.html">
-                                <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                            </a>
-                            <div class="video-title-text"><b>Kejsi Tola</b><br/>Carry Me in Your Dreams<br/>2009</div>
-                        </div>
-                    </div>
-                    
-                    <!-- 2008 -->
-                    <div class="video-item" data-artist="Olta Boka" data-country="Albania" data-song="Zemrën e lamë peng" data-year="2008" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1xmSA6kf3hRwgaWFl0tUHv2adLkhdDSh-/')">
-                        <div class="preview-container">
-                            <img alt="Albania 2008" src="images/2008-AL.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                            <a href="albania.html">
-                                <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                            </a>
-                            <div class="video-title-text"><b>Olta Boka</b><br/>Zemrën e lamë peng<br/>2008</div>
-                        </div>
-                    </div>
-                    
-                    <!-- 2007 -->
-                    <div class="video-item" data-artist="Frederik Ndoci" data-country="Albania" data-song="Hear My Plea" data-year="2007" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Vy-nc0p435v96BnYsn5g9USHrqtVo6fH/')">
-                        <div class="preview-container">
-                            <img alt="Albania 2007" src="images/2007-AL.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                            <a href="albania.html">
-                                <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                            </a>
-                            <div class="video-title-text"><b>Frederik Ndoci</b><br/>Hear My Plea<br/>2007</div>
-                        </div>
-                    </div>
-                    
-                    <!-- 2006 -->
-                    <div class="video-item" data-artist="Luiz Ejlli" data-country="Albania" data-song="Zjarr e ftohtë" data-year="2006" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1gCiUACFOLnjr1Y1ghjgragBGLHUkPFQZ/')">
-                        <div class="preview-container">
-                            <img alt="Albania 2006" src="images/2006-AL.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                            <a href="albania.html">
-                                <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                            </a>
-                            <div class="video-title-text"><b>Luiz Ejlli</b><br/>Zjarr e ftohtë<br/>2006</div>
-                        </div>
-                    </div>
-                    
-                    <!-- 2005 -->
-                    <div class="video-item" data-artist="Ledina Çelo" data-country="Albania" data-song="Tomorrow I Go" data-year="2005" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1pMMapZklBXMKHnP3WnevliGQXRW-9lLw/')">
-                        <div class="preview-container">
-                            <img alt="Albania 2005" src="images/2005-AL.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                            <a href="albania.html">
-                                <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                            </a>
-                            <div class="video-title-text"><b>Ledina Çelo</b><br/>Tomorrow I Go<br/>2005</div>
-                        </div>
-                    </div>
-                    
-                    <!-- 2004 -->
-                    <div class="video-item" data-artist="Anjeza Shahini" data-country="Albania" data-song="The Image of You" data-year="2004" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1lmlV5-HlyooHHdkf3wSoJWKsSHQBpcN5/')">
-                        <div class="preview-container">
-                            <img alt="Albania 2004" src="images/2004-AL.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                            <a href="albania.html">
-                                <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                            </a>
-                            <div class="video-title-text"><b>Anjeza Shahini</b><br/>The Image of You<br/>2004</div>
-                        </div>
-                    </div>
-                     <!-- END OF VIDEOS -->
-                    
-                </div>
+        <div class="main-content">
+            <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
+                <div style="flex: 1;"></div>
+            </div>
+
+            <div class="grid-container" id="video-container">
+                <!-- dynamically populated content -->
             </div>
         </div>
+    </div>
 
-        
-        <!-- MODAL -->
-        <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
-            <div class="modal-content">
-                <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
-                <video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
-                <iframe allow="autoplay; encrypted-media" frameborder="0" id="modalIframe" style="display: none;" sandbox="allow-scripts allow-same-origin"></iframe>
-            </div>
-        </div>
+    <div id="footer"></div>
+    <script src="footer.js" type="text/javascript"></script>
 
-        
-        <!-- Display footer from .js file -->
-        <div id="footer"></div>
-        <script src="footer.js" type="text/javascript"></script>
+    <script>
+        async function loadAlbaniaData() {
+            const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3NsJbFLtYWZSBn0WnfBYfO9CBqZfnMW4KIF9oT8DTzmvGX5SyQ03aaBeAMb0L_A0Cqdw81k679x5X/pub?output=csv";
+            const response = await fetch(csvUrl);
+            const csvText = await response.text();
 
-        
-        <script src="modal.js" type="text/javascript"></script>
-        <script src="sorting.js" type="text/javascript"></script>
-        <script src="header.js" type="text/javascript"></script>
-        
-    </body>
+            const rows = csvText.split('\n').map(row => row.split(','));
+
+            const headers = rows[0];
+            const countryIndex = headers.indexOf('Country');
+            const yearIndex = headers.indexOf('Year');
+            const artistIndex = headers.indexOf('Artist');
+
+            const container = document.getElementById("video-container");
+
+            rows.slice(1).forEach(cols => {
+                if (cols[countryIndex] === 'Albania') {
+                    const year = cols[yearIndex];
+                    const artist = cols[artistIndex];
+
+                    const div = document.createElement("div");
+                    div.className = "video-item";
+                    div.setAttribute("data-artist", artist);
+                    div.setAttribute("data-country", "Albania");
+                    div.setAttribute("data-song", "");
+                    div.setAttribute("data-year", year);
+                    div.setAttribute("onclick", "");
+
+                    div.innerHTML = `
+                        <div class="preview-container">
+                            <img alt="Albania ${year}" src="images/${year}-AL.jpeg"/>
+                        </div>
+                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                            <a href="albania.html">
+                                <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+                            </a>
+                            <div class="video-title-text"><b>${artist}</b><br><br>${year}</div>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                }
+            });
+        }
+
+        loadAlbaniaData();
+    </script>
+</body>
 </html>
