@@ -5,11 +5,12 @@
     <title>Douze Points | Albania</title>
     <link rel="stylesheet" type="text/css" href="countries2.css">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script> <!-- Add PapaParse -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 
 <body oncontextmenu="return false" data-country="al">
 
+    <!-- HEADER FROM JS -->
     <div id="header-container"></div>
 
     <div class="container">
@@ -22,7 +23,7 @@
             </div>
 
             <div class="grid-container" id="video-container">
-                <!-- dynamically populated content -->
+                <!-- content will be populated dynamically -->
             </div>
         </div>
     </div>
@@ -50,26 +51,43 @@
                             const song = row.Song;
                             const videoUrl = row.Video_URL;
 
-                            const div = document.createElement("div");
-                            div.className = "video-item";
-                            div.setAttribute("data-artist", artist);
-                            div.setAttribute("data-country", "Albania");
-                            div.setAttribute("data-song", song);
-                            div.setAttribute("data-year", year);
-                            div.setAttribute("onclick", `GDriveOpenModalWithVideo('${videoUrl}')`);
+                            const videoItem = document.createElement("div");
+                            videoItem.className = "video-item";
+                            videoItem.setAttribute("data-artist", artist);
+                            videoItem.setAttribute("data-country", "Albania");
+                            videoItem.setAttribute("data-song", song);
+                            videoItem.setAttribute("data-year", year);
+                            videoItem.setAttribute("onclick", `GDriveOpenModalWithVideo('${videoUrl}')`);
 
-                            div.innerHTML = `
-                                <div class="preview-container">
-                                    <img alt="Albania ${year}" src="images/${year}-AL.jpeg"/>
-                                </div>
-                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                                    <a href="albania.html">
-                                        <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                                    </a>
-                                    <div class="video-title-text"><b>${artist}</b><br>${song}<br>${year}</div>
-                                </div>
-                            `;
-                            container.appendChild(div);
+                            const previewContainer = document.createElement("div");
+                            previewContainer.className = "preview-container";
+                            const img = document.createElement("img");
+                            img.src = `images/${year}-AL.jpeg`;
+                            img.alt = `Albania ${year}`;
+                            previewContainer.appendChild(img);
+
+                            const titleWithIcon = document.createElement("div");
+                            titleWithIcon.className = "video-title-with-icon";
+                            titleWithIcon.setAttribute("onclick", "event.stopPropagation()");
+
+                            const a = document.createElement("a");
+                            a.href = "albania.html";
+                            const flagImg = document.createElement("img");
+                            flagImg.src = "flags/al.png";
+                            flagImg.className = "icon-placeholder";
+                            flagImg.alt = "Flag";
+                            a.appendChild(flagImg);
+                            titleWithIcon.appendChild(a);
+
+                            const titleText = document.createElement("div");
+                            titleText.className = "video-title-text";
+                            titleText.innerHTML = `<b>${artist}</b><br>${song}<br>${year}`;
+                            titleWithIcon.appendChild(titleText);
+
+                            videoItem.appendChild(previewContainer);
+                            videoItem.appendChild(titleWithIcon);
+
+                            container.appendChild(videoItem);
                         }
                     });
                 }
@@ -79,10 +97,11 @@
         loadAlbaniaData();
     </script>
 
+    <!-- MODAL SECTION -->
     <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
         <div class="modal-content">
             <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
-            <video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
+            <video autoplay controls controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
             <iframe allow="autoplay; encrypted-media" frameborder="0" id="modalIframe" style="display: none;" sandbox="allow-scripts allow-same-origin"></iframe>
         </div>
     </div>
