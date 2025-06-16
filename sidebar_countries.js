@@ -19,15 +19,13 @@ async function loadSidebarCountries() {
     Papa.parse(csvText, {
         header: true,
         skipEmptyLines: true,
-        transformHeader: h => h.replace(/^\uFEFF/, '').trim(),
+        transformHeader: h => h.trim(),
         transform: v => v.trim(),
         complete: function(results) {
             const data = results.data;
-
-            // Extract unique countries
             const countries = [...new Set(data.map(row => row.Country).filter(Boolean))].sort();
-
             const sidebar = document.getElementById("sidebar-container");
+
             countries.forEach(country => {
                 const countryCode = data.find(row => row.Country === country).Country_Code.toLowerCase();
                 const link = document.createElement("a");
