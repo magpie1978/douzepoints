@@ -1,14 +1,16 @@
-(function() {
-  fetch('sidebar_countries.html')
-    .then(response => {
-      if (!response.ok) throw new Error('Sidebar could not be loaded.');
-      return response.text();
-    })
-    .then(data => {
-      document.getElementById('sidebar-container').innerHTML = data;
-    })
-    .catch(err => console.error('Error loading sidebar:', err));
-})();
+//(function() {
+//  fetch('sidebar_countries.html')
+//    .then(response => {
+//      if (!response.ok) throw new Error('Sidebar could not be loaded.');
+//      return response.text();
+//    })
+//    .then(data => {
+//      document.getElementById('sidebar-container').innerHTML = data;
+//    })
+//    .catch(err => console.error('Error loading sidebar:', err));
+//})();
+
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -27,15 +29,25 @@ async function loadSidebarCountries() {
         transform: v => v.trim(),
         complete: function(results) {
             const data = results.data;
+
+            // Extract unique countries
             const countries = [...new Set(data.map(row => row.Country).filter(Boolean))].sort();
+
             const sidebar = document.getElementById("sidebar-container");
 
             countries.forEach(country => {
-                const countryCode = data.find(row => row.Country === country).Country_Code.toLowerCase();
-                const link = document.createElement("a");
-                link.href = `country.html?country=${encodeURIComponent(country)}`;
-                link.innerHTML = `<img src="flags/${countryCode}.png" class="flag-icon" /> ${country}`;
-                sidebar.appendChild(link);
+                const firstEntry = data.find(row => row.Country === country);
+                const countryCode = firstEntry.Country_Code.toLowerCase();
+
+                const div = document.createElement("div");
+                div.className = "sidebar-row";
+
+                const a = document.createElement("a");
+                a.href = `country.html?country=${encodeURIComponent(country)}`;
+                a.innerHTML = `<img class="flag-icon" src="flags/${countryCode}.png" alt="${country}">${country}`;
+
+                div.appendChild(a);
+                sidebar.appendChild(div);
             });
         }
     });
