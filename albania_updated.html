@@ -5,6 +5,7 @@
     <title>Douze Points | Albania</title>
     <link rel="stylesheet" type="text/css" href="countries2.css">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script> <!-- Add PapaParse -->
 </head>
 
 <body oncontextmenu="return false" data-country="al">
@@ -35,44 +36,42 @@
             const response = await fetch(csvUrl);
             const csvText = await response.text();
 
-            const rows = csvText.split('\n').map(row => row.split(',').map(cell => cell.trim()));
+            Papa.parse(csvText, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    const data = results.data;
+                    const container = document.getElementById("video-container");
 
-            const headers = rows[0];
-            const countryIndex = headers.indexOf('Country');
-            const yearIndex = headers.indexOf('Year');
-            const artistIndex = headers.indexOf('Artist');
-            const songIndex = headers.indexOf('Song');
-            const videoUrlIndex = headers.indexOf('Video_URL');
+                    data.forEach(row => {
+                        if (row.Country === "Albania") {
+                            const year = row.Year;
+                            const artist = row.Artist;
+                            const song = row.Song;
+                            const videoUrl = row.Video_URL;
 
-            const container = document.getElementById("video-container");
+                            const div = document.createElement("div");
+                            div.className = "video-item";
+                            div.setAttribute("data-artist", artist);
+                            div.setAttribute("data-country", "Albania");
+                            div.setAttribute("data-song", song);
+                            div.setAttribute("data-year", year);
+                            div.setAttribute("onclick", `GDriveOpenModalWithVideo('${videoUrl}')`);
 
-            rows.slice(1).forEach(cols => {
-                if (cols[countryIndex] === 'Albania') {
-                    const year = cols[yearIndex];
-                    const artist = cols[artistIndex];
-                    const song = cols[songIndex];
-                    const videoUrl = cols[videoUrlIndex];
-
-                    const div = document.createElement("div");
-                    div.className = "video-item";
-                    div.setAttribute("data-artist", artist);
-                    div.setAttribute("data-country", "Albania");
-                    div.setAttribute("data-song", song);
-                    div.setAttribute("data-year", year);
-                    div.setAttribute("onclick", `GDriveOpenModalWithVideo('${videoUrl}')`);
-
-                    div.innerHTML = `
-                        <div class="preview-container">
-                            <img alt="Albania ${year}" src="images/${year}-AL.jpeg"/>
-                        </div>
-                        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                            <a href="albania.html">
-                                <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
-                            </a>
-                            <div class="video-title-text"><b>${artist}</b><br>${song}<br>${year}</div>
-                        </div>
-                    `;
-                    container.appendChild(div);
+                            div.innerHTML = `
+                                <div class="preview-container">
+                                    <img alt="Albania ${year}" src="images/${year}-AL.jpeg"/>
+                                </div>
+                                <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                                    <a href="albania.html">
+                                        <img alt="Flag" class="icon-placeholder" src="flags/al.png"/>
+                                    </a>
+                                    <div class="video-title-text"><b>${artist}</b><br>${song}<br>${year}</div>
+                                </div>
+                            `;
+                            container.appendChild(div);
+                        }
+                    });
                 }
             });
         }
@@ -80,7 +79,6 @@
         loadAlbaniaData();
     </script>
 
-    <!-- Modal and other scripts -->
     <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
         <div class="modal-content">
             <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
