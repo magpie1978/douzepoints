@@ -120,6 +120,14 @@
     loadCountryData();
     </script>
 
+    <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+      <div class="modal-content">
+        <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+        <video autoplay controls controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
+        <iframe allow="autoplay; encrypted-media" frameborder="0" id="modalIframe" style="display: none;" sandbox="allow-scripts allow-same-origin"></iframe>
+      </div>
+    </div>
+
     <script src="modal.js"></script>
     <script src="header.js"></script>
 </body>
