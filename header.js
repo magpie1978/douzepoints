@@ -21,7 +21,7 @@ async function loadHeader() {
             if (!firstEntry) return;
 
             const countryCode = firstEntry.Country_Code.toLowerCase();
-            const bannerImage = `/banners/${countryCode}.png`;
+            const bannerImage = `banners/${countryCode}.png`;
 
             const headerContainer = document.getElementById("header-container");
             headerContainer.innerHTML = `
