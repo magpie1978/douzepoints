@@ -5,11 +5,11 @@
     <title>ESCFlix - Country View</title>
     <link rel="stylesheet" type="text/css" href="countries2.css">
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body oncontextmenu="return false">
 
+    <!-- HEADER container (now fully dynamic based on data-country) -->
     <div id="header-container"></div>
     <script src="header.js"></script>
 
@@ -21,9 +21,7 @@
             <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px;">
                 <div style="flex: 1;"></div>
                 <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
-                    <label for="sort-options">
-                        <i style="margin-right: 15px;">Sort:</i>
-                    </label>
+                    <label for="sort-options" style="margin-right: 15px;">Sort:</label>
                     <select id="sort-options">
                         <option value="year-desc" selected>Year (desc)</option>
                         <option value="year-asc">Year (asc)</option>
@@ -37,9 +35,35 @@
         </div>
     </div>
 
+    <!-- Dynamically assign data-country based on query param -->
     <script>
     const countryParam = new URLSearchParams(window.location.search).get("country");
 
+    async function setBodyCountryCode() {
+        const csvUrl = "./data/DouzePoints.csv";
+        const response = await fetch(csvUrl);
+        const csvText = await response.text();
+
+        Papa.parse(csvText, {
+            header: true,
+            skipEmptyLines: true,
+            transformHeader: h => h.trim(),
+            transform: v => v.trim(),
+            complete: function(results) {
+                const data = results.data;
+                const firstEntry = data.find(row => row.Country === countryParam);
+                if (firstEntry) {
+                    document.body.setAttribute("data-country", firstEntry.Country_Code.toLowerCase());
+                }
+            }
+        });
+    }
+
+    setBodyCountryCode();
+    </script>
+
+    <!-- Main dynamic content loader -->
+    <script>
     async function loadCountryData() {
         const csvUrl = "./data/DouzePoints.csv";
         const response = await fetch(csvUrl);
@@ -54,12 +78,6 @@
                 const data = results.data.filter(row => row.Country === countryParam);
                 const countryCode = data[0]?.Country_Code?.toLowerCase();
 
-                document.getElementById("banner").innerHTML = `
-                    <img src="flags/${countryCode}.png" style="width:100px; height:100px; margin-right:20px;">
-                    ${countryParam}
-                `;
-
-                // Sort by default year desc
                 data.sort((a, b) => parseInt(b.Year) - parseInt(a.Year));
 
                 const container = document.getElementById("video-container");
@@ -78,7 +96,7 @@
                         </div>
                         <div class="video-title-with-icon" onclick="event.stopPropagation()">
                             <a href="country.html?country=${countryParam}">
-                                <img class="icon-placeholder" src="flags/${countryCode}.png" alt="Flag">
+                                <img class="flag-icon" src="flags/${countryCode}.png" alt="Flag">
                             </a>
                             <div class="video-title-text">
                                 <b>${row.Artist}</b><br>${row.Song}<br>${row.Year}
@@ -119,12 +137,13 @@
     loadCountryData();
     </script>
 
+    <!-- MODAL -->
     <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
-      <div class="modal-content">
-        <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
-        <video autoplay controls controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
-        <iframe allow="autoplay; encrypted-media" frameborder="0" id="modalIframe" style="display: none;" sandbox="allow-scripts allow-same-origin"></iframe>
-      </div>
+        <div class="modal-content">
+            <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+            <video autoplay controls controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
+            <iframe allow="autoplay; encrypted-media" frameborder="0" id="modalIframe" style="display: none;" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
     </div>
 
     <script src="modal.js"></script>
