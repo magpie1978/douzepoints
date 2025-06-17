@@ -12,6 +12,6 @@ fetch("header.html")
         // Set banner image after header loads
         const bannerImg = document.getElementById("country-banner");
         if (bannerImg) {
-            bannerImg.src = `banners/${countryCode}.png`;
+            bannerImg.src = `/banners/${countryCode}.png`;
         }
     });
