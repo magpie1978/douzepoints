@@ -1,17 +1,17 @@
 document.addEventListener("DOMContentLoaded", () => {
-    loadHeader();
+    loadEditionHeader();
 });
 
-async function loadHeader() {
-    const yearParam = new URLSearchParams(window.location.search).get("year");
-    if (!yearParam) return;
+async function loadEditionHeader() {
+    const editionParam = new URLSearchParams(window.location.search).get("edition");
+    if (!editionParam) return;
 
-    // Load the base header HTML
+    // Load base header HTML
     const headerHtml = await fetch("header.html").then(res => res.text());
     const headerContainer = document.getElementById("header-container");
     headerContainer.innerHTML = headerHtml;
 
-    // Now update the banner image
+    // Then inject the banner image based on LocationCountry
     const csvUrl = "./data/DouzePoints.csv";
     const response = await fetch(csvUrl);
     const csvText = await response.text();
@@ -23,16 +23,14 @@ async function loadHeader() {
         transform: v => v.trim(),
         complete: function(results) {
             const data = results.data;
-            const firstEntry = data.find(row => row.Year === yearParam);
-            if (!firstEntry) return;
+            const match = data.find(row => row.Year === editionParam);
+            if (!match) return;
 
-            //const countryCode = firstEntry.Country_Code.toLowerCase();
-            const bannerImage = `banners/${yearParam}.png`;
-
-            const banner = document.getElementById("country-banner");
-            if (banner) {
-                banner.src = bannerImage;
-                banner.alt = yearParam;
+            const code = match.LocationCountry?.toLowerCase() || 'eu';
+            const bannerImg = document.getElementById("country-banner");
+            if (bannerImg) {
+                bannerImg.src = `/banners/${code}.png`;
+                bannerImg.alt = match.Location || editionParam;
             }
         }
     });
