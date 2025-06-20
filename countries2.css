@@ -124,14 +124,13 @@ body {
 }
 
 .sidebar-row a {
-  text-decoration: none;
-  color: white;
-  display: flex;
-  align-items: center;
+  font-size: 12px;           /* Reduced font size */
+  gap: 14px;                 /* Increased gap between flag and text */
+  padding: 4px 10px;         /* Slightly tighter padding */
 }
 
 .sidebar-row {
-  margin: 5px 0;
+  margin: 8px 0;             /* More vertical space between rows */
 }
 
 .sidebar a:hover {
