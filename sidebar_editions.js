@@ -15,15 +15,12 @@ async function loadSidebarYears() {
         complete: function(results) {
             const data = results.data;
 
-            // Extract unique years and sort descending
             const years = [...new Set(data.map(row => row.Year).filter(Boolean))].sort((a, b) => b - a);
-
             const sidebar = document.getElementById("sidebar-container");
 
             years.forEach(year => {
-                // Get Location for the year (assumes first row per year is valid)
-                const hostEntry = data.find(row => row.Year === year && row.Location);
-                const hostCountryCode = hostEntry?.Location?.toLowerCase() || 'eu';
+                const hostEntry = data.find(row => row.Year === year && row.LocationCountry);
+                const hostCountryCode = hostEntry?.LocationCountry?.toLowerCase() || 'eu';
 
                 const div = document.createElement("div");
                 div.className = "sidebar-row";
@@ -35,7 +32,7 @@ async function loadSidebarYears() {
                 a.style.gap = '10px';
 
                 const img = document.createElement("img");
-                img.src = `flags/${hostCountryCode}.png`;
+                img.src = `/flags/${hostCountryCode}.png`;
                 img.alt = hostCountryCode.toUpperCase();
                 img.className = "flag-icon";
 
