@@ -143,8 +143,8 @@ body {
 
 
 .sidebar {
-  width: 220px;
-  padding: 10px 10px 10px 20px; /* Added 20px left padding */
+  width: 250px;
+  padding: 10px 10px 10px 20px;
   background-color: #111;
   color: white;
   font-size: 14px;
@@ -153,9 +153,9 @@ body {
 }
 
 .sidebar-row a {
-  font-size: 12px;             /* Smaller font */
+  font-size: 14px;             
   gap: 12px;                   /* More space between flag and country name */
-  padding: 4px 10px;
+  padding: 10px 10px;
   color: white;                /* Country name text color */
   text-decoration: none;      /* Remove underline */
   display: flex;
@@ -168,7 +168,7 @@ body {
 
 .sidebar a:hover {
   background-color: #e50914;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 .sidebar img {
