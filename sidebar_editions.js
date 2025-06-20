@@ -1,21 +1,8 @@
-//(function() {
-//  fetch('sidebar_countries.html')
-//    .then(response => {
-//      if (!response.ok) throw new Error('Sidebar could not be loaded.');
-//      return response.text();
-//    })
-//    .then(data => {
-//      document.getElementById('sidebar-container').innerHTML = data;
-//    })
-//    .catch(err => console.error('Error loading sidebar:', err));
-//})();
-
-
 document.addEventListener("DOMContentLoaded", () => {
-    loadSidebarCountries();
+    loadSidebarYears();
 });
 
-async function loadSidebarCountries() {
+async function loadSidebarYears() {
     const csvUrl = "./data/DouzePoints.csv";
     const response = await fetch(csvUrl);
     const csvText = await response.text();
@@ -28,29 +15,18 @@ async function loadSidebarCountries() {
         complete: function(results) {
             const data = results.data;
 
-            // Extract unique countries
-            const countries = [...new Set(data.map(row => row.Country).filter(Boolean))].sort();
+            // Extract unique years and sort descending
+            const years = [...new Set(data.map(row => row.Year).filter(Boolean))].sort((a, b) => b - a);
 
             const sidebar = document.getElementById("sidebar-container");
 
-            countries.forEach(country => {
-                const firstEntry = data.find(row => row.Country === country);
-                const countryCode = firstEntry.Country_Code.toLowerCase();
-
+            years.forEach(year => {
                 const div = document.createElement("div");
                 div.className = "sidebar-row";
 
                 const a = document.createElement("a");
-                a.href = `country.html?country=${encodeURIComponent(country)}`;
-
-                // ✅ This is the critical fix: apply the flag-icon class here
-                const img = document.createElement("img");
-                img.src = `flags/${countryCode}.png`;
-                img.alt = country;
-                img.className = "flag-icon";
-
-                a.appendChild(img);
-                a.appendChild(document.createTextNode(country));
+                a.href = `edition.html?edition=${year}`;
+                a.textContent = year;
 
                 div.appendChild(a);
                 sidebar.appendChild(div);
