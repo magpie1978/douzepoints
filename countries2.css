@@ -100,8 +100,9 @@ body {
     }
 
 
-/* Old Sidebar */
-.DELsidebar {
+/* New Sidebar */
+
+.sidebar {
   width: 220px;
   padding: 10px;
   background-color: #111;
@@ -111,7 +112,7 @@ body {
   overflow: visible;
 }
 
-.DELsidebar a {
+.sidebar a {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -122,53 +123,20 @@ body {
   transition: background-color 0.3s;
 }
 
-.DELsidebar-row a {
+.sidebar-row a {
   text-decoration: none;
   color: white;
   display: flex;
   align-items: center;
 }
 
-.DELsidebar-row {
-  margin: 5px 0;
-}
-
-.DELsidebar a:hover {
-  background-color: #e50914;
-  border-radius: 8px;
-}
-
-
-/* New Sidebar */
-
-
-.sidebar {
-  width: 250px;
-  padding: 10px 10px 10px 20px;
-  background-color: #111;
-  color: white;
-  font-size: 14px;
-  height: auto;
-  overflow: visible;
-}
-
-.sidebar-row a {
-  font-size: 14px;             
-  gap: 12px;                   /* More space between flag and country name */
-  padding: 10px 10px;
-  color: white;                /* Country name text color */
-  text-decoration: none;      /* Remove underline */
-  display: flex;
-  align-items: center;
-}
-
 .sidebar-row {
-  margin: 8px 0;
+  margin: 5px 0;
 }
 
 .sidebar a:hover {
   background-color: #e50914;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .sidebar img {
@@ -177,7 +145,6 @@ body {
   object-fit: cover;
   border-radius: 50%;
 }
-
 
 .flag-icon {
   width: 22px;
