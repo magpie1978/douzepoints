@@ -3,8 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function loadHeader() {
-    const countryParam = new URLSearchParams(window.location.search).get("country");
-    if (!countryParam) return;
+    const yearParam = new URLSearchParams(window.location.search).get("year");
+    if (!yearParam) return;
 
     // Load the base header HTML
     const headerHtml = await fetch("header.html").then(res => res.text());
@@ -23,16 +23,16 @@ async function loadHeader() {
         transform: v => v.trim(),
         complete: function(results) {
             const data = results.data;
-            const firstEntry = data.find(row => row.Country === countryParam);
+            const firstEntry = data.find(row => row.Year === yearParam);
             if (!firstEntry) return;
 
-            const countryCode = firstEntry.Country_Code.toLowerCase();
-            const bannerImage = `banners/${countryCode}.png`;
+            //const countryCode = firstEntry.Country_Code.toLowerCase();
+            const bannerImage = `banners/${yearParam}.png`;
 
             const banner = document.getElementById("country-banner");
             if (banner) {
                 banner.src = bannerImage;
-                banner.alt = countryParam;
+                banner.alt = yearParam;
             }
         }
     });
