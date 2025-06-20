@@ -20,7 +20,7 @@
 }
 
 .sidebar-row a {
-  font-size: 12px;           /* Reduced font size */
+  font-size: 14px;           /* Reduced font size */
   gap: 14px;                 /* Increased gap between flag and text */
   padding: 4px 10px;         /* Slightly tighter padding */
 }
