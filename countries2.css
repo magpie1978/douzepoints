@@ -141,16 +141,10 @@ body {
 
 /* New Sidebar */
 
-.sidebar img {
-  width: 22px;
-  height: 22px;
-  object-fit: cover;
-  border-radius: 50%;
-}
 
 .sidebar {
   width: 220px;
-  padding: 10px;
+  padding: 10px 10px 10px 20px; /* Added 20px left padding */
   background-color: #111;
   color: white;
   font-size: 14px;
@@ -158,24 +152,23 @@ body {
   overflow: visible;
 }
 
-.sidebar a {
+.sidebar-row a {
+  font-size: 12px;             /* Smaller font */
+  gap: 12px;                   /* More space between flag and country name */
+  padding: 4px 10px;
+  color: white;                /* Country name text color */
+  text-decoration: none;      /* Remove underline */
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: #fff;
-  text-decoration: none;
-  padding: 8px 12px;
-  border-radius: 8px;
-  transition: background-color 0.3s;
+}
+
+.sidebar-row {
+  margin: 8px 0;
 }
 
 .sidebar a:hover {
   background-color: #e50914;
   border-radius: 8px;
-}
-
-.sidebar-row {
-  margin: 5px 0;
 }
 
 .sidebar img {
