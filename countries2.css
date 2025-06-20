@@ -99,58 +99,6 @@ body {
       display: flex;
     }
 
-
-/* New Sidebar */
-
-.sidebar {
-  width: 220px;
-  padding: 10px;
-  background-color: #111;
-  color: white;
-  font-size: 14px;
-  height: auto;
-  overflow: visible;
-}
-
-.sidebar a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #fff;
-  text-decoration: none;
-  padding: 8px 12px;
-  border-radius: 8px;
-  transition: background-color 0.3s;
-}
-
-.sidebar-row a {
-  font-size: 12px;           /* Reduced font size */
-  gap: 14px;                 /* Increased gap between flag and text */
-  padding: 4px 10px;         /* Slightly tighter padding */
-}
-
-.sidebar-row {
-  margin: 8px 0;             /* More vertical space between rows */
-}
-
-.sidebar a:hover {
-  background-color: #e50914;
-  border-radius: 8px;
-}
-
-.sidebar img {
-  width: 22px;
-  height: 22px;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.flag-icon {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-}
-
 .main-content {
   flex-grow: 1;
   padding: 20px;
