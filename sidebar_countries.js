@@ -31,7 +31,7 @@ async function loadSidebarCountries() {
             // Extract unique countries
             const countries = [...new Set(data.map(row => row.Country).filter(Boolean))].sort();
 
-            const sidebar = document.getElementById("sidebar");
+            const sidebar = document.getElementById("sidebar-container");
 
             countries.forEach(country => {
                 const firstEntry = data.find(row => row.Country === country);
