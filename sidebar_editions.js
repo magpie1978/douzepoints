@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadSidebarEditions();
 });
 
-async function loadSidebarCountries() {
+async function loadSidebarEditions() {
     const csvUrl = "./data/DouzePoints.csv";
     const response = await fetch(csvUrl);
     const csvText = await response.text();
@@ -16,19 +16,19 @@ async function loadSidebarCountries() {
             const data = results.data;
 
             // Extract unique countries
-            const countries = [...new Set(data.map(row => row.Country).filter(Boolean))].sort();
+            const edition = [...new Set(data.map(row => row.Year).filter(Boolean))].sort();
 
             const sidebar = document.getElementById("sidebar-container");
 
-            countries.forEach(country => {
-                const firstEntry = data.find(row => row.Country === country);
+            edition.forEach(Year => {
+                const firstEntry = data.find(row => row.Year === Year);
                 const countryCode = firstEntry.Country_Code.toLowerCase();
 
                 const div = document.createElement("div");
                 div.className = "sidebar-row";
 
                 const a = document.createElement("a");
-                a.href = `country.html?country=${encodeURIComponent(country)}`;
+                a.href = `edition.html?year=${encodeURIComponent(Year)}`;
 
                 // ✅ This is the critical fix: apply the flag-icon class here
                 const img = document.createElement("img");
