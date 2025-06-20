@@ -1,6 +1,9 @@
-// Dynamically assign data-country based on query param
-
 const countryParam = new URLSearchParams(window.location.search).get("country");
+
+document.addEventListener("DOMContentLoaded", () => {
+    setBodyCountryCode();
+    loadCountryData();
+});
 
 async function setBodyCountryCode() {
     const csvUrl = "./data/DouzePoints.csv";
@@ -21,11 +24,6 @@ async function setBodyCountryCode() {
         }
     });
 }
-
-// setBodyCountryCode();
-
-
-//Main dynamic content loader
 
 async function loadCountryData() {
     const csvUrl = "./data/DouzePoints.csv";
@@ -70,33 +68,29 @@ async function loadCountryData() {
                 container.appendChild(div);
             });
 
-            //attachSorting();
+            attachSorting();
         }
     });
 }
 
-
 function attachSorting() {
     const select = document.getElementById("sort-options");
-    select.addEventListener("change", function() {
+    select.addEventListener("change", function () {
         const sortType = select.value;
         const container = document.getElementById("video-container");
         const items = Array.from(container.children);
 
         if (sortType === "year-desc") {
-            items.sort((a,b) => parseInt(b.dataset.year) - parseInt(a.dataset.year));
+            items.sort((a, b) => parseInt(b.dataset.year) - parseInt(a.dataset.year));
         } else if (sortType === "year-asc") {
-            items.sort((a,b) => parseInt(a.dataset.year) - parseInt(b.dataset.year));
+            items.sort((a, b) => parseInt(a.dataset.year) - parseInt(b.dataset.year));
         } else if (sortType === "artist") {
-            items.sort((a,b) => a.dataset.artist.localeCompare(b.dataset.artist));
+            items.sort((a, b) => a.dataset.artist.localeCompare(b.dataset.artist));
         } else if (sortType === "song") {
-            items.sort((a,b) => a.dataset.song.localeCompare(b.dataset.song));
+            items.sort((a, b) => a.dataset.song.localeCompare(b.dataset.song));
         }
 
         container.innerHTML = '';
         items.forEach(item => container.appendChild(item));
     });
 }
-
-//loadCountryData();
-    </script>
