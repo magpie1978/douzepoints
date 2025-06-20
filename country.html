@@ -26,18 +26,18 @@
         <div class="main-content">
                 <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
                     <div style="flex: 1;"></div> <!-- Push the sort-controls to the right -->
-                        <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
-                            <label for="sort-options">
-                                <i data-lucide="list-filter" style="margin-right: 15px;"></i>
-                            </label>
-                            <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
-                                <option value="country">Country (A–Z)</option>
-                                <option value="country-desc">Country (Z–A)</option>
-                                <option value="artist">Artist Name</option>
-                                <option value="song">Song Title</option>
-                            </select>
-                        </div>
+                    <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
+                        <label for="sort-options">
+                            <i data-lucide="list-filter" style="margin-right: 15px;"></i>
+                        </label>
+                        <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
+                            <option value="year-asc">Year (asc)</option>
+                            <option value="year-desc">Year (desc)</option>
+                            <option value="artist">Artist Name</option>
+                            <option value="song">Song Title</option>
+                        </select>
                     </div>
+                </div>
 
             <div class="grid-container" id="video-container"></div>
         </div>
