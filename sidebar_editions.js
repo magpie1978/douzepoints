@@ -19,8 +19,9 @@ async function loadSidebarYears() {
             const sidebar = document.getElementById("sidebar-container");
 
             years.forEach(year => {
-                const hostEntry = data.find(row => row.Year === year && row.LocationCountry);
+                const hostEntry = data.find(row => row.Year === year && row.Location && row.LocationCountry);
                 const hostCountryCode = hostEntry?.LocationCountry?.toLowerCase() || 'eu';
+                const hostLocation = hostEntry?.Location || 'Unknown';
 
                 const div = document.createElement("div");
                 div.className = "sidebar-row";
@@ -37,7 +38,8 @@ async function loadSidebarYears() {
                 img.className = "flag-icon";
 
                 a.appendChild(img);
-                a.appendChild(document.createTextNode(year));
+                a.appendChild(document.createTextNode(`${hostLocation} ${year}`));
+
                 div.appendChild(a);
                 sidebar.appendChild(div);
             });
