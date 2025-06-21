@@ -5,6 +5,15 @@ document.addEventListener("DOMContentLoaded", () => {
 async function loadHeader() {
     const path = window.location.pathname;
     const isWinnersPage = path.includes("winners.html");
+    const isFavouritesPage = path.includes("fan-favourites.html");
+
+if (isWinnersPage) {
+    banner.src = "/banners/winners.png";
+    banner.alt = "Winners";
+} else if (isFavouritesPage) {
+    banner.src = "/banners/fan-favourites.png";
+    banner.alt = "Fan Favourites";
+}
 
     const headerHtml = await fetch("header.html").then(res => res.text());
     const headerContainer = document.getElementById("header-container");
