@@ -56,12 +56,14 @@ async function loadWinnerEntries() {
             });
 
             // Optional: enable default sorting (e.g. by country)
+            // Enable sorting after population
             const sortSelect = document.getElementById("sort-options");
             if (sortSelect) {
-                sortSelect.value = "country";
+                sortSelect.value = "year-desc"; // ✅ set default selection
                 attachSorting();
-                sortSelect.dispatchEvent(new Event("change"));
+                sortSelect.dispatchEvent(new Event("change")); // ✅ trigger sort
             }
+
         }
     });
 }
