@@ -31,7 +31,7 @@ async function loadEditionData() {
                 div.setAttribute("data-year", row.Year);
                 div.setAttribute("data-artist", row.Artist);
                 div.setAttribute("data-song", row.Song);
-                div.setAttribute("data-country", row.Country);
+                div.setAttribute("data-country", row.Country); // ✅ required for sorting
 
                 div.innerHTML = `
                     <div class="preview-container">
@@ -39,7 +39,7 @@ async function loadEditionData() {
                     </div>
                     <div class="video-title-with-icon" onclick="event.stopPropagation()">
                         <a href="country.html?country=${row.Country}">
-                            <img class="flag-icon" src="flags/${countryCode}.png" alt="Flag">
+                            <img class="flag-icon" src="/flags/${countryCode}.png" alt="Flag">
                         </a>
                         <div class="video-title-text">
                             <b>${row.Artist}</b><br>${row.Song}<br>${row.Country}
@@ -50,29 +50,9 @@ async function loadEditionData() {
                 container.appendChild(div);
             });
 
-            attachSorting();
+            // ✅ Set default sorting to Country A–Z
+            document.getElementById("sort-options").value = "country";
+            triggerInitialSort();
         }
-    });
-}
-
-function attachSorting() {
-    const select = document.getElementById("sort-options");
-    select.addEventListener("change", function () {
-        const sortType = select.value;
-        const container = document.getElementById("video-container");
-        const items = Array.from(container.children);
-
-        if (sortType === "year-desc") {
-            items.sort((a, b) => parseInt(b.dataset.year) - parseInt(a.dataset.year));
-        } else if (sortType === "year-asc") {
-            items.sort((a, b) => parseInt(a.dataset.year) - parseInt(b.dataset.year));
-        } else if (sortType === "artist") {
-            items.sort((a, b) => a.dataset.artist.localeCompare(b.dataset.artist));
-        } else if (sortType === "song") {
-            items.sort((a, b) => a.dataset.song.localeCompare(b.dataset.song));
-        }
-
-        container.innerHTML = '';
-        items.forEach(item => container.appendChild(item));
     });
 }
