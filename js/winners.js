@@ -13,8 +13,10 @@ async function loadWinnerEntries() {
         transformHeader: h => h.trim(),
         transform: v => v.trim(),
         complete: function(results) {
-            let data = results.data.filter(row =>
-                row.FinalResult && row.FinalResult.trim() === "1"
+            let data = results.data.filter(row => {
+                const result = row.FinalResult?.trim();
+                return result === "1";
+            });
 
             if (data.length === 0) {
                 document.getElementById("video-container").innerHTML =
