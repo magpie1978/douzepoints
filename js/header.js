@@ -11,7 +11,7 @@ if (isWinnersPage) {
     banner.src = "/banners/winners.png";
     banner.alt = "Winners";
 } else if (isFavouritesPage) {
-    banner.src = "/banners/fan-favourites.png";
+    banner.src = "/banners/fanfavourites.png";
     banner.alt = "Fan Favourites";
 }
 
