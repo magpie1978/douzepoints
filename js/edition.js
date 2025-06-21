@@ -31,7 +31,7 @@ async function loadEditionData() {
                 div.setAttribute("data-year", row.Year);
                 div.setAttribute("data-artist", row.Artist);
                 div.setAttribute("data-song", row.Song);
-                div.setAttribute("data-country", row.Country); // ✅ required for sorting
+                div.setAttribute("data-country", row.Country); // required for sorting
 
                 div.innerHTML = `
                     <div class="preview-container">
@@ -50,9 +50,14 @@ async function loadEditionData() {
                 container.appendChild(div);
             });
 
-            // ✅ Set default sorting to Country A–Z
-            document.getElementById("sort-options").value = "country";
-            triggerInitialSort();
+            // ✅ Ensure sorting is attached AFTER items are in the DOM
+            attachSorting();
+
+            // ✅ Now trigger default sort manually
+            const select = document.getElementById("sort-options");
+            select.value = "country"; // set dropdown value
+            const event = new Event("change");
+            select.dispatchEvent(event);
         }
     });
 }
