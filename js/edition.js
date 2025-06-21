@@ -31,6 +31,7 @@ async function loadEditionData() {
                 div.setAttribute("data-year", row.Year);
                 div.setAttribute("data-artist", row.Artist);
                 div.setAttribute("data-song", row.Song);
+                div.setAttribute("data-country", row.Country);
 
                 div.innerHTML = `
                     <div class="preview-container">
