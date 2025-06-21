@@ -14,8 +14,7 @@ async function loadWinnerEntries() {
         transform: v => v.trim(),
         complete: function(results) {
             let data = results.data.filter(row =>
-                row.FinalResult && row.FinalResult.trim().startsWith("1")
-            );
+                row.FinalResult && row.FinalResult.trim() === "1"
 
             if (data.length === 0) {
                 document.getElementById("video-container").innerHTML =
