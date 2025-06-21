@@ -3,44 +3,44 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function loadHeader() {
-    const countryParam = new URLSearchParams(window.location.search).get("country");
-    if (!countryParam) return;
-
-    const isWinnersPage = window.location.pathname.includes("winners.html");
+    const path = window.location.pathname;
+    const isWinnersPage = path.includes("winners.html");
 
     const headerHtml = await fetch("header.html").then(res => res.text());
     const headerContainer = document.getElementById("header-container");
     headerContainer.innerHTML = headerHtml;
 
-    const csvUrl = "./data/DouzePoints.csv";
-    const response = await fetch(csvUrl);
-    const csvText = await response.text();
-
-    Papa.parse(csvText, {
-        header: true,
-        skipEmptyLines: true,
-        transformHeader: h => h.trim(),
-        transform: v => v.trim(),
-        complete: function(results) {
-            const data = results.data;
-
-            let firstEntry;
-            if (isWinnersPage) {
-                firstEntry = data.find(row => row.Country === countryParam && row.FinalResult === "1");
-            } else {
-                firstEntry = data.find(row => row.Country === countryParam);
-            }
-
-            if (!firstEntry) return;
-
-            const countryCode = firstEntry.Country_Code.toLowerCase();
-            const bannerImage = `banners/${countryCode}.png`;
-
-            const banner = document.getElementById("country-banner");
-            if (banner) {
-                banner.src = bannerImage;
-                banner.alt = countryParam;
-            }
+    if (isWinnersPage) {
+        const banner = document.getElementById("country-banner");
+        if (banner) {
+            banner.src = "/banners/winners.png";
+            banner.alt = "Winners";
         }
-    });
+    } else {
+        const countryParam = new URLSearchParams(window.location.search).get("country");
+        if (!countryParam) return;
+
+        const csvUrl = "./data/DouzePoints.csv";
+        const response = await fetch(csvUrl);
+        const csvText = await response.text();
+
+        Papa.parse(csvText, {
+            header: true,
+            skipEmptyLines: true,
+            transformHeader: h => h.trim(),
+            transform: v => v.trim(),
+            complete: function (results) {
+                const data = results.data;
+                const firstEntry = data.find(row => row.Country === countryParam);
+                if (!firstEntry) return;
+
+                const countryCode = firstEntry.Country_Code.toLowerCase();
+                const banner = document.getElementById("country-banner");
+                if (banner) {
+                    banner.src = `/banners/${countryCode}.png`;
+                    banner.alt = countryParam;
+                }
+            }
+        });
+    }
 }
