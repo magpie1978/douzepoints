@@ -59,13 +59,13 @@ async function loadCountryData() {
                 container.appendChild(div);
             });
 
-            // Set default sort to Country (A–Z)
+            // Set default sort to Year (desc)
             const sortSelect = document.getElementById("sort-options");
-            if (sortSelect) {
-                sortSelect.value = "country";
-                attachSorting();
-                sortSelect.dispatchEvent(new Event("change"));
-            }
+                if (sortSelect) {
+                    sortSelect.value = "year-desc"; // ✅ Correct default
+                    attachSorting();
+                    sortSelect.dispatchEvent(new Event("change"));
+                }
         }
     });
 }
