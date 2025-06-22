@@ -24,10 +24,9 @@ function attachSorting() {
     });
 }
 
-// ✅ Called from edition.js after content is loaded
 function triggerInitialSort() {
-    attachSorting(); // bind event listener
+    attachSorting();
     const select = document.getElementById("sort-options");
     const event = new Event("change");
-    select.dispatchEvent(event); // this will trigger sort based on already selected option
+    select.dispatchEvent(event);
 }
