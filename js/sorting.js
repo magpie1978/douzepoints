@@ -28,7 +28,6 @@ function attachSorting() {
 function triggerInitialSort() {
     attachSorting();
     const select = document.getElementById("sort-options");
-    select.value = "year-desc"; // ensure it's set visually
     const event = new Event("change");
     select.dispatchEvent(event);
 }
