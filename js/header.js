@@ -53,4 +53,4 @@ async function loadHeader() {
     } else if (isPrivacyPage && banner) {
         banner.src = "/banners/douzepoints.png";
         banner.alt = "Privacy";
-    };
+    });
