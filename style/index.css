@@ -88,6 +88,7 @@ h4 {
   display: none;
 }
 
+/*
 .video-title {
   color: #e5e5e5;
   background: #1f1f1f;
@@ -95,6 +96,7 @@ h4 {
   font-size: 0.75rem;
   text-align: center;
 }
+*/
 
 .video-title-text::first-line {
   font-size: 0.85rem;
@@ -221,10 +223,12 @@ h4 {
   display: block;
 }
 
+/*
 .banner-image.active {
   opacity: 1;
   z-index: 2;
 }
+*/
 
 .header-overlay {
   position: absolute;
@@ -245,11 +249,13 @@ h4 {
   text-decoration: none;
 }
 
+/*
 .header-actions {
   display: flex;
   align-items: center;
   gap: 20px;
 }
+*/
 
 .banner-text {
   position: absolute;
