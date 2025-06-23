@@ -24,7 +24,6 @@ async function loadHeader() {
     const isContactPage = path.includes("contact.html");
     const isFAQPage = path.includes("faq.html");
     const isPrivacyPage = path.includes("privacy.html");
-    
 
     if (isWinnersPage && banner) {
         banner.src = "/banners/winners.png";
@@ -44,7 +43,6 @@ async function loadHeader() {
 
         document.body.setAttribute("data-country", country);
 
-        // Get matching country code from your CSV
         const csvUrl = "./data/DouzePoints.csv";
         const response = await fetch(csvUrl);
         const csvText = await response.text();
@@ -70,8 +68,8 @@ async function loadHeader() {
     } else if (isAboutPage && banner) {
         banner.src = "/banners/douzepoints.png";
         banner.alt = "About";
-        
     } else if (isContactPage && banner) {
         banner.src = "/banners/douzepoints.png";
         banner.alt = "Contact";
-}
+    } // ← MISSING BRACE FIXED HERE
+} // ← FINAL CLOSING BRACE FOR loadHeader FUNCTION
