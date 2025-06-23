@@ -91,3 +91,55 @@ function hidePreview(container) {
   video.style.display = 'none';
   img.style.display = 'block';
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadRecentWinnersToCarousel();
+});
+
+async function loadRecentWinnersToCarousel() {
+  const csvUrl = "./data/DouzePoints.csv";
+  const response = await fetch(csvUrl);
+  const csvText = await response.text();
+
+  Papa.parse(csvText, {
+    header: true,
+    skipEmptyLines: true,
+    transformHeader: h => h.trim(),
+    transform: v => v.trim(),
+    complete: function(results) {
+      let winners = results.data.filter(row => row.FinalResult === "1");
+      winners.sort((a, b) => parseInt(b.Year) - parseInt(a.Year));
+      winners = winners.slice(0, 10); // take most recent 10
+
+      const track = document.getElementById("carouselTrack1");
+      if (!track) return;
+
+      track.innerHTML = ''; // clear existing static HTML
+
+      winners.forEach(row => {
+        const countryCode = row.Country_Code?.toLowerCase();
+        const videoDiv = document.createElement("div");
+        videoDiv.className = "video-item";
+        videoDiv.setAttribute("data-artist", row.Artist);
+        videoDiv.setAttribute("data-country", row.Country);
+        videoDiv.setAttribute("data-song", row.Song);
+        videoDiv.setAttribute("data-year", row.Year);
+        videoDiv.onclick = () => GDriveOpenModalWithVideo(row.Video_URL);
+
+        videoDiv.innerHTML = `
+          <div class="preview-container">
+            <img alt="${row.Country} ${row.Year}" src="images/${row.Year}-${countryCode.toUpperCase()}.jpeg"/>
+          </div>
+          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+            <a href="${countryCode}.html">
+              <img alt="Flag" class="icon-placeholder" src="flags/${countryCode}.png"/>
+            </a>
+            <div class="video-title-text"><b>${row.Artist}</b><br>${row.Song}<br>${row.Year}</div>
+          </div>
+        `;
+
+        track.appendChild(videoDiv);
+      });
+    }
+  });
+}
