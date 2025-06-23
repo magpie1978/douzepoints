@@ -44,7 +44,7 @@ h4 {
 .carousel-container {
   width: 1180px;
   overflow-x: auto;
-  overflow-y: visible; /* allow height overflow */
+  /* overflow-y: visible; /* allow height overflow */
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 20px; /* add breathing room for hover effect */
