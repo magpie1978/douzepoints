@@ -38,14 +38,31 @@ async function loadHeader() {
         const country = new URLSearchParams(window.location.search).get("country");
         if (!country) return;
 
-        // Ensure body gets the data-country attribute
         document.body.setAttribute("data-country", country);
 
-        const bannerPath = `/banners/${country.toLowerCase().replace(/ /g, "-")}.png`;
-        banner.src = bannerPath;
-        banner.alt = country;
+        // Get matching country code from your CSV
+        const csvUrl = "./data/DouzePoints.csv";
+        const response = await fetch(csvUrl);
+        const csvText = await response.text();
 
-        console.log("Country banner set:", bannerPath);
+        Papa.parse(csvText, {
+            header: true,
+            skipEmptyLines: true,
+            transformHeader: h => h.trim(),
+            transform: v => v.trim(),
+            complete: function(results) {
+                const match = results.data.find(row => row.Country === country);
+                if (match && match.Country_Code) {
+                    const code = match.Country_Code.toLowerCase();
+                    const bannerPath = `/banners/${code}.png`;
+                    banner.src = bannerPath;
+                    banner.alt = country;
+                    console.log("Country banner set:", bannerPath);
+                } else {
+                    console.warn("No matching country code for:", country);
+                }
+            }
+        });
     } else if (isAboutPage && banner) {
         banner.src = "/banners/douzepoints.png";
         banner.alt = "About";
