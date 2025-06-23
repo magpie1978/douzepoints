@@ -94,6 +94,7 @@ function hidePreview(container) {
 
 document.addEventListener("DOMContentLoaded", () => {
   loadRecentWinnersToCarousel();
+  loadFanFavoritesToCarousel();
 });
 
 async function loadRecentWinnersToCarousel() {
