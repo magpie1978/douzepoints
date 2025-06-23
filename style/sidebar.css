@@ -1,3 +1,4 @@
+/*
 .sidebar {
   width: 220px;
   padding: 10px;
@@ -20,13 +21,13 @@
 }
 
 .sidebar-row a {
-  font-size: 14px;           /* Reduced font size */
-  gap: 14px;                 /* Increased gap between flag and text */
-  padding: 4px 10px;         /* Slightly tighter padding */
+  font-size: 14px;          
+  gap: 14px;                 
+  padding: 4px 10px;        
 }
 
 .sidebar-row {
-  margin: 8px 0;             /* More vertical space between rows */
+  margin: 8px 0;            
 }
 
 .sidebar a:hover {
@@ -46,3 +47,4 @@
   height: 22px;
   border-radius: 50%;
 }
+*/
