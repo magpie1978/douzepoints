@@ -15,6 +15,10 @@ async function loadHeader() {
     const isWinnersPage = path.includes("winners.html");
     const isFavouritesPage = path.includes("fan-favorites.html");
     const isAboutPage = path.includes("about.html");
+    const isContactPage = path.includes("contact.html");
+    const isFAQPage = path.includes("faq.html");
+    const isPrivacyPage = path.includes("privacy.html");
+
 
     if (isWinnersPage && banner) {
         banner.src = "/banners/winners.png";
@@ -33,8 +37,20 @@ async function loadHeader() {
         if (!country) return;
         banner.src = `/banners/${country.toLowerCase().replace(/ /g, "-")}.png`;
         banner.alt = country;
+        
     } else if (isAboutPage && banner) {
         banner.src = "/banners/douzepoints.png";
         banner.alt = "About";
-    }
+        
+    } else if (isContactPage && banner) {
+        banner.src = "/banners/douzepoints.png";
+        banner.alt = "Contact";
+
+    } else if (isFAQPage && banner) {
+        banner.src = "/banners/douzepoints.png";
+        banner.alt = "FAQ";
+
+    } else if (isPrivacyPage && banner) {
+        banner.src = "/banners/douzepoints.png";
+        banner.alt = "Privacy";
 }
