@@ -15,7 +15,6 @@ async function loadHeader() {
     const isWinnersPage = path.includes("winners.html");
     const isFavouritesPage = path.includes("fan-favorites.html");
     const isAboutPage = path.includes("about.html");
-    
 
     if (isWinnersPage && banner) {
         banner.src = "/banners/winners.png";
@@ -32,29 +31,10 @@ async function loadHeader() {
     } else if (isCountryPage && banner) {
         const country = new URLSearchParams(window.location.search).get("country");
         if (!country) return;
-        
+        banner.src = `/banners/${country.toLowerCase().replace(/ /g, "-")}.png`;
+        banner.alt = country;
     } else if (isAboutPage && banner) {
         banner.src = "/banners/douzepoints.png";
         banner.alt = "About";
-
-        const csvUrl = "./data/DouzePoints.csv";
-        const response = await fetch(csvUrl);
-        const csvText = await response.text();
-
-        Papa.parse(csvText, {
-            header: true,
-            skipEmptyLines: true,
-            transformHeader: h => h.trim(),
-            transform: v => v.trim(),
-            complete: function(results) {
-                const data = results.data;
-                const firstEntry = data.find(row => row.Country === country);
-                if (!firstEntry) return;
-
-                const countryCode = firstEntry.Country_Code.toLowerCase();
-                banner.src = `/banners/${countryCode}.png`;
-                banner.alt = country;
-            }
-        });
     }
 }
