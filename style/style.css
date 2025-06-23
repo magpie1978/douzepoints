@@ -217,7 +217,7 @@ h4 {
   position: relative;
 }
 
-/* PREVIEW CONTAINER - COUNTRIES.CSS
+/* PREVIEW CONTAINER - COUNTRIES.CSS */
 .preview-container {
   position: relative;
   width: 100%;
@@ -226,7 +226,7 @@ h4 {
   border-radius: 6px;
 }
 
-*/
+
 
 /* PREVIEW CONTAINER - INDEX.CSS
 .preview-container img,
@@ -239,7 +239,7 @@ h4 {
   left: 0;
 }
 
-/* PREVIEW CONTAINER - COUNTRIES.CSS
+/* PREVIEW CONTAINER - COUNTRIES.CSS */
 .preview-container img,
 .preview-container video {
   position: absolute;
@@ -270,7 +270,7 @@ h4 {
   margin-right: 20px;
 }
 
-/* VIDEO ITEM TWO VERSIONS - COUNTRIES.CSS
+/* VIDEO ITEM TWO VERSIONS - COUNTRIES.CSS */
 .video-item {
   cursor: pointer;
   background-color: #1a1a1a;
@@ -293,7 +293,7 @@ h4 {
   box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
-/* VIDEO ITEM HOVER - COUNTRIES.CSS
+/* VIDEO ITEM HOVER - COUNTRIES.CSS */
 .video-item:hover {
   transform: scale(1.05);
 }
@@ -317,7 +317,7 @@ h4 {
   font-size: 0.75rem;
 }
 
-/* VIDEO TITLE WITH ICON - COUNTRIES.CSS
+/* VIDEO TITLE WITH ICON - COUNTRIES.CSS */
 .video-title-with-icon {
   display: flex;
   align-items: center;
