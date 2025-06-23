@@ -14,6 +14,8 @@ async function loadHeader() {
     const isEditionPage = path.includes("edition.html");
     const isWinnersPage = path.includes("winners.html");
     const isFavouritesPage = path.includes("fan-favorites.html");
+    const isAboutPage = path.includes("about.html");
+    
 
     if (isWinnersPage && banner) {
         banner.src = "/banners/winners.png";
@@ -30,6 +32,10 @@ async function loadHeader() {
     } else if (isCountryPage && banner) {
         const country = new URLSearchParams(window.location.search).get("country");
         if (!country) return;
+        
+    } else if (isAboutPage && banner) {
+        banner.src = "/banners/douzepoints.png";
+        banner.alt = "About";
 
         const csvUrl = "./data/DouzePoints.csv";
         const response = await fetch(csvUrl);
