@@ -71,5 +71,11 @@ async function loadHeader() {
     } else if (isContactPage && banner) {
         banner.src = "/banners/douzepoints.png";
         banner.alt = "Contact";
+    } else if (isFAQPage && banner) {
+        banner.src = "/banners/douzepoints.png";
+        banner.alt = "FAQ";
+    } else if (isPrivacyPage && banner) {
+        banner.src = "/banners/douzepoints.png";
+        banner.alt = "Privacy";
     } // ← MISSING BRACE FIXED HERE
 } // ← FINAL CLOSING BRACE FOR loadHeader FUNCTION
