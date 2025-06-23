@@ -210,13 +210,14 @@ h4 {
   margin-left: 8px;
 }
 
-/* PREVIEW CONTAINER - TWO VERSIONS
+/* PREVIEW CONTAINER - INDEX.CSS
 .preview-container {
   width: 100%;
   height: 170px;
   position: relative;
 }
 
+/* PREVIEW CONTAINER - COUNTRIES.CSS
 .preview-container {
   position: relative;
   width: 100%;
@@ -227,7 +228,7 @@ h4 {
 
 */
 
-/* PREVIEW CONTAINER - THREE VERSIONS
+/* PREVIEW CONTAINER - INDEX.CSS
 .preview-container img,
 .preview-container video {
   width: 100%;
@@ -238,7 +239,7 @@ h4 {
   left: 0;
 }
 
-
+/* PREVIEW CONTAINER - COUNTRIES.CSS
 .preview-container img,
 .preview-container video {
   position: absolute;
@@ -249,6 +250,7 @@ h4 {
   object-fit: cover;
 }
 
+/* PREVIEW CONTAINER - INDEX.CSS
 .preview-container video {
   display: none;
 }
@@ -262,12 +264,13 @@ h4 {
   display: none;
 }
 
-/* VIDEO ITEM TWO VERSIONS
+/* VIDEO ITEM TWO VERSIONS - INDEX.CSS
 .video-item {
   flex: 0 0 220px;
   margin-right: 20px;
 }
 
+/* VIDEO ITEM TWO VERSIONS - COUNTRIES.CSS
 .video-item {
   cursor: pointer;
   background-color: #1a1a1a;
@@ -283,13 +286,14 @@ h4 {
   margin-right: 0;
 }
 
-/* VIDEO ITEM HOVER - TWO VERSIONS
+/* VIDEO ITEM HOVER - INDEX.CSS
 .video-item:hover {
   transform: scale(1.1);
   z-index: 1;
   box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
+/* VIDEO ITEM HOVER - COUNTRIES.CSS
 .video-item:hover {
   transform: scale(1.05);
 }
@@ -301,7 +305,7 @@ h4 {
 }
 
 
-/* VIDEO TITLE WITH ICON - TWO VERSIONS
+/* VIDEO TITLE WITH ICON - INDEX.CSS
 .video-title-with-icon {
   display: flex;
   color: #e5e5e5;
@@ -313,6 +317,7 @@ h4 {
   font-size: 0.75rem;
 }
 
+/* VIDEO TITLE WITH ICON - COUNTRIES.CSS
 .video-title-with-icon {
   display: flex;
   align-items: center;
