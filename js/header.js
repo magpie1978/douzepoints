@@ -5,7 +5,13 @@ document.addEventListener("DOMContentLoaded", () => {
 async function loadHeader() {
     const path = window.location.pathname;
     const headerHtml = await fetch("header.html").then(res => res.text());
+    
     const headerContainer = document.getElementById("header-container");
+    if (!headerContainer) {
+        console.error("header-container element not found");
+        return;
+    }
+
     headerContainer.innerHTML = headerHtml;
 
     const banner = document.getElementById("country-banner");
@@ -15,7 +21,6 @@ async function loadHeader() {
     const isWinnersPage = path.includes("winners.html");
     const isFavouritesPage = path.includes("fan-favorites.html");
     const isAboutPage = path.includes("about.html");
-    
 
     if (isWinnersPage && banner) {
         banner.src = "/banners/winners.png";
@@ -33,8 +38,12 @@ async function loadHeader() {
         const country = new URLSearchParams(window.location.search).get("country");
         if (!country) return;
         
-        banner.src = `/banners/${country.toLowerCase().replace(/ /g, "-")}.png`;
+        const bannerPath = `/banners/${country.toLowerCase().replace(/ /g, "-")}.png`;
+        banner.src = bannerPath;
         banner.alt = country;
+        console.log("Country banner set:", bannerPath);
     } else if (isAboutPage && banner) {
         banner.src = "/banners/douzepoints.png";
         banner.alt = "About";
+    }
+}
