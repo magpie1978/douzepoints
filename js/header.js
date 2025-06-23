@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
 async function loadHeader() {
     const path = window.location.pathname;
     const headerHtml = await fetch("header.html").then(res => res.text());
-    
+
     const headerContainer = document.getElementById("header-container");
     if (!headerContainer) {
         console.error("header-container element not found");
@@ -37,10 +37,14 @@ async function loadHeader() {
     } else if (isCountryPage && banner) {
         const country = new URLSearchParams(window.location.search).get("country");
         if (!country) return;
-        
+
+        // Ensure body gets the data-country attribute
+        document.body.setAttribute("data-country", country);
+
         const bannerPath = `/banners/${country.toLowerCase().replace(/ /g, "-")}.png`;
         banner.src = bannerPath;
         banner.alt = country;
+
         console.log("Country banner set:", bannerPath);
     } else if (isAboutPage && banner) {
         banner.src = "/banners/douzepoints.png";
