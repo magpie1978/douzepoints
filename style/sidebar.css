@@ -19,14 +19,14 @@
   transition: background-color 0.3s;
 }
 
+.sidebar-row {
+  margin: 8px 0;            
+}
+
 .sidebar-row a {
   font-size: 14px;          
   gap: 14px;                 
   padding: 4px 10px;        
-}
-
-.sidebar-row {
-  margin: 8px 0;            
 }
 
 .sidebar a:hover {
