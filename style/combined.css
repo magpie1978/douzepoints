@@ -36,7 +36,7 @@ body {
 }
 
 /* IS THIS USED? */
-banner-title h2 {
+.banner-title h2 {
   font-size: 2rem;
   color: black;
   margin: 0;
@@ -126,8 +126,8 @@ banner-title h2 {
   border-radius: 8px;
   overflow: hidden;
   transition: transform 0.3s ease;
-  flex: 0 0 220px;   ////this makes carousel slightly bigger to cope with flex
-  margin-right: 20px;    ////this makes carousel slightly bigger to cope with flex
+  flex: 0 0 220px;
+  margin-right: 20px;
 }
 
 .video-item:hover {
