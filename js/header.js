@@ -16,6 +16,7 @@ async function loadHeader() {
 
     const banner = document.getElementById("country-banner");
 
+    const isIndexPage = path.includes("index.html");
     const isCountryPage = path.includes("country.html");
     const isEditionPage = path.includes("edition.html");
     const isWinnersPage = path.includes("winners.html");
@@ -25,7 +26,10 @@ async function loadHeader() {
     const isFAQPage = path.includes("faq.html");
     const isPrivacyPage = path.includes("privacy.html");
 
-    if (isWinnersPage && banner) {
+    if (isIndexPage && banner) {
+        banner.src = "/banners/douzepoints.png";
+        banner.alt = "DouzePoints";
+    } else if (isWinnersPage && banner) {
         banner.src = "/banners/winners.png";
         banner.alt = "Winners";
     } else if (isFavouritesPage && banner) {
