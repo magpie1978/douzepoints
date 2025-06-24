@@ -98,6 +98,7 @@ body {
   font-weight: bold;
   text-decoration: none;
 }
+
 .header-links a:hover {
   color: #e50914;
 }
@@ -219,7 +220,7 @@ body {
   max-height: 100%;
 }
 
-/* CHOOSE ONE VERSION OF MODAL CONTENT */
+/* CHOOSE ONE VERSION OF MODAL CONTENT 
 .modal-content {
   position: relative;
   background-color: #000;
@@ -230,6 +231,7 @@ body {
   justify-content: center;
   align-items: center;
 }
+ /*
 
 .modal-content video,
 .modal-content iframe {
