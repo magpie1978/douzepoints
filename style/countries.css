@@ -8,6 +8,20 @@ body {
   color: #fff;
 }
 
+.container {
+      display: flex;
+    }
+
+
+
+
+/* HEADER BANNER */
+.banner-divider {
+  width: 100%;
+  height: 1px;
+  background-color: #e50914;
+  }
+
 .banner-static {
   width: 100%;
   height: 400px;
@@ -19,9 +33,34 @@ body {
   height: 100%;
   object-fit: cover;
 }      
-  
 
-/* Overlay layout */
+.banner-title img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.banner-title h2 {
+  font-size: 2rem;
+  color: black;
+  margin: 0;
+}
+
+.banner-text h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.banner-text p {
+  font-size: 1rem;
+  margin: 0.3rem 0;
+}
+
+
+
+
+/* HEADER OVERLAY */
 .header-overlay {
   position: absolute;
   top: 0;
@@ -63,40 +102,10 @@ body {
   color: #e50914;
 }
 
-.banner-title img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.banner-title h2 {
-  font-size: 2rem;
-  color: black;
-  margin: 0;
-}
-
-.banner-text h2 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-.banner-text p {
-  font-size: 1rem;
-  margin: 0.3rem 0;
-}
 
 
-.banner-divider {
-  width: 100%;
-  height: 1px;
-  background-color: #e50914;
-  }
 
-.container {
-      display: flex;
-    }
-
+/* CONTENT */
 .main-content {
   flex-grow: 1;
   padding: 20px;
@@ -108,6 +117,10 @@ body {
   gap: 20px;
 }
 
+
+
+
+/* VIDEO */
 .video-item {
   cursor: pointer;
   background-color: #1a1a1a;
@@ -151,6 +164,37 @@ body {
   display: none;
 }
 
+.video-title-with-icon {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  gap: 8px;
+  color: white;
+  font-size: 0.8rem;
+}
+  
+.icon-placeholder {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #444;
+  object-fit: cover;
+  margin-left: 8px;
+}
+
+.video-title-text {
+  line-height: 1.2;
+  }
+
+.video-title-text a {
+  text-decoration: none; /* Remove underline */
+  color: inherit;         /* Inherit color from surrounding text */
+}
+
+
+
+
+/* MODAL */
 .modal {
   display: none;
   position: fixed;
@@ -188,6 +232,10 @@ body {
   border-radius: 50%;
 }
 
+
+
+
+/* FOOTER */
 .site-footer {
   margin-top: 3rem;
   padding: 2rem 1rem;
@@ -241,31 +289,4 @@ body {
 .footer-links a:hover {
   color: #e50914;
   text-decoration: underline;
-}
-
-.video-title-with-icon {
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-  gap: 8px;
-  color: white;
-  font-size: 0.8rem;
-}
-  
-.icon-placeholder {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background-color: #444;
-  object-fit: cover;
-  margin-left: 8px;
-}
-
-.video-title-text {
-  line-height: 1.2;
-  }
-
-.video-title-text a {
-  text-decoration: none; /* Remove underline */
-  color: inherit;         /* Inherit color from surrounding text */
 }
