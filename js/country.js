@@ -62,7 +62,7 @@ async function loadCountryData() {
             // Set default sort to Year (desc)
             const sortSelect = document.getElementById("sort-options");
                 if (sortSelect) {
-                    sortSelect.value = "year-desc"; // ✅ Correct default
+                    sortSelect.value = "year-desc";
                     attachSorting();
                     sortSelect.dispatchEvent(new Event("change"));
                 }
