@@ -14,6 +14,101 @@ h4 {
   margin: 0 0 10px 10px;
 }
 
+
+
+
+/* HEADER */
+.main-header {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+}
+
+.header-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.home-link {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.header-links {
+  display: flex;
+  gap: 20px;
+}
+
+.header-links a {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.header-links a:hover {
+  color: #e50914;
+}
+
+
+
+/* BANNER */
+.banner-text {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  text-align: left;
+  color: black;
+  z-index: 3;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+}
+
+.banner-text h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.banner-text p {
+  font-size: 1rem;
+  margin: 0.3rem 0;
+}
+
+.banner-divider {
+  width: 100%;
+  height: 1px;
+  background-color: #e50914;
+}
+
+.banner-static {
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  position: relative;
+}
+
+.banner-static img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+
+
+
+/* CAROUSELS */
 .carousel-section {
   width: 90%;
   max-width: 1200px;
@@ -44,7 +139,6 @@ h4 {
 .carousel-container {
   width: 1180px;
   overflow-x: auto;
-  /* overflow-y: visible; /* allow height overflow */
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 20px; /* add breathing room for hover effect */
@@ -55,7 +149,10 @@ h4 {
   width: max-content;
 }
 
-/* Updated video-item and preview-container */
+
+
+
+/* VIDEO*/
 .video-item {
   cursor: pointer;
   background-color: #1a1a1a;
@@ -102,10 +199,6 @@ h4 {
   display: none;
 }
 
-
-
-
-
 .video-title-text {
   line-height: 1.2;
 }
@@ -115,7 +208,37 @@ h4 {
   font-weight: bold;
 }
 
-/* Modal Styles */
+.video-title-with-icon {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  gap: 8px;
+  color: white;
+  font-size: 0.8rem;
+}
+
+.flag-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #444;
+  object-fit: cover;
+  margin-left: 8px;
+}
+
+.video-title-text {
+  line-height: 1.2;
+}
+
+.video-title-text a {
+  text-decoration: none;
+  color: inherit;
+}
+
+
+
+
+/* MODAL */
 .modal {
   display: none;
   position: fixed;
@@ -159,7 +282,10 @@ h4 {
   border-radius: 50%;
 }
 
-/* Section Headers */
+
+
+
+/* CONTENT */
 .section-header {
   display: flex;
   align-items: baseline;
@@ -190,92 +316,10 @@ h4 {
   text-decoration: none;
 }
 
-/* Header + Banner */
-.main-header {
-  position: relative;
-  width: 100%;
-  height: 400px;
-  overflow: hidden;
-}
 
-.banner-static {
-  width: 100%;
-  height: 400px;
-  overflow: hidden;
-  position: relative;
-}
 
-.banner-static img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
 
-.header-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 20px;
-  z-index: 3;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.home-link {
-  color: #fff;
-  font-size: 1rem;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.header-links {
-  display: flex;
-  gap: 20px;
-}
-
-.header-links a {
-  color: #fff;
-  font-size: 1rem;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.header-links a:hover {
-  color: #e50914;
-}
-
-.banner-text {
-  position: absolute;
-  bottom: 30px;
-  left: 30px;
-  text-align: left;
-  color: black;
-  z-index: 3;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 8px;
-}
-
-.banner-text h2 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-.banner-text p {
-  font-size: 1rem;
-  margin: 0.3rem 0;
-}
-
-.banner-divider {
-  width: 100%;
-  height: 1px;
-  background-color: #e50914;
-}
-
-/* Footer */
+/* FOOTER */
 .site-footer {
   margin-top: 3rem;
   padding: 2rem 1rem;
@@ -329,31 +373,4 @@ h4 {
 .footer-links a:hover {
   color: #e50914;
   text-decoration: underline;
-}
-
-.video-title-with-icon {
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-  gap: 8px;
-  color: white;
-  font-size: 0.8rem;
-}
-
-.flag-icon {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background-color: #444;
-  object-fit: cover;
-  margin-left: 8px;
-}
-
-.video-title-text {
-  line-height: 1.2;
-}
-
-.video-title-text a {
-  text-decoration: none;
-  color: inherit;
 }
