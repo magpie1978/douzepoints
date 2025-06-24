@@ -10,225 +10,49 @@
    
       <body oncontextmenu="return false">
 
-      <!-- HEADER container -->
+      <!-- HEADER -->
       <div id="header-container"></div>
       <script src="js/header.js"></script>
 
-    <!-- HEADER --
-    <header class="main-header">
-      <div class="header-overlay">
-        <div class="header-links">
-          <a class="home-link" href="index.html">Home</a>
-          <a class="countries-link" href="country.html?country=Albania">Countries</a>
-          <a class="home-link" href="edition.html?edition=2025">Editions</a>
-        </div>
+
+      <!--  DIVIDER -->
+      <div class="banner-divider"></div>
+      <br>
+      <br>
+
+         
+      <!-- CAROUSEL 1 -->
+      <div class="carousel-section">
+            <div class="section-header">
+                  <h4>Eurovision Winners</h4>
+                  <a class="view-more" href="winners.html">VIEW MORE</a>
+            </div>
+
+            <div class="carousel-wrapper">
+                  <button class="carousel-button" onclick="scrollCarousel(-1,'carouselTrack1')">&#10094;</button>
+                  <div class="carousel-container">
+                        <div class="carousel-track" id="carouselTrack1"></div>
+                  </div>
+                  <button class="carousel-button" onclick="scrollCarousel(1, 'carouselTrack1')">&#10095;</button>
+            </div>
       </div>
 
-      <div class="banner-static">
-        <img src="/banners/douzepoints.png" alt="Banner">
-      </div>
-    </header>
+      <br>
 
-    <!--  red dividing line -->
-    <div class="banner-divider"></div>
-    <br>
-    <br>
-
-   <!-- END OF HEADER CODE -->
-
-     <div class="carousel-section">
-        <div class="section-header">
-           <h4>Eurovision Winners</h4>
-           <a class="view-more" href="winners.html">VIEW MORE</a>
-         </div>
-
-       <div class="carousel-wrapper">
-         <button class="carousel-button" onclick="scrollCarousel(-1,'carouselTrack1')">&#10094;</button>
-
-         <div class="carousel-container">
-           <div class="carousel-track" id="carouselTrack1">
-
-                 
-            <!-- 2014 - AUSTRIA --
-            <div class="video-item" data-artist="Conchita Wurst" data-country="Austria" data-song="Rise Like A Phoenix" data-year="2014" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1tXU36v4E2o5pZI98wmLS5AZTox5M3agH/')">
-                  <div class="preview-container">
-                        <img alt="Austria 2014" src="images/2014-AT.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="austria.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/at.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Conchita Wurst</b><br>Rise Like A Phoenix<br>2014</div>
-                  </div>
+      <!-- CAROUSEL 2 -->
+      <div class="carousel-section">
+            <div class="section-header">
+                  <h4>Malmö 2024</h4>
+                  <a class="view-more" href="edition.html?edition=2024">VIEW ALL</a>
             </div>
 
-
-            <!-- 2015 - SWEDEN --
-            <div class="video-item" data-artist="Måns Zelmerlöw" data-country="Sweden" data-song="Heroes" data-year="2015" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1cKoMU8eWkTXv8FuUI2AiRzcVPDkNWfg2/')">
-                  <div class="preview-container">
-                        <img alt="Sweden 2015" src="images/2015-SE.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="sweden.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/se.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Måns Zelmerlöw</b><br>Heroes<br>2015</div>
-                  </div>
-            </div>
+            <div class="carousel-wrapper">
+                  <button class="carousel-button" onclick="scrollCarousel(-1, 'carouselTrack2')">&#10094;</button>
+                  <div class="carousel-container">
+                        <div class="carousel-track" id="carouselTrack2">
 
 
-
-            <!-- 2016 - UKRAINE --
-            <div class="video-item" data-artist="Jamala" data-country="Ukraine" data-song="1944" data-year="2016" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1lywJVDbPaN6vv8OPLewL0k32nF1VTv1Y/')">
-                  <div class="preview-container">
-                        <img alt="Ukraine 2016" src="images/2016-UA.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="ukraine.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/ua.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Jamala</b><br>1944<br>2016</div>
-                  </div>
-            </div>
-
-
-
-            <!-- 2017 - PORTUGAL --
-            <div class="video-item" data-artist="Salvador Sobral" data-country="Portugal" data-song="Amar pelos dois" data-year="2017" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1wvf2gEwbPvw4cT1QPrLlE2UOIX9nEJdP/')">
-                  <div class="preview-container">
-                        <img alt="Portugal 2017" src="images/2017-PT.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="portugal.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/pt.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Salvador Sobral</b><br>Amar pelos dois<br>2017</div>
-                  </div>
-            </div>
-
-
-            <!-- 2018 - ISRAEL --
-            <div class="video-item" data-artist="Netta" data-country="Israel" data-song="Toy" data-year="2018" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1r2leMm9vsorEspbtifqcK_SjMRNzLJIo/')">
-                  <div class="preview-container">
-                        <img alt="Israel 2018" src="images/2018-IL.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="israel.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/il.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Netta</b><br>Toy<br>2018</div>
-                  </div>
-            </div>
-
-
-            <!-- 2019 - NETHERLANDS --
-            <div class="video-item" data-artist="Duncan Lawrence" data-country="Netherlands" data-song="Arcade" data-year="2019" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1JOSIyONilpp86NL2hnLz0lM6ggIOID44/')">
-                  <div class="preview-container">
-                        <img alt="Netherlands 2019" src="images/2019-NL.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="netherlands.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/nl.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Duncan Lawrence</b><br>Arcade<br>2019</div>
-                  </div>
-            </div>
-
-
-            <!-- 2021 - ITALY --
-            <div class="video-item" data-artist="Måneskin" data-country="Italy" data-song="Zitti e buoni" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1GfB2FmS9E9KA3mzD5Dh7D2GWAV3ejHLe/')">
-                  <div class="preview-container">
-                        <img alt="Italy 2021" src="images/2021-IT.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="italy.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/it.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Måneskin</b><br>Zitti e buoni<br>2021</div>
-                  </div>
-            </div>
-
-
-
-            <!-- 2022 - UKRAINE --
-            <div class="video-item" data-artist="Kalush Orchestra" data-country="Ukraine" data-song="Stefania" data-year="2022" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1y6FgVP_mR5GN6IwzD_R9AaEVvrzpXD8O/')">
-                  <div class="preview-container">
-                        <img alt="Ukraine 2022" src="images/2022-UA.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="ukraine.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/ua.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Kalush Orchestra</b><br>Stefania"<br>2022</div>
-                  </div>
-            </div>
-
-
-            <!-- 2023 - SWEDEN --
-            <div class="video-item" data-artist="Loreen" data-country="Sweden" data-song="Tattoo" data-year="2023" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1ysrVO83t3tgBBzl3x2eJcM-akF3I3M-2/')">
-                  <div class="preview-container">
-                        <img alt="Sweden 2023" src="images/2023-SE.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="sweden.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/se.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Loreen</b><br>Tattoo<br>2023</div>
-                  </div>
-            </div>
-
-
-
-            <!-- 2024 - SWITZERLAND --
-            <div class="video-item" data-artist="Nemo" data-country="Switzerland" data-song="The Code" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1acrsiid7jjxvQxu-UfNg9OjCVsDmd0TU/')">
-                  <div class="preview-container">
-                        <img alt="Switzerland 2024" src="images/2024-CH.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="switzerland.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/ch.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Nemo</b><br>The Code<br>2024</div>
-                  </div>
-            </div>
-
-
-            <!-- 2025 - AUSTRIA --
-            <div class="video-item" data-artist="JJ" data-country="Austria" data-song="Wasted Love" data-year="2025" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1vQOr0Juee5l5twEMe3y-g8vHk7nnaZVc/')">
-                  <div class="preview-container">
-                        <img alt="Austria 2025" src="images/2025-AT.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="austria.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/at.png"/>
-                        </a>
-                        <div class="video-title-text"><b>JJ</b><br>Wasted Love<br>2025</div>
-                  </div>
-            </div>
--->
-           </div>
-         </div>
-
-        <button class="carousel-button" onclick="scrollCarousel(1, 'carouselTrack1')">&#10095;</button>
-       </div>
-     </div>
-
-       <br>
-
-     <div class="carousel-section">
-         <div class="section-header">
-           <h4>Malmö 2024</h4>
-           <a class="view-more" href="edition.html?edition=2024">VIEW ALL</a>
-         </div>
-
-       <div class="carousel-wrapper">
-        <button class="carousel-button" onclick="scrollCarousel(-1, 'carouselTrack2')">&#10094;</button>
-
-         <div class="carousel-container">
-          <div class="carousel-track" id="carouselTrack2">
-
-
-                                    <!-- Albania -->
+                        <!-- Albania -->
                         <div class="video-item" data-artist="Besa" data-country="Albania" data-song="Titan" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1kRN5_a2SiKgf_tyeDMRo3bsmXV4g0Yet/')">
                           <div class="preview-container"><img alt="Albania 2024" src="images/2024-AL.jpeg"/></div>
                           <div class="video-title-with-icon" onclick="event.stopPropagation()">
@@ -569,200 +393,40 @@
 
          <br>
 
-<!-- THIRD CAROUSEL -->
+      <!-- THIRD CAROUSEL -->
       <div class="carousel-section">
-        <div class="section-header">
-           <h4>Fan Favorites</h4>
-           <a class="view-more" href="fan-favorites.html">VIEW MORE</a>
-         </div>
-
-       <div class="carousel-wrapper">
-         <button class="carousel-button" onclick="scrollCarousel(-1,'carouselTrack3')">&#10094;</button>
-
-         <div class="carousel-container">
-           <div class="carousel-track" id="carouselTrack3">
-
-
-            <!-- 2024 - CROATIA --
-            <div class="video-item" data-artist="Baby Lasagna" data-country="Croatia" data-song="Rim Tim Tagi Dim" data-year="2024" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1zkNRScAvFdZu6i88EDB9sIZeH9Y06M2p/')">
-                  <div class="preview-container">
-                        <img alt="Croatia 2024" src="images/2024-HR.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="croatia.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/hr.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Baby Lasagna</b><br>Rim Tim Tagi Dim<br>2024</div>
-                  </div>
+            <div class="section-header">
+                  <h4>Fan Favorites</h4>
+                  <a class="view-more" href="fan-favorites.html">VIEW MORE</a>
             </div>
 
-            <!-- 2023 - FINLAND --
-            <div class="video-item" data-artist="Käärijä" data-country="Finland" data-song="Cha Cha Cha" data-year="2023" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1vEYOLxkNr6jYd1al2IdGGfp5jYaXotve/')">
-                  <div class="preview-container">
-                        <img alt="Finland 2023" src="images/2023-FI.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="finland.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/fi.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Käärijä</b><br>Cha Cha Cha<br>2023</div>
-                  </div>
-            </div>
+            <div class="carousel-wrapper">
+                  <button class="carousel-button" onclick="scrollCarousel(-1,'carouselTrack3')">&#10094;</button>
+                        <div class="carousel-container">
+                              <div class="carousel-track" id="carouselTrack3"></div>
+                        </div>
+                  <button class="carousel-button" onclick="scrollCarousel(1, 'carouselTrack3')">&#10095;</button>
+             </div>
+      </div>
 
-             <!-- 2023 - NORWAY --
-            <div class="video-item" data-artist="Alessandra" data-country="Norway" data-song="Queen of Kings" data-year="2023" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/11PdBkqZ7m6LlfEv2yrvnDlLe_BvXG9kB/')">
-                  <div class="preview-container">
-                        <img alt="Norway 2023" src="images/2023-NO.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="norway.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/no.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Alessandra</b><br>Queen of Kings<br>2023</div>
-                  </div>
-            </div>
-
-            <!-- 2022 - MOLDOVA --
-            <div class="video-item" data-artist="Advahov Brothers and Zdob și Zdub" data-country="Moldova" data-song="Trenulețul" data-year="2022" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1s4ny4JUUvNWILFOXNK0KHlqxNbxKVYzm/')">
-                  <div class="preview-container">
-                        <img alt="Moldova 2022" src="images/2022-MD.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="moldova.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/md.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Advahov Brothers and Zdob și Zdub</b><br>Trenulețul<br>2022</div>
-                  </div>
-            </div>
-
-            <!-- 2022 - SPAIN --
-            <div class="video-item" data-artist="Chanel" data-country="Spain" data-song="SloMo" data-year="2022" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1egUZ1HYiG5BpW8kOxfUrmLKucARi9YbV/')">
-                  <div class="preview-container">
-                        <img alt="Spain 2022" src="images/2022-ES.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="spain.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/es.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Chanel</b><br>SloMo<br>2022</div>
-                  </div>
-            </div>
-
-            <!-- 2021 - FRANCE --
-            <div class="video-item" data-artist="La Zarra" data-country="France" data-song="Évidemment" data-year="2021" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/120GFPUlpH6Ff2IBMouWVd2mv71bLVDPV/')">
-                  <div class="preview-container">
-                        <img alt="France 2021" src="images/2021-FR.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="france.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/fr.png"/>
-                        </a>
-                        <div class="video-title-text"><b>La Zarra</b><br>Évidemment<br>2021</div>
-                  </div>
-            </div>
-
-            <!-- 2019 - NORWAY --
-            <div class="video-item" data-artist="Keiino" data-country="Norway" data-song="Spirit in the Sky" data-year="2019" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1w3DrOyUJnQYOXitIMI48rmNLwdB3RS6q/')">
-                  <div class="preview-container">
-                        <img alt="Norway 2019" src="images/2019-NO.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="norway.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/no.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Keiino</b><br>Spirit in the Sky<br>2019</div>
-                  </div>
-            </div>
-
-            <!-- 2019 - ITALY --
-            <div class="video-item" data-artist="Mahmood" data-country="Italy" data-song="Soldi" data-year="2019" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/16RIbsQhDBTVZKLZmxRtNXk8SoUalO3_4/')">
-                  <div class="preview-container">
-                        <img alt="Italy 2019" src="images/2019-IT.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="italy.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/it.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Mahmood</b><br>Soldi<br>2019</div>
-                  </div>
-            </div>
-
-            <!-- 2018 - CYPRUS --
-            <div class="video-item" data-artist="Eleni Foureira" data-country="Cyprus" data-song="Fuego" data-year="2018" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1KTYQUpvY_NzN9Ak170MQXZf6DxXsw0Op/')">
-                  <div class="preview-container">
-                        <img alt="Cyprus 2018" src="images/2018-CY.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="cyprus.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/cy.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Eleni Foureira</b><br>Fuego<br>2018</div>
-                  </div>
-            </div>
-
-            <!-- 2017 - BULGARIA --
-            <div class="video-item" data-artist="Kristian Kostov" data-country="Bulgaria" data-song="Beautiful Mess" data-year="2017" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1Wc5hICFV_-MNwBjOlirqofm9T6bnwxMp/')">
-                  <div class="preview-container">
-                        <img alt="Bulgaria 2017" src="images/2017-BG.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="bulgaria.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/bg.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Kristian Kostov</b><br>Beautiful Mess<br>2017</div>
-                  </div>
-            </div>
-
-            <!-- 2016 - RUSSIA --
-            <div class="video-item" data-artist="Sergey Lazarev" data-country="Russia" data-song="You Are The Only One" data-year="2016" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1tm5A_Yq__Ph8Kh5CWPCLVx8mGWCIQJg1/')">
-                  <div class="preview-container">
-                        <img alt="Russia 2016" src="images/2016-RU.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="russia.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/ru.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Sergey Lazarev</b><br>You Are The Only One<br>2016</div>
-                  </div>
-            </div>
-
-           <!-- 2016 - POLAND --
-            <div class="video-item" data-artist="Michał Szpak" data-country="Poland" data-song="Color of Your Life" data-year="2016" onclick="GDriveOpenModalWithVideo('https://drive.google.com/file/d/1_5RswYTgZwWY6pQIR52qGz9JChH7jV5X/')">
-                  <div class="preview-container">
-                        <img alt="Poland 2016" src="images/2016-PL.jpeg"/>
-                  </div>
-                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="poland.html">
-                              <img alt="Flag" class="icon-placeholder" src="flags/pl.png"/>
-                        </a>
-                        <div class="video-title-text"><b>Michał Szpak</b><br>Color of Your Life<br>2016</div>
-                  </div>
-            </div>
--->
-           </div>
-         </div>
-        <button class="carousel-button" onclick="scrollCarousel(1, 'carouselTrack3')">&#10095;</button>
-       </div>
-     </div>
-<!-- END OF CAROUSEL 3 -->
 
       <!-- MODAL -->
       <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
-      <div class="modal-content">
-      <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
-      <video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;"></video>
-      <iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" id="modalIframe" style="display: none;"></iframe>
-      </div>
+            <div class="modal-content">
+                  <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+                  <video autoplay="" controls="" controlslist="nodownload" id="modalVideo" style="display: none;"></video>
+                  <iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" id="modalIframe" style="display: none;"></iframe>
+            </div>
       </div>
 
-<footer class="site-footer">
-    <div class="footer-line"></div>
-    <div class="footer-branding">
-      <div class="footer-flag">
-        <img src="/flags/gb.png" alt="United Kingdom" />
-      </div>
-      <span class="footer-title">Douze Points</span>
-    </div>
+      <footer class="site-footer">
+            <div class="footer-line"></div>
+            <div class="footer-branding">
+                  <div class="footer-flag">
+                        <img src="/flags/gb.png" alt="United Kingdom" />
+                  </div>
+                  <span class="footer-title">Douze Points</span>
+            </div>
     <div class="footer-links">
       <a href="about.html">About</a>
       <a href="contact.html">Contact Us</a>
