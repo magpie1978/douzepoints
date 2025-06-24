@@ -27,6 +27,13 @@ body {
   /*position: relative; */
 }
 
+.banner-static img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}      
+
+
 /* IS THIS USED? */
 .banner-title img {
   width: 40px;
