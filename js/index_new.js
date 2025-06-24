@@ -190,6 +190,7 @@ async function loadFanFavoritesToCarousel() {
             </div>
           </div>
         `;
+        track.appendChild(videoDiv);
 
         track.appendChild(videoDiv);
       });
