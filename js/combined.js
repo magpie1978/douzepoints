@@ -10,17 +10,21 @@ const countryParam = urlParams.get("country");
     // If on country.html or winners.html and countryParam is set, it calls loadCountryData().
     // If on fan-favorites.html it calls loadFavoriteEntries().
 document.addEventListener("DOMContentLoaded", () => {
-    const pathname = window.location.pathname;
+  const pathname = window.location.pathname;
 
-    if (pathname.includes("edition.html") && editionParam) {
-        loadEditionData();
-    } else if (pathname.includes("country.html") && countryParam) {
-        loadCountryData();
-    } else if (pathname.includes("winners.html")) {
-        loadWinnersData(); 
-    } else if (pathname.includes("fan-favorites.html")) {
-        loadFavouriteEntries();
-    }
+  if (pathname.includes("index.html")) {
+    loadRecentWinnersToCarousel();
+    loadEditionEntriesToCarousel();
+    loadFanFavoritesToCarousel();
+  } else if (pathname.includes("edition.html") && editionParam) {
+    loadEditionData();
+  } else if (pathname.includes("country.html") && countryParam) {
+    loadCountryData();
+  } else if (pathname.includes("winners.html")) {
+    loadWinnersData();
+  } else if (pathname.includes("fan-favorites.html")) {
+    loadFavouriteEntries();
+  }
 });
 
 // EDITION LOGIC
