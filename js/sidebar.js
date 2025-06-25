@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const path = window.location.pathname;
   console.log("sidebar.js loaded. Path:", path);
 
-  if (path.includes("country.html") || path.includes("winners.html")) {
+if (path.includes("country.html") || path.includes("winners.html") || path.includes("fan-favorites.html")) {
     console.log("Calling loadSidebarCountries()");
     loadSidebarCountries();
   } else if (path.includes("edition.html")) {
