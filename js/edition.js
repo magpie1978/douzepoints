@@ -31,7 +31,7 @@ async function loadEditionData() {
             const container = document.getElementById("video-container");
             container.innerHTML = '';
 
-            // for each song in the edition
+            // creates a .video-item <div> for each entry and appends it to the container
             data.forEach(row => {
                 const countryCode = row.Country_Code?.toLowerCase();
                 const div = document.createElement("div");
@@ -58,12 +58,12 @@ async function loadEditionData() {
                 container.appendChild(div);
             });
 
-            // ✅ Ensure sorting is attached AFTER items are in the DOM
+            // ensure sorting is attached AFTER items are in the DOM
             attachSorting();
 
             // ✅ Now trigger default sort manually
             const select = document.getElementById("sort-options");
-            select.value = "country"; // set dropdown value
+            select.value = "country"; // default sort is set to "country" (i.e., alphabetical by country).
             const event = new Event("change");
             select.dispatchEvent(event);
         }
