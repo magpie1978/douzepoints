@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const pathname = window.location.pathname;
 
   if (pathname.endsWith("/") || pathname.includes("index.html")) {
-  //if (pathname.includes("index.html")) {
     loadRecentWinnersToCarousel();
     loadEditionEntriesToCarousel();
     loadFanFavoritesToCarousel();
