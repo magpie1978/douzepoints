@@ -25,6 +25,16 @@ async function fetchCSVData() {
 }
 
 async function loadSidebarCountries() {
+
+  // start
+  console.log("Loading sidebar countries...");
+  const data = await fetchCSVData();
+  console.log("Fetched data:", data);
+
+  const countries = [...new Set(data.map(row => row.Country).filter(Boolean))].sort();
+  console.log("Parsed countries:", countries);
+  // end
+  
   const data = await fetchCSVData();
 
   const countries = [...new Set(data.map(row => row.Country).filter(Boolean))].sort();
