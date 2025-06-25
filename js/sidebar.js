@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
   const path = window.location.pathname;
 
-  if (path.includes("country.html")) {
-    loadSidebarCountries();
-  } else if (path.includes("edition.html")) {
-    loadSidebarYears();
-  }
-});
+if (path.includes("country.html") || path.includes("winners.html")) {
+  loadSidebarCountries();
+} else if (path.includes("edition.html")) {
+  loadSidebarYears();
+}
 
+  
 async function fetchCSVData() {
   const csvUrl = "./data/DouzePoints.csv";
   const response = await fetch(csvUrl);
