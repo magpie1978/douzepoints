@@ -105,6 +105,17 @@ body {
   overflow: hidden;
   transition: transform 0.3s ease;
   flex: 0 0 220px;
+  margin-right: 10px;
+}
+
+.carousel-video-item {
+  cursor: pointer;
+  background-color: #1a1a1a;
+  padding: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  flex: 0 0 220px;
   margin-right: 20px;
 }
 
