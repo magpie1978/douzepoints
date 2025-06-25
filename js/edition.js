@@ -1,9 +1,13 @@
+// extracts the edition parameter from the page URL
 const editionParam = new URLSearchParams(window.location.search).get("edition");
 
+// waits for the HTML document to be fully loaded before running any JavaScript logic
+// ensures the DOM is ready before calling loadEditionData()
 document.addEventListener("DOMContentLoaded", () => {
     loadEditionData();
 });
 
+// fetches, parses, filters, and injects the correct edition's video data into the page
 async function loadEditionData() {
     const csvUrl = "./data/DouzePoints.csv";
     const response = await fetch(csvUrl);
@@ -15,15 +19,19 @@ async function loadEditionData() {
         transformHeader: h => h.trim(),
         transform: v => v.trim(),
         complete: function(results) {
-            const data = results.data.filter(row => row.Year === editionParam);
+            const data = results.data.filter(row => row.Year === editionParam); // only includes rows where the Year matches the selected edition
+            
+            // if no matching rows are found, a warning is logged and nothing is rendered
             if (data.length === 0) {
                 console.warn("No entries found for edition:", editionParam);
                 return;
             }
 
+            // clears the existing contents of the video container.
             const container = document.getElementById("video-container");
             container.innerHTML = '';
 
+            // for each song in the edition
             data.forEach(row => {
                 const countryCode = row.Country_Code?.toLowerCase();
                 const div = document.createElement("div");
