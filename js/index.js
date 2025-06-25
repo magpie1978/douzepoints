@@ -58,7 +58,7 @@ async function loadCSVData() {
 function createVideoItem(row) {
   const countryCode = row.Country_Code?.toLowerCase();
   const div = document.createElement("div");
-  div.className = "video-item";
+  div.className = "carousel-video-item";
   div.setAttribute("data-year", row.Year);
   div.setAttribute("data-artist", row.Artist);
   div.setAttribute("data-song", row.Song);
