@@ -141,20 +141,6 @@ body {
   object-fit: cover;
 }
 
-/* IS THIS REQUIRED? 
-.preview-container video {
-  display: none;
-}
-
-
-.preview-container.has-video:hover video {
-  display: block;
-}
-
-.preview-container.has-video:hover img {
-  display: none;
-}
-*/
 
 .video-title-with-icon {
   display: flex;
@@ -202,19 +188,6 @@ body {
   max-width: 100%;
   max-height: 100%;
 }
-
-/* CHOOSE ONE VERSION OF MODAL CONTENT 
-.modal-content {
-  position: relative;
-  background-color: #000;
-  padding: 20px;
-  max-width: 90%;
-  max-height: 90%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-*/
 
 .modal-content video,
 .modal-content iframe {
@@ -335,7 +308,7 @@ h4 {
 }
 
 .carousel-container {
-  width: 1180px;
+  width: 1480px;  /* was 1180  */
   overflow-x: auto;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
