@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
   const path = window.location.pathname;
 
-  if (path.includes("country_index.html")) {
+  if (path.includes("country.html")) {
     loadSidebarCountries();
-  } else if (path.includes("edition_index.html")) {
+  } else if (path.includes("edition.html")) {
     loadSidebarYears();
   }
 });
