@@ -14,8 +14,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (pathname.includes("edition.html") && editionParam) {
         loadEditionData();
-    } else if ((pathname.includes("country.html") || pathname.includes("winners.html")) && countryParam) {
+    } else if (pathname.includes("country.html") && countryParam) {
         loadCountryData();
+    } else if (pathname.includes("winners.html")) {
+        loadWinnersData(); 
     } else if (pathname.includes("fan-favorites.html")) {
         loadFavouriteEntries();
     }
@@ -118,7 +120,7 @@ async function loadCountryData() {
 
 
 // FAN FAVORITES LOGIC
-// Loads and displays all entries for a specific country (or only winners if on winners.html)
+// Loads and displays all entries for fan favorites
 async function loadFavouriteEntries() {
     const csvUrl = "./data/DouzePoints.csv";
     const response = await fetch(csvUrl);
@@ -137,6 +139,47 @@ async function loadFavouriteEntries() {
             if (data.length === 0) {
                 document.getElementById("video-container").innerHTML =
                     "<p style='padding: 20px; color: #ccc;'>No fan favourites found.</p>";
+                return;
+            }
+
+            data.sort((a, b) => parseInt(b.Year) - parseInt(a.Year));
+
+            const container = document.getElementById("video-container");
+            container.innerHTML = '';
+
+            data.forEach(row => {
+                container.appendChild(buildVideoItem(row));
+            });
+
+            const sortSelect = document.getElementById("sort-options");
+            if (sortSelect) {
+                sortSelect.value = "year-desc";
+                attachSorting();
+                sortSelect.dispatchEvent(new Event("change"));
+            }
+        }
+    });
+}
+
+
+// WINNERS LOGIC
+// Loads and displays all entries for a specific country (or only winners if on winners.html)
+async function loadWinnersData() {
+    const csvUrl = "./data/DouzePoints.csv";
+    const response = await fetch(csvUrl);
+    const csvText = await response.text();
+
+    Papa.parse(csvText, {
+        header: true,
+        skipEmptyLines: true,
+        transformHeader: h => h.trim(),
+        transform: v => v.trim(),
+        complete: function(results) {
+            let data = results.data.filter(row => row.FinalResult === "1");
+
+            if (data.length === 0) {
+                document.getElementById("video-container").innerHTML =
+                    "<p style='padding: 20px; color: #ccc;'>No winners found.</p>";
                 return;
             }
 
