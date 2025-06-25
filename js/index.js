@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function scrollCarousel(direction, trackId) {
   const track = document.getElementById(trackId);
   const container = track.closest('.carousel-container');
-  const itemWidth = track.querySelector('.video-item').offsetWidth + 20;
+  const itemWidth = track.querySelector('.carousel-video-item').offsetWidth + 20;
   const scrollAmount = itemWidth * 5;
 
   container.scrollBy({
