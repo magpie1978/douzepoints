@@ -228,9 +228,6 @@ function buildVideoItem(row) {
             </a>
             <div class="video-title-text">
                 <b>${row.Artist}</b><br>${row.Song}<br>${row.Year || row.Country}
-                <br>
-                <b>Semi Final : 27pts; Position: 27
-                <b>Final : 27pts; Position: 27
             </div>
         </div>
     `;
