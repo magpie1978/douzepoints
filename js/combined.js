@@ -8,6 +8,7 @@ const countryParam = urlParams.get("country");
 // once the page finishes loading:
     // If on edition.html and editionParam is set, it calls loadEditionData().
     // If on country.html or winners.html and countryParam is set, it calls loadCountryData().
+    // If on fan-favorites.html it calls loadFavoriteEntries().
 document.addEventListener("DOMContentLoaded", () => {
     const pathname = window.location.pathname;
 
@@ -15,6 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
         loadEditionData();
     } else if ((pathname.includes("country.html") || pathname.includes("winners.html")) && countryParam) {
         loadCountryData();
+    } else if (pathname.includes("fan-favorites.html")) {
+        loadFavouriteEntries();
     }
 });
 
@@ -112,6 +115,50 @@ async function loadCountryData() {
         }
     });
 }
+
+
+// FAN FAVORITES LOGIC
+// Loads and displays all entries for a specific country (or only winners if on winners.html)
+async function loadFavouriteEntries() {
+    const csvUrl = "./data/DouzePoints.csv";
+    const response = await fetch(csvUrl);
+    const csvText = await response.text();
+
+    Papa.parse(csvText, {
+        header: true,
+        skipEmptyLines: true,
+        transformHeader: h => h.trim(),
+        transform: v => v.trim(),
+        complete: function(results) {
+            let data = results.data.filter(row =>
+                row.FanFave && row.FanFave.trim().toUpperCase() === "Y"
+            );
+
+            if (data.length === 0) {
+                document.getElementById("video-container").innerHTML =
+                    "<p style='padding: 20px; color: #ccc;'>No fan favourites found.</p>";
+                return;
+            }
+
+            data.sort((a, b) => parseInt(b.Year) - parseInt(a.Year));
+
+            const container = document.getElementById("video-container");
+            container.innerHTML = '';
+
+            data.forEach(row => {
+                container.appendChild(buildVideoItem(row));
+            });
+
+            const sortSelect = document.getElementById("sort-options");
+            if (sortSelect) {
+                sortSelect.value = "year-desc";
+                attachSorting();
+                sortSelect.dispatchEvent(new Event("change"));
+            }
+        }
+    });
+}
+
 
 // SHARED FUNCTION
 // builds a .video-item DOM element for a given row of data
