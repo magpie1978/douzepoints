@@ -64,7 +64,7 @@ async function loadEditionData() {
             // ✅ Now trigger default sort manually
             const select = document.getElementById("sort-options");
             select.value = "country"; // default sort is set to "country" (i.e., alphabetical by country).
-            const event = new Event("change");
+            const event = new Event("change"); // triggers the change event to apply the default sort
             select.dispatchEvent(event);
         }
     });
