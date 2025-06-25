@@ -308,7 +308,7 @@ h4 {
 }
 
 .carousel-container {
-  width: 1480px;  /* was 1180  */
+  width: 1180px;
   overflow-x: auto;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
