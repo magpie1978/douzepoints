@@ -94,4 +94,5 @@ async function loadSidebarYears() {
     div.appendChild(a);
     sidebar.appendChild(div);
   });
-}
+  }
+}); // <-- this closing brace was missing
