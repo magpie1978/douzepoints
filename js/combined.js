@@ -91,7 +91,7 @@ async function loadCountryData() {
 
             // if winnersPage then filter the data by row.FinalRank === 1
             if (isWinnersPage) {
-                data = data.filter(row => row.FinalRank === "1");
+                data = data.filter(row => row.Final_Rank === "1");
             }
 
             // if no data found, log a warning and return
