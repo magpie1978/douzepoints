@@ -17,6 +17,24 @@ function attachSorting() {
             items.sort((a, b) => a.dataset.country.localeCompare(b.dataset.country));
         } else if (sortType === "country-desc") {
             items.sort((a, b) => b.dataset.country.localeCompare(a.dataset.country));
+        } else if (sortType === "jury") {
+            items.sort((a, b) => {
+                const aVal = parseInt(a.dataset.jury) || 0;
+                const bVal = parseInt(b.dataset.jury) || 0;
+                return bVal - aVal;
+            });
+        } else if (sortType === "televote") {
+            items.sort((a, b) => {
+                const aVal = parseInt(a.dataset.televote) || 0;
+                const bVal = parseInt(b.dataset.televote) || 0;
+                return bVal - aVal;
+            });
+        } else if (sortType === "total") {
+            items.sort((a, b) => {
+                const aVal = parseInt(a.dataset.total) || 0;
+                const bVal = parseInt(b.dataset.total) || 0;
+                return bVal - aVal;
+            });
         }
 
         container.innerHTML = '';
