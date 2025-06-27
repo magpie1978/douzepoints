@@ -89,9 +89,9 @@ async function loadCountryData() {
             // filter the data by row.Country === countryParam
             let data = results.data.filter(row => row.Country === countryParam);
 
-            // if winnersPage then filter the data by row.FinalResult === 1
+            // if winnersPage then filter the data by row.FinalRank === 1
             if (isWinnersPage) {
-                data = data.filter(row => row.FinalResult === "1");
+                data = data.filter(row => row.FinalRank === "1");
             }
 
             // if no data found, log a warning and return
@@ -179,7 +179,7 @@ async function loadWinnersData() {
         transformHeader: h => h.trim(),
         transform: v => v.trim(),
         complete: function(results) {
-            let data = results.data.filter(row => row.FinalResult === "1");
+            let data = results.data.filter(row => row.FinalRank === "1");
 
             if (data.length === 0) {
                 document.getElementById("video-container").innerHTML =
@@ -296,7 +296,7 @@ async function loadCSVData() {
 
 async function loadRecentWinnersToCarousel() {
   const data = await loadCSVData();
-  const winners = data.filter(row => row.FinalResult === "1")
+  const winners = data.filter(row => row.FinalRank === "1")
                       .sort((a, b) => parseInt(b.Year) - parseInt(a.Year))
                       .slice(0, 10);
 
