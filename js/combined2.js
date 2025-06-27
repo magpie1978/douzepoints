@@ -107,6 +107,10 @@ function buildVideoItem(row) {
   div.setAttribute("data-artist", row.Artist);
   div.setAttribute("data-song", row.Song);
   div.setAttribute("data-country", row.Country);
+  div.setAttribute("data-jury", row.Final_JuryPoints || "0");
+  div.setAttribute("data-televote", row.Final_TelevotePoints || "0");
+  div.setAttribute("data-total", row.Final_TotalPoints || "0");
+
 
   div.innerHTML = `
     <div class="preview-container">
