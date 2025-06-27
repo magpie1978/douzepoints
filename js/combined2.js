@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
       filterFn: data => {
         let result = data.filter(row => row.Country === countryParam);
         if (isWinnersPage) {
-          result = result.filter(row => row.FinalRank === "1");
+          result = result.filter(row => row.Final_Rank === "1");
         }
         return result;
       },
