@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   } else if (pathname.includes("winners.html")) {
     loadAndRenderData({
-      filterFn: data => data.filter(row => row.FinalRank === "1"),
+      filterFn: data => data.filter(row => row.Final_Rank === "1"),
       sortFn: (a, b) => parseInt(b.Year) - parseInt(a.Year),
       defaultSort: "year-desc",
       fallbackMessage: "No winners found."
@@ -175,7 +175,7 @@ function scrollCarousel(direction, trackId) {
 // === CAROUSEL DATA LOADERS ===
 async function loadRecentWinnersToCarousel() {
   const data = await loadCSVData();
-  const winners = data.filter(row => row.FinalRank === "1")
+  const winners = data.filter(row => row.Final_Rank === "1")
                       .sort((a, b) => parseInt(b.Year) - parseInt(a.Year))
                       .slice(0, 10);
 
