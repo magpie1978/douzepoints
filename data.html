@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Eurovision Entries</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Raleway:400,600&display=swap"/>
+  <style>
+    body {
+      font-family: 'Raleway', sans-serif;
+      background: #0f111a;
+      color: #ccc;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .table-wrapper {
+      max-width: 1100px;
+      margin: auto;
+      background: #181a24;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
+    .table-header {
+      padding: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      border-bottom: 1px solid #2a2d3a;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #1f212d;
+    }
+
+    th, td {
+      padding: 14px 20px;
+      text-align: left;
+      font-size: 14px;
+      border-bottom: 1px solid #2a2d3a;
+    }
+
+    th {
+      color: #aaa;
+      font-weight: 500;
+    }
+
+    td img.flag {
+      width: 20px;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    td .status {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      display: inline-block;
+    }
+
+    .winner {
+      background-color: #28a74530;
+      color: #28a745;
+    }
+
+    .non-winner {
+      background-color: #6c757d30;
+      color: #adb5bd;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .pagination button {
+      background: #1f212d;
+      border: none;
+      color: #ccc;
+      padding: 6px 12px;
+      margin: 0 3px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .pagination button.active {
+      background: #2a2d3a;
+      color: #fff;
+      font-weight: bold;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="table-wrapper">
+  <div class="table-header">Eurovision Entries (2024)</div>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Country</th>
+        <th>Artist</th>
+        <th>Song</th>
+        <th>Year</th>
+        <th>Total Points</th>
+        <th>Result</th>
+      </tr>
+    </thead>
+    <tbody id="eurovision-table-body">
+      <!-- JS will inject rows here -->
+    </tbody>
+  </table>
+  <div class="pagination">
+    <button class="active">1</button>
+    <button>2</button>
+    <button>3</button>
+    <button>...</button>
+    <button>37</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script>
+  async function loadTableData() {
+    const response = await fetch('./data/DouzePoints.csv');
+    const csvText = await response.text();
+
+    Papa.parse(csvText, {
+      header: true,
+      skipEmptyLines: true,
+      complete: function(results) {
+        const data = results.data.filter(row => row.Year === '2024');
+        const tbody = document.getElementById('eurovision-table-body');
+        tbody.innerHTML = '';
+
+        data.forEach((row, index) => {
+          const countryCode = (row.Country_Code || '').toLowerCase();
+          const flag = `<img class="flag" src="flags/${countryCode}.png" alt="${row.Country} flag"/>`;
+          const status = row.FinalRank === "1"
+              ? '<span class="status winner">Winner</span>'
+              : '<span class="status non-winner">Qualified</span>';
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${flag}${row.Country}</td>
+            <td>${row.Artist}</td>
+            <td>${row.Song}</td>
+            <td>${row.Year}</td>
+            <td>${row.Final_TotalPoints || 0}</td>
+            <td>${status}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", loadTableData);
+</script>
+
+</body>
+</html>
