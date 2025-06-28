@@ -103,6 +103,16 @@
 <body>
 
 <div class="table-wrapper">
+
+  <!--  adds year drop-down -->
+  <div class="table-controls" style="text-align: right; padding: 10px 20px;">
+    <label for="yearSelect" style="margin-right: 10px; color: #aaa;">Select Year:</label>
+    <select id="yearSelect" style="padding: 5px 10px; font-size: 14px; background: #1f212d; color: #ccc; border: none; border-radius: 6px;">
+      <!-- Options will be populated dynamically -->
+    </select>
+  </div>
+
+  
   <div class="table-header">Eurovision Grand Final Entries (2024)</div>
   <table>
     <thead>
@@ -125,97 +135,122 @@
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
-  let eurovisionData = [];
-  let currentSortKey = null;
-  let currentSortDir = 'desc';
+let eurovisionData = [];
+let currentYear = '2024';
+let currentSortKey = null;
+let currentSortDir = 'desc';
+let allRawData = [];
 
-  async function loadTableData() {
-    const response = await fetch('./data/DouzePoints.csv');
-    const csvText = await response.text();
+async function loadCSVData() {
+  const response = await fetch('./data/DouzePoints.csv');
+  const csvText = await response.text();
 
-    return new Promise(resolve => {
-      Papa.parse(csvText, {
-        header: true,
-        skipEmptyLines: true,
-        complete: results => {
-          eurovisionData = results.data
-            .filter(row =>
-              row.Year === '2024' &&
-              row.FinalRunningOrder && row.FinalRunningOrder.trim() !== ''
-            )
-            .map(row => ({ ...row }));
-          resolve();
-        }
-      });
-    });
-  }
-
-  function renderTable() {
-    const tbody = document.getElementById('eurovision-table-body');
-    tbody.innerHTML = '';
-
-    eurovisionData.forEach(row => {
-      const countryCode = (row.Country_Code || '').toLowerCase();
-      const flag = `<img class="flag" src="flags/${countryCode}.png" alt="${row.Country} flag"/>`;
-      const status = row.FinalRank === "1"
-        ? '<span class="status winner">Winner</span>'
-        : '<span class="status non-winner">Qualified</span>';
-
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${row.Final_Rank || '-'}</td>
-        <td><img class="flag" src="flags/${countryCode}.png" alt="${row.Country} flag"/><span class="country-name">${row.Country}</span></td>
-        <td>${row.Artist}</td>
-        <td>${row.Song}</td>
-        <td>${row.FinalRunningOrder}</td>
-        <td>${row.Final_TelevotePoints || 0}</td>
-        <td>${row.Final_TelevoteRank || '-'}</td>
-        <td>${row.Final_JuryPoints || 0}</td>
-        <td>${row.Final_JuryRank || '-'}</td>
-        <td>${row.Final_TotalPoints || 0}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-
-  function sortBy(key) {
-    if (currentSortKey === key) {
-      currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
-    } else {
-      currentSortKey = key;
-      currentSortDir = ['Final_TotalPoints', 'Final_JuryPoints', 'Final_TelevotePoints'].includes(key)
-        ? 'desc' : 'asc';
-    }
-
-    const isNumeric = !isNaN(parseFloat(eurovisionData[0][key]));
-
-    eurovisionData.sort((a, b) => {
-      const aVal = isNumeric ? parseFloat(a[key] || 0) : (a[key] || '').toLowerCase();
-      const bVal = isNumeric ? parseFloat(b[key] || 0) : (b[key] || '').toLowerCase();
-      if (aVal < bVal) return currentSortDir === 'asc' ? -1 : 1;
-      if (aVal > bVal) return currentSortDir === 'asc' ? 1 : -1;
-      return 0;
-    });
-
-    document.querySelectorAll("th").forEach(th => {
-      th.classList.remove("sort-asc", "sort-desc");
-      if (th.dataset.key === key) {
-        th.classList.add(currentSortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+  return new Promise(resolve => {
+    Papa.parse(csvText, {
+      header: true,
+      skipEmptyLines: true,
+      complete: results => {
+        allRawData = results.data;
+        populateYearDropdown();
+        loadTableData(currentYear);
+        resolve();
       }
     });
+  });
+}
 
-    renderTable();
+function populateYearDropdown() {
+  const years = [...new Set(allRawData.map(row => row.Year).filter(Boolean))].sort((a, b) => b - a);
+  const select = document.getElementById('yearSelect');
+  select.innerHTML = '';
+  years.forEach(year => {
+    const option = document.createElement('option');
+    option.value = year;
+    option.textContent = year;
+    if (year === currentYear) option.selected = true;
+    select.appendChild(option);
+  });
+}
+
+function loadTableData(year) {
+  currentYear = year;
+  eurovisionData = allRawData
+    .filter(row =>
+      row.Year === year &&
+      row.FinalRunningOrder && row.FinalRunningOrder.trim() !== ''
+    );
+  sortBy("Final_TotalPoints"); // Reapply default sort
+}
+
+function renderTable() {
+  const tbody = document.getElementById('eurovision-table-body');
+  tbody.innerHTML = '';
+
+  eurovisionData.forEach(row => {
+    const countryCode = (row.Country_Code || '').toLowerCase();
+    const flag = `<img class="flag" src="flags/${countryCode}.png" alt="${row.Country} flag"/>`;
+    const status = row.FinalRank === "1"
+      ? '<span class="status winner">Winner</span>'
+      : '<span class="status non-winner">Qualified</span>';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${row.FinalRunningOrder}</td>
+      <td>${flag}<span class="country-name">${row.Country}</span></td>
+      <td>${row.Artist}</td>
+      <td>${row.Song}</td>
+      <td>${row.Final_TelevotePoints || 0}</td>
+      <td>${row.Final_JuryPoints || 0}</td>
+      <td>${row.Final_TotalPoints || 0}</td>
+      <td>${row.Final_Rank || '-'}</td>
+      <td>${row.Final_JuryRank || '-'}</td>
+      <td>${row.Final_TelevoteRank || '-'}</td>
+      <td>${status}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function sortBy(key) {
+  if (currentSortKey === key) {
+    currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    currentSortKey = key;
+    currentSortDir = ['Final_TotalPoints', 'Final_JuryPoints', 'Final_TelevotePoints'].includes(key)
+      ? 'desc' : 'asc';
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    loadTableData().then(() => {
-      sortBy("Final_TotalPoints"); // Default: Total Points, descending
-    });
+  const isNumeric = !isNaN(parseFloat(eurovisionData[0][key]));
 
-    document.querySelectorAll("th[data-key]").forEach(th => {
-      th.addEventListener("click", () => sortBy(th.dataset.key));
-    });
+  eurovisionData.sort((a, b) => {
+    const aVal = isNumeric ? parseFloat(a[key] || 0) : (a[key] || '').toLowerCase();
+    const bVal = isNumeric ? parseFloat(b[key] || 0) : (b[key] || '').toLowerCase();
+    if (aVal < bVal) return currentSortDir === 'asc' ? -1 : 1;
+    if (aVal > bVal) return currentSortDir === 'asc' ? 1 : -1;
+    return 0;
   });
+
+  document.querySelectorAll("th").forEach(th => {
+    th.classList.remove("sort-asc", "sort-desc");
+    if (th.dataset.key === key) {
+      th.classList.add(currentSortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+    }
+  });
+
+  renderTable();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadCSVData();
+
+  document.getElementById("yearSelect").addEventListener("change", (e) => {
+    loadTableData(e.target.value);
+  });
+
+  document.querySelectorAll("th[data-key]").forEach(th => {
+    th.addEventListener("click", () => sortBy(th.dataset.key));
+  });
+});
 </script>
 
 </body>
