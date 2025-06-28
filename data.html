@@ -185,11 +185,16 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    loadTableData();
-    document.querySelectorAll("th[data-key]").forEach(th => {
-      th.addEventListener("click", () => sortBy(th.dataset.key));
-    });
+  loadTableData().then(() => {
+    // Trigger default sort by Total Points (descending)
+    sortBy("Final_TotalPoints");
   });
+
+  document.querySelectorAll("th[data-key]").forEach(th => {
+    th.addEventListener("click", () => sortBy(th.dataset.key));
+  });
+});
+  
 </script>
 
 </body>
