@@ -99,6 +99,9 @@
         <th data-key="Final_TelevotePoints">Televote</th>
         <th data-key="Final_JuryPoints">Jury</th>
         <th data-key="Final_TotalPoints">Total Points</th>
+        <th data-key="Final_Rank">Total Rank</th>
+        <th data-key="Final_JuryRank">Jury Rank</th>
+        <th data-key="Final_TelevoteRank">Televote Rank</th>
         <th data-key="FinalRank">Result</th>
       </tr>
     </thead>
@@ -153,6 +156,9 @@
         <td>${row.Final_TelevotePoints || 0}</td>
         <td>${row.Final_JuryPoints || 0}</td>
         <td>${row.Final_TotalPoints || 0}</td>
+        <td>${row.Final_Rank || '-'}</td>
+        <td>${row.Final_JuryRank || '-'}</td>
+        <td>${row.Final_TelevoteRank || '-'}</td>
         <td>${status}</td>
       `;
       tbody.appendChild(tr);
