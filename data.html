@@ -66,6 +66,13 @@
       vertical-align: middle;
     }
 
+
+    /* Limit width of Result column */
+    th:nth-child(0), td:nth-child(0) {
+      width: 100px;
+      max-width: 100px;
+      text-align: center;
+    }
     
     /* prevent line wrapping in column 2 - flag and country name */
     td:nth-child(2), th:nth-child(2) {
