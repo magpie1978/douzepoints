@@ -53,10 +53,15 @@
       user-select: none;
     }
 
-    td img.flag {
-      width: 20px;
-      margin-right: 10px;
-      vertical-align: middle;
+    td:nth-child(2), th:nth-child(2) {
+      white-space: nowrap;
+      min-width: 160px;
+    }
+ 
+    td:nth-child(2) {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     td .status {
