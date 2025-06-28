@@ -265,17 +265,6 @@ function sortBy(key) {
   renderTable();
 }
 
-
-  document.querySelectorAll("th").forEach(th => {
-    th.classList.remove("sort-asc", "sort-desc");
-    if (th.dataset.key === key) {
-      th.classList.add(currentSortDir === 'asc' ? 'sort-asc' : 'sort-desc');
-    }
-  });
-
-  renderTable();
-}
-
 document.addEventListener("DOMContentLoaded", () => {
   loadCSVData();
 
