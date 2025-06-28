@@ -50,6 +50,7 @@
     th {
       color: #aaa;
       font-weight: 500;
+      user-select: none;
     }
 
     td img.flag {
@@ -102,7 +103,7 @@
       </tr>
     </thead>
     <tbody id="eurovision-table-body">
-      <!-- JS will inject rows here -->
+      <!-- Rows will be injected here -->
     </tbody>
   </table>
 </div>
@@ -111,21 +112,23 @@
 <script>
   let eurovisionData = [];
   let currentSortKey = null;
-  let currentSortDir = 'desc';
+  let currentSortDir = 'desc'; // Default direction for total points
 
   async function loadTableData() {
     const response = await fetch('./data/DouzePoints.csv');
     const csvText = await response.text();
 
-    Papa.parse(csvText, {
-      header: true,
-      skipEmptyLines: true,
-      complete: function(results) {
-        eurovisionData = results.data
-          .filter(row => row.Year === '2024')
-          .map((row, index) => ({ index: index + 1, ...row }));
-        renderTable();
-      }
+    return new Promise(resolve => {
+      Papa.parse(csvText, {
+        header: true,
+        skipEmptyLines: true,
+        complete: results => {
+          eurovisionData = results.data
+            .filter(row => row.Year === '2024')
+            .map((row, index) => ({ index: index + 1, ...row }));
+          resolve();
+        }
+      });
     });
   }
 
@@ -157,10 +160,11 @@
 
   function sortBy(key) {
     if (currentSortKey === key) {
-      currentSortDir = currentSortDir === 'asc' ? 'desc' : 'desc';
+      currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
     } else {
       currentSortKey = key;
-      currentSortDir = 'desc';
+      currentSortDir = ['Final_TotalPoints', 'Final_JuryPoints', 'Final_TelevotePoints'].includes(key)
+        ? 'desc' : 'asc';
     }
 
     const isNumeric = !isNaN(parseFloat(eurovisionData[0][key]));
@@ -169,11 +173,10 @@
       const aVal = isNumeric ? parseFloat(a[key] || 0) : (a[key] || '').toLowerCase();
       const bVal = isNumeric ? parseFloat(b[key] || 0) : (b[key] || '').toLowerCase();
       if (aVal < bVal) return currentSortDir === 'asc' ? -1 : 1;
-      if (aVal > bVal) return currentSortDir === 'desc' ? 1 : -1;
+      if (aVal > bVal) return currentSortDir === 'asc' ? 1 : -1;
       return 0;
     });
 
-    // Update headers
     document.querySelectorAll("th").forEach(th => {
       th.classList.remove("sort-asc", "sort-desc");
       if (th.dataset.key === key) {
@@ -185,16 +188,14 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-  loadTableData().then(() => {
-    // Trigger default sort by Total Points (descending)
-    sortBy("Final_TotalPoints");
-  });
+    loadTableData().then(() => {
+      sortBy("Final_TotalPoints");
+    });
 
-  document.querySelectorAll("th[data-key]").forEach(th => {
-    th.addEventListener("click", () => sortBy(th.dataset.key));
+    document.querySelectorAll("th[data-key]").forEach(th => {
+      th.addEventListener("click", () => sortBy(th.dataset.key));
+    });
   });
-});
-  
 </script>
 
 </body>
