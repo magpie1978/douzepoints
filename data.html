@@ -198,12 +198,10 @@ function loadTableData(year) {
       row.FinalRunningOrder && row.FinalRunningOrder.trim() !== ''
     );
 
-  // ✅ Reset default sort every time year changes
-  currentSortKey = "Final_TotalPoints";
-  currentSortDir = "desc";
-  sortBy(currentSortKey);
+  sortBy("Final_TotalPoints", "desc"); // ✅ force default sort on load
 }
 
+  
 function renderTable() {
   const tbody = document.getElementById('eurovision-table-body');
   tbody.innerHTML = '';
@@ -235,17 +233,14 @@ tr.innerHTML = `
   });
 }
 
-function sortBy(key) {
+function sortBy(key, direction = null) {
   const isNumeric = !isNaN(parseFloat(eurovisionData[0][key]));
 
-  if (currentSortKey === key) {
+  if (currentSortKey === key && !direction) {
     currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
   } else {
     currentSortKey = key;
-    // ✅ Only set default direction if it's not explicitly set
-    if (!currentSortDir) {
-      currentSortDir = isNumeric ? 'desc' : 'asc';
-    }
+    currentSortDir = direction || (isNumeric ? 'desc' : 'asc');
   }
 
   eurovisionData.sort((a, b) => {
