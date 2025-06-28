@@ -98,10 +98,9 @@
         <th data-key="Song">Song</th>
         <th data-key="FinalRunningOrder">Running Order</th>
         <th data-key="Final_TelevotePoints">Televote</th>
+        <th data-key="Final_TelevoteRank">Televote Rank</th>
         <th data-key="Final_JuryPoints">Jury</th>
         <th data-key="Final_JuryRank">Jury Rank</th>
-        <th data-key="Final_TelevoteRank">Televote Rank</th>
-        <!-- <th data-key="FinalRank">Result</th> -->
         <th data-key="Final_TotalPoints">Total Points</th>
       </tr>
     </thead>
@@ -149,17 +148,20 @@
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${row.FinalRunningOrder}</td>
+        <td>${row.Final_Rank || '-'}</td>
         <td>${flag}${row.Country}</td>
         <td>${row.Artist}</td>
         <td>${row.Song}</td>
+        <td>${row.FinalRunningOrder}</td>
         <td>${row.Final_TelevotePoints || 0}</td>
+        <td>${row.Final_TelevoteRank || '-'}</td>
         <td>${row.Final_JuryPoints || 0}</td>
+        <td>${row.Final_JuryRank || '-'}</td>
         <td>${row.Final_TotalPoints || 0}</td>
         <td>${row.Final_Rank || '-'}</td>
         <td>${row.Final_JuryRank || '-'}</td>
         <td>${row.Final_TelevoteRank || '-'}</td>
-        <td>${status}</td>
+        <td>${row.Final_TotalPoints || 0}</td>
       `;
       tbody.appendChild(tr);
     });
