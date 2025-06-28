@@ -180,6 +180,9 @@ function loadTableData(year) {
   const sample = eurovisionData[0] || {};
   tableHead.innerHTML = "<tr>" + columnDefinitions.map(col => {
     const field = col.key || (isFinal ? col.final : col.semi);
+    if (col.label === "Status") {
+      return isFinal ? '' : `<th data-key="Status">Status</th>`;
+    }
     if (field && eurovisionData.some(row => row[field])) {
       return `<th data-key="${col.label}">${col.label}</th>`;
     }
@@ -190,7 +193,7 @@ function loadTableData(year) {
 }
 
 function renderTable() {
-  const tbody = document.getElementById("eurovision-table-body");
+  const tbody = document.getElementById('eurovision-table-body');
   tbody.innerHTML = '';
   const stage = document.getElementById("stageSelect").value;
   const isFinal = stage === "Final";
@@ -202,6 +205,8 @@ function renderTable() {
 
     const cells = columnDefinitions.map(col => {
       const label = col.label;
+      if (label === "Status" && isFinal) return ''; // Skip status in final
+
       const field = col.key || (isFinal ? col.final : col.semi);
       const hasField = field && row[field] != null && row[field] !== '';
 
@@ -214,17 +219,10 @@ function renderTable() {
       }
 
       if (label === "Status") {
-        if (!isFinal) {
-          const qualified = row["SemiFinal_Rank"] && row["Final_Rank"];
-          const badge = qualified
-            ? `<span class="badge qualified" title="Qualified for Final">Qual</span>`
-            : `<span class="badge dnq">DNQ</span>`;
-          return `<td>${badge}</td>`;
-        }
-        const isWinner = row["Final_Rank"] === "1";
-        const badge = isWinner
-          ? `<span class="badge winner">Winner</span>`
-          : `<span class="badge non-winner">Qualified</span>`;
+        const qualified = row["SemiFinal_Rank"] && row["Final_Rank"];
+        const badge = qualified
+          ? `<span class="badge qualified" title="Qualified for Final">Qual</span>`
+          : `<span class="badge dnq">DNQ</span>`;
         return `<td>${badge}</td>`;
       }
 
