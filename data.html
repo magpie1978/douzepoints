@@ -195,18 +195,18 @@ function renderTable() {
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${row.FinalRunningOrder}</td>
+      <td>${row.Final_Rank || '-'}</td>
       <td>${flag}<span class="country-name">${row.Country}</span></td>
       <td>${row.Artist}</td>
       <td>${row.Song}</td>
+      <td>${row.FinalRunningOrder}</td>
       <td>${row.Final_TelevotePoints || 0}</td>
-      <td>${row.Final_JuryPoints || 0}</td>
-      <td>${row.Final_TotalPoints || 0}</td>
-      <td>${row.Final_Rank || '-'}</td>
-      <td>${row.Final_JuryRank || '-'}</td>
       <td>${row.Final_TelevoteRank || '-'}</td>
-      <td>${status}</td>
+      <td>${row.Final_JuryPoints || 0}</td>
+      <td>${row.Final_JuryRank || '-'}</td>
+      <td>${row.Final_TotalPoints || 0}</td>
     `;
+      
     tbody.appendChild(tr);
   });
 }
