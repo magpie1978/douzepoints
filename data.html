@@ -230,23 +230,6 @@ tr.innerHTML = `
   <td>${formatOrdinal(row.Final_JuryRank)}</td>
   <td>${row.Final_TotalPoints || 0}</td>
 `;
-
-
-
-
-    
-    tr.innerHTML = `
-      <td>${formatOrdinal(row.Final_Rank)}</td>
-      <td>${flag}<span class="country-name">${row.Country}</span></td>
-      <td>${row.Artist}</td>
-      <td>${row.Song}</td>
-      <td>${row.FinalRunningOrder}</td>
-      <td>${row.Final_TelevotePoints || 0}</td>
-      <td>${formatOrdinal(row.Final_TelevoteRank)}</td>
-      <td>${row.Final_JuryPoints || 0}</td>
-      <td>${formatOrdinal(row.Final_JuryRank)}</td>
-      <td>${row.Final_TotalPoints || 0}</td>
-    `;
       
     tbody.appendChild(tr);
   });
