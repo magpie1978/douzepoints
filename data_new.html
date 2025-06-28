@@ -122,16 +122,16 @@
   <table>
     <thead>
       <tr>
-        <th data-key="Final_Rank">Result</th>
+        <th data-key="Rank">Result</th>
         <th data-key="Country">Country</th>
         <th data-key="Artist">Artist</th>
         <th data-key="Song">Song</th>
-        <th data-key="FinalRunningOrder">R/O</th>
-        <th data-key="Final_TelevotePoints">Televote Pts</th>
-        <th data-key="Final_TelevoteRank">Televote Rank</th>
-        <th data-key="Final_JuryPoints">Jury Pts</th>
-        <th data-key="Final_JuryRank">Jury Rank</th>
-        <th data-key="Final_TotalPoints">Total Points</th>
+        <th data-key="RunningOrder">R/O</th>
+        <th data-key="TelevotePoints">Televote Pts</th>
+        <th data-key="TelevoteRank">Televote Rank</th>
+        <th data-key="JuryPoints">Jury Pts</th>
+        <th data-key="JuryRank">Jury Rank</th>
+        <th data-key="TotalPoints">Total Points</th>
       </tr>
     </thead>
     <tbody id="eurovision-table-body"></tbody>
@@ -189,22 +189,45 @@ function loadTableData(year) {
   currentYear = year;
   const stage = document.getElementById("stageSelect").value;
 
+  const isSemi = stage.includes("Semi");
+
   eurovisionData = allRawData.filter(row => {
     const isCorrectYear = row.Year === year;
 
     if (stage === "Final") {
       return isCorrectYear && row.FinalRunningOrder && row.FinalRunningOrder.trim() !== '';
     }
-
     if (stage === "Semi Final 1") {
       return isCorrectYear && row.SemiFinal === "1";
     }
-
     if (stage === "Semi Final 2") {
       return isCorrectYear && row.SemiFinal === "2";
     }
-
     return false;
+  }).map(row => {
+    if (isSemi) {
+      return {
+        ...row,
+        Rank: row.SemiFinal_Rank,
+        RunningOrder: row.SemiFinalRunningOrder,
+        JuryPoints: row.SemiFinal_JuryPoints,
+        TelevotePoints: row.SemiFinal_TelevotePoints,
+        TotalPoints: row.SemiFinal_TotalPoints,
+        JuryRank: row.SemiFinal_JuryRank,
+        TelevoteRank: row.SemiFinal_TelevoteRank
+      };
+    } else {
+      return {
+        ...row,
+        Rank: row.Final_Rank,
+        RunningOrder: row.FinalRunningOrder,
+        JuryPoints: row.Final_JuryPoints,
+        TelevotePoints: row.Final_TelevotePoints,
+        TotalPoints: row.Final_TotalPoints,
+        JuryRank: row.Final_JuryRank,
+        TelevoteRank: row.Final_TelevoteRank
+      };
+    }
   });
 
   const header = document.getElementById("tableHeader");
@@ -213,7 +236,7 @@ function loadTableData(year) {
     header.textContent = `Eurovision ${stageLabel} Entries (${year})`;
   }
 
-  sortBy("Final_TotalPoints", "desc");
+  sortBy("TotalPoints", "desc");
 }
 
 function renderTable() {
@@ -226,16 +249,16 @@ function renderTable() {
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${formatOrdinal(row.Final_Rank)}</td>
+      <td>${formatOrdinal(row.Rank)}</td>
       <td>${flag}<span class="country-name">${row.Country}</span></td>
       <td>${row.Artist}</td>
       <td>${row.Song}</td>
-      <td>${row.FinalRunningOrder}</td>
-      <td>${row.Final_TelevotePoints || 0}</td>
-      <td>${formatOrdinal(row.Final_TelevoteRank)}</td>
-      <td>${row.Final_JuryPoints || 0}</td>
-      <td>${formatOrdinal(row.Final_JuryRank)}</td>
-      <td>${row.Final_TotalPoints || 0}</td>
+      <td>${row.RunningOrder || ''}</td>
+      <td>${row.TelevotePoints || 0}</td>
+      <td>${formatOrdinal(row.TelevoteRank)}</td>
+      <td>${row.JuryPoints || 0}</td>
+      <td>${formatOrdinal(row.JuryRank)}</td>
+      <td>${row.TotalPoints || 0}</td>
     `;
     tbody.appendChild(tr);
   });
@@ -248,7 +271,7 @@ function sortBy(key, direction = null) {
     currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
   } else {
     currentSortKey = key;
-    const ascendingByDefault = ["FinalRunningOrder", "Final_TelevoteRank", "Final_JuryRank"];
+    const ascendingByDefault = ["RunningOrder", "TelevoteRank", "JuryRank"];
     currentSortDir = direction || (ascendingByDefault.includes(key) ? 'asc' : isNumeric ? 'desc' : 'asc');
   }
 
