@@ -66,17 +66,6 @@
       vertical-align: middle;
     }
 
-    th:nth-child(1), td:nth-child(1) {
-      width: 50px;
-      max-width: 50px;
-      text-align: center;
-    }
-
-    td:nth-child(2), th:nth-child(2) {
-      white-space: nowrap;
-      min-width: 160px;
-    }
-
     td .status {
       padding: 4px 10px;
       border-radius: 6px;
@@ -203,6 +192,9 @@ function loadTableData(year) {
 
   visibleColumns = ["Rank", "Country", "Artist", "Song", "RunningOrder", "TelevotePoints", "TelevoteRank", "JuryPoints", "JuryRank", "TotalPoints"];
   visibleColumns = visibleColumns.filter(key => eurovisionData.some(row => row[key] && row[key].toString().trim() !== ''));
+  if (eurovisionData.some(row => row.Qualified !== null)) {
+    visibleColumns.push("Qualified");
+  }
 
   const tableHead = document.getElementById("tableHeadRow");
   tableHead.innerHTML = '';
@@ -216,7 +208,8 @@ function loadTableData(year) {
     TelevoteRank: "Televote Rank",
     JuryPoints: "Jury Pts",
     JuryRank: "Jury Rank",
-    TotalPoints: "Total Points"
+    TotalPoints: "Total Points",
+    Qualified: "Status"
   };
   visibleColumns.forEach(key => {
     const th = document.createElement("th");
@@ -237,7 +230,6 @@ function renderTable() {
   eurovisionData.forEach(row => {
     const countryCode = (row.Country_Code || '').toLowerCase();
     const flag = `<img class="flag" src="flags/${countryCode}.png" alt="${row.Country} flag"/>`;
-    const badge = row.Qualified === true ? '<span class="status qualified">Qual</span>' : (row.Qualified === false ? '<span class="status not-qualified">DNQ</span>' : '');
 
     const tr = document.createElement('tr');
     tr.innerHTML = visibleColumns.map(key => {
@@ -247,8 +239,14 @@ function renderTable() {
       if (key === "Country") {
         return `<td>${flag}<span class="country-name">${row.Country}</span></td>`;
       }
-      if (key === "TotalPoints") {
-        return `<td>${row[key] || 0} ${badge}</td>`;
+      if (key === "Qualified") {
+        if (row.Qualified === true) {
+          return '<td><span class="status qualified" title="Qualified for Final">Qual</span></td>';
+        } else if (row.Qualified === false) {
+          return '<td><span class="status not-qualified">DNQ</span></td>';
+        } else {
+          return '<td></td>';
+        }
       }
       return `<td>${row[key] || ''}</td>`;
     }).join('');
