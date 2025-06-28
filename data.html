@@ -53,13 +53,17 @@
       user-select: none;
     }
 
-    .flag {
+     .flag {
       width: 20px;
       height: 20px;
       border-radius: 50%;
       object-fit: cover;
       vertical-align: middle;
-      gap: 20px; /* <-- gap between flag and country text */
+      margin-right: 20px; /* This creates the gap */
+    }
+    
+    .country-name {
+      vertical-align: middle;
     }
 
     
@@ -160,7 +164,7 @@
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${row.Final_Rank || '-'}</td>
-        <td>${flag}${row.Country}</td>
+        <td><img class="flag" src="flags/${countryCode}.png" alt="${row.Country} flag"/><span class="country-name">${row.Country}</span></td>
         <td>${row.Artist}</td>
         <td>${row.Song}</td>
         <td>${row.FinalRunningOrder}</td>
