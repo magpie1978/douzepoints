@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Eurovision Entries</title>
+  <title>Eurovision Grand Final (2024)</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Raleway:400,600&display=swap"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,600&display=swap"/>
   <style>
     body {
       font-family: 'Raleway', sans-serif;
@@ -88,11 +88,11 @@
 <body>
 
 <div class="table-wrapper">
-  <div class="table-header">Eurovision Entries (2024)</div>
+  <div class="table-header">Eurovision Grand Final Entries (2024)</div>
   <table>
     <thead>
       <tr>
-        <th data-key="index">#</th>
+        <th data-key="FinalRunningOrder">Running Order</th>
         <th data-key="Country">Country</th>
         <th data-key="Artist">Artist</th>
         <th data-key="Song">Song</th>
@@ -102,9 +102,7 @@
         <th data-key="FinalRank">Result</th>
       </tr>
     </thead>
-    <tbody id="eurovision-table-body">
-      <!-- Rows will be injected here -->
-    </tbody>
+    <tbody id="eurovision-table-body"></tbody>
   </table>
 </div>
 
@@ -112,7 +110,7 @@
 <script>
   let eurovisionData = [];
   let currentSortKey = null;
-  let currentSortDir = 'desc'; // Default direction for total points
+  let currentSortDir = 'desc';
 
   async function loadTableData() {
     const response = await fetch('./data/DouzePoints.csv');
@@ -124,8 +122,11 @@
         skipEmptyLines: true,
         complete: results => {
           eurovisionData = results.data
-            .filter(row => row.Year === '2024')
-            .map((row, index) => ({ index: index + 1, ...row }));
+            .filter(row =>
+              row.Year === '2024' &&
+              row.FinalRunningOrder && row.FinalRunningOrder.trim() !== ''
+            )
+            .map(row => ({ ...row }));
           resolve();
         }
       });
@@ -145,7 +146,7 @@
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${row.index}</td>
+        <td>${row.FinalRunningOrder}</td>
         <td>${flag}${row.Country}</td>
         <td>${row.Artist}</td>
         <td>${row.Song}</td>
@@ -189,7 +190,7 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     loadTableData().then(() => {
-      sortBy("Final_TotalPoints");
+      sortBy("Final_TotalPoints"); // Default: Total Points, descending
     });
 
     document.querySelectorAll("th[data-key]").forEach(th => {
