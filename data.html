@@ -181,12 +181,17 @@ function populateYearDropdown() {
 
 function loadTableData(year) {
   currentYear = year;
+
   eurovisionData = allRawData
     .filter(row =>
       row.Year === year &&
       row.FinalRunningOrder && row.FinalRunningOrder.trim() !== ''
     );
-  sortBy("Final_TotalPoints"); // Reapply default sort
+
+  // ✅ Reset default sort every time year changes
+  currentSortKey = "Final_TotalPoints";
+  currentSortDir = "desc";
+  sortBy(currentSortKey);
 }
 
 function renderTable() {
