@@ -76,12 +76,12 @@
       color: #adb5bd;
     }
 
-    th.sort-asc::after {
-      content: " ▲";
-    }
-
+    th.sort-asc::after,
     th.sort-desc::after {
-      content: " ▼";
+      display: inline-block;
+      margin-left: 6px;
+      font-size: 12px;
+      vertical-align: middle;
     }
   </style>
 </head>
