@@ -148,6 +148,16 @@ let currentSortKey = null;
 let currentSortDir = 'desc';
 let allRawData = [];
 
+  
+function formatOrdinal(n) {
+  n = parseInt(n);
+  if (isNaN(n)) return '-';
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+  
 async function loadCSVData() {
   const response = await fetch('./data/DouzePoints.csv');
   const csvText = await response.text();
@@ -206,16 +216,35 @@ function renderTable() {
       : '<span class="status non-winner">Qualified</span>';
 
     const tr = document.createElement('tr');
+
+
+tr.innerHTML = `
+  <td>${formatOrdinal(row.Final_Rank)}</td>
+  <td>${flag}<span class="country-name">${row.Country}</span></td>
+  <td>${row.Artist}</td>
+  <td>${row.Song}</td>
+  <td>${row.FinalRunningOrder}</td>
+  <td>${row.Final_TelevotePoints || 0}</td>
+  <td>${formatOrdinal(row.Final_TelevoteRank)}</td>
+  <td>${row.Final_JuryPoints || 0}</td>
+  <td>${formatOrdinal(row.Final_JuryRank)}</td>
+  <td>${row.Final_TotalPoints || 0}</td>
+`;
+
+
+
+
+    
     tr.innerHTML = `
-      <td>${row.Final_Rank || '-'}</td>
+      <td>${formatOrdinal(row.Final_Rank)}</td>
       <td>${flag}<span class="country-name">${row.Country}</span></td>
       <td>${row.Artist}</td>
       <td>${row.Song}</td>
       <td>${row.FinalRunningOrder}</td>
       <td>${row.Final_TelevotePoints || 0}</td>
-      <td>${row.Final_TelevoteRank || '-'}</td>
+      <td>${formatOrdinal(row.Final_TelevoteRank)}</td>
       <td>${row.Final_JuryPoints || 0}</td>
-      <td>${row.Final_JuryRank || '-'}</td>
+      <td>${formatOrdinal(row.Final_JuryRank)}</td>
       <td>${row.Final_TotalPoints || 0}</td>
     `;
       
