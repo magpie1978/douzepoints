@@ -84,16 +84,6 @@
       display: inline-block;
     }
 
-    .winner {
-      background-color: #28a74530;
-      color: #28a745;
-    }
-
-    .non-winner {
-      background-color: #6c757d30;
-      color: #adb5bd;
-    }
-
     .qualified {
       background-color: #17a2b830;
       color: #17a2b8;
@@ -197,6 +187,7 @@ function loadTableData(year) {
     if (stage === "Semi Final 2") return isCorrectYear && row.SemiFinal === "2";
     return false;
   }).map(row => {
+    const qualified = isSemi && row.SemiFinal_Rank?.trim() && row.Final_Rank?.trim();
     return {
       ...row,
       Rank: isSemi ? row.SemiFinal_Rank : row.Final_Rank,
@@ -206,11 +197,10 @@ function loadTableData(year) {
       TotalPoints: isSemi ? row.SemiFinal_TotalPoints : row.Final_TotalPoints,
       JuryRank: isSemi ? row.SemiFinal_JuryRank : row.Final_JuryRank,
       TelevoteRank: isSemi ? row.SemiFinal_TelevoteRank : row.Final_TelevoteRank,
-      Qualified: isSemi ? row.Qualified === "Y" : row.FinalRank === "1"
+      Qualified: isSemi ? (qualified ? true : false) : null
     };
   });
 
-  // Determine which columns to show based on actual data
   visibleColumns = ["Rank", "Country", "Artist", "Song", "RunningOrder", "TelevotePoints", "TelevoteRank", "JuryPoints", "JuryRank", "TotalPoints"];
   visibleColumns = visibleColumns.filter(key => eurovisionData.some(row => row[key] && row[key].toString().trim() !== ''));
 
@@ -247,7 +237,7 @@ function renderTable() {
   eurovisionData.forEach(row => {
     const countryCode = (row.Country_Code || '').toLowerCase();
     const flag = `<img class="flag" src="flags/${countryCode}.png" alt="${row.Country} flag"/>`;
-    const badge = row.Qualified === true ? '<span class="status qualified">Qualified</span>' : (row.Qualified === false ? '<span class="status not-qualified">Did Not Qualify</span>' : '');
+    const badge = row.Qualified === true ? '<span class="status qualified">Qual</span>' : (row.Qualified === false ? '<span class="status not-qualified">DNQ</span>' : '');
 
     const tr = document.createElement('tr');
     tr.innerHTML = visibleColumns.map(key => {
@@ -297,7 +287,6 @@ function sortBy(key, direction = null) {
 
 document.addEventListener("DOMContentLoaded", () => {
   loadCSVData();
-
   document.getElementById("yearSelect").addEventListener("change", e => loadTableData(e.target.value));
   document.getElementById("stageSelect").addEventListener("change", () => loadTableData(currentYear));
 });
