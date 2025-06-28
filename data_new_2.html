@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Eurovision Entries</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,600&display=swap"/>
+  <style>
+    body {
+      font-family: 'Raleway', sans-serif;
+      background: #0f111a;
+      color: #ccc;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .table-wrapper {
+      max-width: 1280px;
+      margin: auto;
+      background: #181a24;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
+    .table-header {
+      padding: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 1px solid #2a2d3a;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #1f212d;
+      cursor: pointer;
+    }
+
+    th, td {
+      padding: 14px 20px;
+      text-align: left;
+      font-size: 12px;
+      border-bottom: 1px solid #2a2d3a;
+    }
+
+    th {
+      color: #aaa;
+      font-weight: 500;
+      user-select: none;
+    }
+
+    .flag {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      object-fit: cover;
+      vertical-align: middle;
+      margin-right: 20px;
+    }
+
+    .country-name {
+      vertical-align: middle;
+    }
+
+    th:nth-child(1), td:nth-child(1) {
+      width: 50px;
+      max-width: 50px;
+      text-align: center;
+    }
+
+    td:nth-child(2), th:nth-child(2) {
+      white-space: nowrap;
+      min-width: 160px;
+    }
+
+    td .status {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      display: inline-block;
+    }
+
+    .winner {
+      background-color: #28a74530;
+      color: #28a745;
+    }
+
+    .non-winner {
+      background-color: #6c757d30;
+      color: #adb5bd;
+    }
+
+    .qualified {
+      background-color: #17a2b830;
+      color: #17a2b8;
+    }
+
+    .not-qualified {
+      background-color: #dc354530;
+      color: #dc3545;
+    }
+
+    th.sort-asc::after,
+    th.sort-desc::after {
+      display: inline-block;
+      margin-left: 6px;
+      font-size: 12px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+
+<div class="table-wrapper">
+  <div class="table-controls" style="text-align: right; padding: 10px 20px;">
+    <label for="yearSelect" style="margin-right: 10px; color: #aaa;">Year:</label>
+    <select id="yearSelect" style="margin-right: 20px; padding: 5px 10px; font-size: 14px; background: #1f212d; color: #ccc; border: none; border-radius: 6px;"></select>
+
+    <label for="stageSelect" style="margin-right: 10px; color: #aaa;">Stage:</label>
+    <select id="stageSelect" style="padding: 5px 10px; font-size: 14px; background: #1f212d; color: #ccc; border: none; border-radius: 6px;">
+      <option value="Final" selected>Final</option>
+      <option value="Semi Final 1">Semi Final 1</option>
+      <option value="Semi Final 2">Semi Final 2</option>
+    </select>
+  </div>
+
+  <div id="tableHeader" class="table-header">Eurovision Grand Final Entries (2024)</div>
+  <table>
+    <thead>
+      <tr id="tableHeadRow"></tr>
+    </thead>
+    <tbody id="eurovision-table-body"></tbody>
+  </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script>
+let eurovisionData = [];
+let currentYear = '2025';
+let currentSortKey = null;
+let currentSortDir = 'desc';
+let allRawData = [];
+let visibleColumns = [];
+
+function formatOrdinal(n) {
+  n = parseInt(n);
+  if (isNaN(n)) return '-';
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+async function loadCSVData() {
+  const response = await fetch('./data/DouzePoints.csv');
+  const csvText = await response.text();
+
+  return new Promise(resolve => {
+    Papa.parse(csvText, {
+      header: true,
+      skipEmptyLines: true,
+      complete: results => {
+        allRawData = results.data;
+        populateYearDropdown();
+        loadTableData(currentYear);
+        resolve();
+      }
+    });
+  });
+}
+
+function populateYearDropdown() {
+  const years = [...new Set(allRawData.map(row => row.Year).filter(Boolean))].sort((a, b) => b - a);
+  const select = document.getElementById('yearSelect');
+  select.innerHTML = '';
+  years.forEach(year => {
+    const option = document.createElement('option');
+    option.value = year;
+    option.textContent = year;
+    if (year === currentYear) option.selected = true;
+    select.appendChild(option);
+  });
+}
+
+function loadTableData(year) {
+  currentYear = year;
+  const stage = document.getElementById("stageSelect").value;
+  const isSemi = stage.includes("Semi");
+
+  eurovisionData = allRawData.filter(row => {
+    const isCorrectYear = row.Year === year;
+    if (stage === "Final") return isCorrectYear && row.FinalRunningOrder?.trim();
+    if (stage === "Semi Final 1") return isCorrectYear && row.SemiFinal === "1";
+    if (stage === "Semi Final 2") return isCorrectYear && row.SemiFinal === "2";
+    return false;
+  }).map(row => {
+    return {
+      ...row,
+      Rank: isSemi ? row.SemiFinal_Rank : row.Final_Rank,
+      RunningOrder: isSemi ? row.SemiFinalRunningOrder : row.FinalRunningOrder,
+      JuryPoints: isSemi ? row.SemiFinal_JuryPoints : row.Final_JuryPoints,
+      TelevotePoints: isSemi ? row.SemiFinal_TelevotePoints : row.Final_TelevotePoints,
+      TotalPoints: isSemi ? row.SemiFinal_TotalPoints : row.Final_TotalPoints,
+      JuryRank: isSemi ? row.SemiFinal_JuryRank : row.Final_JuryRank,
+      TelevoteRank: isSemi ? row.SemiFinal_TelevoteRank : row.Final_TelevoteRank,
+      Qualified: isSemi ? row.Qualified === "Y" : row.FinalRank === "1"
+    };
+  });
+
+  // Determine which columns to show based on actual data
+  visibleColumns = ["Rank", "Country", "Artist", "Song", "RunningOrder", "TelevotePoints", "TelevoteRank", "JuryPoints", "JuryRank", "TotalPoints"];
+  visibleColumns = visibleColumns.filter(key => eurovisionData.some(row => row[key] && row[key].toString().trim() !== ''));
+
+  const tableHead = document.getElementById("tableHeadRow");
+  tableHead.innerHTML = '';
+  const columnNames = {
+    Rank: "Result",
+    Country: "Country",
+    Artist: "Artist",
+    Song: "Song",
+    RunningOrder: "R/O",
+    TelevotePoints: "Televote Pts",
+    TelevoteRank: "Televote Rank",
+    JuryPoints: "Jury Pts",
+    JuryRank: "Jury Rank",
+    TotalPoints: "Total Points"
+  };
+  visibleColumns.forEach(key => {
+    const th = document.createElement("th");
+    th.textContent = columnNames[key] || key;
+    th.dataset.key = key;
+    tableHead.appendChild(th);
+  });
+
+  const header = document.getElementById("tableHeader");
+  header.textContent = `Eurovision ${stage === "Final" ? "Grand Final" : stage} Entries (${year})`;
+  sortBy("TotalPoints", "desc");
+}
+
+function renderTable() {
+  const tbody = document.getElementById('eurovision-table-body');
+  tbody.innerHTML = '';
+
+  eurovisionData.forEach(row => {
+    const countryCode = (row.Country_Code || '').toLowerCase();
+    const flag = `<img class="flag" src="flags/${countryCode}.png" alt="${row.Country} flag"/>`;
+    const badge = row.Qualified === true ? '<span class="status qualified">Qualified</span>' : (row.Qualified === false ? '<span class="status not-qualified">Did Not Qualify</span>' : '');
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = visibleColumns.map(key => {
+      if (key === "Rank" || key === "TelevoteRank" || key === "JuryRank") {
+        return `<td>${formatOrdinal(row[key])}</td>`;
+      }
+      if (key === "Country") {
+        return `<td>${flag}<span class="country-name">${row.Country}</span></td>`;
+      }
+      if (key === "TotalPoints") {
+        return `<td>${row[key] || 0} ${badge}</td>`;
+      }
+      return `<td>${row[key] || ''}</td>`;
+    }).join('');
+    tbody.appendChild(tr);
+  });
+}
+
+function sortBy(key, direction = null) {
+  const isNumeric = !isNaN(parseFloat(eurovisionData[0][key]));
+
+  if (currentSortKey === key && !direction) {
+    currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    currentSortKey = key;
+    const ascendingByDefault = ["RunningOrder", "TelevoteRank", "JuryRank"];
+    currentSortDir = direction || (ascendingByDefault.includes(key) ? 'asc' : isNumeric ? 'desc' : 'asc');
+  }
+
+  eurovisionData.sort((a, b) => {
+    const aVal = isNumeric ? parseFloat(a[key] || 0) : (a[key] || '').toLowerCase();
+    const bVal = isNumeric ? parseFloat(b[key] || 0) : (b[key] || '').toLowerCase();
+    if (aVal < bVal) return currentSortDir === 'asc' ? -1 : 1;
+    if (aVal > bVal) return currentSortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  document.querySelectorAll("th").forEach(th => {
+    th.classList.remove("sort-asc", "sort-desc");
+    if (th.dataset.key === key) {
+      th.classList.add(currentSortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+    }
+  });
+
+  renderTable();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadCSVData();
+
+  document.getElementById("yearSelect").addEventListener("change", e => loadTableData(e.target.value));
+  document.getElementById("stageSelect").addEventListener("change", () => loadTableData(currentYear));
+});
+</script>
+</body>
+</html>
