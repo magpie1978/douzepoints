@@ -104,9 +104,9 @@
       font-size: 14px;
     }
 
-    /* Vertical dividers */
+    /* Dashed vertical dividers */
     th.divider-right, td.divider-right {
-      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      border-right: 1px dashed rgba(255, 255, 255, 0.1);
     }
   </style>
 </head>
@@ -183,7 +183,7 @@ function loadTableData(year) {
     const field = col.key || (isFinal ? col.final : col.semi);
     if (col.label === "Status") return isFinal ? '' : `<th data-key="Status">Status</th>`;
     if (field && eurovisionData.some(row => row[field])) {
-      const divider = (col.label === "R/O" || col.label === "Televote Rank") ? 'divider-right' : '';
+      const divider = (col.label === "R/O" || col.label === "Televote Rank" || col.label === "Jury Rank") ? 'divider-right' : '';
       return `<th class="${divider}" data-key="${col.label}">${col.label}</th>`;
     }
     return '';
@@ -209,7 +209,7 @@ function renderTable() {
 
       const field = col.key || (isFinal ? col.final : col.semi);
       const hasField = field && row[field] != null && row[field] !== '';
-      const dividerClass = (label === "R/O" || label === "Televote Rank") ? "divider-right" : "";
+      const dividerClass = (label === "R/O" || label === "Televote Rank" || label === "Jury Rank") ? "divider-right" : "";
 
       if (label === "Country") {
         return `<td class="${dividerClass}">${flag}<span class="country-name">${row.Country}</span></td>`;
