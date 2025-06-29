@@ -219,7 +219,8 @@ body {
   text-align: center;
   color: #ccc;
   font-size: 0.85rem;
-  background-color: #141414;
+  /* background-color: #141414; */ 
+  background-color: #0f111a;
 }
 
 .footer-line {
