@@ -101,7 +101,8 @@ body {
 
 .video-item {
   cursor: pointer;
-  background-color: #1a1a1a;
+  /* background-color: #1a1a1a; */
+  background-color: #181a24;
   padding: 10px;
   border-radius: 8px;
   overflow: hidden;
@@ -112,7 +113,8 @@ body {
 
 .carousel-video-item {
   cursor: pointer;
-  background-color: #1a1a1a;
+  /* background-color: #1a1a1a; */
+  background-color: #181a24;
   padding: 10px;
   border-radius: 8px;
   overflow: hidden;
