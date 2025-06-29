@@ -70,6 +70,20 @@
     th.sort-asc::after { content: "▲"; }
     th.sort-desc::after { content: "▼"; }
 
+    /* Align specific columns to center */
+    th[data-key="Televote Rank"],
+    th[data-key="Televote Pts"],
+    th[data-key="Jury Rank"],
+    th[data-key="Jury Pts"],
+    th[data-key="Total Points"],
+    td.televote-rank,
+    td.televote-pts,
+    td.jury-rank,
+    td.jury-pts,
+    td.total-pts {
+      text-align: center;
+    }
+
     .flag {
       width: 20px;
       height: 20px;
@@ -104,8 +118,8 @@
       font-size: 14px;
     }
 
-    /* Dashed vertical dividers */
-    th.divider-right, td.divider-right {
+    th.divider-right,
+    td.divider-right {
       border-right: 1px dashed rgba(255, 255, 255, 0.1);
     }
   </style>
@@ -211,12 +225,19 @@ function renderTable() {
       const hasField = field && row[field] != null && row[field] !== '';
       const dividerClass = (label === "R/O" || label === "Televote Rank" || label === "Jury Rank") ? "divider-right" : "";
 
+      const alignClass =
+        label === "Televote Pts" ? "televote-pts" :
+        label === "Televote Rank" ? "televote-rank" :
+        label === "Jury Pts" ? "jury-pts" :
+        label === "Jury Rank" ? "jury-rank" :
+        label === "Total Points" ? "total-pts" : "";
+
       if (label === "Country") {
         return `<td class="${dividerClass}">${flag}<span class="country-name">${row.Country}</span></td>`;
       }
 
       if (label === "Result" || label.includes("Rank")) {
-        return hasField ? `<td class="${dividerClass}">${formatOrdinal(row[field])}</td>` : '';
+        return hasField ? `<td class="${alignClass} ${dividerClass}">${formatOrdinal(row[field])}</td>` : '';
       }
 
       if (label === "Status") {
@@ -227,7 +248,7 @@ function renderTable() {
         return `<td>${badge}</td>`;
       }
 
-      return hasField ? `<td class="${dividerClass}">${row[field]}</td>` : '';
+      return hasField ? `<td class="${alignClass} ${dividerClass}">${row[field]}</td>` : '';
     });
 
     tr.innerHTML = cells.join('');
