@@ -15,6 +15,90 @@
       padding: 20px;
     }
 
+    .container {
+      display: flex;
+    }
+
+
+/* HEADER BANNER */
+.banner-divider {
+  width: 100%;
+  height: 1px;
+  background-color: #e50914;
+  }
+
+
+.banner-static {
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+ 
+}
+
+.banner-static img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}      
+
+.header-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+} 
+
+.home-link {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.header-links {
+  display: flex;
+  gap: 20px;
+}
+
+.header-links a {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.header-links a:hover {
+  color: #e50914;
+}
+
+.banner-text {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  text-align: left;
+  color: black;
+  z-index: 3;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+}
+
     .table-wrapper {
       max-width: 1280px;
       margin: auto;
