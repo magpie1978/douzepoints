@@ -359,8 +359,9 @@ function renderTable() {
       }
 
       if (label === "") {
-        return `<td class="play-icon"><i class="fas fa-play-circle"></i></td>`;
-      }
+  const videoUrl = row.Video_URL || "";
+  return `<td class="play-icon"><i class="fas fa-play-circle" onclick="GDriveOpenModalWithVideo('${videoUrl.replace(/'/g, "\'")}')"></i></td>`;
+}
 
       return hasField ? `<td class="${alignClass} ${dividerClass}">${row[field]}</td>` : '';
     });
