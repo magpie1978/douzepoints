@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <title>Eurovision Results</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,600&display=swap"/>
-  <link rel="stylesheet" type="text/css" href="style/combined.css">
-  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
     body {
       font-family: 'Raleway', sans-serif;
@@ -72,7 +71,6 @@
     th.sort-asc::after { content: "▲"; }
     th.sort-desc::after { content: "▼"; }
 
-    /* Align specific columns to center */
     th[data-key="Televote Rank"],
     th[data-key="Televote Pts"],
     th[data-key="Jury Rank"],
@@ -124,14 +122,25 @@
     td.divider-right {
       border-right: 1px dashed rgba(255, 255, 255, 0.1);
     }
+
+    .play-icon {
+      text-align: center;
+    }
+
+    .play-icon i {
+      font-size: 16px;
+      color: #e50914;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .play-icon i:hover {
+      transform: scale(1.2);
+    }
   </style>
 </head>
 <body>
 
-        <!-- HEADER container -->
-        <div id="header-container"></div>
-    
-        
 <div class="table-wrapper">
   <div class="table-controls">
     <label for="yearSelect" style="color: #aaa;">Year:</label>
@@ -152,14 +161,6 @@
   </table>
 </div>
 
-
-        <!-- FOOTER & JS -->
-        <div id="footer"></div>
-        <script src="js/footer.js" type="text/javascript"></script>
-        
-        
-
-  
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
 let allRawData = [];
@@ -173,6 +174,7 @@ const columnDefinitions = [
   { label: "Country", key: "Country" },
   { label: "Artist", key: "Artist" },
   { label: "Song", key: "Song" },
+  { label: "", key: "PlayIcon" },
   { label: "R/O", final: "FinalRunningOrder", semi: "SemiFinalRunningOrder" },
   { label: "Televote Pts", final: "Final_TelevotePoints", semi: "SemiFinal_TelevotePoints" },
   { label: "Televote Rank", final: "Final_TelevoteRank", semi: "SemiFinal_TelevoteRank" },
@@ -210,6 +212,7 @@ function loadTableData(year) {
   tableHead.innerHTML = "<tr>" + columnDefinitions.map(col => {
     const field = col.key || (isFinal ? col.final : col.semi);
     if (col.label === "Status") return isFinal ? '' : `<th data-key="Status">Status</th>`;
+    if (col.label === "") return `<th class="play-icon"></th>`;
     if (field && eurovisionData.some(row => row[field])) {
       const divider = (col.label === "R/O" || col.label === "Televote Rank" || col.label === "Jury Rank") ? 'divider-right' : '';
       return `<th class="${divider}" data-key="${col.label}">${col.label}</th>`;
@@ -260,6 +263,10 @@ function renderTable() {
           ? `<span class="badge qualified" title="Qualified for Final">Qual</span>`
           : `<span class="badge dnq">DNQ</span>`;
         return `<td>${badge}</td>`;
+      }
+
+      if (label === "") {
+        return `<td class="play-icon"><i class="fas fa-play-circle"></i></td>`;
       }
 
       return hasField ? `<td class="${alignClass} ${dividerClass}">${row[field]}</td>` : '';
