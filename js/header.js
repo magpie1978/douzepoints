@@ -25,6 +25,7 @@ async function loadHeader() {
     const isContactPage = path.includes("contact.html");
     const isFAQPage = path.includes("faq.html");
     const isPrivacyPage = path.includes("privacy.html");
+    const isScoreboardPage = path.includes("scoreboard.html");
 
     if (isIndexPage && banner) {
         banner.src = "/banners/douzepoints.png";
@@ -35,6 +36,9 @@ async function loadHeader() {
     } else if (isFavouritesPage && banner) {
         banner.src = "/banners/fanfavorites.png";
         banner.alt = "Fan Favourites";
+    } else if (isScoreboardPage && banner) {
+        banner.src = "/banners/fanfavorites.png";
+        banner.alt = "Scoreboard";
     } else if (isEditionPage && banner) {
         const year = new URLSearchParams(window.location.search).get("edition");
         if (year) {
