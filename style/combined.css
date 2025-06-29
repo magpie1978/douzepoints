@@ -159,7 +159,9 @@ body {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background-color: #444;
+  /* background-color: #444;*/
+  background-color: ##181a24;
+  
   object-fit: cover;
   margin-left: 8px;
 }
