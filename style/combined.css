@@ -3,8 +3,10 @@
 body {
   font-family: 'Raleway', sans-serif;
   margin: 0;
-  background: #141414;
-  color: #fff;
+  /* background: #141414; */
+  /* color: #fff; */
+  background: #0f111a;
+  color: #ccc;
 }
 
 .container {
