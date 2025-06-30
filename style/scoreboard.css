@@ -105,6 +105,15 @@ body {
   padding: 10px 20px;
 }
 
+.table-controls label {
+  font-size: 12px;
+}
+
+.table-controls select {
+  font-size: 12px;
+  padding: 4px 8px;
+}
+
 .table-header {
   padding: 20px;
   font-size: 16px;
