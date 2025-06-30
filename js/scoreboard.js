@@ -41,7 +41,7 @@ function loadTableData(year) {
   });
 
   const header = document.getElementById("tableHeader");
-  //header.textContent = `Eurovision ${isFinal ? "Grand Final" : stage} Entries (${year})`;
+  header.textContent = `Eurovision ${isFinal ? "Grand Final" : stage} (${year})`;
 
   const tableHead = document.getElementById("tableHead");
   tableHead.innerHTML = "<tr>" + columnDefinitions.map(col => {
