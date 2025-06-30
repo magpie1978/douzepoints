@@ -25,7 +25,7 @@ async function loadHeader() {
     const isContactPage = path.includes("contact.html");
     const isFAQPage = path.includes("faq.html");
     const isPrivacyPage = path.includes("privacy.html");
-    const isScoreboardPage = path.includes("scoreboard.html");
+    const isScoreboardPage = path.includes("scoreboard_old_old.html");
 
     if (isIndexPage && banner) {
         banner.src = "/banners/douzepoints.png";
