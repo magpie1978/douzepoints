@@ -104,16 +104,19 @@ body {
   align-items: center;
   gap: 20px;
   padding: 10px 20px;
+  vertical-align: middle;
 }
 
 .table-controls label {
   font-size: 12px;
   margin-right: 6px;
+  vertical-align: middle;
 }
 
 .table-controls select {
   font-size: 12px;
   padding: 4px 8px;
+  vertical-align: middle;
 }
 
 .table-header {
