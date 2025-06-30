@@ -37,7 +37,7 @@ async function loadHeader() {
         banner.src = "/banners/fanfavorites.png";
         banner.alt = "Fan Favourites";
     } else if (isScoreboardPage && banner) {
-        banner.src = "/banners/fanfavorites.png";
+        banner.src = "/banners/scoreboard.png";
         banner.alt = "Scoreboard";
     } else if (isEditionPage && banner) {
         const year = new URLSearchParams(window.location.search).get("edition");
