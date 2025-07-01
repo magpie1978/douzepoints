@@ -114,17 +114,16 @@ function buildVideoItem(row) {
   const semiFinalRank = row.SemiFinal_Rank?.trim();
   const finalRank = row.Final_Rank?.trim();
 
-  // === SF Badge ===
-  const semiBadgeHTML = !semiFinalRank
-    ? `<img src="images/na.png" alt="No SF Rank" class="circle-icon">`
-    : `<div class="rank-badge">${semiFinalRank}</div>`;
+  const sfImage = semiFinalRank ? `${semiFinalRank}.png` : "na.png";
+  let finalImage;
 
-  // === F Badge ===
-  const finalBadgeHTML = !finalRank
-    ? `<img src="images/na.png" alt="No Final Rank" class="circle-icon">`
-    : (!semiFinalRank
-        ? `<img src="images/big.png" alt="Big 5/Host" class="circle-icon">`
-        : `<div class="rank-badge">${finalRank}</div>`);
+  if (!finalRank) {
+    finalImage = "na.png";
+  } else if (!semiFinalRank) {
+    finalImage = "big.png";
+  } else {
+    finalImage = `${finalRank}.png`;
+  }
 
   div.innerHTML = `
     <div class="preview-container">
@@ -140,11 +139,11 @@ function buildVideoItem(row) {
       <div class="circle-group">
         <div class="circle-container">
           <div class="circle-label">SF</div>
-          ${semiBadgeHTML}
+          <img src="images/${sfImage}" alt="SF Rank" class="circle-icon">
         </div>
         <div class="circle-container">
           <div class="circle-label">F</div>
-          ${finalBadgeHTML}
+          <img src="images/${finalImage}" alt="Final Rank" class="circle-icon">
         </div>
       </div>
     </div>
@@ -153,6 +152,7 @@ function buildVideoItem(row) {
   div.onclick = () => GDriveOpenModalWithVideo(row.Video_URL);
   return div;
 }
+
 
 
 
