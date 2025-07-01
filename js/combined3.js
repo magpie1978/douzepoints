@@ -114,11 +114,17 @@ function buildVideoItem(row) {
   const semiFinalRank = row.SemiFinal_Rank?.trim();
   const finalRank = row.Final_Rank?.trim();
 
-  const semiBadgeHTML = `<div class="rank-badge">${semiFinalRank || "–"}</div>`;
+  // === SF Badge ===
+  const semiBadgeHTML = !semiFinalRank
+    ? `<img src="images/na.png" alt="No SF Rank" class="circle-icon">`
+    : `<div class="rank-badge">${semiFinalRank}</div>`;
 
-  const finalBadgeHTML = (!semiFinalRank && finalRank)
-    ? `<img src="images/big.png" alt="Finalist" class="circle-icon">`
-    : `<div class="rank-badge">${finalRank || "–"}</div>`;
+  // === F Badge ===
+  const finalBadgeHTML = !finalRank
+    ? `<img src="images/na.png" alt="No Final Rank" class="circle-icon">`
+    : (!semiFinalRank
+        ? `<img src="images/big.png" alt="Big 5/Host" class="circle-icon">`
+        : `<div class="rank-badge">${finalRank}</div>`);
 
   div.innerHTML = `
     <div class="preview-container">
@@ -147,6 +153,7 @@ function buildVideoItem(row) {
   div.onclick = () => GDriveOpenModalWithVideo(row.Video_URL);
   return div;
 }
+
 
 
 
