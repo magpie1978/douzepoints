@@ -377,7 +377,7 @@ h4 {
   flex-direction: row;
   align-items: center;
   margin-left: auto;
-  gap: 6px; /* reduced horizontal gap between SF and F */
+  gap: 4px; /* reduced horizontal gap between SF and F */
 }
 
 .circle-container {
