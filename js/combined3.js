@@ -111,6 +111,9 @@ function buildVideoItem(row) {
   div.setAttribute("data-televote", row.Final_TelevotePoints || "0");
   div.setAttribute("data-total", row.Final_TotalPoints || "0");
 
+  const semiFinalRank = row.SemiFinal_Rank || 'na';
+  const finalRank = row.Final_Rank || 'na';
+
   div.innerHTML = `
     <div class="preview-container">
       <img src="images/${row.Year}-${countryCode.toUpperCase()}.jpeg" alt="${row.Artist}"/>
@@ -126,13 +129,13 @@ function buildVideoItem(row) {
         <div class="circle-container">
           <div class="circle-label">SF</div>
           <div class="circle-icon">
-            <img src="images/sf.png" alt="SF">
+            <img src="images/${semiFinalRank}.png" alt="SF Rank">
           </div>
         </div>
         <div class="circle-container">
           <div class="circle-label">F</div>
           <div class="circle-icon">
-            <img src="images/final.png" alt="Final">
+            <img src="images/${finalRank}.png" alt="Final Rank">
           </div>
         </div>
       </div>
