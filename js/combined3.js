@@ -111,13 +111,17 @@ function buildVideoItem(row) {
   div.setAttribute("data-televote", row.Final_TelevotePoints || "0");
   div.setAttribute("data-total", row.Final_TotalPoints || "0");
 
-  const semiFinalRank = row.SemiFinal_Rank || '–';
-  const finalRank = row.Final_Rank || '–';
-  const isBigFiveOrHost = row.SemiFinal_Rank === '' && row.Final_Rank !== '';
+  const semiFinalRank = row.SemiFinal_Rank?.trim() || '–';
+  const finalRank = row.Final_Rank?.trim() || '';
+
+  // True if the entry reached the final but has no SemiFinal_Rank
+  const isBigFiveOrHost = finalRank && (row.SemiFinal_Rank === null || row.SemiFinal_Rank === undefined || row.SemiFinal_Rank.trim() === '');
 
   const finalBadgeHTML = isBigFiveOrHost
     ? `<img src="images/big.png" alt="Finalist" class="circle-icon">`
-    : `<div class="rank-badge">${finalRank}</div>`;
+    : finalRank
+      ? `<div class="rank-badge">${finalRank}</div>`
+      : `<div class="rank-badge">–</div>`;
 
   div.innerHTML = `
     <div class="preview-container">
