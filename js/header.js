@@ -16,7 +16,7 @@ async function loadHeader() {
 
     const banner = document.getElementById("country-banner");
 
-    const isIndexPage = path.includes("index.html");
+    const isIndexPage = path === '/' || path.includes('index.html');
     const isCountryPage = path.includes("country.html");
     const isEditionPage = path.includes("edition.html");
     const isWinnersPage = path.includes("winners.html");
