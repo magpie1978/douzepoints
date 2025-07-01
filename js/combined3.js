@@ -111,17 +111,14 @@ function buildVideoItem(row) {
   div.setAttribute("data-televote", row.Final_TelevotePoints || "0");
   div.setAttribute("data-total", row.Final_TotalPoints || "0");
 
-  const semiFinalRank = row.SemiFinal_Rank?.trim() || '–';
-  const finalRank = row.Final_Rank?.trim() || '';
+  const semiFinalRank = row.SemiFinal_Rank?.trim();
+  const finalRank = row.Final_Rank?.trim();
 
-  // True if the entry reached the final but has no SemiFinal_Rank
-  const isBigFiveOrHost = finalRank && (row.SemiFinal_Rank === null || row.SemiFinal_Rank === undefined || row.SemiFinal_Rank.trim() === '');
+  const semiBadgeHTML = `<div class="rank-badge">${semiFinalRank || "–"}</div>`;
 
-  const finalBadgeHTML = isBigFiveOrHost
+  const finalBadgeHTML = (!semiFinalRank && finalRank)
     ? `<img src="images/big.png" alt="Finalist" class="circle-icon">`
-    : finalRank
-      ? `<div class="rank-badge">${finalRank}</div>`
-      : `<div class="rank-badge">–</div>`;
+    : `<div class="rank-badge">${finalRank || "–"}</div>`;
 
   div.innerHTML = `
     <div class="preview-container">
@@ -137,7 +134,7 @@ function buildVideoItem(row) {
       <div class="circle-group">
         <div class="circle-container">
           <div class="circle-label">SF</div>
-          <div class="rank-badge">${semiFinalRank}</div>
+          ${semiBadgeHTML}
         </div>
         <div class="circle-container">
           <div class="circle-label">F</div>
