@@ -111,8 +111,13 @@ function buildVideoItem(row) {
   div.setAttribute("data-televote", row.Final_TelevotePoints || "0");
   div.setAttribute("data-total", row.Final_TotalPoints || "0");
 
-  const semiFinalRank = row.SemiFinal_Rank || 'na';
-  const finalRank = row.Final_Rank || 'na';
+  const semiFinalRank = row.SemiFinal_Rank || '–';
+  const finalRank = row.Final_Rank || '–';
+  const isBigFiveOrHost = row.SemiFinal_Rank === '' && row.Final_Rank !== '';
+
+  const finalBadgeHTML = isBigFiveOrHost
+    ? `<img src="images/big.png" alt="Finalist" class="circle-icon">`
+    : `<div class="rank-badge">${finalRank}</div>`;
 
   div.innerHTML = `
     <div class="preview-container">
@@ -128,15 +133,11 @@ function buildVideoItem(row) {
       <div class="circle-group">
         <div class="circle-container">
           <div class="circle-label">SF</div>
-          <div class="circle-icon">
-            <img src="images/${semiFinalRank}.png" alt="SF Rank">
-          </div>
+          <div class="rank-badge">${semiFinalRank}</div>
         </div>
         <div class="circle-container">
           <div class="circle-label">F</div>
-          <div class="circle-icon">
-            <img src="images/${finalRank}.png" alt="Final Rank">
-          </div>
+          ${finalBadgeHTML}
         </div>
       </div>
     </div>
