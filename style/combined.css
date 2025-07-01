@@ -407,10 +407,12 @@ h4 {
 }
 
 .circle-icon {
-  width: 26px;
-  height: 26px;
+  width: 80%;
+  height: 80%;
   border-radius: 50%;
-  object-fit: cover;
+  object-fit: contain;
+  display: block;
+  margin: auto;
 }
 
 .circle-icon img {
