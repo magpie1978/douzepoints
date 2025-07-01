@@ -391,7 +391,7 @@ h4 {
 .circle-label {
   font-size: 0.6rem;
   color: #ccc;
-  margin-bottom: 10px; /* tighter spacing between label and image */
+  margin-bottom: 16px; /* tighter spacing between label and image */
   line-height: 1;
   text-align: center;
 }
