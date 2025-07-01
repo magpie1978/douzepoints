@@ -377,46 +377,31 @@ h4 {
   flex-direction: row;
   align-items: center;
   margin-left: auto;
-  gap: 10px;
+  gap: 6px; /* reduced horizontal gap between SF and F */
 }
 
 .circle-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
+  min-width: 24px;
 }
 
 .circle-label {
   font-size: 0.6rem;
   color: #ccc;
-  margin-bottom: 2px;
-}
-
-.rank-badge {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background-color: #e50914;
-  color: white;
-  font-weight: bold;
-  font-size: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Arial', sans-serif;
+  margin-bottom: 2px; /* tighter spacing between label and image */
+  line-height: 1;
+  text-align: center;
 }
 
 .circle-icon {
-  width: 0%;
-  height: 80%;
-  border-radius: 80%;
+  width: 20px;       /* 20% smaller than 26px base */
+  height: 20px;
+  border-radius: 50%;
   object-fit: contain;
   display: block;
-  margin: auto;
+  margin: 0 auto;
 }
 
-.circle-icon img {
-  width: 80%;
-  height: 80%;
-  
-}
