@@ -392,15 +392,25 @@ h4 {
   margin-bottom: 4px;
 }
 
-.circle-icon {
-  width: 24px;
-  height: 24px;
+.rank-badge {
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  overflow: hidden;
-  background-color: #333;
+  background-color: #e50914;
+  color: white;
+  font-weight: bold;
+  font-size: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: 'Arial', sans-serif;
+}
+
+.circle-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .circle-icon img {
