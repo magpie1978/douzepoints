@@ -377,7 +377,7 @@ h4 {
   flex-direction: row;
   align-items: center;
   margin-left: auto;
-  gap: 6px;
+  gap: 10px;
 }
 
 .circle-container {
