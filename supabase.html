@@ -5,16 +5,16 @@
     <title>DouzePoints Table</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" type="text/css" href="supabase.css">
-    <script src="supabase.js" type="text/javascript"></script>
+    <script src="supabase.js" type="text/javascript" defer></script>
   </head>
 
   <body>
     <div class="top-bar">
       <h1>DouzePoints Table</h1>
-      <button onclick="window.location.href='add.html'">➕ Add New Row</button>
+      <button class="add-button" onclick="window.location.href='add.html'">➕ Add New Row</button>
     </div>
 
-    <div id="message-container" style="margin-bottom: 15px; color: green;"></div>
+    <div id="message-container" class="message-area"></div>
 
     <div id="filter-container">
       <label for="yearFilter">Filter by Year:</label>
@@ -24,6 +24,5 @@
     </div>
 
     <div id="table-container">Loading...</div>
-
   </body>
 </html>
