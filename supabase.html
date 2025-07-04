@@ -1,3 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DouzePoints Table</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #aaa;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f5f5f5;
+    }
+    button {
+      margin-right: 5px;
+    }
+    #filter-container {
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
 <body>
   <h1>DouzePoints Table</h1>
 
@@ -10,131 +42,92 @@
 
   <div id="table-container">Loading...</div>
 
-  <!-- ✅ Only load script after all DOM elements exist -->
   <script>
-    const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
+    document.addEventListener("DOMContentLoaded", async () => {
+      const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const tableContainer = document.getElementById('table-container');
+      const yearFilter = document.getElementById('yearFilter');
 
-    const tableContainer = document.getElementById('table-container');
-    const yearFilter = document.getElementById('yearFilter');
+      async function loadYears() {
+        const { data, error } = await supabase
+          .from('douzepoints')
+          .select('year');
 
-    async function loadYears() {
-      const { data, error } = await supabase
-        .from('douzepoints')
-        .select('year');
+        if (error) {
+          console.error('Error loading years:', error.message);
+          tableContainer.innerHTML = `<p>Error loading years: ${error.message}</p>`;
+          return;
+        }
 
-      if (error) {
-        console.error('Error loading years:', error.message);
-        return;
-      }
+        const allYears = data
+          .map(row => row.year)
+          .filter(year => year !== null && year !== undefined);
 
-      const allYears = data
-        .map(row => row.year)
-        .filter(year => year !== null && year !== undefined);
+        const uniqueSortedYears = [...new Set(allYears)].sort((a, b) => b - a);
 
-      const uniqueSortedYears = [...new Set(allYears)].sort((a, b) => b - a);
-
-      yearFilter.innerHTML = '<option value="All">All</option>';
-      uniqueSortedYears.forEach(year => {
-        const option = document.createElement('option');
-        option.value = year;
-        option.textContent = year;
-        yearFilter.appendChild(option);
-      });
-    }
-
-    async function loadTable(year = 'All') {
-      let query = supabase.from('douzepoints').select('*');
-      if (year !== 'All') query = query.eq('year', year);
-
-      const { data, error } = await query;
-
-      if (error) {
-        tableContainer.innerHTML = `<p>Error: ${error.message}</p>`;
-        return;
-      }
-
-      if (!data.length) {
-        tableContainer.innerHTML = `<p>No rows found.</p>`;
-        return;
-      }
-
-      const table = document.createElement('table');
-      const thead = document.createElement('thead');
-      const tbody = document.createElement('tbody');
-
-      const keys = Object.keys(data[0]);
-      const headerRow = document.createElement('tr');
-      keys.forEach(key => {
-        const th = document.createElement('th');
-        th.textContent = key;
-        headerRow.appendChild(th);
-      });
-      const actionTh = document.createElement('th');
-      actionTh.textContent = 'Actions';
-      headerRow.appendChild(actionTh);
-      thead.appendChild(headerRow);
-
-      data.forEach(row => {
-        const tr = document.createElement('tr');
-        keys.forEach(key => {
-          const td = document.createElement('td');
-          td.textContent = row[key];
-          td.contentEditable = false;
-          td.dataset.key = key;
-          tr.appendChild(td);
+        yearFilter.innerHTML = '<option value="All">All</option>';
+        uniqueSortedYears.forEach(year => {
+          const option = document.createElement('option');
+          option.value = year;
+          option.textContent = year;
+          yearFilter.appendChild(option);
         });
+      }
 
-        const actionTd = document.createElement('td');
+      async function loadTable(year = 'All') {
+        let query = supabase.from('douzepoints').select('*');
+        if (year !== 'All') query = query.eq('year', year);
 
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Delete';
-        deleteBtn.onclick = async () => {
-          await supabase.from('douzepoints').delete().eq('id', row.id);
-          tr.remove();
-        };
+        const { data, error } = await query;
 
-        const amendBtn = document.createElement('button');
-        amendBtn.textContent = 'Amend';
-        let editing = false;
-        amendBtn.onclick = async () => {
-          const cells = tr.querySelectorAll('td[data-key]');
-          if (!editing) {
-            cells.forEach(td => td.contentEditable = true);
-            amendBtn.textContent = 'Save';
-            editing = true;
-          } else {
-            const updates = {};
-            cells.forEach(td => {
-              updates[td.dataset.key] = td.textContent;
-            });
+        if (error) {
+          console.error('Error loading table:', error.message);
+          tableContainer.innerHTML = `<p>Error loading table: ${error.message}</p>`;
+          return;
+        }
 
-            await supabase.from('douzepoints').update(updates).eq('id', row.id);
-            cells.forEach(td => td.contentEditable = false);
-            amendBtn.textContent = 'Amend';
-            editing = false;
-          }
-        };
+        if (!data.length) {
+          tableContainer.innerHTML = `<p>No rows found.</p>`;
+          return;
+        }
 
-        actionTd.appendChild(deleteBtn);
-        actionTd.appendChild(amendBtn);
-        tr.appendChild(actionTd);
-        tbody.appendChild(tr);
-      });
+        const table = document.createElement('table');
+        const thead = document.createElement('thead');
+        const tbody = document.createElement('tbody');
 
-      table.appendChild(thead);
-      table.appendChild(tbody);
-      tableContainer.innerHTML = '';
-      tableContainer.appendChild(table);
-    }
+        const keys = Object.keys(data[0]);
+        const headerRow = document.createElement('tr');
+        keys.forEach(key => {
+          const th = document.createElement('th');
+          th.textContent = key;
+          headerRow.appendChild(th);
+        });
+        const actionTh = document.createElement('th');
+        actionTh.textContent = 'Actions';
+        headerRow.appendChild(actionTh);
+        thead.appendChild(headerRow);
 
-    yearFilter.addEventListener('change', () => {
-      loadTable(yearFilter.value);
-    });
+        data.forEach(row => {
+          const tr = document.createElement('tr');
+          keys.forEach(key => {
+            const td = document.createElement('td');
+            td.textContent = row[key];
+            td.contentEditable = false;
+            td.dataset.key = key;
+            tr.appendChild(td);
+          });
 
-    loadYears();
-    loadTable();
-  </script>
-</body>
+          const actionTd = document.createElement('td');
+
+          const deleteBtn = document.createElement('button');
+          deleteBtn.textContent = 'Delete';
+          deleteBtn.onclick = async () => {
+            await supabase.from('douzepoints').delete().eq('id', row.id);
+            tr.remove();
+          };
+
+          const amendBtn = document.createElement('button');
+          amendBtn.textCon
