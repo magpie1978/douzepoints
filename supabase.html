@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DouzePoints Viewer</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <h1>First Entry from douzepoints</h1>
+  <pre id="output">Loading...</pre>
+
+  <script>
+    // 🛠️ Replace with your own Supabase project credentials
+    const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function fetchFirstRow() {
+      const { data, error } = await supabase
+        .from('douzepoints')
+        .select('*')
+        .limit(1);
+
+      const output = document.getElementById('output');
+      if (error) {
+        output.textContent = 'Error: ' + error.message;
+      } else if (data.length === 0) {
+        output.textContent = 'No rows found in douzepoints table.';
+      } else {
+        output.textContent = JSON.stringify(data[0], null, 2);
+      }
+    }
+
+    fetchFirstRow();
+  </script>
+</body>
+</html>
