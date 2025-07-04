@@ -9,10 +9,22 @@
       font-family: sans-serif;
       margin: 20px;
     }
+    form {
+      margin-bottom: 20px;
+      padding: 10px;
+      background: #f8f8f8;
+      border: 1px solid #ccc;
+    }
+    form input {
+      margin-right: 10px;
+      padding: 5px;
+    }
+    form button {
+      padding: 5px 10px;
+    }
     table {
       border-collapse: collapse;
       width: 100%;
-      margin-top: 20px;
     }
     th, td {
       border: 1px solid #aaa;
@@ -22,16 +34,25 @@
     th {
       background-color: #f5f5f5;
     }
-    button {
-      margin-right: 5px;
-    }
     #filter-container {
       margin-bottom: 15px;
+    }
+    button {
+      margin-right: 5px;
     }
   </style>
 </head>
 <body>
   <h1>DouzePoints Table</h1>
+
+  <form id="add-form">
+    <label><strong>Add New Row:</strong></label><br/>
+    Year: <input type="number" id="newYear" required />
+    Country: <input type="text" id="newCountry" required />
+    Artist: <input type="text" id="newArtist" required />
+    Song: <input type="text" id="newSong" required />
+    <button type="submit">Add Row</button>
+  </form>
 
   <div id="filter-container">
     <label for="yearFilter">Filter by Year:</label>
@@ -51,14 +72,12 @@
       const tableContainer = document.getElementById('table-container');
       const yearFilter = document.getElementById('yearFilter');
 
-      // Load distinct years into the dropdown
       async function loadYears() {
         const { data, error } = await supabase.from('douzepoints').select('Year');
         if (error) {
           tableContainer.innerHTML = `<p>Error loading years: ${error.message}</p>`;
           return;
         }
-
         const years = [...new Set(data.map(row => row.Year).filter(y => y != null))].sort((a, b) => b - a);
         yearFilter.innerHTML = '<option value="All">All</option>';
         years.forEach(year => {
@@ -69,7 +88,6 @@
         });
       }
 
-      // Load and display the table based on selected year
       async function loadTable(year = 'All') {
         let query = supabase.from('douzepoints').select('*');
         if (year !== 'All') query = query.eq('Year', year);
@@ -96,7 +114,6 @@
           th.textContent = key;
           headerRow.appendChild(th);
         });
-
         const actionTh = document.createElement('th');
         actionTh.textContent = 'Actions';
         headerRow.appendChild(actionTh);
@@ -157,9 +174,36 @@
         tableContainer.appendChild(table);
       }
 
-      // Set up dropdown filter
+      // Filter listener
       yearFilter.addEventListener('change', () => {
         loadTable(yearFilter.value);
+      });
+
+      // Form submission listener
+      const addForm = document.getElementById('add-form');
+      addForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const newYear = document.getElementById('newYear').value;
+        const newCountry = document.getElementById('newCountry').value;
+        const newArtist = document.getElementById('newArtist').value;
+        const newSong = document.getElementById('newSong').value;
+
+        const { error } = await supabase.from('douzepoints').insert([
+          {
+            Year: parseInt(newYear),
+            Country: newCountry,
+            Artist: newArtist,
+            Song: newSong
+          }
+        ]);
+
+        if (error) {
+          alert('Error adding row: ' + error.message);
+        } else {
+          addForm.reset();
+          await loadYears(); // update dropdown
+          await loadTable(yearFilter.value); // reload filtered view
+        }
       });
 
       // Initial load
