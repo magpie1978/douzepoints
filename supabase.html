@@ -19,8 +19,8 @@
     async function fetchFirstRow() {
       const { data, error } = await supabase
         .from('douzepoints')
-        .select('*')
-        .limit(1);
+        .select('*');
+        
 
       const output = document.getElementById('output');
       if (error) {
