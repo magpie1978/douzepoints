@@ -5,6 +5,10 @@
   <title>DouzePoints Table</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
     table {
       border-collapse: collapse;
       width: 100%;
@@ -21,30 +25,66 @@
     button {
       margin-right: 5px;
     }
+    #filter-container {
+      margin-bottom: 15px;
+    }
   </style>
 </head>
 <body>
   <h1>DouzePoints Table</h1>
+
+  <div id="filter-container">
+    <label for="yearFilter">Filter by Year:</label>
+    <select id="yearFilter">
+      <option value="All">All</option>
+    </select>
+  </div>
+
   <div id="table-container">Loading...</div>
 
   <script>
-    // 🔧 Replace with your actual Supabase credentials
     const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
 
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    async function loadTable() {
-      const { data, error } = await supabase.from('douzepoints').select('*');
-      const container = document.getElementById('table-container');
+    const tableContainer = document.getElementById('table-container');
+    const yearFilter = document.getElementById('yearFilter');
+
+    async function loadYears() {
+      const { data, error } = await supabase
+        .from('douzepoints')
+        .select('year');
 
       if (error) {
-        container.innerHTML = `<p>Error: ${error.message}</p>`;
+        console.error('Error loading years:', error.message);
+        return;
+      }
+
+      const uniqueYears = [...new Set(data.map(row => row.year))].sort((a, b) => b - a);
+      uniqueYears.forEach(year => {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        yearFilter.appendChild(option);
+      });
+    }
+
+    async function loadTable(year = 'All') {
+      let query = supabase.from('douzepoints').select('*');
+      if (year !== 'All') {
+        query = query.eq('year', year);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        tableContainer.innerHTML = `<p>Error: ${error.message}</p>`;
         return;
       }
 
       if (!data.length) {
-        container.innerHTML = `<p>No rows found in douzepoints table.</p>`;
+        tableContainer.innerHTML = `<p>No rows found.</p>`;
         return;
       }
 
@@ -92,20 +132,16 @@
         amendBtn.onclick = async () => {
           const cells = tr.querySelectorAll('td[data-key]');
           if (!editing) {
-            // Start editing
             cells.forEach(td => td.contentEditable = true);
             amendBtn.textContent = 'Save';
             editing = true;
           } else {
-            // Save changes
             const updates = {};
             cells.forEach(td => {
-              const key = td.dataset.key;
-              updates[key] = td.textContent;
+              updates[td.dataset.key] = td.textContent;
             });
 
             await supabase.from('douzepoints').update(updates).eq('id', row.id);
-
             cells.forEach(td => td.contentEditable = false);
             amendBtn.textContent = 'Amend';
             editing = false;
@@ -115,16 +151,20 @@
         actionTd.appendChild(deleteBtn);
         actionTd.appendChild(amendBtn);
         tr.appendChild(actionTd);
-
         tbody.appendChild(tr);
       });
 
       table.appendChild(thead);
       table.appendChild(tbody);
-      container.innerHTML = '';
-      container.appendChild(table);
+      tableContainer.innerHTML = '';
+      tableContainer.appendChild(table);
     }
 
+    yearFilter.addEventListener('change', () => {
+      loadTable(yearFilter.value);
+    });
+
+    loadYears();
     loadTable();
   </script>
 </body>
