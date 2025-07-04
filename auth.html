@@ -75,11 +75,16 @@
         status.style.color = 'red';
         return;
       } else {
-        status.textContent = 'Login successful! Redirecting...';
+        status.textContent = 'Login successful! Loading session...';
         status.style.color = 'green';
-        setTimeout(() => {
+        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+        if (sessionData.session) {
           window.location.href = 'supabase.html';
-        }, 1500);
+      } else {
+          status.textContent = 'Could not retrieve session. Try again.';
+          status.style.color = 'red';
+        }
+
       }
     });
   </script>
