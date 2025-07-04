@@ -53,13 +53,13 @@
 
       // Load distinct years into the dropdown
       async function loadYears() {
-        const { data, error } = await supabase.from('douzepoints').select('year');
+        const { data, error } = await supabase.from('douzepoints').select('Year');
         if (error) {
           tableContainer.innerHTML = `<p>Error loading years: ${error.message}</p>`;
           return;
         }
 
-        const years = [...new Set(data.map(row => row.year).filter(y => y != null))].sort((a, b) => b - a);
+        const years = [...new Set(data.map(row => row.Year).filter(y => y != null))].sort((a, b) => b - a);
         yearFilter.innerHTML = '<option value="All">All</option>';
         years.forEach(year => {
           const option = document.createElement('option');
@@ -72,7 +72,7 @@
       // Load and display the table based on selected year
       async function loadTable(year = 'All') {
         let query = supabase.from('douzepoints').select('*');
-        if (year !== 'All') query = query.eq('year', year);
+        if (year !== 'All') query = query.eq('Year', year);
 
         const { data, error } = await query;
         if (error) {
