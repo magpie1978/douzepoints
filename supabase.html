@@ -125,9 +125,14 @@
           const deleteBtn = document.createElement('button');
           deleteBtn.textContent = 'Delete';
           deleteBtn.onclick = async () => {
-            await supabase.from('douzepoints').delete().eq('id', row.id);
-            tr.remove();
-          };
+            const { error } = await supabase.from('douzepoints').delete().eq('id', row.id);
+              if (error) {
+                alert('Error deleting row: ' + error.message);
+              } else {
+                tr.remove();
+                showMessage(`Row with ID ${row.id} deleted successfully.`);
+              }
+            };
 
           const amendBtn = document.createElement('button');
           amendBtn.textContent = 'Amend';
