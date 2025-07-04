@@ -52,23 +52,35 @@
     const yearFilter = document.getElementById('yearFilter');
 
     async function loadYears() {
-      const { data, error } = await supabase
-        .from('douzepoints')
-        .select('year');
+  const { data, error } = await supabase
+    .from('douzepoints')
+    .select('year');
 
-      if (error) {
-        console.error('Error loading years:', error.message);
-        return;
-      }
+  if (error) {
+    console.error('Error loading years:', error.message);
+    return;
+  }
 
-      const uniqueYears = [...new Set(data.map(row => row.year))].sort((a, b) => b - a);
-      uniqueYears.forEach(year => {
-        const option = document.createElement('option');
-        option.value = year;
-        option.textContent = year;
-        yearFilter.appendChild(option);
-      });
-    }
+  // Filter out null or undefined years
+  const allYears = data
+    .map(row => row.year)
+    .filter(year => year !== null && year !== undefined);
+
+  // Remove duplicates, sort descending
+  const uniqueSortedYears = [...new Set(allYears)].sort((a, b) => b - a);
+
+  // Clear any previous entries (if reload)
+  yearFilter.innerHTML = '<option value="All">All</option>';
+
+  // Add each year as a dropdown option
+  uniqueSortedYears.forEach(year => {
+    const option = document.createElement('option');
+    option.value = year;
+    option.textContent = year;
+    yearFilter.appendChild(option);
+  });
+}
+
 
     async function loadTable(year = 'All') {
       let query = supabase.from('douzepoints').select('*');
