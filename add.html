@@ -65,11 +65,16 @@
 
       const { error: insertError } = await supabase.from('douzepoints').insert([row]);
       if (insertError) {
-        alert('Error adding row: ' + insertError.message);
-      } else {
-        alert('Row added! Navigating back.');
-        history.back();
-      }
+  alert('Error adding row: ' + insertError.message);
+} else {
+  const msg = document.getElementById('message-container');
+  msg.textContent = 'New row added successfully!';
+  msg.style.color = 'green';
+  setTimeout(() => {
+    window.location.href = 'index.html';
+  }, 2000);
+}
+
     });
   });
   </script>
