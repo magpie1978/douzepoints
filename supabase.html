@@ -25,10 +25,21 @@
     button {
       margin-right: 5px;
     }
+    #filter-container {
+      margin-bottom: 15px;
+    }
   </style>
 </head>
 <body>
   <h1>DouzePoints Table</h1>
+
+  <div id="filter-container">
+    <label for="yearFilter">Filter by Year:</label>
+    <select id="yearFilter">
+      <option value="All">All</option>
+    </select>
+  </div>
+
   <div id="table-container">Loading...</div>
 
   <script>
@@ -38,17 +49,39 @@
 
       const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       const tableContainer = document.getElementById('table-container');
+      const yearFilter = document.getElementById('yearFilter');
 
-      async function loadTable() {
-        const { data, error } = await supabase.from('douzepoints').select('*');
-
+      // Load distinct years into the dropdown
+      async function loadYears() {
+        const { data, error } = await supabase.from('douzepoints').select('year');
         if (error) {
-          tableContainer.innerHTML = `<p>Error: ${error.message}</p>`;
+          tableContainer.innerHTML = `<p>Error loading years: ${error.message}</p>`;
+          return;
+        }
+
+        const years = [...new Set(data.map(row => row.year).filter(y => y != null))].sort((a, b) => b - a);
+        yearFilter.innerHTML = '<option value="All">All</option>';
+        years.forEach(year => {
+          const option = document.createElement('option');
+          option.value = year;
+          option.textContent = year;
+          yearFilter.appendChild(option);
+        });
+      }
+
+      // Load and display the table based on selected year
+      async function loadTable(year = 'All') {
+        let query = supabase.from('douzepoints').select('*');
+        if (year !== 'All') query = query.eq('year', year);
+
+        const { data, error } = await query;
+        if (error) {
+          tableContainer.innerHTML = `<p>Error loading table: ${error.message}</p>`;
           return;
         }
 
         if (!data.length) {
-          tableContainer.innerHTML = `<p>No rows found.</p>`;
+          tableContainer.innerHTML = `<p>No rows found for year ${year}.</p>`;
           return;
         }
 
@@ -63,6 +96,7 @@
           th.textContent = key;
           headerRow.appendChild(th);
         });
+
         const actionTh = document.createElement('th');
         actionTh.textContent = 'Actions';
         headerRow.appendChild(actionTh);
@@ -123,7 +157,14 @@
         tableContainer.appendChild(table);
       }
 
-      loadTable();
+      // Set up dropdown filter
+      yearFilter.addEventListener('change', () => {
+        loadTable(yearFilter.value);
+      });
+
+      // Initial load
+      await loadYears();
+      await loadTable();
     });
   </script>
 </body>
