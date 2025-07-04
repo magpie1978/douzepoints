@@ -150,7 +150,12 @@
                 updates[td.dataset.key] = td.textContent;
               });
 
-              await supabase.from('douzepoints').update(updates).eq('id', row.id);
+              const { error } = await supabase.from('douzepoints').update(updates).eq('id', row.id);
+              if (error) {
+                alert('Error saving row: ' + error.message);
+              } else {
+                showMessage(`Row with ID ${row.id} updated successfully.`);
+              }
               cells.forEach(td => td.contentEditable = false);
               amendBtn.textContent = 'Amend';
               editing = false;
@@ -176,6 +181,15 @@
       await loadYears();
       await loadTable();
     });
+
+    function showMessage(text) {
+  const msg = document.getElementById('message-container');
+  msg.textContent = text;
+  msg.style.color = 'green';
+  setTimeout(() => msg.textContent = '', 4000);
+}
+
+    
   </script>
 </body>
 </html>
