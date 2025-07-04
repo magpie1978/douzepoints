@@ -125,12 +125,12 @@
           const deleteBtn = document.createElement('button');
           deleteBtn.textContent = 'Delete';
           deleteBtn.onclick = async () => {
-            const { error } = await supabase.from('douzepoints').delete().eq('id', row.id);
+            const { error } = await supabase.from('douzepoints').delete().eq('id', row.Video_Lookup);
               if (error) {
                 alert('Error deleting row: ' + error.message);
               } else {
                 tr.remove();
-                showMessage(`Row with ID ${row.id} deleted successfully.`);
+                showMessage(`Row with ID ${row.Video_Lookup} deleted successfully.`);
               }
             };
 
@@ -150,11 +150,11 @@
                 updates[td.dataset.key] = td.textContent;
               });
 
-              const { error } = await supabase.from('douzepoints').update(updates).eq('id', row.id);
+              const { error } = await supabase.from('douzepoints').update(updates).eq('id', row.Video_Lookup);
               if (error) {
                 alert('Error saving row: ' + error.message);
               } else {
-                showMessage(`Row with ID ${row.id} updated successfully.`);
+                showMessage(`Row with ID ${row.Video_Lookup} updated successfully.`);
               }
               cells.forEach(td => td.contentEditable = false);
               amendBtn.textContent = 'Amend';
