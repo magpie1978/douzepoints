@@ -18,6 +18,9 @@
     th {
       background-color: #f5f5f5;
     }
+    button {
+      margin-right: 5px;
+    }
   </style>
 </head>
 <body>
@@ -25,17 +28,14 @@
   <div id="table-container">Loading...</div>
 
   <script>
-    // 🛠️ Replace these with your actual Supabase credentials
+    // 🔧 Replace with your actual Supabase credentials
     const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
 
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     async function loadTable() {
-      const { data, error } = await supabase
-        .from('douzepoints')
-        .select('*');
-
+      const { data, error } = await supabase.from('douzepoints').select('*');
       const container = document.getElementById('table-container');
 
       if (error) {
@@ -43,39 +43,85 @@
         return;
       }
 
-      if (data.length === 0) {
+      if (!data.length) {
         container.innerHTML = `<p>No rows found in douzepoints table.</p>`;
         return;
       }
 
-      // Create the table
       const table = document.createElement('table');
       const thead = document.createElement('thead');
       const tbody = document.createElement('tbody');
 
-      // Header row
+      const keys = Object.keys(data[0]);
       const headerRow = document.createElement('tr');
-      Object.keys(data[0]).forEach(key => {
+      keys.forEach(key => {
         const th = document.createElement('th');
         th.textContent = key;
         headerRow.appendChild(th);
       });
+
+      const actionTh = document.createElement('th');
+      actionTh.textContent = 'Actions';
+      headerRow.appendChild(actionTh);
       thead.appendChild(headerRow);
 
-      // Data rows
       data.forEach(row => {
         const tr = document.createElement('tr');
-        Object.values(row).forEach(value => {
+
+        keys.forEach(key => {
           const td = document.createElement('td');
-          td.textContent = value;
+          td.textContent = row[key];
+          td.contentEditable = false;
+          td.dataset.key = key;
           tr.appendChild(td);
         });
+
+        const actionTd = document.createElement('td');
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.onclick = async () => {
+          await supabase.from('douzepoints').delete().eq('id', row.id);
+          tr.remove();
+        };
+
+        const amendBtn = document.createElement('button');
+        amendBtn.textContent = 'Amend';
+        let editing = false;
+
+        amendBtn.onclick = async () => {
+          const cells = tr.querySelectorAll('td[data-key]');
+          if (!editing) {
+            // Start editing
+            cells.forEach(td => td.contentEditable = true);
+            amendBtn.textContent = 'Save';
+            editing = true;
+          } else {
+            // Save changes
+            const updates = {};
+            cells.forEach(td => {
+              const key = td.dataset.key;
+              updates[key] = td.textContent;
+            });
+
+            await supabase.from('douzepoints').update(updates).eq('id', row.id);
+
+            cells.forEach(td => td.contentEditable = false);
+            amendBtn.textContent = 'Amend';
+            editing = false;
+          }
+        };
+
+        actionTd.appendChild(deleteBtn);
+        actionTd.appendChild(amendBtn);
+        tr.appendChild(actionTd);
+
         tbody.appendChild(tr);
       });
 
       table.appendChild(thead);
       table.appendChild(tbody);
-      container.innerHTML = ''; // clear loading text
+      container.innerHTML = '';
       container.appendChild(table);
     }
 
