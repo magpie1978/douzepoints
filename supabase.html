@@ -1,58 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>DouzePoints Table</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase.js" type="text/javascript"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      margin: 20px;
-    }
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-    button {
-      padding: 6px 12px;
-      font-size: 14px;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-    th, td {
-      border: 1px solid #aaa;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background-color: #f5f5f5;
-    }
-    #filter-container {
-      margin-bottom: 15px;
-    }
-  </style>
-</head>
-<body>
-  <div class="top-bar">
-    <h1>DouzePoints Table</h1>
-    <button onclick="window.location.href='add.html'">➕ Add New Row</button>
-  </div>
+  <head>
+    <meta charset="UTF-8" />
+    <title>DouzePoints Table</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" type="text/css" href="supabase.css">
+    <script src="supabase.js" type="text/javascript"></script>
+  </head>
 
-  <div id="message-container" style="margin-bottom: 15px; color: green;"></div>
+  <body>
+    <div class="top-bar">
+      <h1>DouzePoints Table</h1>
+      <button onclick="window.location.href='add.html'">➕ Add New Row</button>
+    </div>
 
-  <div id="filter-container">
-    <label for="yearFilter">Filter by Year:</label>
-    <select id="yearFilter">
-      <option value="All">All</option>
-    </select>
-  </div>
+    <div id="message-container" style="margin-bottom: 15px; color: green;"></div>
 
-  <div id="table-container">Loading...</div>
+    <div id="filter-container">
+      <label for="yearFilter">Filter by Year:</label>
+      <select id="yearFilter">
+        <option value="All">All</option>
+      </select>
+    </div>
 
-</body>
+    <div id="table-container">Loading...</div>
+
+  </body>
 </html>
