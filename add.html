@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Add New Row</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 30px;
+      max-width: 600px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 10px 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Add New Entry</h1>
+  <form id="add-form">
+    <label>Year
+      <input type="number" id="newYear" required />
+    </label>
+    <label>Country
+      <input type="text" id="newCountry" required />
+    </label>
+    <label>Artist
+      <input type="text" id="newArtist" required />
+    </label>
+    <label>Song
+      <input type="text" id="newSong" required />
+    </label>
+    <button type="submit">Save</button>
+    <button type="button" onclick="window.location.href='index.html'">Cancel</button>
+  </form>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
+
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const addForm = document.getElementById('add-form');
+
+      addForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const Year = parseInt(document.getElementById('newYear').value);
+        const Country = document.getElementById('newCountry').value;
+        const Artist = document.getElementById('newArtist').value;
+        const Song = document.getElementById('newSong').value;
+
+        const { error } = await supabase.from('douzepoints').insert([
+          { Year, Country, Artist, Song }
+        ]);
+
+        if (error) {
+          alert('Error adding row: ' + error.message);
+        } else {
+          window.location.href = 'index.html';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
