@@ -9,18 +9,15 @@
       font-family: sans-serif;
       margin: 20px;
     }
-    form {
-      margin-bottom: 20px;
-      padding: 10px;
-      background: #f8f8f8;
-      border: 1px solid #ccc;
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
     }
-    form input {
-      margin-right: 10px;
-      padding: 5px;
-    }
-    form button {
-      padding: 5px 10px;
+    button {
+      padding: 6px 12px;
+      font-size: 14px;
     }
     table {
       border-collapse: collapse;
@@ -37,22 +34,13 @@
     #filter-container {
       margin-bottom: 15px;
     }
-    button {
-      margin-right: 5px;
-    }
   </style>
 </head>
 <body>
-  <h1>DouzePoints Table</h1>
-
-  <form id="add-form">
-    <label><strong>Add New Row:</strong></label><br/>
-    Year: <input type="number" id="newYear" required />
-    Country: <input type="text" id="newCountry" required />
-    Artist: <input type="text" id="newArtist" required />
-    Song: <input type="text" id="newSong" required />
-    <button type="submit">Add Row</button>
-  </form>
+  <div class="top-bar">
+    <h1>DouzePoints Table</h1>
+    <button onclick="window.location.href='add.html'">➕ Add New Row</button>
+  </div>
 
   <div id="filter-container">
     <label for="yearFilter">Filter by Year:</label>
@@ -114,6 +102,7 @@
           th.textContent = key;
           headerRow.appendChild(th);
         });
+
         const actionTh = document.createElement('th');
         actionTh.textContent = 'Actions';
         headerRow.appendChild(actionTh);
@@ -121,7 +110,6 @@
 
         data.forEach(row => {
           const tr = document.createElement('tr');
-
           keys.forEach(key => {
             const td = document.createElement('td');
             td.textContent = row[key];
@@ -174,39 +162,10 @@
         tableContainer.appendChild(table);
       }
 
-      // Filter listener
       yearFilter.addEventListener('change', () => {
         loadTable(yearFilter.value);
       });
 
-      // Form submission listener
-      const addForm = document.getElementById('add-form');
-      addForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const newYear = document.getElementById('newYear').value;
-        const newCountry = document.getElementById('newCountry').value;
-        const newArtist = document.getElementById('newArtist').value;
-        const newSong = document.getElementById('newSong').value;
-
-        const { error } = await supabase.from('douzepoints').insert([
-          {
-            Year: parseInt(newYear),
-            Country: newCountry,
-            Artist: newArtist,
-            Song: newSong
-          }
-        ]);
-
-        if (error) {
-          alert('Error adding row: ' + error.message);
-        } else {
-          addForm.reset();
-          await loadYears(); // update dropdown
-          await loadTable(yearFilter.value); // reload filtered view
-        }
-      });
-
-      // Initial load
       await loadYears();
       await loadTable();
     });
