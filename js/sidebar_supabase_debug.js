@@ -23,8 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("Calling loadSidebarCountries()");
     await loadSidebarCountries();
   } else if (
-    path.includes("edition.html") ||
-    path.includes("edition_supabase.html")
+    path.includes("edition.html")
   ) {
     console.log("Calling loadSidebarYears()");
     await loadSidebarYears();
