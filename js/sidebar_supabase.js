@@ -56,6 +56,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function loadSidebarYears() {
     const { data, error } = await supabase.from('douzepoints').select('*');
+    console.log("Sidebar Years Data:", data);
+    console.log("Sidebar Error:", error);
     const sidebar = document.getElementById("sidebar-container");
     if (!sidebar || error) return;
 
