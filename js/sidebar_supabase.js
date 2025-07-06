@@ -59,7 +59,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("Sidebar Years Data:", data);
     console.log("Sidebar Error:", error);
     const sidebar = document.getElementById("sidebar-container");
-    if (!sidebar || error) return;
+    if (!sidebar || error) {
+    console.warn("Sidebar or data error occurred");
+    return;
+  }
+
+    sidebar.innerHTML = "<p style='color: white; padding: 10px;'>Loaded rows: " + (data?.length || 0) + "</p>";
+}
 
     const uniqueYears = Array.from(
       new Map(data.map(row => [row.Year, row])).values()
