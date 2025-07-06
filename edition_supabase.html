@@ -100,16 +100,27 @@
 
                 videoDiv.innerHTML = `
                     <div class="preview-container">
-                        <img alt="${entry.Country} ${entry.Year}" src="${imageUrl}" />
+                      <img src="images/${entry.Year}-${entry.Country_Code.toUpperCase()}.jpeg" alt="${entry.Artist}"/>
                     </div>
-                    <div class="video-title-with-icon">
-                        <span class="video-title-text">
-                            <strong>${entry.Country}</strong><br/>
-                            ${entry.Artist}<br/>
-                            <i>${entry.Song}</i>
-                        </span>
+                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                      <a href="country.html?country=${entry.Country}">
+                        <img class="flag-icon" src="/flags/${entry.Country_Code.toLowerCase()}.png" alt="Flag">
+                      </a>
+                      <div class="video-title-text">
+                        <b>${entry.Artist}</b><br>${entry.Song}<br>${entry.Year}
+                      </div>
+                      <div class="circle-group">
+                        <div class="circle-container">
+                          <div class="circle-label">SF</div>
+                          <img src="images/${entry.SF_Image || 'placeholder.png'}" alt="SF Rank" class="circle-icon">
+                        </div>
+                        <div class="circle-container">
+                          <div class="circle-label">F</div>
+                          <img src="images/${entry.Final_Image || 'placeholder.png'}" alt="Final Rank" class="circle-icon">
+                        </div>
+                      </div>
                     </div>
-                `;
+                  `;
 
                 container.appendChild(videoDiv);
             });
