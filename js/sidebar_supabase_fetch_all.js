@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
 
-  const supabase = window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const supabase = window.supabase;
   const sidebar = document.getElementById("sidebar-container");
   if (!sidebar || !supabase) return;
 
