@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
     loadHeader();
 });
@@ -52,16 +51,17 @@ async function loadHeader() {
         const { data, error } = await supabase
             .from("douzepoints")
             .select("Country_Code")
-            .eq("Country", country)
+            .ilike("Country", country)
             .limit(1);
 
         const code = data?.[0]?.Country_Code?.toLowerCase();
         if (code) {
-            banner.src = `/banners/${code}.png`;
+            const bannerPath = `/banners/${code}.png`;
+            banner.src = bannerPath;
             banner.alt = country;
-            console.log("Country banner set:", banner.src);
+            console.log("✅ Country banner set:", bannerPath);
         } else {
-            console.warn("No country code found for:", country);
+            console.warn("⚠️ No country code found for:", country);
         }
     } else if (isAboutPage) {
         banner.src = "/banners/about.png";
@@ -78,7 +78,7 @@ async function loadHeader() {
     }
 }
 
-// Supabase client for header use
+// Supabase client setup
 const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
