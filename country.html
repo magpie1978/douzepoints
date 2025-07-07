@@ -61,66 +61,68 @@
     <script src="js/combined2.js"></script>
 
     <!-- Supabase load script -->
-    <script>
-         const supabase = window.supabase;
-        
-        async function loadCountryVideosFromSupabase() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const selectedCountry = urlParams.get("country");
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script>
+  const supabase = window.supabase;
 
-            if (!selectedCountry) return;
+  async function loadCountryVideosFromSupabase() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const selectedCountry = urlParams.get("country");
+      if (!selectedCountry) return;
 
-            const { data, error } = await supabase
-                .from('douzepoints')
-                .select('*')
-                .eq('Country', selectedCountry)
-                .order('Year', { ascending: false });
+      const { data, error } = await supabase
+          .from('douzepoints')
+          .select('*')
+          .eq('Country', selectedCountry)
+          .order('Year', { ascending: false });
 
-            const container = document.getElementById("video-container");
+      const container = document.getElementById("video-container");
 
-            if (error || !data || data.length === 0) {
-                container.innerHTML = `<p style='padding: 20px; color: #ccc;'>No videos found for ${selectedCountry}.</p>`;
-                return;
-            }
+      if (error || !data || data.length === 0) {
+          container.innerHTML = `<p style='padding: 20px; color: #ccc;'>No videos found for ${selectedCountry}.</p>`;
+          return;
+      }
 
-            container.innerHTML = '';
-            data.forEach(row => {
-                const countryCode = row.Country_Code?.toLowerCase();
-                const div = document.createElement('div');
-                div.className = 'video-item';
-                div.setAttribute('data-year', row.Year);
-                div.setAttribute('data-artist', row.Artist);
-                div.setAttribute('data-song', row.Song);
-                div.setAttribute('data-country', row.Country);
-                div.setAttribute('data-jury', row.Final_JuryPoints || "0");
-                div.setAttribute('data-televote', row.Final_TelevotePoints || "0");
-                div.setAttribute('data-total', row.Final_TotalPoints || "0");
+      container.innerHTML = '';
+      data.forEach(row => {
+          const countryCode = row.Country_Code?.toLowerCase();
+          const div = document.createElement('div');
+          div.className = 'video-item';
+          div.setAttribute('data-year', row.Year);
+          div.setAttribute('data-artist', row.Artist);
+          div.setAttribute('data-song', row.Song);
+          div.setAttribute('data-country', row.Country);
+          div.setAttribute('data-jury', row.Final_JuryPoints || "0");
+          div.setAttribute('data-televote', row.Final_TelevotePoints || "0");
+          div.setAttribute('data-total', row.Final_TotalPoints || "0");
 
-                div.innerHTML = `
-                    <div class="preview-container">
-                        <img src="images/${row.Year}-${countryCode?.toUpperCase()}.jpeg" alt="${row.Artist}"/>
-                    </div>
-                    <div class="video-title-with-icon" onclick="event.stopPropagation()">
-                        <a href="country.html?country=${row.Country}">
-                            <img class="flag-icon" src="/flags/${countryCode}.png" alt="Flag">
-                        </a>
-                        <div class="video-title-text">
-                            <b>${row.Artist}</b><br>${row.Song}<br>${row.Year}
-                        </div>
-                    </div>
-                `;
+          div.innerHTML = `
+              <div class="preview-container">
+                  <img src="images/${row.Year}-${countryCode?.toUpperCase()}.jpeg" alt="${row.Artist}"/>
+              </div>
+              <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                  <a href="country.html?country=${row.Country}">
+                      <img class="flag-icon" src="/flags/${countryCode}.png" alt="Flag">
+                  </a>
+                  <div class="video-title-text">
+                      <b>${row.Artist}</b><br>${row.Song}<br>${row.Year}
+                  </div>
+              </div>
+          `;
 
-                div.onclick = () => GDriveOpenModalWithVideo(row.Video_URL);
-                container.appendChild(div);
-            });
+          div.onclick = () => GDriveOpenModalWithVideo(row.Video_URL);
+          container.appendChild(div);
+      });
 
-            document.getElementById("sort-options").dispatchEvent(new Event("change"));
-        }
+      document.getElementById("sort-options").dispatchEvent(new Event("change"));
+  }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            lucide.createIcons();
-            loadCountryVideosFromSupabase();
-        });
-    </script>
+  document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      loadCountryVideosFromSupabase();
+  });
+</script>
+
 </body>
 </html>
