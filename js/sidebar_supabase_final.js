@@ -43,8 +43,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("Sidebar Countries Error:", error);
       if (error) throw error;
 
-      sidebar.innerHTML = `<p style='color:white'>Loaded ${data.length} rows for countries</p>`;
-
       const uniqueCountries = Array.from(
         new Map(data.map(row => [row.Country, row])).values()
       ).sort((a, b) => a.Country.localeCompare(b.Country));
