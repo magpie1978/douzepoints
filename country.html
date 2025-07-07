@@ -6,10 +6,22 @@
   <link rel="stylesheet" type="text/css" href="style/combined.css">
   <link rel="stylesheet" type="text/css" href="style/sidebar.css">
 
-  <!-- Supabase core + client -->
+  
+
+  <!-- Load Supabase client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Define global Supabase client -->
+  <script>
+    const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // your full anon key
+    window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  </script>
+  
+  <!-- Now safe to load header -->
+  <script src="js/header_supabase_fixed.js" defer></script>
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+  
 </head>
 
 <body oncontextmenu="return false" data-country="">
