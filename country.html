@@ -133,6 +133,9 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
+
+      console.log("✅ Supabase loaded?", window.supabase ? "Yes" : "No");
+      
       loadCountryVideosFromSupabase();
     });
   </script>
