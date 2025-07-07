@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>DouzePoints | Countries</title>
+    <link rel="stylesheet" type="text/css" href="style/combined.css">
+    <link rel="stylesheet" type="text/css" href="style/sidebar.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body oncontextmenu="return false">
+
+    <!-- HEADER -->
+    <div id="header-container"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/header.js"></script>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+        <div id="sidebar-container" class="sidebar"></div>
+        <script src="js/sidebar_supabase_final.js"></script>
+
+        <div class="main-content">
+            <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
+                <div style="flex: 1;"></div>
+                <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
+                    <label for="sort-options">
+                        <i data-lucide="list-filter" style="margin-right: 15px;"></i>
+                    </label>
+                    <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
+                        <option value="country" selected>Country (A–Z)</option>
+                        <option value="country-desc">Country (Z–A)</option>
+                        <option value="artist">Artist Name</option>
+                        <option value="song">Song Title</option>
+                        <option value="jury">Jury Points</option>
+                        <option value="televote">Televote Points</option>
+                        <option value="total">Total Points</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid-container" id="video-container">Loading videos...</div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+        <div class="modal-content">
+            <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+            <video autoplay controls controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
+            <iframe allow="autoplay; encrypted-media" frameborder="0" id="modalIframe" style="display: none;" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div id="footer"></div>
+    <script src="js/footer.js" type="text/javascript"></script>
+    <script src="js/modal.js" type="text/javascript"></script>
+    <script src="js/sorting.js" type="text/javascript"></script>
+    <script src="js/combined3.js" type="text/javascript"></script>
+    <script src="js/icons.js" type="text/javascript"></script>
+
+    <!-- SUPABASE DATA FETCH -->
+    <script>
+    const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function loadVideosFromSupabase() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedYear = urlParams.get("edition");
+
+        const { data, error } = await supabase
+            .from('douzepoints')
+            .select('*')
+            .eq('Year', selectedYear)
+            .order('Country', { ascending: true });
+
+        const container = document.getElementById('video-container');
+        if (error) {
+            container.innerHTML = `<p>Error loading videos: ${error.message}</p>`;
+            return;
+        }
+
+        if (!data || !data.length) {
+            container.innerHTML = `<p>No videos found for ${selectedYear}.</p>`;
+            return;
+        }
+
+        container.innerHTML = '';
+
+        data.forEach(entry => {
+            const countryCode = entry.Country_Code?.toLowerCase();
+            const sfRank = entry.SemiFinal_Rank?.trim();
+            const finalRank = entry.Final_Rank?.trim();
+
+            const sfImage = sfRank ? `${sfRank}.png` : "na.png";
+            let finalImage;
+            if (!finalRank) {
+                finalImage = "na.png";
+            } else if (!sfRank) {
+                finalImage = "big.png";
+            } else {
+                finalImage = `${finalRank}.png`;
+            }
+
+            const imageUrl = entry.Image || `images/${entry.Year}-${countryCode?.toUpperCase()}.jpeg`;
+            const videoUrl = entry.Video_URL;
+
+            const div = document.createElement('div');
+            div.className = 'video-item';
+            div.setAttribute('data-country', entry.Country);
+            div.setAttribute('data-artist', entry.Artist);
+            div.setAttribute('data-song', entry.Song);
+            div.setAttribute('data-year', entry.Year);
+            div.setAttribute('data-jury', entry.Final_JuryPoints || "0");
+            div.setAttribute('data-televote', entry.Final_TelevotePoints || "0");
+            div.setAttribute('data-total', entry.Final_TotalPoints || "0");
+
+            div.innerHTML = `
+                <div class="preview-container">
+                    <img src="${imageUrl}" alt="${entry.Artist}"/>
+                </div>
+                <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                    <a href="country.html?country=${entry.Country}">
+                        <img class="flag-icon" src="/flags/${countryCode}.png" alt="Flag">
+                    </a>
+                    <div class="video-title-text">
+                        <b>${entry.Artist}</b><br>${entry.Song}<br>${entry.Year}
+                    </div>
+                    <div class="circle-group">
+                        <div class="circle-container">
+                            <div class="circle-label">SF</div>
+                            <img src="images/${sfImage}" alt="SF Rank" class="circle-icon">
+                        </div>
+                        <div class="circle-container">
+                            <div class="circle-label">F</div>
+                            <img src="images/${finalImage}" alt="Final Rank" class="circle-icon">
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            div.onclick = () => GDriveOpenModalWithVideo(videoUrl);
+            container.appendChild(div);
+        });
+
+        triggerInitialSort();
+    }
+
+    loadVideosFromSupabase();
+    </script>
+</body>
+</html>
