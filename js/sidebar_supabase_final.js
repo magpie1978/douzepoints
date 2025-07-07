@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("Sidebar Years Error:", error);
       if (error) throw error;
 
-      sidebar.innerHTML = `<p style='color:white'>Loaded ${data.length} rows for years</p>`;
+      
 
       const uniqueYears = Array.from(
         new Map(data.map(row => [row.Year, row])).values()
