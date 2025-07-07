@@ -67,7 +67,7 @@
             const { data, error } = await supabase
                 .from('douzepoints')
                 .select('*')
-                .eq('FavFave', 'Y')
+                .eq('FanFave', 'Y')
                 .order('Year', { ascending: false });
 
             const container = document.getElementById('video-container');
