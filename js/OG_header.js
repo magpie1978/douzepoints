@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadHeader() {
     const path = window.location.pathname;
-    const headerHtml = await fetch("header.html").then(res => res.text());
+    const headerHtml = await fetch("OG_header.html").then(res => res.text());
     const headerContainer = document.getElementById("header-container");
     if (!headerContainer) {
         console.error("header-container element not found");
