@@ -1,5 +1,5 @@
 (function() {
-  fetch('footer.html')
+  fetch('supabase_footer.html')
     .then(response => {
       if (!response.ok) throw new Error('Footer could not be loaded.');
       return response.text();
