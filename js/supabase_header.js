@@ -13,8 +13,9 @@ async function loadHeader() {
     headerContainer.innerHTML = headerHtml;
 
     const banner = document.getElementById("country-banner");
-    const country = new URLSearchParams(window.location.search).get("country");
 
+    const isIndexPage = path.endsWith("/") || path.includes("supabase_index.html");
+    const country = new URLSearchParams(window.location.search).get("country");
     const isCountryPage = path.includes("supabase_country.html");
     const isEditionPage = path.includes("supabase_edition.html");
     const isWinnersPage = path.includes("supabase_winners.html");
@@ -29,7 +30,15 @@ async function loadHeader() {
     if (isWinnersPage) {
         banner.src = "/banners/winners.png";
         banner.alt = "Winners";
-    } else if (isFavouritesPage) {
+        
+    } 
+    
+    else if (isIndexPage) {
+    banner.src = "/banners/douzepoints.png";
+    banner.alt = "Home";
+}
+    
+    else if (isFavouritesPage) {
         banner.src = "/banners/fanfaves.png";
         banner.alt = "Fan Favourites";
     } else if (isEditionPage) {
