@@ -2,10 +2,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const path = window.location.pathname;
   console.log("sidebar.js loaded. Path:", path);
 
-if (path.includes("country.html") || path.includes("winners.html") || path.includes("fan-favorites.html")) {
+if (path.includes("OG_country.html") || path.includes("OG_winners.html") || path.includes("OG_fan-favorites.html")) {
     console.log("Calling loadSidebarCountries()");
     loadSidebarCountries();
-  } else if (path.includes("edition.html")) {
+  } else if (path.includes("OG_edition.html")) {
     console.log("Calling loadSidebarYears()");
     loadSidebarYears();
   }
@@ -65,7 +65,7 @@ if (path.includes("country.html") || path.includes("winners.html") || path.inclu
       div.className = "sidebar-row";
 
       const a = document.createElement("a");
-      a.href = `country.html?country=${encodeURIComponent(country)}`;
+      a.href = `OG_country.html?country=${encodeURIComponent(country)}`;
 
       const img = document.createElement("img");
       img.src = `flags/${countryCode}.png`;
@@ -100,7 +100,7 @@ if (path.includes("country.html") || path.includes("winners.html") || path.inclu
       div.className = "sidebar-row";
 
       const a = document.createElement("a");
-      a.href = `edition.html?edition=${year}`;
+      a.href = `OG_edition.html?edition=${year}`;
       a.style.display = 'flex';
       a.style.alignItems = 'center';
       a.style.gap = '10px';
