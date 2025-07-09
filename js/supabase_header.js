@@ -41,7 +41,9 @@ async function loadHeader() {
     else if (isFavouritesPage) {
         banner.src = "/banners/fanfaves.png";
         banner.alt = "Fan Favourites";
-    } else if (isEditionPage) {
+    } 
+    
+    else if (isEditionPage) {
         const editionYear = new URLSearchParams(window.location.search).get("edition");
         if (editionYear) {
             const { data, error } = await supabase
