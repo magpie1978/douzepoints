@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   } else if (
     path.includes("edition.html") ||
     path.includes("edition_supabase.html") ||
-    path.includes("supabase_edition.html")
+    path.includes("supabase_edition")
   ) {
     console.log("Calling loadSidebarYears()");
     await loadSidebarYears();
