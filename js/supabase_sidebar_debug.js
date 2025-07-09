@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", async () => {
   const path = window.location.pathname;
   console.log("sidebar.js loaded. Path:", path);
@@ -39,7 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("Sidebar Countries Error:", error);
       if (error) throw error;
 
-      sidebar.innerHTML = `<p style='color:white'>Loaded ${data.length} rows for countries</p>`;
+      //sidebar.innerHTML = `<p style='color:white'>Loaded ${data.length} rows for countries</p>`;
 
       const uniqueCountries = Array.from(
         new Map(data.map(row => [row.Country, row])).values()
@@ -53,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         div.className = "sidebar-row";
 
         const a = document.createElement("a");
-        a.href = `country.html?country=${encodeURIComponent(country)}`;
+        a.href = `supabase_country.html?country=${encodeURIComponent(country)}`;
 
         const img = document.createElement("img");
         img.src = `flags/${countryCode}.png`;
@@ -96,7 +95,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         div.className = "sidebar-row";
 
         const a = document.createElement("a");
-        a.href = `edition.html?edition=${year}`;
+        a.href = `supabase_edition.html?edition=${year}`;
         a.style.display = 'flex';
         a.style.alignItems = 'center';
         a.style.gap = '10px';
