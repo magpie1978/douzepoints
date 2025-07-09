@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       div.className = "sidebar-row";
 
       const a = document.createElement("a");
-      a.href = `edition.html?edition=${year}`;
+      a.href = `supabase_edition.html?edition=${year}`;
       a.style.display = 'flex';
       a.style.alignItems = 'center';
       a.style.gap = '10px';
