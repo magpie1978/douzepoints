@@ -15,14 +15,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   if (
-    path.includes("country.html") ||
-    path.includes("winners.html") ||
-    path.includes("fan-favorites.html")
+    path.includes("supabase_country.html") ||
+    path.includes("supabase_winners.html") ||
+    path.includes("supabase_fan-favorites.html")
   ) {
     console.log("Calling loadSidebarCountries()");
     await loadSidebarCountries();
   } else if (
-    path.includes("edition.html")
+    path.includes("supabase_edition.html")
   ) {
     console.log("Calling loadSidebarYears()");
     await loadSidebarYears();
@@ -80,8 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("Sidebar Years Error:", error);
       if (error) throw error;
 
-      sidebar.innerHTML = `<p style='color:white'>Loaded ${data.length} rows for years</p>`;
-
+      
       const uniqueYears = Array.from(
         new Map(data.map(row => [row.Year, row])).values()
       ).sort((a, b) => b.Year - a.Year);
