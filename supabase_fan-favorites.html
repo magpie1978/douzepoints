@@ -1,126 +1,119 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <title>DouzePoints | Fan Favourites</title>
-    <link rel="stylesheet" type="text/css" href="style/supabase_combined.css">
-    <link rel="stylesheet" type="text/css" href="style/supabase_sidebar.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
+  <meta charset="utf-8" />
+  <title>DouzePoints | Fan Favourites</title>
+  <link rel="stylesheet" type="text/css" href="style/supabase_combined.css">
+  <link rel="stylesheet" type="text/css" href="style/supabase_sidebar.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body oncontextmenu="return false">
+  <!-- HEADER -->
+  <div id="header-container"></div>
+  <script src="js/supabase_header.js"></script>
 
-    <!-- HEADER -->
-    <div id="header-container"></div>
-    <script src="js/supabase_header.js"></script>
+  <!-- MAIN CONTENT -->
+  <div class="container">
+    <div id="sidebar-container" class="sidebar"></div>
+    <script src="js/supabase_sidebar_fetch_all.js"></script>
 
-    <!-- MAIN CONTENT -->
-    <div class="container">
-        <div id="sidebar-container" class="sidebar"></div>
-        <script src="js/supabase_sidebar_debug.js"></script>
-        
-        <div class="main-content">
-            <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
-                <div style="flex: 1;"></div>
-                <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
-                    <label for="sort-options">
-                        <i data-lucide="list-filter" style="margin-right: 15px;"></i>
-                    </label>
-                    <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
-                        <option value="year-desc" selected>Year (desc)</option>
-                        <option value="year-asc">Year (asc)</option>
-                        <option value="artist">Artist Name</option>
-                        <option value="song">Song Title</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="grid-container" id="video-container">Loading fan favourites...</div>
+    <div class="main-content">
+      <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
+        <div style="flex: 1;"></div>
+        <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
+          <label for="sort-options">
+            <i data-lucide="list-filter" style="margin-right: 15px;"></i>
+          </label>
+          <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
+            <option value="year-desc" selected>Year (desc)</option>
+            <option value="year-asc">Year (asc)</option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+          </select>
         </div>
+      </div>
+
+      <div class="grid-container" id="video-container">Loading fan favourites...</div>
     </div>
+  </div>
 
-    <!-- MODAL -->
-    <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
-        <div class="modal-content">
-            <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
-            <video autoplay controls controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
-            <iframe allow="autoplay; encrypted-media" frameborder="0" id="modalIframe" style="display: none;" sandbox="allow-scripts allow-same-origin"></iframe>
-        </div>
+  <!-- MODAL -->
+  <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+    <div class="modal-content">
+      <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+      <video autoplay controls controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
+      <iframe allow="autoplay; encrypted-media" frameborder="0" id="modalIframe" style="display: none;" sandbox="allow-scripts allow-same-origin"></iframe>
     </div>
+  </div>
 
-    <!-- FOOTER -->
-    <div id="footer"></div>
-    <script src="js/supabase_footer.js"></script>
-    <script src="js/supabase_modal_fixed_global.js"></script>
-    <script src="js/supabase_sorting.js"></script>
-    <script src="js/supabase_icons.js" type="text/javascript"></script>
+  <!-- FOOTER -->
+  <div id="footer"></div>
+  <script src="js/supabase_footer.js" type="text/javascript"></script>
+  <script src="js/supabase_modal_fixed_global.js"></script>
+  <script src="js/supabase_sorting.js" type="text/javascript"></script>
+  <script src="js/icons.js" type="text/javascript"></script>
 
-    <!-- SUPABASE LOAD FUNCTION -->
+  <!-- SUPABASE INITIALIZATION + DATA LOADING -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-    <script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+    const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
 
-  const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
+    // Make Supabase globally available
+    window.supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // Make Supabase client globally available to old scripts
-  window.supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    window.loadFanFavoritesFromSupabase = async function () {
+      const { data, error } = await window.supabase
+        .from('douzepoints')
+        .select('*')
+        .eq('FanFave', 'Y')
+        .order('Year', { ascending: false });
 
-  // Optional: call your local page loader here too
-  window.loadFanFavoritesFromSupabase = async function () {
-    const { data, error } = await window.supabase
-      .from('douzepoints')
-      .select('*')
-      .eq('FanFave', 'Y')
-      .order('Year', { ascending: false });
+      const container = document.getElementById('video-container');
+      if (error || !data || data.length === 0) {
+        container.innerHTML = `<p style='padding: 20px; color: #ccc;'>No fan favourites found.</p>`;
+        return;
+      }
 
-    const container = document.getElementById('video-container');
-    if (error || !data || data.length === 0) {
-      container.innerHTML = `<p style='padding: 20px; color: #ccc;'>No fan favourites found.</p>`;
-      return;
-    }
+      container.innerHTML = '';
+      data.forEach(row => {
+        const countryCode = row.Country_Code?.toLowerCase();
+        const div = document.createElement('div');
+        div.className = 'video-item';
+        div.setAttribute('data-year', row.Year);
+        div.setAttribute('data-artist', row.Artist);
+        div.setAttribute('data-song', row.Song);
+        div.setAttribute('data-country', row.Country);
 
-    container.innerHTML = '';
-    data.forEach(row => {
-      const countryCode = row.Country_Code?.toLowerCase();
-      const div = document.createElement('div');
-      div.className = 'video-item';
-      div.setAttribute('data-year', row.Year);
-      div.setAttribute('data-artist', row.Artist);
-      div.setAttribute('data-song', row.Song);
-      div.setAttribute('data-country', row.Country);
-
-      div.innerHTML = `
-        <div class="preview-container">
-          <img src="images/${row.Year}-${countryCode?.toUpperCase()}.jpeg" alt="${row.Artist}"/>
-        </div>
-        <div class="video-title-with-icon" onclick="event.stopPropagation()">
-          <a href="country.html?country=${row.Country}">
-            <img class="flag-icon" src="/flags/${countryCode}.png" alt="Flag">
-          </a>
-          <div class="video-title-text">
-            <b>${row.Artist}</b><br>${row.Song}<br>${row.Year}
+        div.innerHTML = `
+          <div class="preview-container">
+            <img src="images/${row.Year}-${countryCode?.toUpperCase()}.jpeg" alt="${row.Artist}"/>
           </div>
-        </div>
-      `;
+          <div class="video-title-with-icon" onclick="event.stopPropagation()">
+            <a href="country.html?country=${row.Country}">
+              <img class="flag-icon" src="/flags/${countryCode}.png" alt="Flag">
+            </a>
+            <div class="video-title-text">
+              <b>${row.Artist}</b><br>${row.Song}<br>${row.Year}
+            </div>
+          </div>
+        `;
 
-      div.onclick = () => GDriveOpenModalWithVideo(row.Video_URL);
-      container.appendChild(div);
+        div.onclick = () => GDriveOpenModalWithVideo(row.Video_URL);
+        container.appendChild(div);
+      });
+
+      document.getElementById("sort-options").dispatchEvent(new Event("change"));
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.loadFanFavoritesFromSupabase();
     });
+  </script>
 
-    document.getElementById("sort-options").dispatchEvent(new Event("change"));
-  };
-
-  document.addEventListener("DOMContentLoaded", () => {
-    window.loadFanFavoritesFromSupabase();
-  });
-</script>
-
-
-
-    <!-- LOAD SIDEBAR MODULE LAST -->
-    <script src="js/supabase_sidebar_debug.js"></script>
-    
+  <!-- LOAD SIDEBAR MODULE LAST -->
+  <script type="module" src="js/supabase_sidebar_module_fixed.js"></script>
 </body>
 </html>
