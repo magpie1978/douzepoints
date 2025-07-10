@@ -38,8 +38,8 @@ async function loadHeader() {
     banner.alt = "Home";
 }
     
-    else if (isFanFavoritesPage && banner) {
-        banner.src = "/banners/fanfaves.png";
+    else if (isFavoritesPage) {
+        banner.src = "/banners/fanfavorites.png";
         banner.alt = "Fan Favourites";
     } 
     
