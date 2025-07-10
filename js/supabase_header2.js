@@ -35,7 +35,7 @@ async function loadHeader() {
         banner.alt = edition;
       }
     } else if (isFanFavoritesPage) {
-      banner.src = "/banners/fanfaves.png";
+      banner.src = "/banners/fanfavorites.png";
       banner.alt = "Fan Favourites";
     }
   } catch (err) {
