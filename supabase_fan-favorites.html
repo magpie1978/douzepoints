@@ -57,15 +57,19 @@
     <script src="js/supabase_icons.js" type="text/javascript"></script>
 
     <!-- SUPABASE LOAD FUNCTION -->
-<script type="module">
+
+    <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
   const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // truncated for brevity
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
 
-  async function loadFanFavoritesFromSupabase() {
-    const { data, error } = await supabase
+  // Make Supabase client globally available to old scripts
+  window.supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // Optional: call your local page loader here too
+  window.loadFanFavoritesFromSupabase = async function () {
+    const { data, error } = await window.supabase
       .from('douzepoints')
       .select('*')
       .eq('FanFave', 'Y')
@@ -106,10 +110,10 @@
     });
 
     document.getElementById("sort-options").dispatchEvent(new Event("change"));
-  }
+  };
 
   document.addEventListener("DOMContentLoaded", () => {
-    loadFanFavoritesFromSupabase();
+    window.loadFanFavoritesFromSupabase();
   });
 </script>
 
