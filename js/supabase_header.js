@@ -38,7 +38,7 @@ async function loadHeader() {
     banner.alt = "Home";
 }
     
-    else if (isFavoritesPage) {
+    else if (isFanFavoritesPage && banner) {
         banner.src = "/banners/fanfavorites.png";
         banner.alt = "Fan Favourites";
     } 
