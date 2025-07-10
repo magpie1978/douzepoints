@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       div.className = "sidebar-row";
 
       const a = document.createElement("a");
-      a.href = `country.html?country=${encodeURIComponent(country)}`;
+      a.href = `supabase_country.html?country=${encodeURIComponent(country)}`;
 
       const img = document.createElement("img");
       img.src = `flags/${countryCode}.png`;
