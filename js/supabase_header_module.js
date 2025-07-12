@@ -25,7 +25,7 @@ async function loadHeader() {
     const country = new URLSearchParams(window.location.search).get("country");
     const isCountryPage = path.includes("supabase_country.html");
     const isEditionPage = path.includes("supabase_edition.html");
-    const isWinnersPage = path.includes("supabase_winners2.html");
+    const isWinnersPage = path.includes("supabase_winners.html");
     const isFavouritesPage = path.includes("supabase_fan-favorites.html");
     const isAboutPage = path.includes("about.html");
     const isContactPage = path.includes("contact.html");
