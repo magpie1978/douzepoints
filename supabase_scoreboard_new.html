@@ -47,20 +47,26 @@
       if (error) console.error('Error loading data:', error.message);
       return data || [];
     }
-    }
+    
 
     async function loadAvailableYears() {
-      const { data, error } = await supabase.from('douzepoints').select('Year');
-      if (error) {
-        console.error('Failed to fetch years:', error.message);
-        return;
-      }
-      const yearsSet = new Set(data.map(row => row.Year).filter(y => !!y));
-      allYears = Array.from(yearsSet).sort((a, b) => b - a);
+  const { data, error } = await supabase.from('douzepoints').select('Year');
+  if (error) {
+    console.error('Failed to fetch years:', error.message);
+    return;
+  }
 
-      const select = document.getElementById("yearSelect");
-      select.innerHTML = allYears.map(y => `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`).join('');
-    }
+  const yearsSet = new Set(
+    data.map(row => row.Year).filter(y => typeof y === 'number' && !isNaN(y))
+  );
+  allYears = Array.from(yearsSet).sort((a, b) => b - a);
+
+  const select = document.getElementById("yearSelect");
+  select.innerHTML = allYears
+    .map(y => `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`)
+    .join('');
+}
+    
 
     async function loadTableData(year) {
       currentYear = parseInt(year);
