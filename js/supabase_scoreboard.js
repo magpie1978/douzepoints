@@ -1,3 +1,9 @@
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+window.supabase = supabase;
+
 let allRawData = [];
 let eurovisionData = [];
 let currentYear = '2025';
@@ -24,8 +30,6 @@ function formatOrdinal(n) {
   if (isNaN(n)) return '-';
   const s = ["th", "st", "nd", "rd"];
   const v = n % 100;
-  return n + (s[(v - 20) % 10] || s[v] || s[0]);
-}
 
 function loadTableData(year) {
   currentYear = year;
@@ -37,8 +41,6 @@ function loadTableData(year) {
     if (isFinal) return matchYear && row.FinalRunningOrder;
     if (stage === "Semi Final 1") return matchYear && row.SemiFinal === "1";
     if (stage === "Semi Final 2") return matchYear && row.SemiFinal === "2";
-    return false;
-  });
 
   const header = document.getElementById("tableHeader");
   header.textContent = `Eurovision ${isFinal ? "Grand Final" : stage} - ${year}`;
@@ -50,13 +52,9 @@ function loadTableData(year) {
     if (col.label === "") return `<th class="play-icon"></th>`;
     if (field && eurovisionData.some(row => row[field])) {
       const divider = (col.label === "R/O" || col.label === "Televote Rank" || col.label === "Jury Rank") ? 'divider-right' : '';
-      return `<th class="${divider}" data-key="${col.label}">${col.label}</th>`;
-    }
-    return '';
   }).join('') + "</tr>";
 
   sortBy("Total Points", "desc");
-}
 
 function renderTable() {
   const tbody = document.getElementById('eurovision-table-body');
@@ -85,33 +83,21 @@ function renderTable() {
         label === "Total Points" ? "total-pts" : "";
 
       if (label === "Country") {
-        return `<td class="${dividerClass}">${flag}<span class="country-name">${row.Country}</span></td>`;
-      }
 
       if (label === "Result" || label.includes("Rank")) {
-        return hasField ? `<td class="${alignClass} ${dividerClass}">${formatOrdinal(row[field])}</td>` : '';
-      }
 
       if (label === "Status") {
         const qualified = row["SemiFinal_Rank"] && row["Final_Rank"];
         const badge = qualified
           ? `<span class="badge qualified" title="Qualified for Final">Qual</span>`
           : `<span class="badge dnq">DNQ</span>`;
-        return `<td>${badge}</td>`;
-      }
 
       if (label === "") {
   const videoUrl = row.Video_URL || "";
-  return `<td class="play-icon"><i class="fas fa-play-circle" onclick="GDriveOpenModalWithVideo('${videoUrl.replace(/'/g, "\'")}')"></i></td>`;
-}
 
-      return hasField ? `<td class="${alignClass} ${dividerClass}">${row[field]}</td>` : '';
-    });
 
     tr.innerHTML = cells.join('');
     tbody.appendChild(tr);
-  });
-}
 
 function sortBy(displayLabel, direction = null) {
   const stage = document.getElementById("stageSelect").value;
@@ -132,28 +118,21 @@ function sortBy(displayLabel, direction = null) {
       "SemiFinalRunningOrder", "SemiFinal_TelevoteRank", "SemiFinal_JuryRank"
     ];
     currentSortDir = direction || (ascendingByDefault.includes(field) ? 'asc' : isNumeric ? 'desc' : 'asc');
-  }
 
   eurovisionData.sort((a, b) => {
     const aVal = isNumeric ? parseFloat(a[field] || 0) : (a[field] || '').toLowerCase();
     const bVal = isNumeric ? parseFloat(b[field] || 0) : (b[field] || '').toLowerCase();
-    return aVal < bVal ? (currentSortDir === 'asc' ? -1 : 1) : aVal > bVal ? (currentSortDir === 'asc' ? 1 : -1) : 0;
-  });
 
   document.querySelectorAll("th").forEach(th => {
     th.classList.remove("sort-asc", "sort-desc");
     if (th.dataset.key === displayLabel) {
       th.classList.add(currentSortDir === 'asc' ? 'sort-asc' : 'sort-desc');
-    }
-  });
 
   renderTable();
-}
 
 async function loadCSVData() {
   const response = await fetch('./data/DouzePoints.csv');
   const csvText = await response.text();
-  return new Promise(resolve => {
     Papa.parse(csvText, {
       header: true,
       skipEmptyLines: true,
@@ -162,10 +141,6 @@ async function loadCSVData() {
         populateYearDropdown();
         loadTableData(currentYear);
         resolve();
-      }
-    });
-  });
-}
 
 function populateYearDropdown() {
   const years = [...new Set(allRawData.map(row => row.Year).filter(Boolean))].sort((a, b) => b - a);
@@ -177,53 +152,37 @@ function populateYearDropdown() {
     option.textContent = year;
     if (year === currentYear) option.selected = true;
     select.appendChild(option);
-  });
-}
 
 
 
   document.getElementById("stageSelect").addEventListener("change", () => {
     loadTableData(currentYear);
-  });
 
   document.addEventListener("click", e => {
     if (e.target.tagName === "TH" && e.target.dataset.key) {
       sortBy(e.target.dataset.key);
-    }
-  });
-});
 
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 window.supabase = supabase;
-}
 
 async function loadDataAndRender() {
-  allRawData = await loadSupabaseData();
+  allRawData = await loadSupabaseDataForStageAndYear("Final", currentYear);
   populateYearDropdown();
   loadTableData(currentYear);
-}
 
 document.addEventListener("DOMContentLoaded", () => {
   loadDataAndRender();
 
   document.getElementById("yearSelect").addEventListener("change", (e) => {
     loadTableData(e.target.value);
-  });
 
   document.getElementById("stageSelect").addEventListener("change", () => {
     loadTableData(currentYear);
-  });
 
   document.addEventListener("click", e => {
     if (e.target.tagName === "TH" && e.target.dataset.key) {
       sortBy(e.target.dataset.key);
-    }
-  });
-});
 
 
 
@@ -236,16 +195,12 @@ async function loadSupabaseDataForStageAndYear(stage, year) {
     query = query.eq('SemiFinal', '1');
   } else if (stage === 'Semi Final 2') {
     query = query.eq('SemiFinal', '2');
-  }
 
   const { data, error } = await query;
   if (error) {
     console.error('Error loading data:', error.message);
-    return [];
-  }
 
   console.log('Supabase result:', data); // Debugging line
-}
 
 
 async function loadTableData(year) {
@@ -264,10 +219,6 @@ async function loadTableData(year) {
     if (col.label === "") return `<th class="play-icon"></th>`;
     if (field && eurovisionData.some(row => row[field])) {
       const divider = (col.label === "R/O" || col.label === "Televote Rank" || col.label === "Jury Rank") ? 'divider-right' : '';
-      return `<th class="\${divider}" data-key="\${col.label}">\${col.label}</th>`;
-    }
-    return '';
   }).join('') + "</tr>";
 
   sortBy("Total Points", "desc");
-}
