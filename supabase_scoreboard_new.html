@@ -34,10 +34,10 @@
       { label: "Status", key: "Status" }
     ];
 
-    async function loadSupabaseDataForStageAndYear(stage, year) {
+async function loadSupabaseDataForStageAndYear(stage, year) {
       let query = supabase.from('douzepoints').select('*').eq('Year', year);
       if (stage === 'Final') {
-        query = query.not('FinalRunningOrder', 'is', null);
+        query = query.not('FinalRunningOrder', 'is', null).not('Final_Rank', 'is', null);
       } else if (stage === 'Semi Final 1') {
         query = query.eq('SemiFinal', '1');
       } else if (stage === 'Semi Final 2') {
@@ -46,6 +46,7 @@
       const { data, error } = await query;
       if (error) console.error('Error loading data:', error.message);
       return data || [];
+    }
     }
 
     async function loadAvailableYears() {
