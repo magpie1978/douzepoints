@@ -196,6 +196,8 @@ async function loadSupabaseDataForStageAndYear(stage, year) {
   } else if (stage === 'Semi Final 2') {
     query = query.eq('SemiFinal', '2');
 
+  }
+
   const { data, error } = await query;
   if (error) {
     console.error('Error loading data:', error.message);
