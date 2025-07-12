@@ -34,7 +34,7 @@
       { label: "Status", key: "Status" }
     ];
 
-async function loadSupabaseDataForStageAndYear(stage, year) {
+    async function loadSupabaseDataForStageAndYear(stage, year) {
       let query = supabase.from('douzepoints').select('*').eq('Year', year);
       if (stage === 'Final') {
         query = query.not('FinalRunningOrder', 'is', null).not('Final_Rank', 'is', null);
