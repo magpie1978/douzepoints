@@ -213,17 +213,6 @@ async function loadTableData(year) {
 
   const header = document.getElementById("tableHeader");
   header.textContent = `Eurovision ${stage} - ${year}`;
-
-  const tableHead = document.getElementById("tableHead");
-  tableHead.innerHTML = "<tr>" + columnDefinitions.map(col => {
-    const field = col.key || (stage === 'Final' ? col.final : col.semi);
-    if (col.label === "Status") return stage === 'Final' ? '' : `<th data-key="Status">Status</th>`;
-    if (col.label === "") return `<th class="play-icon"></th>`;
-    if (field && eurovisionData.some(row => row[field])) {
-      const divider = (col.label === "R/O" || col.label === "Televote Rank" || col.label === "Jury Rank") ? 'divider-right' : '';
-      return `<th class="${divider}" data-key="${col.label}">${col.label}</th>`;
-
-  sortBy("Total Points", "desc");
     }
   }).join('') + "</tr>";
   sortBy("Total Points", "desc");
