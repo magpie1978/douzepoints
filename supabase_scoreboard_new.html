@@ -13,9 +13,9 @@
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     window.supabase = supabase;
 
-    let allRawData = [];
     let eurovisionData = [];
-    let currentYear = '2025';
+    let allYears = [];
+    let currentYear = 2025;
     let currentSortKey = null;
     let currentSortDir = 'desc';
 
@@ -35,7 +35,7 @@
     ];
 
     async function loadSupabaseDataForStageAndYear(stage, year) {
-      let query = supabase.from('douzepoints').select('*').eq('Year', parseInt(year));
+      let query = supabase.from('douzepoints').select('*').eq('Year', year);
       if (stage === 'Final') {
         query = query.not('FinalRunningOrder', 'is', null);
       } else if (stage === 'Semi Final 1') {
@@ -48,12 +48,25 @@
       return data || [];
     }
 
-    async function loadTableData(year) {
-      currentYear = year;
-      const stage = document.getElementById("stageSelect").value;
-      eurovisionData = await loadSupabaseDataForStageAndYear(stage, year);
+    async function loadAvailableYears() {
+      const { data, error } = await supabase.from('douzepoints').select('Year');
+      if (error) {
+        console.error('Failed to fetch years:', error.message);
+        return;
+      }
+      const yearsSet = new Set(data.map(row => row.Year).filter(y => !!y));
+      allYears = Array.from(yearsSet).sort((a, b) => b - a);
 
-      document.getElementById("tableHeader").textContent = `Eurovision ${stage} - ${year}`;
+      const select = document.getElementById("yearSelect");
+      select.innerHTML = allYears.map(y => `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`).join('');
+    }
+
+    async function loadTableData(year) {
+      currentYear = parseInt(year);
+      const stage = document.getElementById("stageSelect").value;
+      eurovisionData = await loadSupabaseDataForStageAndYear(stage, currentYear);
+
+      document.getElementById("tableHeader").textContent = `Eurovision ${stage} - ${currentYear}`;
       renderTable();
       sortBy("Total Points", "desc");
     }
@@ -103,16 +116,9 @@
       renderTable();
     }
 
-    function populateYearDropdown() {
-      const years = [...new Set(eurovisionData.map(row => row.Year))].sort((a, b) => b - a);
-      const select = document.getElementById("yearSelect");
-      select.innerHTML = years.map(year => `<option value="${year}" ${year === currentYear ? 'selected' : ''}>${year}</option>`).join('');
-    }
-
     document.addEventListener("DOMContentLoaded", async () => {
-      eurovisionData = await loadSupabaseDataForStageAndYear("Final", currentYear);
-      populateYearDropdown();
-      loadTableData(currentYear);
+      await loadAvailableYears();
+      await loadTableData(currentYear);
 
       document.getElementById("yearSelect").addEventListener("change", e => {
         loadTableData(e.target.value);
