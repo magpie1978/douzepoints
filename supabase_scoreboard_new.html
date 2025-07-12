@@ -1,12 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Douze Points Table</title>
-  <link rel="stylesheet" href="style/combined.css">
-  <link rel="stylesheet" href="style/supabase_scoreboard.css"></script>
-
+$1
+  <script src="https://unpkg.com/feather-icons"></script>
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
@@ -99,7 +94,7 @@
             return `<td><span class="badge ${qualified ? 'qualified' : 'dnq'}">${qualified ? 'Qual' : 'DNQ'}</span></td>`;
           }
           if (label === "") {
-            return `<td class="play-icon"><img src="icons/play_button.png" alt="Play"></td>`;
+            return `<td class=\"play-icon\"><i data-feather=\"play-circle\"></i></td>`;
           }
           return `<td>${value}</td>`;
         });
@@ -125,7 +120,8 @@
       renderTable();
     }
 
-    document.addEventListener("DOMContentLoaded", async () => {
+    $1
+      feather.replace();
       await loadAvailableYears();
       await loadTableData(currentYear);
 
