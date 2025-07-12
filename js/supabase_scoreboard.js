@@ -52,6 +52,8 @@ function loadTableData(year) {
     if (col.label === "") return `<th class="play-icon"></th>`;
     if (field && eurovisionData.some(row => row[field])) {
       const divider = (col.label === "R/O" || col.label === "Televote Rank" || col.label === "Jury Rank") ? 'divider-right' : '';
+      return `<th class="${divider}" data-key="${col.label}">${col.label}</th>`;
+    }).join('') + "</tr>";
   }).join('') + "</tr>";
 
   sortBy("Total Points", "desc");
@@ -221,6 +223,8 @@ async function loadTableData(year) {
     if (col.label === "") return `<th class="play-icon"></th>`;
     if (field && eurovisionData.some(row => row[field])) {
       const divider = (col.label === "R/O" || col.label === "Televote Rank" || col.label === "Jury Rank") ? 'divider-right' : '';
+      return `<th class="${divider}" data-key="${col.label}">${col.label}</th>`;
+    }).join('') + "</tr>";
   }).join('') + "</tr>";
 
   sortBy("Total Points", "desc");
