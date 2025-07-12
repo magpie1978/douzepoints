@@ -180,12 +180,7 @@ function populateYearDropdown() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadCSVData();
 
-  document.getElementById("yearSelect").addEventListener("change", (e) => {
-    loadTableData(e.target.value);
-  });
 
   document.getElementById("stageSelect").addEventListener("change", () => {
     loadTableData(currentYear);
@@ -204,8 +199,6 @@ const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 window.supabase = supabase;
-
-  return data;
 }
 
 async function loadDataAndRender() {
@@ -252,7 +245,6 @@ async function loadSupabaseDataForStageAndYear(stage, year) {
   }
 
   console.log('Supabase result:', data); // Debugging line
-  return data;
 }
 
 
