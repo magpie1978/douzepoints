@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eurovision Scoreboard</title>
   <script src="https://unpkg.com/feather-icons"></script>
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
     const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     window.supabase = supabase;
 
     let eurovisionData = [];
@@ -42,34 +48,32 @@
       if (error) console.error('Error loading data:', error.message);
       return data || [];
     }
-    
 
     async function loadAvailableYears() {
-  const { data, error } = await supabase.from('douzepoints').select('Year');
-  if (error) {
-    console.error('Failed to fetch years:', error.message);
-    return;
-  }
+      const { data, error } = await supabase.from('douzepoints').select('Year');
+      if (error) {
+        console.error('Failed to fetch years:', error.message);
+        return;
+      }
 
-  const yearsSet = new Set();
-  data.forEach(row => {
-    const y = parseInt(row.Year);
-    if (!isNaN(y)) yearsSet.add(y);
-  });
+      const yearsSet = new Set();
+      data.forEach(row => {
+        const y = parseInt(row.Year);
+        if (!isNaN(y)) yearsSet.add(y);
+      });
 
-  allYears = Array.from(yearsSet).sort((a, b) => b - a);
+      allYears = Array.from(yearsSet).sort((a, b) => b - a);
 
-  const select = document.getElementById("yearSelect");
-  select.innerHTML = '';
-  allYears.forEach(y => {
-    const option = document.createElement("option");
-    option.value = y;
-    option.textContent = y;
-    if (y === currentYear) option.selected = true;
-    select.appendChild(option);
-  });
-}
-    
+      const select = document.getElementById("yearSelect");
+      select.innerHTML = '';
+      allYears.forEach(y => {
+        const option = document.createElement("option");
+        option.value = y;
+        option.textContent = y;
+        if (y === currentYear) option.selected = true;
+        select.appendChild(option);
+      });
+    }
 
     async function loadTableData(year) {
       currentYear = parseInt(year);
@@ -100,12 +104,13 @@
             return `<td><span class="badge ${qualified ? 'qualified' : 'dnq'}">${qualified ? 'Qual' : 'DNQ'}</span></td>`;
           }
           if (label === "") {
-            return `<td class=\"play-icon\"><i data-feather=\"play-circle\" class=\"video-trigger\" data-url=\"${row.Video_URL || ''}\"></i></td>`;
+            return `<td class="play-icon"><i data-feather="play-circle" class="video-trigger" data-url="${row.Video_URL || ''}"></i></td>`;
           }
           if (label === "Country") {
             const countryCode = (row.Country_Code || '').toLowerCase();
             return `<td><img class='flag-icon' src='flags/${countryCode}.png' alt='${value} flag' style='width:20px; vertical-align:middle; margin-right:6px;'>${value}</td>`;
           }
+          return `<td>${value}</td>`;
         });
         tr.innerHTML = cells.join('');
         tbody.appendChild(tr);
@@ -129,7 +134,7 @@
       renderTable();
     }
 
-    $1
+    document.addEventListener("DOMContentLoaded", async () => {
       feather.replace();
       await loadAvailableYears();
       await loadTableData(currentYear);
@@ -149,6 +154,23 @@
       });
     });
   </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    label {
+      font-weight: bold;
+      margin-right: 8px;
+    }
+    #yearSelect, #stageSelect {
+      margin-right: 20px;
+      padding: 5px 10px;
+      font-size: 1rem;
+    }
+    h1#tableHeader {
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
   <h1 id="tableHeader">Eurovision Grand Final - 2025</h1>
@@ -180,44 +202,28 @@
     </thead>
     <tbody id="eurovision-table-body"></tbody>
   </table>
-<div id="video-modal" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:#000; padding:20px; border-radius:8px; z-index:1000;">
-  <video id="modal-video" width="640" height="360" controls autoplay style="display:block;"></video>
-</div>
-<script>
-  document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('video-trigger')) {
-      const videoUrl = e.target.getAttribute('data-url');
-      if (videoUrl) {
+
+  <div id="video-modal" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:#000; padding:20px; border-radius:8px; z-index:1000;">
+    <video id="modal-video" width="640" height="360" controls autoplay style="display:block;"></video>
+  </div>
+
+  <script>
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('video-trigger')) {
+        const videoUrl = e.target.getAttribute('data-url');
+        if (videoUrl) {
+          const modal = document.getElementById('video-modal');
+          const video = document.getElementById('modal-video');
+          video.src = videoUrl;
+          modal.style.display = 'block';
+        }
+      } else if (!e.target.closest('#video-modal')) {
         const modal = document.getElementById('video-modal');
         const video = document.getElementById('modal-video');
-        video.src = videoUrl;
-        modal.style.display = 'block';
+        video.pause();
+        modal.style.display = 'none';
       }
-    } else if (!e.target.closest('#video-modal')) {
-      const modal = document.getElementById('video-modal');
-      const video = document.getElementById('modal-video');
-      video.pause();
-      modal.style.display = 'none';
-    }
-  });
-</script>
-
-<style>
-  body {
-    font-family: Arial, sans-serif;
-  }
-  label {
-    font-weight: bold;
-    margin-right: 8px;
-  }
-  #yearSelect, #stageSelect {
-    margin-right: 20px;
-    padding: 5px 10px;
-    font-size: 1rem;
-  }
-  h1#tableHeader {
-    margin-bottom: 20px;
-  }
-</style>
+    });
+  </script>
 </body>
 </html>
