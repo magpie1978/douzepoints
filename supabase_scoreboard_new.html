@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Douze Points Table</title>
+  <link rel="stylesheet" href="style/combined.css">
   <script src="https://unpkg.com/feather-icons"></script>
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
@@ -43,26 +48,32 @@
       if (error) console.error('Error loading data:', error.message);
       return data || [];
     }
-    
 
     async function loadAvailableYears() {
-  const { data, error } = await supabase.from('douzepoints').select('Year');
-  if (error) {
-    console.error('Failed to fetch years:', error.message);
-    return;
-  }
+      const { data, error } = await supabase.from('douzepoints').select('Year');
+      if (error) {
+        console.error('Failed to fetch years:', error.message);
+        return;
+      }
 
-  const yearsSet = new Set(
-    data.map(row => row.Year).filter(y => typeof y === 'number' && !isNaN(y))
-  );
-  allYears = Array.from(yearsSet).sort((a, b) => b - a);
+      const yearsSet = new Set();
+      data.forEach(row => {
+        const y = parseInt(row.Year);
+        if (!isNaN(y)) yearsSet.add(y);
+      });
 
-  const select = document.getElementById("yearSelect");
-  select.innerHTML = allYears
-    .map(y => `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`)
-    .join('');
-}
-    
+      allYears = Array.from(yearsSet).sort((a, b) => b - a);
+
+      const select = document.getElementById("yearSelect");
+      select.innerHTML = '';
+      allYears.forEach(y => {
+        const option = document.createElement("option");
+        option.value = y;
+        option.textContent = y;
+        if (y === currentYear) option.selected = true;
+        select.appendChild(option);
+      });
+    }
 
     async function loadTableData(year) {
       currentYear = parseInt(year);
@@ -93,13 +104,14 @@
             return `<td><span class="badge ${qualified ? 'qualified' : 'dnq'}">${qualified ? 'Qual' : 'DNQ'}</span></td>`;
           }
           if (label === "") {
-            return `<td class=\"play-icon\"><i data-feather=\"play-circle\"></i></td>`;
+            return `<td class="play-icon"><i data-feather="play-circle"></i></td>`;
           }
           return `<td>${value}</td>`;
         });
         tr.innerHTML = cells.join('');
         tbody.appendChild(tr);
       });
+      feather.replace(); // Render icons after inserting them
     }
 
     function sortBy(label, dir = null) {
@@ -119,8 +131,7 @@
       renderTable();
     }
 
-    $1
-      feather.replace();
+    document.addEventListener("DOMContentLoaded", async () => {
       await loadAvailableYears();
       await loadTableData(currentYear);
 
