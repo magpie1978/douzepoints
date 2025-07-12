@@ -233,8 +233,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+
 async function loadSupabaseDataForStageAndYear(stage, year) {
-  let query = supabase.from('douzepoints').select('*').eq('Year', year);
+  let query = supabase.from('douzepoints').select('*').eq('Year', parseInt(year));
 
   if (stage === 'Final') {
     query = query.not('FinalRunningOrder', 'is', null);
@@ -249,8 +250,11 @@ async function loadSupabaseDataForStageAndYear(stage, year) {
     console.error('Error loading data:', error.message);
     return [];
   }
+
+  console.log('Supabase result:', data); // Debugging line
   return data;
 }
+
 
 async function loadTableData(year) {
   currentYear = year;
