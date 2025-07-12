@@ -197,3 +197,81 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+window.supabase = supabase;
+
+  return data;
+}
+
+async function loadDataAndRender() {
+  allRawData = await loadSupabaseData();
+  populateYearDropdown();
+  loadTableData(currentYear);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadDataAndRender();
+
+  document.getElementById("yearSelect").addEventListener("change", (e) => {
+    loadTableData(e.target.value);
+  });
+
+  document.getElementById("stageSelect").addEventListener("change", () => {
+    loadTableData(currentYear);
+  });
+
+  document.addEventListener("click", e => {
+    if (e.target.tagName === "TH" && e.target.dataset.key) {
+      sortBy(e.target.dataset.key);
+    }
+  });
+});
+
+
+async function loadSupabaseDataForStageAndYear(stage, year) {
+  let query = supabase.from('douzepoints').select('*').eq('Year', year);
+
+  if (stage === 'Final') {
+    query = query.not('FinalRunningOrder', 'is', null);
+  } else if (stage === 'Semi Final 1') {
+    query = query.eq('SemiFinal', '1');
+  } else if (stage === 'Semi Final 2') {
+    query = query.eq('SemiFinal', '2');
+  }
+
+  const { data, error } = await query;
+  if (error) {
+    console.error('Error loading data:', error.message);
+    return [];
+  }
+  return data;
+}
+
+async function loadTableData(year) {
+  currentYear = year;
+  const stage = document.getElementById("stageSelect").value;
+
+  eurovisionData = await loadSupabaseDataForStageAndYear(stage, year);
+
+  const header = document.getElementById("tableHeader");
+  header.textContent = `Eurovision ${stage} - ${year}`;
+
+  const tableHead = document.getElementById("tableHead");
+  tableHead.innerHTML = "<tr>" + columnDefinitions.map(col => {
+    const field = col.key || (stage === 'Final' ? col.final : col.semi);
+    if (col.label === "Status") return stage === 'Final' ? '' : `<th data-key="Status">Status</th>`;
+    if (col.label === "") return `<th class="play-icon"></th>`;
+    if (field && eurovisionData.some(row => row[field])) {
+      const divider = (col.label === "R/O" || col.label === "Televote Rank" || col.label === "Jury Rank") ? 'divider-right' : '';
+      return `<th class="\${divider}" data-key="\${col.label}">\${col.label}</th>`;
+    }
+    return '';
+  }).join('') + "</tr>";
+
+  sortBy("Total Points", "desc");
+}
