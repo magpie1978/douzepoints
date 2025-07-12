@@ -224,3 +224,7 @@ async function loadTableData(year) {
       return `<th class="${divider}" data-key="${col.label}">${col.label}</th>`;
 
   sortBy("Total Points", "desc");
+    }
+  }).join('') + "</tr>";
+  sortBy("Total Points", "desc");
+}
