@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadHeader() {
     const path = window.location.pathname;
-    const headerHtml = await fetch("supabase_header.html").then(res => res.text());
+    const headerHtml = await fetch("header.html").then(res => res.text());
     const headerContainer = document.getElementById("header-container");
     if (!headerContainer) {
         console.error("header-container element not found");
@@ -21,12 +21,12 @@ async function loadHeader() {
 
     const banner = document.getElementById("country-banner");
 
-    const isIndexPage = path.endsWith("/") || path.includes("supabase_index.html");
+    const isIndexPage = path.endsWith("/") || path.includes("index.html");
     const country = new URLSearchParams(window.location.search).get("country");
-    const isCountryPage = path.includes("supabase_country.html");
-    const isEditionPage = path.includes("supabase_edition.html");
-    const isWinnersPage = path.includes("supabase_winners.html");
-    const isFavouritesPage = path.includes("supabase_fan-favorites.html");
+    const isCountryPage = path.includes("country.html");
+    const isEditionPage = path.includes("edition.html");
+    const isWinnersPage = path.includes("winners.html");
+    const isFavouritesPage = path.includes("fan-favorites.html");
     const isAboutPage = path.includes("about.html");
     const isContactPage = path.includes("contact.html");
     const isFAQPage = path.includes("faq.html");
