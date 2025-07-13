@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (
     path.includes("country.html") ||
     path.includes("winners.html") ||
-    path.includes("supabase_winners") ||
     path.includes("fan-favorites.html")
   ) {
     console.log("Calling loadSidebarCountries()");
