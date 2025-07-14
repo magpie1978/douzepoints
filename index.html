@@ -68,7 +68,7 @@
     </div>
   </div>
 
-  <!-- CAROUSEL SCRIPTS -->
+  <!-- CAROUSEL SCRIPTS --
   <script src="js/icons.js"></script>
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -123,6 +123,6 @@
     loadCarouselData("carouselTrack1", row => row.Final_Rank === "1", (a, b) => b.Year - a.Year, 10);
     loadCarouselData("carouselTrack2", row => row.Year === 2024, () => 0, 20);
     loadCarouselData("carouselTrack3", row => (row.FanFave || '').trim().toUpperCase() === 'Y', (a, b) => b.Year - a.Year, 10);
-  </script>
+  </script> -->
 </body>
 </html>
