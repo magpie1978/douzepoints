@@ -160,7 +160,8 @@ document.addEventListener("DOMContentLoaded", () => {
     'fan-favorites.html': loadFanFaves,
     'edition.html': loadEdition,
     'country.html': loadCountry,
-    'index.html': loadIndexCarousels
+    'index.html': loadIndexCarousels,
+    '/': loadIndexCarousels
   };
 
   for (const page in routes) {
