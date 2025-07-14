@@ -91,40 +91,6 @@
 
             container.innerHTML = '';
 
-            
-            //data.forEach(entry => {
-            //    const videoDiv = document.createElement('div');
-            //    videoDiv.className = 'video-item';
-            //    videoDiv.setAttribute('data-year', entry.Year);
-            //    videoDiv.setAttribute('data-artist', entry.Artist);
-            //    videoDiv.setAttribute('data-song', entry.Song);
-
-            //    const videoUrl = entry.Video_URL;
-            //    const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
-
-            //    videoDiv.addEventListener('click', () => {
-            //       GDriveOpenModalWithVideo(videoUrl);
-            //    });
-
-            //    videoDiv.innerHTML = `
-            //        <div class="preview-container">
-            //            <img alt="${entry.Country} ${entry.Year}" src="${imageUrl}" />
-            //        </div>
-            //        <div class="video-title-with-icon">
-            //            <span class="video-title-text">
-            //                <strong>${entry.Year}</strong><br/>
-            //                ${entry.Artist}<br/>
-            //                <i>${entry.Song}</i>
-            //            </span>
-            //        </div>
-            //    `;
-
-                
-            //    container.appendChild(videoDiv);
-            // });
-
-            
-
             data.forEach(entry => {
                 const videoDiv = document.createElement('div');
                 videoDiv.className = 'video-item';
@@ -162,7 +128,7 @@
 });
 
 
-            -- 
+          
             document.getElementById("sort-options").dispatchEvent(new Event("change"));
         }
 
