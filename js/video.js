@@ -57,14 +57,16 @@ async function fetchAndRender(queryFn, errorMsg, emptyMsg) {
     container.innerHTML = `<p style='padding: 20px;'>${emptyMsg}</p>`;
     return;
   }
-}
 
   container.innerHTML = '';
   data.forEach(entry => container.appendChild(renderEntry(entry)));
-  
+
+  // ✅ Safely call sorting after entries are rendered
   if (typeof triggerInitialSort === 'function') {
-  triggerInitialSort();
-}
+    triggerInitialSort();
+  }
+} // ← Make sure this closing brace is present!
+
 
 
 // --- Page Loaders ---
