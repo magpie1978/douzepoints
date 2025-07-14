@@ -54,7 +54,7 @@ async function loadHeader() {
 
             const locationCode = data?.[0]?.LocationCountry?.toLowerCase();
             if (locationCode) {
-                banner.src = `/banners/${locationCode}.png`;
+                banner.src = `/banners/${editionYear}.png`;
                 banner.alt = editionYear;
             }
         }
