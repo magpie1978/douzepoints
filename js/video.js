@@ -57,6 +57,7 @@ async function fetchAndRender(queryFn, errorMsg, emptyMsg) {
     container.innerHTML = `<p style='padding: 20px;'>${emptyMsg}</p>`;
     return;
   }
+}
 
   container.innerHTML = '';
   data.forEach(entry => container.appendChild(renderEntry(entry)));
