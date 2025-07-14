@@ -60,8 +60,11 @@ async function fetchAndRender(queryFn, errorMsg, emptyMsg) {
 
   container.innerHTML = '';
   data.forEach(entry => container.appendChild(renderEntry(entry)));
-  document.getElementById("sort-options")?.dispatchEvent(new Event("change"));
+  
+  if (typeof triggerInitialSort === 'function') {
+  triggerInitialSort();
 }
+
 
 // --- Page Loaders ---
 function loadWinners() {
