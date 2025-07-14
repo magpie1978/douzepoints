@@ -47,17 +47,13 @@ async function loadWinnersFromSupabase() {
     .order('Year', { ascending: false });
 
   const container = document.getElementById('video-container');
-  if (error || !data || data.length === 0) {
+  if (error || !data?.length) {
     container.innerHTML = `<p style='padding: 20px;'>No winners found.</p>`;
     return;
   }
 
   container.innerHTML = '';
-  data.forEach(entry => {
-    const div = renderEntry(entry);
-    container.appendChild(div);
-  });
-
+  data.forEach(entry => container.appendChild(renderEntry(entry)));
   document.getElementById("sort-options")?.dispatchEvent(new Event("change"));
 }
 
@@ -69,28 +65,77 @@ async function loadFanFavoritesFromSupabase() {
     .order('Year', { ascending: false });
 
   const container = document.getElementById('video-container');
-  if (error || !data || data.length === 0) {
+  if (error || !data?.length) {
     container.innerHTML = `<p style='padding: 20px;'>No fan favourites found.</p>`;
     return;
   }
 
   container.innerHTML = '';
-  data.forEach(entry => {
-    const div = renderEntry(entry);
-    container.appendChild(div);
-  });
-
+  data.forEach(entry => container.appendChild(renderEntry(entry)));
   document.getElementById("sort-options")?.dispatchEvent(new Event("change"));
 }
 
-// Detect page and load appropriate content
-document.addEventListener("DOMContentLoaded", () => {
-  const isWinners = window.location.pathname.includes('winners.html');
-  const isFanFaves = window.location.pathname.includes('fan-favorites.html');
+async function loadEditionVideosFromSupabase() {
+  const edition = new URLSearchParams(window.location.search).get("edition");
+  const container = document.getElementById('video-container');
 
-  if (isWinners) {
+  if (!edition) {
+    container.innerHTML = `<p style='padding: 20px;'>No edition specified.</p>`;
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from('douzepoints')
+    .select('*')
+    .eq('Year', edition)
+    .order('Country', { ascending: true });
+
+  if (error || !data?.length) {
+    container.innerHTML = `<p style='padding: 20px;'>No entries found for edition: ${edition}</p>`;
+    return;
+  }
+
+  container.innerHTML = '';
+  data.forEach(entry => container.appendChild(renderEntry(entry)));
+  document.getElementById("sort-options")?.dispatchEvent(new Event("change"));
+}
+
+async function loadCountryVideosFromSupabase() {
+  const country = new URLSearchParams(window.location.search).get("country");
+  const container = document.getElementById('video-container');
+
+  if (!country) {
+    container.innerHTML = `<p style='padding: 20px;'>No country specified.</p>`;
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from('douzepoints')
+    .select('*')
+    .ilike('Country', country)
+    .order('Year', { ascending: false });
+
+  if (error || !data?.length) {
+    container.innerHTML = `<p style='padding: 20px;'>No entries found for country: ${country}</p>`;
+    return;
+  }
+
+  container.innerHTML = '';
+  data.forEach(entry => container.appendChild(renderEntry(entry)));
+  document.getElementById("sort-options")?.dispatchEvent(new Event("change"));
+}
+
+// Detect page and load appropriate data
+document.addEventListener("DOMContentLoaded", () => {
+  const pathname = window.location.pathname;
+
+  if (pathname.includes('winners.html')) {
     loadWinnersFromSupabase();
-  } else if (isFanFaves) {
+  } else if (pathname.includes('fan-favorites.html')) {
     loadFanFavoritesFromSupabase();
+  } else if (pathname.includes('edition.html')) {
+    loadEditionVideosFromSupabase();
+  } else if (pathname.includes('country.html')) {
+    loadCountryVideosFromSupabase();
   }
 });
