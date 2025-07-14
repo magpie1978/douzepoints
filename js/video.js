@@ -13,6 +13,7 @@ function renderEntry(entry) {
   const countryCode = entry.Country_Code?.toLowerCase();
   const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
   const flagUrl = `/flags/${countryCode}.png`;
+  const path = window.location.pathname;
 
   const div = document.createElement('div');
   div.className = 'video-item';
@@ -24,6 +25,10 @@ function renderEntry(entry) {
   div.setAttribute('data-televote', entry.Final_TelevotePoints || "0");
   div.setAttribute('data-total', entry.Final_TotalPoints || "0");
 
+  const titleHTML = path.includes('edition.html')
+    ? `<b>${entry.Song}</b><br>${entry.Artist}<br>${entry.Country}`
+    : `<b>${entry.Artist}</b><br>${entry.Song}<br>${entry.Year}`;
+
   div.innerHTML = `
     <div class="preview-container">
       <img src="${imageUrl}" alt="${entry.Artist}" />
@@ -33,10 +38,11 @@ function renderEntry(entry) {
         <img class="flag-icon" src="${flagUrl}" alt="Flag">
       </a>
       <div class="video-title-text">
-        <b>${entry.Artist}</b><br>${entry.Song}<br>${entry.Year}
+        ${titleHTML}
       </div>
     </div>
   `;
+
   div.onclick = () => GDriveOpenModalWithVideo(entry.Video_URL);
   return div;
 }
