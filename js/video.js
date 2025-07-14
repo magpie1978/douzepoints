@@ -163,10 +163,18 @@ document.addEventListener("DOMContentLoaded", () => {
     'index.html': loadIndexCarousels
   };
 
+  let matched = false;
+
   for (const page in routes) {
     if (path.includes(page)) {
       routes[page]();
+      matched = true;
       break;
     }
+  }
+
+  // Run index carousel loader if on root path (e.g. /)
+  if (!matched && (path === '/' || path === '')) {
+    loadIndexCarousels();
   }
 });
