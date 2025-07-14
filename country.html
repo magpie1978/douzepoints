@@ -105,19 +105,36 @@
                     GDriveOpenModalWithVideo(videoUrl);
                 });
 
+               // videoDiv.innerHTML = `
+               //     <div class="preview-container">
+               //         <img alt="${entry.Country} ${entry.Year}" src="${imageUrl}" />
+               //     </div>
+               //     <div class="video-title-with-icon">
+               //         <span class="video-title-text">
+               //             <strong>${entry.Year}</strong><br/>
+               //             ${entry.Artist}<br/>
+               //             <i>${entry.Song}</i>
+               //         </span>
+               //     </div>
+               // `;
+
+
+
                 videoDiv.innerHTML = `
-                    <div class="preview-container">
-                        <img alt="${entry.Country} ${entry.Year}" src="${imageUrl}" />
+                  <div class="preview-container">
+                    <img alt="${entry.Country} ${entry.Year}" src="${imageUrl}" />
+                  </div>
+                  <div class="video-title-with-icon" onclick="event.stopPropagation()">
+                    <a href="country.html?country=${entry.Country}">
+                      <img class="flag-icon" src="${flagUrl}" alt="Flag">
+                    </a>
+                    <div class="video-title-text">
+                      <b>${entry.Artist}</b><br>${entry.Song}<br>${entry.Year}
                     </div>
-                    <div class="video-title-with-icon">
-                        <span class="video-title-text">
-                            <strong>${entry.Year}</strong><br/>
-                            ${entry.Artist}<br/>
-                            <i>${entry.Song}</i>
-                        </span>
-                    </div>
+                  </div>
                 `;
 
+                
                 container.appendChild(videoDiv);
             });
 
