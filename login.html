@@ -88,7 +88,7 @@
     // ✅ Redirect if already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        window.location.href = 'supabase.html';
+        window.location.href = 'add.html';
       }
     });
 
@@ -122,7 +122,7 @@
         // Ensure session is available before redirect
         const { data: sessionData } = await supabase.auth.getSession();
         if (sessionData.session) {
-          window.location.href = 'supabase.html';
+          window.location.href = 'add.html';
         } else {
           status.textContent = 'Could not verify session.';
           status.style.color = 'orange';
