@@ -1,95 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Eurovision Scoreboard</title>
-  <link href="style/scoreboard.css" rel="stylesheet" type="text/css" />
-  <link href="style/footer.css" rel="stylesheet" type="text/css" />
-  <script src="js/header.js" defer></script>
-  <script src="js/footer.js" defer></script><
-  <script type="module" src="js/scoreboard.js"></script>
-  <script src="https://unpkg.com/feather-icons"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <title>Eurovision Scoreboard</title>
+  
+    <link href="style/scoreboard.css" rel="stylesheet" type="text/css" />
+    <link href="style/footer.css" rel="stylesheet" type="text/css" />
+  
+    <script src="js/header.js" defer></script>
+    <script src="js/footer.js" defer></script><
+    <script type="module" src="js/scoreboard.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
 
-  <!-- HEADER container -->
-        <div id="header-container"></div>
+    <!-- HEADER container -->
+    <div id="header-container"></div>
 
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
-    label {
-      font-weight: bold;
-      margin-right: 8px;
-    }
-    #yearSelect, #stageSelect {
-      margin-right: 20px;
-      padding: 5px 10px;
-      font-size: 1rem;
-    }
-    h1#tableHeader {
-      margin-bottom: 20px;
-    }
-  </style>
-</head>
-<body>
-  <h1 id="tableHeader">Eurovision Grand Final - 2025</h1>
-  <label for="yearSelect">Year:</label>
-  <select id="yearSelect"></select>
-  <label for="stageSelect">Stage:</label>
-  <select id="stageSelect">
-    <option>Final</option>
-    <option>Semi Final 1</option>
-    <option>Semi Final 2</option>
-  </select>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      
+      label {
+        font-weight: bold;
+        margin-right: 8px;
+      }
+      
+      #yearSelect, #stageSelect {
+        margin-right: 20px;
+        padding: 5px 10px;
+        font-size: 1rem;
+      }
+      
+      h1#tableHeader {
+        margin-bottom: 20px;
+      }
+    </style>
 
-  <table>
-    <thead id="tableHead">
-      <tr>
-        <th>Result</th>
-        <th>Country</th>
-        <th>Artist</th>
-        <th></th>
-        <th>Song</th>
-        <th>R/O</th>
-        <th>Televote Pts</th>
-        <th>Televote Rank</th>
-        <th>Jury Pts</th>
-        <th>Jury Rank</th>
-        <th>Total Points</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody id="eurovision-table-body"></tbody>
-  </table>
+  </head>
 
-  <div id="video-modal" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:#000; padding:20px; border-radius:8px; z-index:1000;">
-    <video id="modal-video" width="640" height="360" controls autoplay style="display:block;"></video>
-  </div>
+  <body>
+    <h1 id="tableHeader">Eurovision Grand Final - 2025</h1>
+    <label for="yearSelect">Year:</label>
+    <select id="yearSelect"></select>
+    <label for="stageSelect">Stage:</label>
+    <select id="stageSelect">
+      <option>Final</option>
+      <option>Semi Final 1</option>
+      <option>Semi Final 2</option>
+    </select>
 
-  <script>
-    document.addEventListener('click', function(e) {
-      if (e.target.classList.contains('video-trigger')) {
-        const videoUrl = e.target.getAttribute('data-url');
-        if (videoUrl) {
+    <table>
+      <thead id="tableHead">
+        <tr>
+          <th>Result</th>
+          <th>Country</th>
+          <th>Artist</th>
+          <th></th>
+          <th>Song</th>
+          <th>R/O</th>
+          <th>Televote Pts</th>
+          <th>Televote Rank</th>
+          <th>Jury Pts</th>
+          <th>Jury Rank</th>
+          <th>Total Points</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="eurovision-table-body"></tbody>
+    </table>
+
+    <div id="video-modal" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:#000; padding:20px; border-radius:8px; z-index:1000;">
+      <video id="modal-video" width="640" height="360" controls autoplay style="display:block;"></video>
+    </div>
+
+    <script>
+      document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('video-trigger')) {
+          const videoUrl = e.target.getAttribute('data-url');
+          if (videoUrl) {
+            const modal = document.getElementById('video-modal');
+            const video = document.getElementById('modal-video');
+            video.src = videoUrl;
+            modal.style.display = 'block';
+          }
+        } else if (!e.target.closest('#video-modal')) {
           const modal = document.getElementById('video-modal');
           const video = document.getElementById('modal-video');
-          video.src = videoUrl;
-          modal.style.display = 'block';
+          video.pause();
+          modal.style.display = 'none';
         }
-      } else if (!e.target.closest('#video-modal')) {
-        const modal = document.getElementById('video-modal');
-        const video = document.getElementById('modal-video');
-        video.pause();
-        modal.style.display = 'none';
-      }
-    });
-  </script>
+      });
+    </script>
 
   
-        <!-- FOOTER & JS -->
-        <div id="footer"></div>
+    <!-- FOOTER & JS -->
+    <div id="footer"></div>
   
 </body>
 </html>
