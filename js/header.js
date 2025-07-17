@@ -31,6 +31,7 @@ async function loadHeader() {
     const isContactPage = path.includes("contact.html");
     const isFAQPage = path.includes("faq.html");
     const isPrivacyPage = path.includes("privacy.html");
+    const isScoreboardPage = path.includes("scoreboard.html");
 
     if (!banner) return;
 
@@ -77,6 +78,9 @@ async function loadHeader() {
     } else if (isAboutPage) {
         banner.src = "/banners/about.png";
         banner.alt = "About";
+    } else if (isScoreboardPage) {
+        banner.src = "/banners/douzepoints.png";
+        banner.alt = "Scoreboard";        
     } else if (isContactPage) {
         banner.src = "/banners/contact.png";
         banner.alt = "Contact";
@@ -86,5 +90,6 @@ async function loadHeader() {
     } else if (isPrivacyPage) {
         banner.src = "/banners/privacy.png";
         banner.alt = "Privacy";
+        
     }
 }
