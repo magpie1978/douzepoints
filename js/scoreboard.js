@@ -1,9 +1,14 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-window.supabase = supabase;
 
+// --- Supabase Setup ---
+const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiwi...';
+if (!window.supabase) {
+  window.supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+const supabase = window.supabase;
+
+// --- Global State ---
 let allRawData = [];
 let eurovisionData = [];
 let currentYear = '2025';
@@ -25,37 +30,40 @@ const columnDefinitions = [
   { label: "Status", key: "Status" }
 ];
 
-function formatOrdinal(n) {
-  n = parseInt(n);
-  if (isNaN(n)) return '-';
-  const s = ["th", "st", "nd", "rd"];
-  const v = n % 100;
+// --- Load Supabase Data ---
+async function loadSupabaseDataForStageAndYear(stage, year) {
+  let query = supabase.from('douzepoints').select('*').eq('Year', parseInt(year));
 
-function loadTableData(year) {
+  if (stage === 'Final') {
+    query = query.not('FinalRunningOrder', 'is', null);
+  } else if (stage === 'Semi Final 1') {
+    query = query.eq('SemiFinal', '1');
+  } else if (stage === 'Semi Final 2') {
+    query = query.eq('SemiFinal', '2');
+  }
+
+  const { data, error } = await query;
+  if (error) {
+    console.error('Error loading data:', error.message);
+    return [];
+  }
+  return data;
+}
+
+// --- Load and Render Table Data ---
+async function loadTableData(year) {
   currentYear = year;
   const stage = document.getElementById("stageSelect").value;
-  const isFinal = stage === "Final";
-
-  eurovisionData = allRawData.filter(row => {
-    const matchYear = row.Year === year;
-    if (isFinal) return matchYear && row.FinalRunningOrder;
-    if (stage === "Semi Final 1") return matchYear && row.SemiFinal === "1";
-    if (stage === "Semi Final 2") return matchYear && row.SemiFinal === "2";
+  eurovisionData = await loadSupabaseDataForStageAndYear(stage, year);
 
   const header = document.getElementById("tableHeader");
-  header.textContent = `Eurovision ${isFinal ? "Grand Final" : stage} - ${year}`;
+  header.textContent = `Eurovision ${stage} - ${year}`;
 
-  const tableHead = document.getElementById("tableHead");
-  tableHead.innerHTML = "<tr>" + columnDefinitions.map(col => {
-    const field = col.key || (isFinal ? col.final : col.semi);
-    if (col.label === "Status") return isFinal ? '' : `<th data-key="Status">Status</th>`;
-    if (col.label === "") return `<th class="play-icon"></th>`;
-    if (field && eurovisionData.some(row => row[field])) {
-      const divider = (col.label === "R/O" || col.label === "Televote Rank" || col.label === "Jury Rank") ? 'divider-right' : '';
-      return `<th class="${divider}" data-key="${col.label}">${col.label}</th>`;
-
+  renderTable();
   sortBy("Total Points", "desc");
+}
 
+// --- Render Table Rows ---
 function renderTable() {
   const tbody = document.getElementById('eurovision-table-body');
   tbody.innerHTML = '';
@@ -74,7 +82,6 @@ function renderTable() {
       const field = col.key || (isFinal ? col.final : col.semi);
       const hasField = field && row[field] != null && row[field] !== '';
       const dividerClass = (label === "R/O" || label === "Televote Rank" || label === "Jury Rank") ? "divider-right" : "";
-
       const alignClass =
         label === "Televote Pts" ? "televote-pts" :
         label === "Televote Rank" ? "televote-rank" :
@@ -83,31 +90,46 @@ function renderTable() {
         label === "Total Points" ? "total-pts" : "";
 
       if (label === "Country") {
+        return `<td><span class="country-name">${flag}${row.Country}</span></td>`;
+      }
 
       if (label === "Result" || label.includes("Rank")) {
+        const val = row[field] || '';
+        return `<td class="${alignClass} ${dividerClass}">${val}</td>`;
+      }
 
       if (label === "Status") {
         const qualified = row["SemiFinal_Rank"] && row["Final_Rank"];
         const badge = qualified
           ? `<span class="badge qualified" title="Qualified for Final">Qual</span>`
           : `<span class="badge dnq">DNQ</span>`;
+        return `<td>${badge}</td>`;
+      }
 
       if (label === "") {
-  const videoUrl = row.Video_URL || "";
+        const videoUrl = row.Video_URL || "";
+        return `<td class="play-icon"><i data-url="${videoUrl}" class="video-trigger" data-feather="play-circle"></i></td>`;
+      }
 
+      return `<td class="${alignClass} ${dividerClass}">${hasField ? row[field] : ''}</td>`;
+    });
 
     tr.innerHTML = cells.join('');
     tbody.appendChild(tr);
+  });
 
+  if (window.feather) feather.replace();
+}
+
+// --- Sorting Logic ---
 function sortBy(displayLabel, direction = null) {
   const stage = document.getElementById("stageSelect").value;
   const isFinal = stage === "Final";
-
   const colDef = columnDefinitions.find(col => col.label === displayLabel);
   const field = colDef?.key || (isFinal ? colDef?.final : colDef?.semi);
   if (!field) return;
 
-  const isNumeric = !isNaN(parseFloat(eurovisionData[0][field]));
+  const isNumeric = !isNaN(parseFloat(eurovisionData[0]?.[field]));
 
   if (currentSortKey === field && !direction) {
     currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
@@ -118,102 +140,59 @@ function sortBy(displayLabel, direction = null) {
       "SemiFinalRunningOrder", "SemiFinal_TelevoteRank", "SemiFinal_JuryRank"
     ];
     currentSortDir = direction || (ascendingByDefault.includes(field) ? 'asc' : isNumeric ? 'desc' : 'asc');
+  }
 
   eurovisionData.sort((a, b) => {
     const aVal = isNumeric ? parseFloat(a[field] || 0) : (a[field] || '').toLowerCase();
     const bVal = isNumeric ? parseFloat(b[field] || 0) : (b[field] || '').toLowerCase();
+    if (aVal < bVal) return currentSortDir === 'asc' ? -1 : 1;
+    if (aVal > bVal) return currentSortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
 
   document.querySelectorAll("th").forEach(th => {
     th.classList.remove("sort-asc", "sort-desc");
     if (th.dataset.key === displayLabel) {
       th.classList.add(currentSortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+    }
+  });
 
   renderTable();
+}
 
-async function loadCSVData() {
-  const response = await fetch('./data/DouzePoints.csv');
-  const csvText = await response.text();
-    Papa.parse(csvText, {
-      header: true,
-      skipEmptyLines: true,
-      complete: results => {
-        allRawData = results.data;
-        populateYearDropdown();
-        loadTableData(currentYear);
-        resolve();
+// --- Initial Page Load ---
+document.addEventListener("DOMContentLoaded", async () => {
+  // Load distinct years
+  const { data, error } = await supabase.from('douzepoints').select('Year');
+  if (error) {
+    console.error('Error loading years:', error.message);
+    return;
+  }
 
-function populateYearDropdown() {
-  const years = [...new Set(allRawData.map(row => row.Year).filter(Boolean))].sort((a, b) => b - a);
+  const years = [...new Set(data.map(row => row.Year).filter(Boolean))].sort((a, b) => b - a);
   const select = document.getElementById('yearSelect');
   select.innerHTML = '';
   years.forEach(year => {
     const option = document.createElement('option');
     option.value = year;
     option.textContent = year;
-    if (year === currentYear) option.selected = true;
+    if (year == currentYear) option.selected = true;
     select.appendChild(option);
+  });
 
+  await loadTableData(currentYear);
 
-
-  document.getElementById("stageSelect").addEventListener("change", () => {
-    loadTableData(currentYear);
-
-  document.addEventListener("click", e => {
-    if (e.target.tagName === "TH" && e.target.dataset.key) {
-      sortBy(e.target.dataset.key);
-
-
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
-window.supabase = supabase;
-
-async function loadDataAndRender() {
-  allRawData = await loadSupabaseDataForStageAndYear("Final", currentYear);
-  populateYearDropdown();
-  loadTableData(currentYear);
-
-document.addEventListener("DOMContentLoaded", () => {
-  loadDataAndRender();
-
-  document.getElementById("yearSelect").addEventListener("change", (e) => {
+  document.getElementById("yearSelect").addEventListener("change", e => {
     loadTableData(e.target.value);
+  });
 
   document.getElementById("stageSelect").addEventListener("change", () => {
     loadTableData(currentYear);
+  });
 
   document.addEventListener("click", e => {
     if (e.target.tagName === "TH" && e.target.dataset.key) {
       sortBy(e.target.dataset.key);
-
-
-
-async function loadSupabaseDataForStageAndYear(stage, year) {
-  let query = supabase.from('douzepoints').select('*').eq('Year', parseInt(year));
-
-  if (stage === 'Final') {
-    query = query.not('FinalRunningOrder', 'is', null);
-  } else if (stage === 'Semi Final 1') {
-    query = query.eq('SemiFinal', '1');
-  } else if (stage === 'Semi Final 2') {
-    query = query.eq('SemiFinal', '2');
-
-  }
-
-  const { data, error } = await query;
-  if (error) {
-    console.error('Error loading data:', error.message);
-
-  console.log('Supabase result:', data); // Debugging line
-
-
-async function loadTableData(year) {
-  currentYear = year;
-  const stage = document.getElementById("stageSelect").value;
-
-  eurovisionData = await loadSupabaseDataForStageAndYear(stage, year);
-
-  const header = document.getElementById("tableHeader");
-  header.textContent = `Eurovision ${stage} - ${year}`;
     }
-  }).join('') + "</tr>";
-  sortBy("Total Points", "desc");
-}
+  });
+});
