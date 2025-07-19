@@ -59,7 +59,7 @@
     </div>
   </div>
 
-  <!-- MODAL -->
+  <!-- MODAL --
   <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
     <div class="modal-content">
       <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
@@ -67,7 +67,17 @@
       <iframe allow="autoplay; encrypted-media" allowfullscreen frameborder="0" id="modalIframe" style="display: none;"></iframe>
     </div>
   </div>
+  -->
 
+  <!-- NEW MODAL -->
+  <div id="modal-container"></div>
+    <script>
+      fetch('modal.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('modal-container').innerHTML = html;
+        });
+    </script>
 
   <script type="module" src="js/video.js"></script>
 
