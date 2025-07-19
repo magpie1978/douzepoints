@@ -6,15 +6,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (
     path.includes("country.html") ||
     path.includes("winners.html") ||
-    path.includes("fan-favorites.html")
+    path.includes("fan-favorites.html")   // load countries sidebar if page is country.html, winners.html or fan-favorites.html
   ) {
     await loadSidebarCountries();
   } else if (
-    path.includes("edition.html")
+    path.includes("edition.html")   // load edition sidebar if page is edition.html
   ) {
     await loadSidebarYears();
   }
 
+  //COUNTRIES SIDEBAR
   async function loadSidebarCountries() {
     const { data, error } = await supabase.from('douzepoints').select('*');
     const sidebar = document.getElementById("sidebar-container");
@@ -46,6 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  // EDTIONS SIDEBAR
   async function loadSidebarYears() {
     const { data, error } = await supabase.from('douzepoints').select('*');
     const sidebar = document.getElementById("sidebar-container");
