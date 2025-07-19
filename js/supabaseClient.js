@@ -1,3 +1,7 @@
+// This imports the createClient function from Supabase’s official JavaScript library (version 2).
+// It uses the +esm variant, which is optimized for use in modern browsers that support ES Modules.
+// This enables you to write modular JS using import/export.
+
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
