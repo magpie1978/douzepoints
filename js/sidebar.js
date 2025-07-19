@@ -2,21 +2,17 @@ import { supabase } from './supabaseClient.js';
 
 document.addEventListener("DOMContentLoaded", async () => {
   const path = window.location.pathname;
-  //console.log("sidebar.js loaded. Path:", path);
 
   if (
     path.includes("country.html") ||
     path.includes("winners.html") ||
     path.includes("fan-favorites.html")
-//  ) {
-//    console.log("Calling loadSidebarCountries()");
-//    await loadSidebarCountries();
-//  } else if (
+  ) {
+    await loadSidebarCountries();
+  } else if (
     path.includes("edition.html")
-    
-//  ) {
-//    console.log("Calling loadSidebarYears()");
-//    await loadSidebarYears();
+  ) {
+    await loadSidebarYears();
   }
 
   async function loadSidebarCountries() {
@@ -52,13 +48,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function loadSidebarYears() {
     const { data, error } = await supabase.from('douzepoints').select('*');
-    console.log("Sidebar Years Data:", data);
-    console.log("Sidebar Error:", error);
     const sidebar = document.getElementById("sidebar-container");
-    if (!sidebar || error) {
-      console.warn("Sidebar or data error occurred");
-      return;
-    }
+    if (!sidebar || error) return;
 
     const uniqueYears = Array.from(
       new Map(data.map(row => [row.Year, row])).values()
