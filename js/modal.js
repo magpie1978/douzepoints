@@ -46,3 +46,19 @@ window.hidePreview = function(container) {
   video.style.display = 'none';
   img.style.display = 'block';
 };
+
+
+
+// Dynamically load modal.html into #modal-container
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('modal-container');
+  if (container) {
+    fetch('modal.html')
+      .then(response => response.text())
+      .then(html => {
+        container.innerHTML = html;
+      });
+  } else {
+    console.warn('modal-container not found. Modal HTML was not loaded.');
+  }
+});
