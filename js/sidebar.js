@@ -2,21 +2,21 @@ import { supabase } from './supabaseClient.js';
 
 document.addEventListener("DOMContentLoaded", async () => {
   const path = window.location.pathname;
-  console.log("sidebar.js loaded. Path:", path);
+  //console.log("sidebar.js loaded. Path:", path);
 
   if (
     path.includes("country.html") ||
     path.includes("winners.html") ||
     path.includes("fan-favorites.html")
-  ) {
-    console.log("Calling loadSidebarCountries()");
-    await loadSidebarCountries();
-  } else if (
+//  ) {
+//    console.log("Calling loadSidebarCountries()");
+//    await loadSidebarCountries();
+//  } else if (
     path.includes("edition.html")
     
-  ) {
-    console.log("Calling loadSidebarYears()");
-    await loadSidebarYears();
+//  ) {
+//    console.log("Calling loadSidebarYears()");
+//    await loadSidebarYears();
   }
 
   async function loadSidebarCountries() {
