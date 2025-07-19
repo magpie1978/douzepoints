@@ -1,6 +1,6 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-import { supabase } from './supabaseClient.js';
+import { supabase } from '/supabaseClient.js';
 
 
 //const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
