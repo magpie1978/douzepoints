@@ -21,7 +21,8 @@ async function loadHeader() {
 
     const banner = document.getElementById("country-banner");
 
-    const isIndexPage = path.endsWith("/") || path.includes("index.html");
+    //const isIndexPage = path.endsWith("/") || path.includes("index.html");
+    const isIndexPage = path === "/" || path.endsWith("index.html");
     const country = new URLSearchParams(window.location.search).get("country");
     const isCountryPage = path.includes("country.html");
     const isEditionPage = path.includes("edition.html");
