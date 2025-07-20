@@ -171,7 +171,7 @@ body {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  width: 50%;
+  /* width: 50%; */
 }
 
 .score-table {
@@ -180,24 +180,24 @@ body {
 }
 
 .score-table th {
-  font-size: 11px;
+  font-size: 9px;
   font-weight: normal;
   color: white;
   padding-bottom: 4px;
 }
 
 .score-table td {
-  padding: 0 6px;
+  padding: 0 2px;
 }
 
 .score-circle {
-  width: 28px;
-  height: 28px;
-  line-height: 28px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
   border: 1px solid white;
   border-radius: 50%;
   font-weight: bold;
-  font-size: 13px;
+  font-size: 9px;
   color: white;
   background-color: transparent;
   display: flex;
