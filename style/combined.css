@@ -173,7 +173,6 @@ body {
   align-items: center;
   width: 50%;
   min-width: 120px;
-  overflow: visible;
 }
 
 .score-table {
@@ -187,8 +186,6 @@ body {
   font-weight: normal;
   color: white;
   padding-bottom: 4px;
-  padding-left: 10px;
-  padding-right: 10px;
 }
 
 .score-table td {
