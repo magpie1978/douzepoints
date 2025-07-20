@@ -171,8 +171,8 @@ body {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  /*width: 70%; */
-  min-width: 120px;
+  width: 30%;
+  /* min-width: 120px; */
 }
 
 .score-table {
