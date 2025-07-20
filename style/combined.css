@@ -169,22 +169,25 @@ body {
 
 .score-box {
   display: flex;
-  flex-direction: row;
-  gap: 12px;
-  align-items: center;
   justify-content: flex-end;
+  align-items: center;
   width: 50%;
 }
 
-.score-pair {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.score-table {
+  border-collapse: collapse;
+  text-align: center;
 }
 
-.score-label {
+.score-table th {
   font-size: 11px;
-  margin-bottom: 4px;
+  font-weight: normal;
+  color: white;
+  padding-bottom: 4px;
+}
+
+.score-table td {
+  padding: 0 6px;
 }
 
 .score-circle {
@@ -201,7 +204,6 @@ body {
   justify-content: center;
   align-items: center;
 }
-
 
 .video-title-text {
   line-height: 1.2;
