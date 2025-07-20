@@ -24,19 +24,39 @@ function renderEntry(entry) {
     ? `<b>${entry.Song}</b><br>${entry.Artist}<br>${entry.Country}`
     : `<b>${entry.Artist}</b><br>${entry.Song}<br>${entry.Year}`;
 
-  div.innerHTML = `
-    <div class="preview-container">
-      <img src="${imageUrl}" alt="${entry.Artist}" />
-    </div>
-    <div class="video-title-with-icon" onclick="event.stopPropagation()">
-      <a href="country.html?country=${entry.Country}">
-        <img class="flag-icon" src="${flagUrl}" alt="Flag">
-      </a>
-      <div class="video-title-text">
-        ${titleHTML}
+//  div.innerHTML = `
+//    <div class="preview-container">
+//      <img src="${imageUrl}" alt="${entry.Artist}" />
+//    </div>
+//    <div class="video-title-with-icon" onclick="event.stopPropagation()">
+//      <a href="country.html?country=${entry.Country}">
+//        <img class="flag-icon" src="${flagUrl}" alt="Flag">
+//      </a>
+//      <div class="video-title-text">
+//        ${titleHTML}
+//      </div>
+//    </div>
+//  `;
+
+    div.innerHTML = `
+      <div class="preview-container">
+        <img src="${imageUrl}" alt="${entry.Artist}" />
       </div>
-    </div>
-  `;
+      <div class="video-title-with-icon" onclick="event.stopPropagation()" style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="flex-grow: 1;">
+          <a href="country.html?country=${entry.Country}">
+            <img class="flag-icon" src="${flagUrl}" alt="Flag">
+          </a>
+          <div class="video-title-text">
+            ${titleHTML}
+          </div>
+        </div>
+        <div class="score-box" style="text-align: right; display: none;">
+          <div class="score-label">Final</div>
+          <div class="score-number">${entry.Final_TotalPoints || 0}</div>
+        </div>
+      </div>
+    `;
 
   div.onclick = () => GDriveOpenModalWithVideo(entry.Video_URL);
   return div;
