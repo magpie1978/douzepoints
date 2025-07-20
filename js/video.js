@@ -73,8 +73,10 @@ function renderEntry(entry) {
           </div>
         </div>
         <div class="score-box" style="text-align: right; display: none;">
+          <div class="score-label" style="font-size: 11px;">SF</div>
+          <div class="score-number" style="font-weight: bold; font-size: 14px;">${entry.SemiFinal_TotalPoints || 0}</div>
           <div class="score-label" style="font-size: 11px;">F</div>
-          <div class="score-number" style="font-weight: bold; font-size: 14px;">${entry.Final_TotalPoints || 0} pts</div>
+          <div class="score-number" style="font-weight: bold; font-size: 14px;">${entry.Final_TotalPoints || 0}</div>
         </div>
       </div>
     `;
