@@ -172,32 +172,37 @@ body {
   justify-content: flex-end;
   align-items: center;
   width: 50%;
+  min-width: 120px;
+  overflow: visible;
 }
 
 .score-table {
   border-collapse: collapse;
   text-align: center;
+  width: auto;
 }
 
 .score-table th {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: normal;
   color: white;
   padding-bottom: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .score-table td {
-  padding: 0 2px;
+  padding: 4px 10px;
 }
 
 .score-circle {
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
   border: 1px solid white;
   border-radius: 50%;
   font-weight: bold;
-  font-size: 9px;
+  font-size: 13px;
   color: white;
   background-color: transparent;
   display: flex;
