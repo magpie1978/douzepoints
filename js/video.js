@@ -74,11 +74,11 @@ div.innerHTML = `
     </div>
     <div class="score-box" style="display: none; display: flex; flex-direction: row; gap: 12px; text-align: center;">
       <div>
-        <div class="score-label" style="font-size: 11px;">SF</div>
+        <div class="score-label" style="font-size: 9px;">SF</div>
         <div class="score-circle">${entry.SemiFinal_TotalPoints || 0}</div>
       </div>
       <div>
-        <div class="score-label" style="font-size: 11px;">F</div>
+        <div class="score-label" style="font-size: 9px;">F</div>
         <div class="score-circle">${entry.Final_TotalPoints || 0}</div>
       </div>
     </div>
