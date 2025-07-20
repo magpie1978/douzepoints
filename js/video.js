@@ -72,7 +72,7 @@ div.innerHTML = `
         ${titleHTML}
       </div>
     </div>
-    <div class="score-box" style="display: none; display: flex; gap: 12px;">
+    <div class="score-box" style="display: none; display: flex; gap: 12px; white-space: nowrap; min-width: 70px;">
       <div style="display: flex; flex-direction: column; align-items: center;">
         <div class="score-label" style="font-size: 11px;">SF</div>
         <div class="score-circle">${entry.SemiFinal_TotalPoints || 0}</div>
