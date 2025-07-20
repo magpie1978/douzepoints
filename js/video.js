@@ -72,7 +72,7 @@ div.innerHTML = `
         ${titleHTML}
       </div>
     </div>   
-    <div class="score-box" style="width: 60%;">
+    <div class="score-box" style="width: 30%;">
       <table class="score-table">
         <tr>
           <th>SF</th>
