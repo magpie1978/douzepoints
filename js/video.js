@@ -72,15 +72,17 @@ div.innerHTML = `
         ${titleHTML}
       </div>
     </div>
-    <div class="score-box" style="display: none; width: 50%;">
-      <div class="score-pair">
-        <div class="score-label">SF</div>
-        <div class="score-label">F</div>
-      </div>
-      <div class="score-pair">
-        <div class="score-circle">${entry.SemiFinal_TotalPoints || 0}</div>
-        <div class="score-circle">${entry.Final_TotalPoints || 0}</div>
-      </div>
+    <div class="score-box" style="width: 50%; display: flex; justify-content: flex-end;">
+      <table class="score-table">
+        <tr>
+          <th>SF</th>
+          <th>F</th>
+        </tr>
+        <tr>
+          <td><div class="score-circle">${entry.SemiFinal_TotalPoints || 0}</div></td>
+          <td><div class="score-circle">${entry.Final_TotalPoints || 0}</div></td>
+        </tr>
+      </table>
     </div>
   </div>
 `;
