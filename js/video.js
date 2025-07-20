@@ -72,16 +72,16 @@ div.innerHTML = `
         ${titleHTML}
       </div>
     </div>
-    <div class="score-box" style="display: none; display: flex; gap: 8px; white-space: nowrap; min-width: 100px;">
-      <div style="display: flex; flex-direction: column; align-items: center;">
-        <div class="score-label" style="font-size: 8px;">SF</div>
+    <div class="score-box" style="display: none; display: flex; flex-direction: row; gap: 12px; align-items: center;">
+      <div class="score-pair">
+        <div class="score-label">SF</div>
         <div class="score-circle">${entry.SemiFinal_TotalPoints || 0}</div>
       </div>
-      <div style="display: flex; flex-direction: column; align-items: center;">
-        <div class="score-label" style="font-size: 8px;">F</div>
+      <div class="score-pair">
+        <div class="score-label">F</div>
         <div class="score-circle">${entry.Final_TotalPoints || 0}</div>
       </div>
-    </div>
+    </div>  
   </div>
 `;
 
