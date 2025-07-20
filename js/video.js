@@ -71,8 +71,8 @@ div.innerHTML = `
       <div class="video-title-text">
         ${titleHTML}
       </div>
-    </div>
-    <div class="score-box">
+    </div>   
+    <div class="score-box" style="width: 50%;">
       <table class="score-table">
         <tr>
           <th>SF</th>
