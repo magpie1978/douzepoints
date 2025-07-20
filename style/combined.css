@@ -181,18 +181,18 @@ body {
 }
 
 .score-label {
-  font-size: 11px;
+  font-size: 8px;
   margin-bottom: 4px;
 }
 
 .score-circle {
-  width: 28px;
-  height: 28px;
-  line-height: 28px;
-  border: 1px solid white;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  border: 0.5px solid white;
   border-radius: 50%;
   font-weight: bold;
-  font-size: 13px;
+  font-size: 8px;
   color: white;
   background-color: transparent;
   display: flex;
