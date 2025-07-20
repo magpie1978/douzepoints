@@ -63,8 +63,8 @@ div.innerHTML = `
   <div class="preview-container">
     <img src="${imageUrl}" alt="${entry.Artist}" />
   </div>
-  <div class="video-title-with-icon" onclick="event.stopPropagation()" style="display: flex; justify-content: space-between; align-items: center;">
-    <div style="display: flex; align-items: center; gap: 10px;">
+  <div class="video-title-with-icon" onclick="event.stopPropagation()" style="display: flex; align-items: center;">
+    <div style="display: flex; align-items: center; gap: 10px; width: 50%;">
       <a href="country.html?country=${entry.Country}">
         <img class="flag-icon" src="${flagUrl}" alt="Flag">
       </a>
@@ -72,7 +72,7 @@ div.innerHTML = `
         ${titleHTML}
       </div>
     </div>
-    <div class="score-box" style="display: none; display: flex; flex-direction: row; gap: 12px; align-items: center;">
+    <div class="score-box" style="display: none; width: 50%;">
       <div class="score-pair">
         <div class="score-label">SF</div>
         <div class="score-circle">${entry.SemiFinal_TotalPoints || 0}</div>
@@ -81,9 +81,10 @@ div.innerHTML = `
         <div class="score-label">F</div>
         <div class="score-circle">${entry.Final_TotalPoints || 0}</div>
       </div>
-    </div>  
+    </div>
   </div>
 `;
+
 
 
   
