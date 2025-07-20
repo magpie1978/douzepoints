@@ -64,7 +64,7 @@ div.innerHTML = `
     <img src="${imageUrl}" alt="${entry.Artist}" />
   </div>
   <div class="video-title-with-icon" onclick="event.stopPropagation()" style="display: flex; align-items: center;">
-    <div style="display: flex; align-items: center; gap: 10px; width: 60%;">
+    <div style="display: flex; align-items: center; gap: 10px; width: 49%;">
       <a href="country.html?country=${entry.Country}">
         <img class="flag-icon" src="${flagUrl}" alt="Flag">
       </a>
@@ -72,7 +72,7 @@ div.innerHTML = `
         ${titleHTML}
       </div>
     </div>
-    <div class="score-box" style="width: 40%; display: flex; justify-content: flex-end;">
+    <div class="score-box" style="width: 51%; display: flex; justify-content: flex-end;">
       <table class="score-table">
         <tr>
           <th>SF</th>
