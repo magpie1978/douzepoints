@@ -63,7 +63,7 @@ div.innerHTML = `
   <div class="preview-container">
     <img src="${imageUrl}" alt="${entry.Artist}" />
   </div>
-  <div class="video-title-with-icon" onclick="event.stopPropagation()" style="display: flex; align-items: center;">
+  <div class="video-title-with-icon" onclick="event.stopPropagation()" style="display: flex; justify-content: space-between; align-items: center;">
     <div style="display: flex; align-items: center; gap: 10px;">
       <a href="country.html?country=${entry.Country}">
         <img class="flag-icon" src="${flagUrl}" alt="Flag">
@@ -71,8 +71,8 @@ div.innerHTML = `
       <div class="video-title-text">
         ${titleHTML}
       </div>
-    </div>   
-    <div class="score-box" style="width: 30%;">
+    </div>
+    <div class="score-wrapper">
       <table class="score-table">
         <tr>
           <th>SF</th>
@@ -86,6 +86,7 @@ div.innerHTML = `
     </div>
   </div>
 `;
+
 
 
 
