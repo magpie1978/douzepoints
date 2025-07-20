@@ -168,7 +168,7 @@ body {
 
 
 .score-box {
-  display: flex;
+   /*  display: flex; */ 
   justify-content: flex-end;
   align-items: center;
   width: 30%;
