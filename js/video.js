@@ -59,32 +59,31 @@ function renderEntry(entry) {
 //    `;
 
 
-  div.innerHTML = `
-    <div class="preview-container">
-      <img src="${imageUrl}" alt="${entry.Artist}" />
-    </div>
-    <div class="video-title-with-icon" onclick="event.stopPropagation()" style="display: flex; justify-content: space-between; align-items: center;">
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <a href="country.html?country=${entry.Country}">
-          <img class="flag-icon" src="${flagUrl}" alt="Flag">
-        </a>
-        <div class="video-title-text">
-          ${titleHTML}
-        </div>
-      </div>
-      <div class="score-box" style="display: none; display: flex; flex-direction: row; gap: 12px; text-align: right;">
-        <div>
-          <div class="score-label" style="font-size: 11px;">SF</div>
-          <div class="score-number" style="font-weight: bold; font-size: 14px;">${entry.SemiFinal_TotalPoints || 0}</div>
-        </div>
-        <div>
-          <div class="score-label" style="font-size: 11px;">F</div>
-          <div class="score-number" style="font-weight: bold; font-size: 14px;">${entry.Final_TotalPoints || 0}</div>
-        </div>
+div.innerHTML = `
+  <div class="preview-container">
+    <img src="${imageUrl}" alt="${entry.Artist}" />
+  </div>
+  <div class="video-title-with-icon" onclick="event.stopPropagation()" style="display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="country.html?country=${entry.Country}">
+        <img class="flag-icon" src="${flagUrl}" alt="Flag">
+      </a>
+      <div class="video-title-text">
+        ${titleHTML}
       </div>
     </div>
-  `;
-
+    <div class="score-box" style="display: none; display: flex; flex-direction: row; gap: 12px; text-align: center;">
+      <div>
+        <div class="score-label" style="font-size: 11px;">SF</div>
+        <div class="score-circle">${entry.SemiFinal_TotalPoints || 0}</div>
+      </div>
+      <div>
+        <div class="score-label" style="font-size: 11px;">F</div>
+        <div class="score-circle">${entry.Final_TotalPoints || 0}</div>
+      </div>
+    </div>
+  </div>
+`;
 
   
   div.onclick = () => GDriveOpenModalWithVideo(entry.Video_URL);
