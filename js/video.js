@@ -38,12 +38,33 @@ function renderEntry(entry) {
 //    </div>
 //  `;
 
+//    div.innerHTML = `
+//      <div class="preview-container">
+//        <img src="${imageUrl}" alt="${entry.Artist}" />
+//      </div>
+//      <div class="video-title-with-icon" onclick="event.stopPropagation()" style="display: flex; justify-content: space-between; align-items: center;">
+//        <div style="flex-grow: 1;">
+//          <a href="country.html?country=${entry.Country}">
+//            <img class="flag-icon" src="${flagUrl}" alt="Flag">
+//          </a>
+//          <div class="video-title-text">
+//            ${titleHTML}
+//          </div>
+//        </div>
+//        <div class="score-box" style="text-align: right; display: none;">
+//          <div class="score-label">Final</div>
+//          <div class="score-number">${entry.Final_TotalPoints || 0}</div>
+//        </div>
+//      </div>
+//    `;
+
+
     div.innerHTML = `
       <div class="preview-container">
         <img src="${imageUrl}" alt="${entry.Artist}" />
       </div>
       <div class="video-title-with-icon" onclick="event.stopPropagation()" style="display: flex; justify-content: space-between; align-items: center;">
-        <div style="flex-grow: 1;">
+        <div style="display: flex; align-items: center; gap: 10px;">
           <a href="country.html?country=${entry.Country}">
             <img class="flag-icon" src="${flagUrl}" alt="Flag">
           </a>
@@ -52,12 +73,15 @@ function renderEntry(entry) {
           </div>
         </div>
         <div class="score-box" style="text-align: right; display: none;">
-          <div class="score-label">Final</div>
-          <div class="score-number">${entry.Final_TotalPoints || 0}</div>
+          <div class="score-label" style="font-size: 11px;">Final</div>
+          <div class="score-number" style="font-weight: bold; font-size: 14px;">${entry.Final_TotalPoints || 0}</div>
         </div>
       </div>
     `;
 
+
+
+  
   div.onclick = () => GDriveOpenModalWithVideo(entry.Video_URL);
   return div;
 }
