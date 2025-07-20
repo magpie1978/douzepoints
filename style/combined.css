@@ -166,6 +166,15 @@ body {
   margin-left: 8px;
 }
 
+
+.score-box {
+  display: flex;
+  gap: 12px;
+  white-space: nowrap;
+  min-width: 70px;
+}
+
+
 .score-circle {
   width: 28px;
   height: 28px;
