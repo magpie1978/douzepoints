@@ -172,6 +172,8 @@ body {
   flex-direction: row;
   gap: 12px;
   align-items: center;
+  justify-content: flex-end;
+  width: 50%;
 }
 
 .score-pair {
@@ -181,18 +183,18 @@ body {
 }
 
 .score-label {
-  font-size: 8px;
+  font-size: 11px;
   margin-bottom: 4px;
 }
 
 .score-circle {
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  border: 0.5px solid white;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  border: 1px solid white;
   border-radius: 50%;
   font-weight: bold;
-  font-size: 8px;
+  font-size: 13px;
   color: white;
   background-color: transparent;
   display: flex;
