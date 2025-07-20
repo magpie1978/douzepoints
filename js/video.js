@@ -75,10 +75,10 @@ div.innerHTML = `
     <div class="score-box" style="display: none; width: 50%;">
       <div class="score-pair">
         <div class="score-label">SF</div>
-        <div class="score-circle">${entry.SemiFinal_TotalPoints || 0}</div>
+        <div class="score-label">F</div>
       </div>
       <div class="score-pair">
-        <div class="score-label">F</div>
+        <div class="score-circle">${entry.SemiFinal_TotalPoints || 0}</div>
         <div class="score-circle">${entry.Final_TotalPoints || 0}</div>
       </div>
     </div>
