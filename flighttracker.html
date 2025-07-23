@@ -57,6 +57,18 @@
 
 
   </style>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+  
+    const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+  
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    window.supabase = supabase;
+  </script>
+
+  
 </head>
 <body>
   <header>
@@ -112,39 +124,62 @@
 
 
   // Handle CSV Upload
-  document.getElementById('csvUpload').addEventListener('change', function (e) {
-    const file = e.target.files[0];
-    if (!file) return;
+  complete: async function (results) {
+  const parsedRows = results.data;
 
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: function (results) {
-        const latLngs = [];
+  const inserts = parsedRows.map(row => ({
+    callsign: row.Callsign,
+    timestamp: row.Timestamp,
+    utc: row.UTC,
+    position: row.Position,
+    altitude: parseInt(row.Altitude),
+    speed: parseInt(row.Speed),
+    direction: parseInt(row.Direction)
+  }));
 
-        results.data.forEach(row => {
-          const position = row.Position;
-          if (!position) return;
+  // Insert into Supabase
+  const { data, error } = await supabase.from('flight_tracks').insert(inserts);
+  if (error) {
+    console.error('Error inserting flight data:', error);
+    alert('Upload failed. See console for details.');
+    return;
+  }
 
-          const [latStr, lngStr] = position.split(',');
-          const lat = parseFloat(latStr);
-          const lng = parseFloat(lngStr);
-          if (!isNaN(lat) && !isNaN(lng)) {
-            latLngs.push([lat, lng]);
-          }
-        });
+  alert('Flight data uploaded successfully!');
+  loadFlightsFromDatabase(); // Fetch and display
+}
 
-        if (latLngs.length > 0) {
-          const polyline = L.polyline(latLngs, { color: 'red' }).addTo(map);
-          map.fitBounds(polyline.getBounds());
-        } else {
-          alert("No valid position data found in the uploaded file.");
-        }
-      }
-    });
-  });
 </script>
 
+<script>
+
+  async function loadFlightsFromDatabase() {
+  const { data, error } = await supabase
+    .from('flight_tracks')
+    .select('*')
+    .order('timestamp', { ascending: true });
+
+  if (error) {
+    console.error('Error loading flights:', error);
+    return;
+  }
+
+  const latLngs = data
+    .map(row => {
+      const [lat, lng] = row.position.split(',').map(Number);
+      return (!isNaN(lat) && !isNaN(lng)) ? [lat, lng] : null;
+    })
+    .filter(Boolean);
+
+  if (latLngs.length > 0) {
+    const polyline = L.polyline(latLngs, { color: 'red' }).addTo(map);
+    map.fitBounds(polyline.getBounds());
+  }
+}
+
+</script>
+
+  
 <footer>
   <p>&copy; 2025 Travel Tracker</p>
 </footer>
