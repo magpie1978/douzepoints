@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Travel Tracker</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     body {
       margin: 0;
@@ -55,17 +55,35 @@
       bottom: 0;
     }
   </style>
+</head>
+<body>
+  <header>
+    <h1>Travel Tracker</h1>
+    <div class="upload-container">
+      <label for="csvUpload">Upload Flight CSV:</label>
+      <input type="file" id="csvUpload" accept=".csv" />
+    </div>
+  </header>
 
+  <div id="map"></div>
+
+  <footer>
+    <p>&copy; 2025 Travel Tracker</p>
+  </footer>
+
+  <!-- External dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+
+  <!-- Main app script -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    import * as L from 'https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js';
 
     const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    window.supabase = supabase;
 
-    // Initialize the map
     const positronNoLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
       subdomains: 'abcd',
@@ -102,42 +120,7 @@
         }).addTo(map);
       });
 
-    // Upload and save to Supabase
-    document.getElementById('csvUpload').addEventListener('change', function (e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      Papa.parse(file, {
-        header: true,
-        skipEmptyLines: true,
-        complete: function (results) {
-          (async () => {
-            const parsedRows = results.data;
-
-            const inserts = parsedRows.map(row => ({
-              callsign: row.Callsign,
-              timestamp: row.Timestamp,
-              utc: row.UTC,
-              position: row.Position,
-              altitude: parseInt(row.Altitude),
-              speed: parseInt(row.Speed),
-              direction: parseInt(row.Direction)
-            }));
-
-            const { data, error } = await supabase.from('flight_tracks').insert(inserts);
-            if (error) {
-              console.error('Error inserting flight data:', error);
-              alert('Upload failed. See console for details.');
-              return;
-            }
-
-            alert('Flight data uploaded successfully!');
-            loadFlightsFromDatabase();
-          })();
-        }
-      });
-    });
-
+    // Load flights from Supabase
     async function loadFlightsFromDatabase() {
       const { data, error } = await supabase
         .from('flight_tracks')
@@ -162,23 +145,44 @@
       }
     }
 
-    // Load existing flights on page load
+    // Upload CSV to Supabase
+    document.getElementById('csvUpload').addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: function (results) {
+          (async () => {
+            const parsedRows = results.data;
+
+            const inserts = parsedRows.map(row => ({
+              callsign: row.Callsign,
+              timestamp: row.Timestamp,
+              utc: row.UTC,
+              position: row.Position,
+              altitude: parseInt(row.Altitude),
+              speed: parseInt(row.Speed),
+              direction: parseInt(row.Direction)
+            }));
+
+            const { error } = await supabase.from('flight_tracks').insert(inserts);
+            if (error) {
+              console.error('Error inserting flight data:', error);
+              alert('Upload failed. See console for details.');
+              return;
+            }
+
+            alert('Flight data uploaded successfully!');
+            loadFlightsFromDatabase();
+          })();
+        }
+      });
+    });
+
+    // Initial load
     loadFlightsFromDatabase();
   </script>
-</head>
-<body>
-  <header>
-    <h1>Travel Tracker</h1>
-    <div class="upload-container">
-      <label for="csvUpload">Upload Flight CSV:</label>
-      <input type="file" id="csvUpload" accept=".csv" />
-    </div>
-  </header>
-
-  <div id="map"></div>
-
-  <footer>
-    <p>&copy; 2025 Travel Tracker</p>
-  </footer>
 </body>
 </html>
