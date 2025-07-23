@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel Tracker</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+    }
+    header {
+      background-color: #2c3e50;
+      padding: 20px;
+      color: white;
+      text-align: center;
+    }
+    .upload-container {
+      text-align: center;
+      margin: 20px;
+    }
+    #map {
+      height: 80vh;
+      width: 100%;
+    }
+    input[type="file"] {
+      padding: 10px;
+      background-color: #3498db;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Travel Tracker</h1>
+    <div class="upload-container">
+      <label for="csvUpload">Upload Flight CSV:</label>
+      <input type="file" id="csvUpload" accept=".csv" />
+    </div>
+  </header>
+
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+  <script>
+    const map = L.map('map').setView([0, 0], 2);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    document.getElementById('csvUpload').addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: function (results) {
+          const latLngs = [];
+
+          results.data.forEach(row => {
+            const [latStr, lngStr] = row.Position.split(',');
+            const lat = parseFloat(latStr);
+            const lng = parseFloat(lngStr);
+            if (!isNaN(lat) && !isNaN(lng)) {
+              latLngs.push([lat, lng]);
+            }
+          });
+
+          if (latLngs.length > 0) {
+            const polyline = L.polyline(latLngs, { color: 'red' }).addTo(map);
+            map.fitBounds(polyline.getBounds());
+          } else {
+            alert("No valid position data found in the uploaded file.");
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
