@@ -43,6 +43,14 @@
       border-radius: 5px;
       font-size: 14px;
     }
+
+    .country-label {
+      font-size: 11px;
+      font-weight: bold;
+      color: #333;
+      text-shadow: 1px 1px 2px white;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
@@ -85,25 +93,37 @@
 
   // Fetch GeoJSON with country borders and names
   fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
-    .then(res => res.json())
-    .then(geojson => {
-      L.geoJSON(geojson, {
-        style: {
-          color: '#999',
-          weight: 1,
-          fillOpacity: 0
-        },
-        onEachFeature: function (feature, layer) {
-          if (feature.properties.ADMIN) {
-            layer.bindTooltip(feature.properties.ADMIN, {
-              permanent: true,
-              direction: 'center',
-              className: 'country-label'
-            });
-          }
+  .then(res => res.json())
+  .then(geojson => {
+    L.geoJSON(geojson, {
+      style: {
+        color: '#999',
+        weight: 1,
+        fillOpacity: 0
+      },
+      onEachFeature: function (feature, layer) {
+        // Draw the border as before
+        layer.addTo(map);
+
+        // Get the center of the polygon
+        if (feature.geometry && feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
+          const center = layer.getBounds().getCenter();
+          const name = feature.properties.ADMIN || feature.properties.NAME || 'Unknown';
+
+          const marker = L.marker(center, {
+            opacity: 0 // Hide the icon, show only tooltip
+          });
+
+          marker.bindTooltip(name, {
+            permanent: true,
+            direction: 'center',
+            className: 'country-label'
+          }).addTo(map);
         }
-      }).addTo(map);
+      }
     });
+  });
+
 
   // Handle CSV Upload
   document.getElementById('csvUpload').addEventListener('change', function (e) {
