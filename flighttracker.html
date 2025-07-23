@@ -63,6 +63,11 @@
       <label for="csvUpload">Upload Flight CSV:</label>
       <input type="file" id="csvUpload" accept=".csv" />
     </div>
+    <div style="text-align: center; margin: 20px;">
+      <button id="login-btn">Sign in with Google</button>
+      <button id="logout-btn" style="display: none;">Log Out</button>
+      <p id="auth-status">Not logged in</p>
+    </div>
   </header>
 
   <div id="map"></div>
@@ -71,10 +76,7 @@
     <p>&copy; 2025 Travel Tracker</p>
   </footer>
 
-  <!-- External dependencies -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
-
-  <!-- Main app script -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
     import * as L from 'https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js';
@@ -83,6 +85,29 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    document.getElementById("login-btn").addEventListener("click", async () => {
+      const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
+      if (error) alert("Google login failed: " + error.message);
+    });
+
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      location.reload();
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      const status = document.getElementById("auth-status");
+      const logoutBtn = document.getElementById("logout-btn");
+
+      if (session?.user) {
+        status.textContent = `Logged in as ${session.user.email}`;
+        logoutBtn.style.display = "inline-block";
+      } else {
+        status.textContent = "Not logged in";
+        logoutBtn.style.display = "none";
+      }
+    });
 
     const positronNoLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
@@ -107,7 +132,6 @@
 
     L.control.layers(baseMaps).addTo(map);
 
-    // Add country borders (no labels)
     fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
       .then(res => res.json())
       .then(geojson => {
@@ -120,11 +144,14 @@
         }).addTo(map);
       });
 
-    // Load flights from Supabase
     async function loadFlightsFromDatabase() {
+      const user = (await supabase.auth.getUser()).data.user;
+      if (!user) return;
+
       const { data, error } = await supabase
         .from('flight_tracks')
         .select('*')
+        .eq('user_id', user.id)
         .order('timestamp', { ascending: true });
 
       if (error) {
@@ -145,7 +172,6 @@
       }
     }
 
-    // Upload CSV to Supabase
     document.getElementById('csvUpload').addEventListener('change', function (e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -155,9 +181,16 @@
         skipEmptyLines: true,
         complete: function (results) {
           (async () => {
+            const user = (await supabase.auth.getUser()).data.user;
+            if (!user) {
+              alert("You must be logged in to upload flight data.");
+              return;
+            }
+
             const parsedRows = results.data;
 
             const inserts = parsedRows.map(row => ({
+              user_id: user.id,
               callsign: row.Callsign,
               timestamp: row.Timestamp,
               utc: row.UTC,
@@ -181,7 +214,6 @@
       });
     });
 
-    // Initial load
     loadFlightsFromDatabase();
   </script>
 </body>
