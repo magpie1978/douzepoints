@@ -93,29 +93,10 @@
         color: '#999',
         weight: 1,
         fillOpacity: 0
-      },
-      onEachFeature: function (feature, layer) {
-        // Draw the border as before
-        layer.addTo(map);
-
-        // Get the center of the polygon
-        if (feature.geometry && feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
-          const center = layer.getBounds().getCenter();
-          const name = feature.properties.ADMIN || feature.properties.NAME || 'Unknown';
-
-          const marker = L.marker(center, {
-            opacity: 0 // Hide the icon, show only tooltip
-          });
-
-          marker.bindTooltip(name, {
-            permanent: true,
-            direction: 'center',
-            className: 'country-label'
-          }).addTo(map);
-        }
       }
-    });
+    }).addTo(map);
   });
+
 
 
   // Handle CSV Upload
