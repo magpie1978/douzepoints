@@ -11,27 +11,37 @@
       font-family: Arial, sans-serif;
       background: #f4f4f4;
     }
+
     header {
       background-color: #2c3e50;
       padding: 20px;
       color: white;
       text-align: center;
     }
+
     .upload-container {
       text-align: center;
       margin: 20px;
     }
+
     #map {
       height: 80vh;
       width: 100%;
     }
+
     input[type="file"] {
-      padding: 10px;
+      padding: 10px 20px;
       background-color: #3498db;
       border: none;
       color: white;
       border-radius: 5px;
       cursor: pointer;
+    }
+
+    .leaflet-control-layers {
+      background: white;
+      border-radius: 5px;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -49,58 +59,60 @@
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
   <script>
-  const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-  });
-
-  const positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
-    subdomains: 'abcd',
-    maxZoom: 19
-  });
-
-  const map = L.map('map', {
-    center: [0, 0],
-    zoom: 2,
-    layers: [osm] // Default layer
-  });
-
-  const baseMaps = {
-    "OpenStreetMap": osm,
-    "CartoDB Positron": positron
-  };
-
-  L.control.layers(baseMaps).addTo(map);
-
-  document.getElementById('csvUpload').addEventListener('change', function (e) {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: function (results) {
-        const latLngs = [];
-
-        results.data.forEach(row => {
-          const [latStr, lngStr] = row.Position.split(',');
-          const lat = parseFloat(latStr);
-          const lng = parseFloat(lngStr);
-          if (!isNaN(lat) && !isNaN(lng)) {
-            latLngs.push([lat, lng]);
-          }
-        });
-
-        if (latLngs.length > 0) {
-          const polyline = L.polyline(latLngs, { color: 'red' }).addTo(map);
-          map.fitBounds(polyline.getBounds());
-        } else {
-          alert("No valid position data found in the uploaded file.");
-        }
-      }
+    const positronNoLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href=\"https://carto.com/\">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19
     });
-  });
-</script>
 
+    const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    });
+
+    const map = L.map('map', {
+      center: [0, 0],
+      zoom: 2,
+      layers: [positronNoLabels]
+    });
+
+    const baseMaps = {
+      "CartoDB Positron (No Labels)": positronNoLabels,
+      "OpenStreetMap": osm
+    };
+
+    L.control.layers(baseMaps).addTo(map);
+
+    document.getElementById('csvUpload').addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: function (results) {
+          const latLngs = [];
+
+          results.data.forEach(row => {
+            const position = row.Position;
+            if (!position) return;
+
+            const [latStr, lngStr] = position.split(',');
+            const lat = parseFloat(latStr);
+            const lng = parseFloat(lngStr);
+            if (!isNaN(lat) && !isNaN(lng)) {
+              latLngs.push([lat, lng]);
+            }
+          });
+
+          if (latLngs.length > 0) {
+            const polyline = L.polyline(latLngs, { color: 'red' }).addTo(map);
+            map.fitBounds(polyline.getBounds());
+          } else {
+            alert("No valid position data found in the uploaded file.");
+          }
+        }
+      });
+    });
+  </script>
 </body>
 </html>
