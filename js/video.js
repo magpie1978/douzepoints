@@ -16,9 +16,9 @@ function renderEntry(entry) {
   div.setAttribute('data-artist', entry.Artist);
   div.setAttribute('data-song', entry.Song);
   div.setAttribute('data-country', entry.Country);
-  div.setAttribute('data-jury', entry.Final_JuryPoints || "0");
-  div.setAttribute('data-televote', entry.Final_TelevotePoints || "0");
-  div.setAttribute('data-total', entry.Final_TotalPoints || "0");
+  div.setAttribute('data-jury', entry.Final_JuryPoints || "NQ");
+  div.setAttribute('data-televote', entry.Final_TelevotePoints || "NQ");
+  div.setAttribute('data-total', entry.Final_TotalPoints || "NQ");
 
   const titleHTML = path.includes('edition.html')
     ? `<b>${entry.Song}</b><br>${entry.Artist}<br>${entry.Country}`
@@ -79,7 +79,7 @@ div.innerHTML = `
           <th>Pts</th>
         </tr>
         <tr>
-          <td><div class="score-circle">${entry.Final_Rank || 'NQ'}</div></td>
+          <td><div class="score-circle">${entry.Final_Rank || 0}</div></td>
           <td><div class="score-circle">${entry.Final_TotalPoints || 0}</div></td>
         </tr>
       </table>
