@@ -209,6 +209,8 @@ function loadIndexCarousels() {
   loadCarouselData("carouselTrack1", row => row.Final_Rank === "1", (a, b) => b.Year - a.Year, 10);
   loadCarouselData("carouselTrack2", row => row.Year === 2024, () => 0, 20);
   loadCarouselData("carouselTrack3", row => (row.FanFave || '').trim().toUpperCase() === 'Y', (a, b) => b.Year - a.Year, 10);
+  loadCarouselData("carouselTrack4", row => row.Year === 2025, () => 0, 20);
+  
 }
 
 // --- Route Dispatcher ---
