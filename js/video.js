@@ -75,11 +75,11 @@ div.innerHTML = `
     <div class="score-wrapper">
       <table class="score-table">
         <tr>
-          <th>SF</th>
-          <th>F</th>
+          <th>Pos</th>
+          <th>Pts</th>
         </tr>
         <tr>
-          <td><div class="score-circle">${entry.SemiFinal_TotalPoints || 0}</div></td>
+          <td><div class="score-circle">${entry.Final_Rank || 0}</div></td>
           <td><div class="score-circle">${entry.Final_TotalPoints || 0}</div></td>
         </tr>
       </table>
