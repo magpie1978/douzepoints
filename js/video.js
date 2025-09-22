@@ -16,9 +16,9 @@ function renderEntry(entry) {
   div.setAttribute('data-artist', entry.Artist);
   div.setAttribute('data-song', entry.Song);
   div.setAttribute('data-country', entry.Country);
-  div.setAttribute('data-jury', entry.Final_JuryPoints || "NQ");
-  div.setAttribute('data-televote', entry.Final_TelevotePoints || "NQ");
-  div.setAttribute('data-total', entry.Final_TotalPoints || "NQ");
+  div.setAttribute('data-jury', entry.Final_JuryPoints || 0);
+  div.setAttribute('data-televote', entry.Final_TelevotePoints || 0);
+  div.setAttribute('data-total', entry.Final_TotalPoints || 0);
 
   const titleHTML = path.includes('edition.html')
     ? `<b>${entry.Song}</b><br>${entry.Artist}<br>${entry.Country}`
