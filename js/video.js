@@ -79,7 +79,7 @@ div.innerHTML = `
           <th>Pts</th>
         </tr>
         <tr>
-          <td><div class="score-circle">${entry.Final_Rank || 0}</div></td>
+          <td><div class="score-circle">${entry.Final_Rank || 'NQ'}</div></td>
           <td><div class="score-circle">${entry.Final_TotalPoints || 0}</div></td>
         </tr>
       </table>
