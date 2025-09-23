@@ -119,8 +119,13 @@ function renderEntry(entry) {
   // ✅ Determine DNQ vs Final
   const didNotQualify = !entry.Final_Rank || entry.Final_Rank === 0 || (entry.QualifiedFinal && entry.QualifiedFinal === 'N');
 
-  const rankDisplay = didNotQualify ? 'NQ' : entry.Final_Rank;
-  const pointsDisplay = didNotQualify ? 'NQ' : entry.Final_TotalPoints;
+  // Decide what to display
+  const rankDisplay = didNotQualify ? 'DNQ' : entry.Final_Rank;
+  const pointsDisplay = didNotQualify ? 'DNQ' : entry.Final_TotalPoints;
+
+  // Add DNQ class dynamically
+  const rankClass = didNotQualify ? 'score-circle dnq' : 'score-circle';
+  const pointsClass = didNotQualify ? 'score-circle dnq' : 'score-circle';
 
   div.innerHTML = `
     <div class="preview-container">
@@ -142,8 +147,8 @@ function renderEntry(entry) {
             <th>Pts</th>
           </tr>
           <tr>
-            <td><div class="score-circle">${rankDisplay}</div></td>
-            <td><div class="score-circle">${pointsDisplay}</div></td>
+            <td><div class="${rankClass}">${rankDisplay}</div></td>
+            <td><div class="${pointsClass}">${pointsDisplay}</div></td>
           </tr>
         </table>
       </div>
