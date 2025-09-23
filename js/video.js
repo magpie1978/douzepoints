@@ -96,6 +96,16 @@ const container = document.getElementById('video-container');
 //}
 
 
+function getScoreMode() {
+  // Looks for either #score-mode or any <select data-score-mode>
+  const sel = document.querySelector('#score-mode, select[data-score-mode]');
+  const val = sel?.value?.trim().toLowerCase() || '';
+  return val === 'jury points' ? 'jury' : 'final';
+}
+
+
+
+
 function renderEntry(entry) {
   const countryCode = entry.Country_Code?.toLowerCase();
   const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
@@ -108,24 +118,38 @@ function renderEntry(entry) {
   div.setAttribute('data-artist', entry.Artist);
   div.setAttribute('data-song', entry.Song);
   div.setAttribute('data-country', entry.Country);
-  div.setAttribute('data-jury', entry.Final_JuryPoints || 0);
-  div.setAttribute('data-televote', entry.Final_TelevotePoints || 0);
-  div.setAttribute('data-total', entry.Final_TotalPoints || 0);
+
+  // store values for possible later re-rendering if you want
+  div.setAttribute('data-final-rank', entry.Final_Rank ?? '');
+  div.setAttribute('data-final-points', entry.Final_TotalPoints ?? '');
+  div.setAttribute('data-jury-rank', entry.Final_JuryRank ?? '');
+  div.setAttribute('data-jury-points', entry.Final_JuryPoints ?? '');
+  div.setAttribute('data-qualified-final', (entry.QualifiedFinal ?? '').toString());
 
   const titleHTML = path.includes('edition.html')
     ? `<b>${entry.Song}</b><br>${entry.Artist}<br>${entry.Country}`
     : `<b>${entry.Artist}</b><br>${entry.Song}<br>${entry.Year}`;
 
-  // ✅ Determine DNQ vs Final
-  const didNotQualify = !entry.Final_Rank || entry.Final_Rank === 0 || (entry.QualifiedFinal && entry.QualifiedFinal === 'N');
+  // Determine mode (final vs jury)
+  const mode = getScoreMode(); // 'final' | 'jury'
 
-  // Decide what to display
-  const rankDisplay = didNotQualify ? 'NQ' : entry.Final_Rank;
-  const pointsDisplay = didNotQualify ? 'NQ' : entry.Final_TotalPoints;
+  // Determine DNQ (didn't qualify for Final)
+  const didNotQualify =
+    !entry.Final_Rank ||
+    entry.Final_Rank === 0 ||
+    (entry.QualifiedFinal && entry.QualifiedFinal === 'N');
 
-  // Add DNQ class dynamically
-  const rankClass = didNotQualify ? 'score-circle dnq' : 'score-circle';
-  const pointsClass = didNotQualify ? 'score-circle dnq' : 'score-circle';
+  // Choose fields based on mode
+  const chosenRank   = mode === 'jury' ? entry.Final_JuryRank     : entry.Final_Rank;
+  const chosenPoints = mode === 'jury' ? entry.Final_JuryPoints    : entry.Final_TotalPoints;
+
+  // Apply DNQ display override
+  const rankDisplay   = didNotQualify ? 'DNQ' : (chosenRank ?? 0);
+  const pointsDisplay = didNotQualify ? 'DNQ' : (chosenPoints ?? 0);
+
+  // Add DNQ class if needed
+  const rankClass   = `score-circle${didNotQualify ? ' dnq' : ''}`;
+  const pointsClass = `score-circle${didNotQualify ? ' dnq' : ''}`;
 
   div.innerHTML = `
     <div class="preview-container">
@@ -158,6 +182,7 @@ function renderEntry(entry) {
   div.onclick = () => GDriveOpenModalWithVideo(entry.Video_URL);
   return div;
 }
+
 
 
 
