@@ -251,8 +251,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const chosenRank   = mode === 'jury' ? entry.Final_JuryRank : entry.Final_Rank;
       const chosenPoints = mode === 'jury' ? entry.Final_JuryPoints : entry.Final_TotalPoints;
 
-      const rankDisplay   = didNotQualify ? 'DNQ' : (chosenRank ?? 0);
-      const pointsDisplay = didNotQualify ? 'DNQ' : (chosenPoints ?? 0);
+      const rankDisplay   = didNotQualify ? 'NQ' : (chosenRank ?? 0);
+      const pointsDisplay = didNotQualify ? 'NQ' : (chosenPoints ?? 0);
 
       const circles = card.querySelectorAll('.score-circle');
       if (circles[0]) {
