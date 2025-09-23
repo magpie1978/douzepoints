@@ -120,8 +120,8 @@ function renderEntry(entry) {
   const didNotQualify = !entry.Final_Rank || entry.Final_Rank === 0 || (entry.QualifiedFinal && entry.QualifiedFinal === 'N');
 
   // Decide what to display
-  const rankDisplay = didNotQualify ? 'DNQ' : entry.Final_Rank;
-  const pointsDisplay = didNotQualify ? 'DNQ' : entry.Final_TotalPoints;
+  const rankDisplay = didNotQualify ? 'NQ' : entry.Final_Rank;
+  const pointsDisplay = didNotQualify ? 'NQ' : entry.Final_TotalPoints;
 
   // Add DNQ class dynamically
   const rankClass = didNotQualify ? 'score-circle dnq' : 'score-circle';
