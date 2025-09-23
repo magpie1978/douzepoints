@@ -119,8 +119,8 @@ function renderEntry(entry) {
   // ✅ Determine DNQ vs Final
   const didNotQualify = !entry.Final_Rank || entry.Final_Rank === 0 || (entry.QualifiedFinal && entry.QualifiedFinal === 'N');
 
-  const rankDisplay = didNotQualify ? 'DNQ' : entry.Final_Rank;
-  const pointsDisplay = didNotQualify ? 'DNQ' : entry.Final_TotalPoints;
+  const rankDisplay = didNotQualify ? 'NQ' : entry.Final_Rank;
+  const pointsDisplay = didNotQualify ? 'NQ' : entry.Final_TotalPoints;
 
   div.innerHTML = `
     <div class="preview-container">
