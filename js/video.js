@@ -1,7 +1,13 @@
 import { supabase } from './supabaseClient.js';
 
-// --- Shared Helpers ---
-const container = document.getElementById('video-container');
+/* -----------------------------
+   Helpers
+--------------------------------*/
+
+// Always get the live container (avoid capturing null before DOM is ready)
+function getContainer() {
+  return document.getElementById('video-container');
+}
 
 // Read <select> value and normalize to 'final' | 'jury'
 function getScoreMode() {
@@ -39,7 +45,9 @@ function updateCardCircles(card, mode) {
 
 // Resort cards by chosen score (Final/Jury). DNQs sink to bottom.
 function sortCardsByScore() {
+  const container = getContainer();
   if (!container) return;
+
   const mode = getScoreMode();
   const cards = Array.from(container.querySelectorAll('.video-item'));
 
@@ -60,15 +68,18 @@ function sortCardsByScore() {
   cards.forEach(card => container.appendChild(card));
 }
 
-// Make initial sort callable from fetchAndRender
+// Expose for initial call after render
 window.triggerInitialSort = sortCardsByScore;
 
-// --- Card Renderer ---
+/* -----------------------------
+   Renderers
+--------------------------------*/
+
 function renderEntry(entry) {
+  const containerPath = window.location.pathname;
   const countryCode = entry.Country_Code?.toLowerCase();
   const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
   const flagUrl = `/flags/${countryCode}.png`;
-  const path = window.location.pathname;
 
   const div = document.createElement('div');
   div.className = 'video-item';
@@ -84,7 +95,7 @@ function renderEntry(entry) {
   div.dataset.juryPoints      = entry.Final_JuryPoints ?? '';
   div.dataset.qualifiedFinal  = (entry.QualifiedFinal ?? '').toString();
 
-  const titleHTML = path.includes('edition.html')
+  const titleHTML = containerPath.includes('edition.html')
     ? `<b>${entry.Song}</b><br>${entry.Artist}<br>${entry.Country}`
     : `<b>${entry.Artist}</b><br>${entry.Song}<br>${entry.Year}`;
 
@@ -92,7 +103,10 @@ function renderEntry(entry) {
   const mode = getScoreMode();
 
   // DNQ if no final rank, rank = 0, or explicit flag
-  const didNotQualify = !entry.Final_Rank || entry.Final_Rank === 0 || (entry.QualifiedFinal && entry.QualifiedFinal === 'N');
+  const didNotQualify =
+    !entry.Final_Rank ||
+    entry.Final_Rank === 0 ||
+    (entry.QualifiedFinal && entry.QualifiedFinal === 'N');
 
   // Choose fields based on mode
   const chosenRank   = mode === 'jury' ? entry.Final_JuryRank   : entry.Final_Rank;
@@ -133,9 +147,10 @@ function renderEntry(entry) {
   return div;
 }
 
-// --- Fetch + Render (used by winners, edition, country, fan faves) ---
 async function fetchAndRender(queryFn, errorMsg, emptyMsg) {
   const { data, error } = await queryFn();
+  const container = getContainer();
+
   if (error) {
     if (container) container.innerHTML = `<p style='padding: 20px;'>${errorMsg}: ${error.message}</p>`;
     return;
@@ -156,7 +171,10 @@ async function fetchAndRender(queryFn, errorMsg, emptyMsg) {
   }
 }
 
-// --- Page Loaders ---
+/* -----------------------------
+   Page loaders
+--------------------------------*/
+
 function loadWinners() {
   return fetchAndRender(
     () => supabase.from('douzepoints').select('*').eq('Final_Rank', '1').order('Year', { ascending: false }),
@@ -174,6 +192,7 @@ function loadFanFaves() {
 }
 
 function loadEdition() {
+  const container = getContainer();
   const edition = new URLSearchParams(window.location.search).get("edition");
   const titleEl = document.getElementById('edition-title');
   if (titleEl && edition) titleEl.textContent = `Eurovision ${edition}`;
@@ -190,6 +209,7 @@ function loadEdition() {
 }
 
 function loadCountry() {
+  const container = getContainer();
   const country = new URLSearchParams(window.location.search).get("country");
   if (!country) {
     if (container) container.innerHTML = `<p style='padding: 20px;'>No country specified.</p>`;
@@ -202,7 +222,10 @@ function loadCountry() {
   );
 }
 
-// --- Carousels (index only) ---
+/* -----------------------------
+   Carousels (index only)
+--------------------------------*/
+
 function createVideoItem(entry) {
   const countryCode = entry.Country_Code?.toLowerCase();
   const div = document.createElement('div');
@@ -243,9 +266,12 @@ function loadIndexCarousels() {
   loadCarouselData("carouselTrack4", row => row.Year === 2025, () => 0, 20);
 }
 
-// --- Route Dispatcher + Dropdown wiring ---
-document.addEventListener("DOMContentLoaded", () => {
-  // Dropdown live-update: repaint circles + sort
+/* -----------------------------
+   Init (robust)
+--------------------------------*/
+
+function init() {
+  // Wire dropdown change immediately (DOM is ready now)
   const modeSel = document.querySelector('#score-mode, select[data-score-mode]');
   if (modeSel) {
     modeSel.addEventListener('change', () => {
@@ -255,6 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Route dispatcher
   const path = window.location.pathname;
   const routes = {
     'winners.html': loadWinners,
@@ -277,4 +304,11 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!matched && (path === '/' || path === '')) {
     loadIndexCarousels();
   }
-});
+}
+
+// Run now if DOM is ready; otherwise wait.
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init, { once: true });
+} else {
+  init();
+}
