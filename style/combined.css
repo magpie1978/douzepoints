@@ -216,7 +216,7 @@ body {
 }
 
 .score-circle:contains('NQ') {
-  color: #e50914; /* Eurovision red */
+  color: #e50914;
   border-color: #e50914;
 }
 
