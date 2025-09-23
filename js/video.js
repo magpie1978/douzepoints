@@ -58,8 +58,8 @@ function renderEntry(entry) {
   const pointsDisplay = didNotQualify ? 'DNQ' : (chosenPoints ?? 0);
 
   // Add DNQ class if needed
-  const rankClass   = `score-circle${didNotQualify ? ' dnq' : ''}`;
-  const pointsClass = `score-circle${didNotQualify ? ' dnq' : ''}`;
+  const rankClass   = `score-circle${didNotQualify ? ' NQ' : ''}`;
+  const pointsClass = `score-circle${didNotQualify ? ' NQ' : ''}`;
 
   div.innerHTML = `
     <div class="preview-container">
