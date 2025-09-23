@@ -200,7 +200,31 @@ body {
   padding: 4px 10px;
 }
 
+
+/* Base score circle */
 .score-circle {
+  font-weight: bold;
+  font-size: 11px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid white;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  background-color: transparent;
+  color: white;
+}
+
+/* DNQ special styling */
+.score-circle.dnq {
+  color: #e50914;       /* Eurovision red */
+  border-color: #e50914; /* Red border */
+  font-size: 10px;       /* Slightly smaller text for DNQ */
+}
+
+
+/*.score-circle {
   width: 22px;
   height: 22px;
   line-height: 22px;
@@ -214,12 +238,7 @@ body {
   justify-content: center;
   align-items: center;
 }
-
-.score-circle:contains('NQ') {
-  color: #e50914;
-  border-color: #e50914;
-}
-
+*/
 
 .video-title-text {
   line-height: 1.2;
