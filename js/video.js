@@ -217,6 +217,57 @@ function loadIndexCarousels() {
 
 // --- Route Dispatcher ---
 document.addEventListener("DOMContentLoaded", () => {
+  
+  document.addEventListener('DOMContentLoaded', () => {
+  const modeSel = document.querySelector('#score-mode, select[data-score-mode]');
+  if (!modeSel) return;
+
+  modeSel.addEventListener('change', () => {
+    // Re-render every card with the new mode
+    document.querySelectorAll('.video-item').forEach(card => {
+      const entry = {
+        Year: card.getAttribute('data-year'),
+        Artist: card.getAttribute('data-artist'),
+        Song: card.getAttribute('data-song'),
+        Country: card.getAttribute('data-country'),
+        Final_Rank: card.getAttribute('data-final-rank'),
+        Final_TotalPoints: card.getAttribute('data-final-points'),
+        Final_JuryRank: card.getAttribute('data-jury-rank'),
+        Final_JuryPoints: card.getAttribute('data-jury-points'),
+        QualifiedFinal: card.getAttribute('data-qualified-final'),
+        // Image/Flag paths aren’t re-stored; we’ll just rebuild in place:
+        Country_Code: '' // optional, not needed for re-paint of circles
+      };
+
+      // Replace the card’s inner HTML based on the new mode
+      // (We can either rebuild via renderEntry and replaceNode,
+      //  or just update the two circles.)
+      const mode = getScoreMode();
+      const didNotQualify =
+        !entry.Final_Rank ||
+        entry.Final_Rank === '0' ||
+        (entry.QualifiedFinal && entry.QualifiedFinal === 'N');
+
+      const chosenRank   = mode === 'jury' ? entry.Final_JuryRank : entry.Final_Rank;
+      const chosenPoints = mode === 'jury' ? entry.Final_JuryPoints : entry.Final_TotalPoints;
+
+      const rankDisplay   = didNotQualify ? 'DNQ' : (chosenRank ?? 0);
+      const pointsDisplay = didNotQualify ? 'DNQ' : (chosenPoints ?? 0);
+
+      const circles = card.querySelectorAll('.score-circle');
+      if (circles[0]) {
+        circles[0].textContent = rankDisplay;
+        circles[0].classList.toggle('dnq', didNotQualify);
+      }
+      if (circles[1]) {
+        circles[1].textContent = pointsDisplay;
+        circles[1].classList.toggle('dnq', didNotQualify);
+      }
+    });
+  });
+});
+
+  
   const path = window.location.pathname;
 
   const routes = {
