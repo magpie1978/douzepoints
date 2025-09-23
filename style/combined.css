@@ -215,6 +215,12 @@ body {
   align-items: center;
 }
 
+.score-circle:contains('DNQ') {
+  color: #e50914; /* Eurovision red */
+  border-color: #e50914;
+}
+
+
 .video-title-text {
   line-height: 1.2;
   }
