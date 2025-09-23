@@ -1,21 +1,69 @@
 import { supabase } from './supabaseClient.js';
 
-
 // --- Shared Helpers ---
 const container = document.getElementById('video-container');
 
-
-
+// Read <select> value and normalize to 'final' | 'jury'
 function getScoreMode() {
-  // Looks for either #score-mode or any <select data-score-mode>
   const sel = document.querySelector('#score-mode, select[data-score-mode]');
   const val = sel?.value?.trim().toLowerCase() || '';
   return val === 'jury points' ? 'jury' : 'final';
 }
 
+// Is this entry a DNQ (didn't qualify for the Final)?
+function isDNQFromDataset(card) {
+  const finalRank = (card.dataset.finalRank || '').toString();
+  const qualified = (card.dataset.qualifiedFinal || '').toUpperCase();
+  return !finalRank || finalRank === '0' || qualified === 'N';
+}
 
+// Update the two score circles on a rendered card
+function updateCardCircles(card, mode) {
+  const dnq = isDNQFromDataset(card);
+  const chosenRank   = mode === 'jury' ? card.dataset.juryRank   : card.dataset.finalRank;
+  const chosenPoints = mode === 'jury' ? card.dataset.juryPoints : card.dataset.finalPoints;
 
+  const rankDisplay   = dnq ? 'DNQ' : (chosenRank || 0);
+  const pointsDisplay = dnq ? 'DNQ' : (chosenPoints || 0);
 
+  const circles = card.querySelectorAll('.score-circle');
+  if (circles[0]) {
+    circles[0].textContent = rankDisplay;
+    circles[0].classList.toggle('dnq', dnq);
+  }
+  if (circles[1]) {
+    circles[1].textContent = pointsDisplay;
+    circles[1].classList.toggle('dnq', dnq);
+  }
+}
+
+// Resort cards by chosen score (Final/Jury). DNQs sink to bottom.
+function sortCardsByScore() {
+  if (!container) return;
+  const mode = getScoreMode();
+  const cards = Array.from(container.querySelectorAll('.video-item'));
+
+  cards.sort((a, b) => {
+    const aDNQ = isDNQFromDataset(a);
+    const bDNQ = isDNQFromDataset(b);
+    if (aDNQ !== bDNQ) return aDNQ ? 1 : -1; // DNQs last
+
+    const aPts = Number(mode === 'jury' ? a.dataset.juryPoints  : a.dataset.finalPoints) || 0;
+    const bPts = Number(mode === 'jury' ? b.dataset.juryPoints  : b.dataset.finalPoints) || 0;
+    if (bPts !== aPts) return bPts - aPts; // higher points first
+
+    const aRank = Number(mode === 'jury' ? a.dataset.juryRank : a.dataset.finalRank) || 9e9;
+    const bRank = Number(mode === 'jury' ? b.dataset.juryRank : b.dataset.finalRank) || 9e9;
+    return aRank - bRank; // lower rank wins as tie-break
+  });
+
+  cards.forEach(card => container.appendChild(card));
+}
+
+// Make initial sort callable from fetchAndRender
+window.triggerInitialSort = sortCardsByScore;
+
+// --- Card Renderer ---
 function renderEntry(entry) {
   const countryCode = entry.Country_Code?.toLowerCase();
   const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
@@ -29,57 +77,49 @@ function renderEntry(entry) {
   div.setAttribute('data-song', entry.Song);
   div.setAttribute('data-country', entry.Country);
 
-  // store values for possible later re-rendering if you want
-  div.setAttribute('data-final-rank', entry.Final_Rank ?? '');
-  div.setAttribute('data-final-points', entry.Final_TotalPoints ?? '');
-  div.setAttribute('data-jury-rank', entry.Final_JuryRank ?? '');
-  div.setAttribute('data-jury-points', entry.Final_JuryPoints ?? '');
-  div.setAttribute('data-qualified-final', (entry.QualifiedFinal ?? '').toString());
+  // Store values for later re-render/sort without refetch
+  div.dataset.finalRank       = entry.Final_Rank ?? '';
+  div.dataset.finalPoints     = entry.Final_TotalPoints ?? '';
+  div.dataset.juryRank        = entry.Final_JuryRank ?? '';
+  div.dataset.juryPoints      = entry.Final_JuryPoints ?? '';
+  div.dataset.qualifiedFinal  = (entry.QualifiedFinal ?? '').toString();
 
   const titleHTML = path.includes('edition.html')
     ? `<b>${entry.Song}</b><br>${entry.Artist}<br>${entry.Country}`
     : `<b>${entry.Artist}</b><br>${entry.Song}<br>${entry.Year}`;
 
-  // Determine mode (final vs jury)
-  const mode = getScoreMode(); // 'final' | 'jury'
+  // Mode for initial paint
+  const mode = getScoreMode();
 
-  // Determine DNQ (didn't qualify for Final)
-  const didNotQualify =
-    !entry.Final_Rank ||
-    entry.Final_Rank === 0 ||
-    (entry.QualifiedFinal && entry.QualifiedFinal === 'N');
+  // DNQ if no final rank, rank = 0, or explicit flag
+  const didNotQualify = !entry.Final_Rank || entry.Final_Rank === 0 || (entry.QualifiedFinal && entry.QualifiedFinal === 'N');
 
   // Choose fields based on mode
-  const chosenRank   = mode === 'jury' ? entry.Final_JuryRank     : entry.Final_Rank;
-  const chosenPoints = mode === 'jury' ? entry.Final_JuryPoints    : entry.Final_TotalPoints;
+  const chosenRank   = mode === 'jury' ? entry.Final_JuryRank   : entry.Final_Rank;
+  const chosenPoints = mode === 'jury' ? entry.Final_JuryPoints : entry.Final_TotalPoints;
 
-  // Apply DNQ display override
+  // Display text (DNQ overrides)
   const rankDisplay   = didNotQualify ? 'DNQ' : (chosenRank ?? 0);
   const pointsDisplay = didNotQualify ? 'DNQ' : (chosenPoints ?? 0);
 
   // Add DNQ class if needed
-  const rankClass   = `score-circle${didNotQualify ? ' NQ' : ''}`;
-  const pointsClass = `score-circle${didNotQualify ? ' NQ' : ''}`;
+  const rankClass   = `score-circle${didNotQualify ? ' dnq' : ''}`;
+  const pointsClass = `score-circle${didNotQualify ? ' dnq' : ''}`;
 
   div.innerHTML = `
     <div class="preview-container">
       <img src="${imageUrl}" alt="${entry.Artist}" />
     </div>
-    <div class="video-title-with-icon" onclick="event.stopPropagation()" style="display: flex; justify-content: space-between; align-items: center;">
-      <div style="display: flex; align-items: center; gap: 10px;">
+    <div class="video-title-with-icon" onclick="event.stopPropagation()" style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="display:flex; align-items:center; gap:10px;">
         <a href="country.html?country=${entry.Country}">
           <img class="flag-icon" src="${flagUrl}" alt="Flag">
         </a>
-        <div class="video-title-text">
-          ${titleHTML}
-        </div>
+        <div class="video-title-text">${titleHTML}</div>
       </div>
       <div class="score-wrapper">
         <table class="score-table">
-          <tr>
-            <th>Pos</th>
-            <th>Pts</th>
-          </tr>
+          <tr><th>Pos</th><th>Pts</th></tr>
           <tr>
             <td><div class="${rankClass}">${rankDisplay}</div></td>
             <td><div class="${pointsClass}">${pointsDisplay}</div></td>
@@ -93,31 +133,28 @@ function renderEntry(entry) {
   return div;
 }
 
-
-
-
-
+// --- Fetch + Render (used by winners, edition, country, fan faves) ---
 async function fetchAndRender(queryFn, errorMsg, emptyMsg) {
   const { data, error } = await queryFn();
   if (error) {
-    container.innerHTML = `<p style='padding: 20px;'>${errorMsg}: ${error.message}</p>`;
+    if (container) container.innerHTML = `<p style='padding: 20px;'>${errorMsg}: ${error.message}</p>`;
     return;
   }
   if (!data?.length) {
-    container.innerHTML = `<p style='padding: 20px;'>${emptyMsg}</p>`;
+    if (container) container.innerHTML = `<p style='padding: 20px;'>${emptyMsg}</p>`;
     return;
   }
 
-  container.innerHTML = '';
-  data.forEach(entry => container.appendChild(renderEntry(entry)));
-
-  // ✅ Safely call sorting after entries are rendered
-  if (typeof triggerInitialSort === 'function') {
-    triggerInitialSort();
+  if (container) {
+    container.innerHTML = '';
+    data.forEach(entry => container.appendChild(renderEntry(entry)));
   }
-} // ← Make sure this closing brace is present!
 
-
+  // Initial sort based on the current dropdown value
+  if (typeof window.triggerInitialSort === 'function') {
+    window.triggerInitialSort();
+  }
+}
 
 // --- Page Loaders ---
 function loadWinners() {
@@ -138,8 +175,11 @@ function loadFanFaves() {
 
 function loadEdition() {
   const edition = new URLSearchParams(window.location.search).get("edition");
+  const titleEl = document.getElementById('edition-title');
+  if (titleEl && edition) titleEl.textContent = `Eurovision ${edition}`;
+
   if (!edition) {
-    container.innerHTML = `<p style='padding: 20px;'>No edition specified.</p>`;
+    if (container) container.innerHTML = `<p style='padding: 20px;'>No edition specified.</p>`;
     return;
   }
   return fetchAndRender(
@@ -152,7 +192,7 @@ function loadEdition() {
 function loadCountry() {
   const country = new URLSearchParams(window.location.search).get("country");
   if (!country) {
-    container.innerHTML = `<p style='padding: 20px;'>No country specified.</p>`;
+    if (container) container.innerHTML = `<p style='padding: 20px;'>No country specified.</p>`;
     return;
   }
   return fetchAndRender(
@@ -162,18 +202,7 @@ function loadCountry() {
   );
 }
 
-// --- Carousel-Specific ---
-function scrollCarousel(direction, trackId) {
-  const track = document.getElementById(trackId);
-  const container = track?.closest('.carousel-container');
-  const itemWidth = track?.querySelector('.carousel-video-item')?.offsetWidth + 20;
-  const scrollAmount = itemWidth * 5;
-  if (track && container) {
-    container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
-  }
-}
-window.scrollCarousel = scrollCarousel;
-
+// --- Carousels (index only) ---
 function createVideoItem(entry) {
   const countryCode = entry.Country_Code?.toLowerCase();
   const div = document.createElement('div');
@@ -212,64 +241,21 @@ function loadIndexCarousels() {
   loadCarouselData("carouselTrack2", row => row.Year === 2024, () => 0, 20);
   loadCarouselData("carouselTrack3", row => (row.FanFave || '').trim().toUpperCase() === 'Y', (a, b) => b.Year - a.Year, 10);
   loadCarouselData("carouselTrack4", row => row.Year === 2025, () => 0, 20);
-  
 }
 
-// --- Route Dispatcher ---
+// --- Route Dispatcher + Dropdown wiring ---
 document.addEventListener("DOMContentLoaded", () => {
-  
-  document.addEventListener('DOMContentLoaded', () => {
+  // Dropdown live-update: repaint circles + sort
   const modeSel = document.querySelector('#score-mode, select[data-score-mode]');
-  if (!modeSel) return;
-
-  modeSel.addEventListener('change', () => {
-    // Re-render every card with the new mode
-    document.querySelectorAll('.video-item').forEach(card => {
-      const entry = {
-        Year: card.getAttribute('data-year'),
-        Artist: card.getAttribute('data-artist'),
-        Song: card.getAttribute('data-song'),
-        Country: card.getAttribute('data-country'),
-        Final_Rank: card.getAttribute('data-final-rank'),
-        Final_TotalPoints: card.getAttribute('data-final-points'),
-        Final_JuryRank: card.getAttribute('data-jury-rank'),
-        Final_JuryPoints: card.getAttribute('data-jury-points'),
-        QualifiedFinal: card.getAttribute('data-qualified-final'),
-        // Image/Flag paths aren’t re-stored; we’ll just rebuild in place:
-        Country_Code: '' // optional, not needed for re-paint of circles
-      };
-
-      // Replace the card’s inner HTML based on the new mode
-      // (We can either rebuild via renderEntry and replaceNode,
-      //  or just update the two circles.)
+  if (modeSel) {
+    modeSel.addEventListener('change', () => {
       const mode = getScoreMode();
-      const didNotQualify =
-        !entry.Final_Rank ||
-        entry.Final_Rank === '0' ||
-        (entry.QualifiedFinal && entry.QualifiedFinal === 'N');
-
-      const chosenRank   = mode === 'jury' ? entry.Final_JuryRank : entry.Final_Rank;
-      const chosenPoints = mode === 'jury' ? entry.Final_JuryPoints : entry.Final_TotalPoints;
-
-      const rankDisplay   = didNotQualify ? 'NQ' : (chosenRank ?? 0);
-      const pointsDisplay = didNotQualify ? 'NQ' : (chosenPoints ?? 0);
-
-      const circles = card.querySelectorAll('.score-circle');
-      if (circles[0]) {
-        circles[0].textContent = rankDisplay;
-        circles[0].classList.toggle('dnq', didNotQualify);
-      }
-      if (circles[1]) {
-        circles[1].textContent = pointsDisplay;
-        circles[1].classList.toggle('dnq', didNotQualify);
-      }
+      document.querySelectorAll('.video-item').forEach(card => updateCardCircles(card, mode));
+      sortCardsByScore();
     });
-  });
-});
+  }
 
-  
   const path = window.location.pathname;
-
   const routes = {
     'winners.html': loadWinners,
     'fan-favorites.html': loadFanFaves,
@@ -279,7 +265,6 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   let matched = false;
-
   for (const page in routes) {
     if (path.includes(page)) {
       routes[page]();
@@ -288,7 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Run index carousel loader if on root path (e.g. /)
+  // Root path => index carousels
   if (!matched && (path === '/' || path === '')) {
     loadIndexCarousels();
   }
