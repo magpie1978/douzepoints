@@ -26,7 +26,7 @@ body {
   width: 100%;
   height: 400px;
   overflow: hidden;
-
+ 
 }
 
 .banner-static img {
@@ -161,7 +161,7 @@ body {
   border-radius: 50%;
   /* background-color: #444;*/
   background-color: ##181a24;
-
+  
   object-fit: cover;
   margin-left: 8px;
 }
@@ -238,12 +238,6 @@ body {
   justify-content: center;
   align-items: center;
 }
-
-.score-circle:contains('NQ') {
-  color: #e50914;
-  border-color: #e50914;
-}
-
 */
 
 .video-title-text {
@@ -484,27 +478,3 @@ h4 {
   display: block;
   margin: 0 auto;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
