@@ -493,3 +493,44 @@ h4 {
 .carousel-video-item:hover .preview-container {
   transform: translateY(-2px) scale(1.06);
 }
+
+
+/* 1) Make the media box layout rock-solid */
+.preview-container {
+  /* replace the padding-top hack with aspect-ratio */
+  aspect-ratio: 16 / 9;
+  height: auto;
+  padding-top: 0; /* safe now that aspect-ratio is set */
+
+  /* compositing hints */
+  transform: translate3d(0,0,0);
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+/* 2) Hover: keep it compositor-only and slightly reduce scale */
+.video-item:hover .preview-container,
+.carousel-video-item:hover .preview-container {
+  transform: translate3d(0,-2px,0) scale(1.05);
+}
+
+/* 3) Prevent scrollbars causing layout jumps during hover */
+.grid-container,
+.carousel-container {
+  scrollbar-gutter: stable both-edges; /* reserve gutter so bars don’t pop in/out */
+  overflow-anchor: none;               /* stop scroll anchoring fighting the transform */
+}
+
+/* 4) Make sure the card itself never changes size on hover */
+.video-item,
+.carousel-video-item {
+  contain: layout paint;   /* isolate layout/paint; avoids neighbor reflow */
+  /* keep no transform here (we only transform the preview container) */
+}
+
+/* 5) Safari/WebKit edge smoothness (harmless elsewhere) */
+.preview-container img,
+.preview-container video {
+  -webkit-transform: translateZ(0);
+}
