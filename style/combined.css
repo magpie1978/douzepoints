@@ -119,9 +119,10 @@ body {
   margin-right: 30px;
 }
 
-.video-item:hover {
-  transform: scale(1.02);
-}
+/* .video-item:hover {
+//  transform: scale(1.02);
+//}
+*/
 
 .preview-container {
   position: relative;
@@ -389,7 +390,7 @@ h4 {
   overflow-x: auto;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 40px; /* add breathing room for hover effect */
+  padding-bottom: 20px; /* add breathing room for hover effect */
 }
 
 .carousel-track {
