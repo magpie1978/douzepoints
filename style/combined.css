@@ -3,6 +3,8 @@
 body {
   font-family: 'Raleway', sans-serif;
   margin: 0;
+  /* background: #141414; */
+  /* color: #fff; */
   background: #0f111a;
   color: #ccc;
 }
@@ -99,6 +101,7 @@ body {
 
 .video-item {
   cursor: pointer;
+  /* background-color: #1a1a1a; */
   background-color: #181a24;
   padding: 10px;
   border-radius: 8px;
@@ -110,6 +113,7 @@ body {
 
 .carousel-video-item {
   cursor: pointer;
+  /* background-color: #1a1a1a; */
   background-color: #181a24;
   padding: 10px;
   border-radius: 8px;
@@ -119,10 +123,9 @@ body {
   margin-right: 30px;
 }
 
-/* .video-item:hover {
-//  transform: scale(1.02);
-//}
-*/
+.video-item:hover {
+  transform: scale(1.1);
+}
 
 .preview-container {
   position: relative;
