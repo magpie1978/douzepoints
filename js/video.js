@@ -11,17 +11,19 @@ function isJurySelected() {
   const sel = getSortSelection();
   return sel === 'jury points' || sel === 'jury';
 }
+function isTelevoteSelected() {
+  const sel = getSortSelection();
+  return sel === 'televote points' || sel === 'televote';
+}
 
 // --- Shared Helpers ---
 const container = document.getElementById('video-container');
 const dropdown = document.getElementById('sort-options'); // or your actual select id
 const selectedText = dropdown?.selectedOptions?.[0]?.text || dropdown?.value || '';
 
-// If you're still using this block elsewhere, you can keep it.
-// (Your current render path below uses renderEntry instead.)
-/*
+/* If you still render elsewhere with createCard/renderScoreCircles, keep that code.
 data.forEach((record) => {
-  const cardEl = createCard(record); // your existing function
+  const cardEl = createCard(record);
   renderScoreCircles(cardEl, record, selectedText);
   container.appendChild(cardEl);
 });
@@ -49,7 +51,7 @@ function renderEntry(entry) {
     ? `<b>${entry.Song}</b><br>${entry.Artist}<br>${entry.Country}`
     : `<b>${entry.Artist}</b><br>${entry.Song}<br>${entry.Year}`;
 
-  // ✅ Determine DNQ vs Final (for non-jury modes)
+  // ✅ DNQ logic used for non-jury/non-televote modes
   const didNotQualify =
     !entry.Final_Rank || entry.Final_Rank === 0 || (entry.QualifiedFinal && entry.QualifiedFinal === 'N');
 
@@ -59,23 +61,26 @@ function renderEntry(entry) {
   let rankDisplay, pointsDisplay, rankClass = 'score-circle', pointsClass = 'score-circle';
 
   if (isJurySelected()) {
-    // 🔸 Jury mode: always show Jury Rank | Jury Points from DB
-    rankDisplay = entry.Final_JuryRank ?? '—';
+    // 🔸 Jury mode: Jury Rank | Jury Points
+    rankDisplay  = entry.Final_JuryRank ?? '—';
     pointsDisplay = entry.Final_JuryPoints ?? 0;
-
-    // optional: add a styling hook if you want different colors for jury mode
-    rankClass += ' jury';
+    rankClass  += ' jury';
     pointsClass += ' jury';
-  } else {
-    // 🔸 All other modes: preserve your existing Final/DNQ behavior
-    const rank = didNotQualify ? 'NQ' : entry.Final_Rank;
-    const pts  = didNotQualify ? 'NQ' : entry.Final_TotalPoints;
 
-    rankDisplay = rank;
-    pointsDisplay = pts;
+  } else if (isTelevoteSelected()) {
+    // 🔸 Televote mode: Televote Rank | Televote Points
+    rankDisplay  = entry.Final_TelevoteRank ?? '—';
+    pointsDisplay = entry.Final_TelevotePoints ?? 0;
+    rankClass  += ' televote';
+    pointsClass += ' televote';
+
+  } else {
+    // 🔸 All other modes: original Final vs DNQ behavior
+    rankDisplay  = didNotQualify ? 'NQ' : entry.Final_Rank;
+    pointsDisplay = didNotQualify ? 'NQ' : entry.Final_TotalPoints;
 
     if (didNotQualify) {
-      rankClass += ' dnq';
+      rankClass  += ' dnq';
       pointsClass += ' dnq';
     }
   }
@@ -130,7 +135,7 @@ async function fetchAndRender(queryFn, errorMsg, emptyMsg) {
   if (typeof triggerInitialSort === 'function') {
     triggerInitialSort();
   }
-} // ← Make sure this closing brace is present!
+} // ← keep this brace!
 
 // --- Page Loaders ---
 function loadWinners() {
@@ -254,13 +259,10 @@ document.addEventListener("DOMContentLoaded", () => {
     loadIndexCarousels();
   }
 
-  // 🔁 Re-render score circles when the user changes the Sort dropdown
+  // 🔁 Re-render when Sort changes so circles switch between Jury/Televote/Default instantly
   const dd = document.getElementById('sort-options');
   if (dd) {
     dd.addEventListener('change', () => {
-      // Rebuild the visible cards so circles reflect the new mode (jury vs others)
-      // We don’t know which loader ran, so do a light DOM refresh using existing nodes’ data-* if you prefer.
-      // Simplest: trigger the current route again.
       if (matched) {
         for (const page in routes) {
           if (path.includes(page)) {
