@@ -488,3 +488,8 @@ h4 {
     transition: none;
   }
 }
+
+.video-item:hover .preview-container,
+.carousel-video-item:hover .preview-container {
+  transform: translateY(-2px) scale(1.06);
+}
