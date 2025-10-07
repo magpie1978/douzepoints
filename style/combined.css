@@ -94,7 +94,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  overflow: visible; /* allow scaled items to show fully */
+  overflow: visible; /* allow scaled children to render outside */
 }
 
 /* Cards (grid) */
@@ -106,15 +106,9 @@ body {
   overflow: hidden; /* keep rounded corners on media */
   flex: 0 0 220px;
   margin-right: 10px;
-
-  /* Smooth, GPU-accelerated hover */
   position: relative;
-  will-change: transform;
-  transform: translateZ(0);
-  transition: transform 180ms cubic-bezier(.2,.8,.2,1),
-              box-shadow 180ms cubic-bezier(.2,.8,.2,1);
   z-index: 0;
-  contain: paint;
+  /* no transform on the card itself to keep hitbox stable */
 }
 
 /* Cards (carousel) */
@@ -126,33 +120,40 @@ body {
   overflow: hidden;
   flex: 0 0 220px;
   margin-right: 30px;
-
-  /* Smooth, GPU-accelerated hover */
   position: relative;
-  will-change: transform;
-  transform: translateZ(0);
-  transition: transform 180ms cubic-bezier(.2,.8,.2,1),
-              box-shadow 180ms cubic-bezier(.2,.8,.2,1);
   z-index: 0;
-  contain: paint;
+  /* no transform on the card itself to keep hitbox stable */
 }
 
-/* Unified hover for both card types */
-.video-item:hover,
-.carousel-video-item:hover {
-  transform: scale(1.06);
-  z-index: 3;
-  box-shadow: 0 10px 24px rgba(0,0,0,.35);
-}
-
+/* Smooth pop-out is applied to the thumbnail only */
 .preview-container {
   position: relative;
   width: 100%;
   padding-top: 56.25%; /* 16:9 */
   overflow: hidden;
   border-radius: 6px;
+
+  /* GPU-friendly scaling */
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  transition: transform 180ms cubic-bezier(.2,.8,.2,1), box-shadow 180ms cubic-bezier(.2,.8,.2,1);
 }
 
+/* Hover states (scale the media area, not the whole card) */
+.video-item:hover .preview-container,
+.carousel-video-item:hover .preview-container {
+  transform: scale(1.06);
+  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+}
+
+/* Lift on hover so the shadow isn’t clipped by neighbors */
+.video-item:hover,
+.carousel-video-item:hover {
+  z-index: 3;
+}
+
+/* Media */
 .preview-container img,
 .preview-container video {
   position: absolute;
@@ -162,8 +163,10 @@ body {
   height: 100%;
   object-fit: cover;
   display: block; /* stability on hover */
+  pointer-events: none; /* clicks pass through to the card (fixes broken click) */
 }
 
+/* Titles / text row */
 .video-title-with-icon {
   display: flex;
   align-items: center;
@@ -177,7 +180,7 @@ body {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background-color: #181a24; /* fixed: removed extra # */
+  background-color: #181a24; /* fixed from '##' */
   object-fit: cover;
   margin-left: 8px;
 }
@@ -428,7 +431,7 @@ h4 {
 }
 
 .section-header .view-more {
-  margin: 0;
+  margin: 0,
   font-size: 0.9rem;
   font-weight: normal;
   color: #e50914;
@@ -478,8 +481,9 @@ h4 {
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .video-item,
-  .carousel-video-item,
+  .preview-container {
+    transition: none;
+  }
   .carousel-button {
     transition: none;
   }
