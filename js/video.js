@@ -96,6 +96,58 @@ const container = document.getElementById('video-container');
 //}
 
 
+// Call this when (re)rendering each card/row
+function renderScoreCircles(cardEl, record, selectedTextOrValue) {
+  const leftCircle  = cardEl.querySelector('.score-circle.left');
+  const rightCircle = cardEl.querySelector('.score-circle.right');
+  if (!leftCircle || !rightCircle) return; // nothing to do
+
+  // Normalize selection (compare on visible text "Jury Points").
+  // If you prefer comparing on the <option value="jury">, normalize that instead.
+  const selected = String(selectedTextOrValue).trim().toLowerCase();
+  const isJuryPoints =
+    selected === 'jury points' || selected === 'jury'; // support both text and value
+
+  if (isJuryPoints) {
+    // Pull jury numbers from Supabase row with safe fallbacks
+    const juryPoints =
+      record?.Final_JuryPoints ??
+      record?.JuryPoints ??
+      record?.jury_points ??
+      0;
+
+    const juryRank =
+      record?.Final_JuryRank ??
+      record?.JuryRank ??
+      record?.jury_rank ??
+      null;
+
+    // Update circles: LEFT = Jury Position, RIGHT = Jury Points
+    leftCircle.textContent  = juryRank ?? '—';
+    rightCircle.textContent = juryPoints;
+
+    // (Optional) add a class so you can style the circles differently in CSS when showing jury data
+    leftCircle.classList.add('is-jury');
+    rightCircle.classList.add('is-jury');
+    // Remove any previous non-jury styling if you use it:
+    leftCircle.classList.remove('is-total','is-televote','is-year','is-artist');
+    rightCircle.classList.remove('is-total','is-televote','is-year','is-artist');
+
+    return; // ✅ stop here for Jury Points mode
+  }
+
+
+  const dropdown = document.getElementById('sort-options'); // or your actual select id
+const selectedText = dropdown?.selectedOptions?.[0]?.text || dropdown?.value || '';
+
+data.forEach((record) => {
+  const cardEl = createCard(record); // your existing function
+  renderScoreCircles(cardEl, record, selectedText);
+  container.appendChild(cardEl);
+});
+
+  
+
 function renderEntry(entry) {
 const countryCode = entry.Country_Code?.toLowerCase();
 const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
