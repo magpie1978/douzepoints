@@ -25,7 +25,7 @@
   // Strict, original-style URL builders (no fallbacks)
   function getFlagUrl(entry) {
     const code = (entry.Country_Code || entry.CountryCode || '').toLowerCase();
-    return `assets/flags/${code}.svg`;
+    return `/flags/${code}.png`;
   }
   function getImageUrl(entry) {
     // Use ONLY the field you’ve been storing
