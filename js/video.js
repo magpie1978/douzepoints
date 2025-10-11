@@ -1,7 +1,7 @@
 /**
  * video.js
  * Renders country entries as cards and exposes renderVideos + triggerInitialSort globally.
- * The score-table circles are wired for dynamic updates by sorting.js.
+ * The score-table circles are wired for dynamic updates by sorting.js..
  */
 
 // Utility: safe text
