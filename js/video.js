@@ -1,9 +1,9 @@
 /**
- * video.js
+ * video.js — modal-only, robust trigger
  * - Uses inline URL vars (countryCode, imageUrl, flagUrl, path)
- * - Clicks anywhere (including thumbnail) open video modal only
- * - No fallback link opening in new tab
- * - Keeps data-* attributes for sorting.js
+ * - Clicks (card, thumbnail, preview-container) trigger modal ONLY
+ * - Tries multiple modal function signatures for compatibility
+ * - No new-tab fallback
  */
 
 (function () {
@@ -19,6 +19,37 @@
   function getQueryParam(name) {
     const params = new URLSearchParams(window.location.search);
     return params.get(name);
+  }
+
+  // Unified modal opener (no new tab fallback)
+  function openModalStrict(videoUrl, entry) {
+    if (!videoUrl) {
+      console.error('[video.js] No Video_URL found on entry:', entry);
+      return;
+    }
+
+    // Preferred modern signature
+    if (typeof window.openVideoModal === 'function') {
+      try {
+        // Try object signature first
+        window.openVideoModal({ url: videoUrl, entry });
+        return;
+      } catch (_) {
+        // Try common alternates
+        try { window.openVideoModal(videoUrl, entry); return; } catch (_) {}
+        try { window.openVideoModal(videoUrl); return; } catch (_) {}
+      }
+    }
+
+    // Legacy/global alternatives
+    if (typeof window.showVideoModal === 'function') {
+      try { window.showVideoModal(videoUrl, entry); return; } catch (_) {}
+    }
+    if (typeof window.openModal === 'function') {
+      try { window.openModal(videoUrl, entry); return; } catch (_) {}
+    }
+
+    console.error('[video.js] No modal function found. Expected window.openVideoModal / showVideoModal / openModal.');
   }
 
   // ---------- Rendering ----------
@@ -108,24 +139,34 @@
       </div>
     `;
 
-    // --- Modal click only ---
-    const openModal = () => {
-      const v = videoUrl;
-      if (v && window.openVideoModal) {
-        window.openVideoModal({ url: v, entry });
-      }
+    // --- Modal-only triggers ---
+    const handleOpen = (e) => {
+      if (e) e.preventDefault();
+      e?.stopPropagation?.();
+      openModalStrict(videoUrl, entry);
     };
 
-    wrapper.addEventListener('click', openModal);
-    wrapper.querySelector('.thumbnail').addEventListener('click', (e) => {
-      e.stopPropagation();
-      openModal();
-    });
+    // Whole card
+    wrapper.addEventListener('click', handleOpen);
 
+    // Thumbnail (in case something else stops propagation)
+    const thumb = wrapper.querySelector('.thumbnail');
+    if (thumb) {
+      thumb.style.cursor = 'pointer';
+      thumb.addEventListener('click', handleOpen);
+    }
+
+    // Preview container (extra safety)
+    const preview = wrapper.querySelector('.preview-container');
+    if (preview) {
+      preview.addEventListener('click', handleOpen);
+    }
+
+    // Keyboard accessibility
     wrapper.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        openModal();
+        handleOpen(e);
       }
     });
 
