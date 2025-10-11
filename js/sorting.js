@@ -1,112 +1,116 @@
-// function attachSorting() {
-//    const select = document.getElementById("sort-options");
-//    select.addEventListener("change", function () {
-//        const sortType = select.value;
-//        const container = document.getElementById("video-container");
-//        const items = Array.from(container.children);
+/**
+ * sorting.js
+ * Handles dropdown sorting AND updates the score-table circles to show
+ * Jury vs Total values depending on the selected option.
+ *
+ * Expected select#sort-options values (examples):
+ *  - "jury"        -> sort by Jury points and display Jury Rank/Points in circles
+ *  - "televote"    -> (optional) if you want to support televote display too
+ *  - "total"       -> default (Total points + Total rank in circles)
+ *  - Other values like "year-asc", "year-desc", "artist", "song", "country" only affect order,
+ *                     circles remain on Total unless 'jury' (or 'televote') is selected.
+ */
 
-//        if (sortType === "year-desc") {
-//            items.sort((a, b) => parseInt(b.dataset.year) - parseInt(a.dataset.year));
-//        } else if (sortType === "year-asc") {
-//            items.sort((a, b) => parseInt(a.dataset.year) - parseInt(b.dataset.year));
-//        } else if (sortType === "artist") {
-//            items.sort((a, b) => a.dataset.artist.localeCompare(b.dataset.artist));
-//        } else if (sortType === "song") {
-//            items.sort((a, b) => a.dataset.song.localeCompare(b.dataset.song));
-//        } else if (sortType === "country") {
-//            items.sort((a, b) => a.dataset.country.localeCompare(b.dataset.country));
-//        } else if (sortType === "country-desc") {
-//            items.sort((a, b) => b.dataset.country.localeCompare(a.dataset.country));
-//        } else if (sortType === "jury") {
-//            items.sort((a, b) => {
-//                const aVal = parseInt(a.dataset.jury) || 0;
-//                const bVal = parseInt(b.dataset.jury) || 0;
-//                return bVal - aVal;
-//            });
-//        } else if (sortType === "televote") {
-//            items.sort((a, b) => {
-//                const aVal = parseInt(a.dataset.televote) || 0;
-//                const bVal = parseInt(b.dataset.televote) || 0;
-//                return bVal - aVal;
-//            });
-//        } else if (sortType === "total") {
-//            items.sort((a, b) => {
-//                const aVal = parseInt(a.dataset.total) || 0;
-//                const bVal = parseInt(b.dataset.total) || 0;
-//                return bVal - aVal;
-//            });
-//        }
+function comparatorFactory(sortType) {
+  const num = (el, key) => Number(el.dataset[key] || 0);
+  const txt = (el, key) => (el.dataset[key] || '').toString();
 
-//        container.innerHTML = '';
-//        items.forEach(item => container.appendChild(item));
-//    });
-//}
+  switch (sortType) {
+    case 'jury':
+      return (a, b) => num(b, 'jury') - num(a, 'jury'); // desc
+    case 'televote':
+      return (a, b) => num(b, 'televote') - num(a, 'televote'); // desc
+    case 'total':
+      return (a, b) => num(b, 'total') - num(a, 'total'); // desc
+    case 'year-asc':
+      return (a, b) => (num(a, 'year') - num(b, 'year'));
+    case 'year-desc':
+      return (a, b) => (num(b, 'year') - num(a, 'year'));
+    case 'artist':
+      return (a, b) => txt(a, 'artist').localeCompare(txt(b, 'artist'));
+    case 'song':
+      return (a, b) => txt(a, 'song').localeCompare(txt(b, 'song'));
+    case 'country':
+      return (a, b) => txt(a, 'country').localeCompare(txt(b, 'country'));
+    default:
+      // Fallback to total desc
+      return (a, b) => num(b, 'total') - num(a, 'total');
+  }
+}
 
-// function triggerInitialSort() {
-//    attachSorting();
-//    const select = document.getElementById("sort-options");
-//    const event = new Event("change");
-//    select.dispatchEvent(event);
-//}
+function updateScoreDisplay(sortType) {
+  const container = document.getElementById('video-container');
+  if (!container) return;
 
+  const useJury = (sortType === 'jury');
+  const useTelevote = (sortType === 'televote'); // If you want televote display
 
+  Array.from(container.children).forEach(item => {
+    const dnq  = item.dataset.dnq === '1';
+    const pos  = item.querySelector('.score-pos');
+    const pts  = item.querySelector('.score-pts');
+    if (!pos || !pts) return;
 
-function attachSorting() {
-  const select = document.getElementById("sort-options");
-  select.addEventListener("change", function () {
-    const sortType = select.value;
-    const container = document.getElementById("video-container");
-    const items = Array.from(container.children);
-
-    if (sortType === "year-desc") {
-      items.sort((a, b) => parseInt(b.dataset.year) - parseInt(a.dataset.year));
-    } else if (sortType === "year-asc") {
-      items.sort((a, b) => parseInt(a.dataset.year) - parseInt(b.dataset.year));
-    } else if (sortType === "artist") {
-      items.sort((a, b) => a.dataset.artist.localeCompare(b.dataset.artist));
-    } else if (sortType === "song") {
-      items.sort((a, b) => a.dataset.song.localeCompare(b.dataset.song));
-    } else if (sortType === "country") {
-      items.sort((a, b) => a.dataset.country.localeCompare(b.dataset.country));
-    } else if (sortType === "country-desc") {
-      items.sort((a, b) => b.dataset.country.localeCompare(a.dataset.country));
-    } else if (sortType === "jury") {
-      items.sort((a, b) => {
-        const aVal = parseInt(a.dataset.jury) || 0;
-        const bVal = parseInt(b.dataset.jury) || 0;
-        return bVal - aVal;
-      });
-    } else if (sortType === "televote") {
-      items.sort((a, b) => {
-        const aVal = parseInt(a.dataset.televote) || 0;
-        const bVal = parseInt(b.dataset.televote) || 0;
-        return bVal - aVal;
-      });
-    } else if (sortType === "total") {
-      items.sort((a, b) => {
-        const aVal = parseInt(a.dataset.total) || 0;
-        const bVal = parseInt(b.dataset.total) || 0;
-        return bVal - aVal;
-      });
+    if (dnq) {
+      pos.textContent = 'NQ';
+      pts.textContent = 'NQ';
+      return;
     }
 
-    // Toggle score-box visibility for 'total' sort
-    const showTotal = sortType === "total";
-    items.forEach(item => {
-      const box = item.querySelector(".score-box");
-      if (box) {
-        box.style.display = showTotal ? "block" : "none";
-      }
-    });
-
-    container.innerHTML = '';
-    items.forEach(item => container.appendChild(item));
+    if (useJury) {
+      pos.textContent = item.dataset.juryrank || '';
+      pts.textContent = item.dataset.jury || '0';
+    } else if (useTelevote) {
+      pos.textContent = item.dataset.televoterank || '';
+      pts.textContent = item.dataset.televote || '0';
+    } else {
+      // Default to Total
+      pos.textContent = item.dataset.totalrank || '';
+      pts.textContent = item.dataset.total || '0';
+    }
   });
 }
 
-function triggerInitialSort() {
-  attachSorting();
-  const select = document.getElementById("sort-options");
-  const event = new Event("change");
-  select.dispatchEvent(event);
+function attachSorting() {
+  const select = document.getElementById('sort-options');
+  const container = document.getElementById('video-container');
+  if (!select || !container) return;
+
+  select.addEventListener('change', () => {
+    const sortType = select.value;
+    const items = Array.from(container.children);
+    items.sort(comparatorFactory(sortType));
+
+    // Re-append in new order
+    const frag = document.createDocumentFragment();
+    items.forEach(el => frag.appendChild(el));
+    container.innerHTML = '';
+    container.appendChild(frag);
+
+    // Update circles to the appropriate metric
+    updateScoreDisplay(sortType);
+  });
 }
+
+// Exposed so video.js can call after initial render
+function triggerInitialSort() {
+  const select = document.getElementById('sort-options');
+  if (!select) return;
+
+  // If nothing selected, default to "total" (or keep existing value)
+  if (!select.value) select.value = 'total';
+
+  // Fire once to sort and update circles
+  const evt = new Event('change');
+  select.dispatchEvent(evt);
+}
+
+// Boot
+document.addEventListener('DOMContentLoaded', () => {
+  attachSorting();
+  // Do not call triggerInitialSort here, because video.js calls it AFTER rendering entries.
+  // If your page renders entries server-side, you can uncomment the next line:
+  // triggerInitialSort();
+});
+
+window.triggerInitialSort = triggerInitialSort;
