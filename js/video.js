@@ -1,7 +1,10 @@
 /**
  * video.js
- * Renders entries into #video-container and wires score circles for sorting.js
- * Works with Supabase if available, but won't crash if it's not yet initialized.
+ * Reverted to strict, original behavior:
+ *  - Thumbnail uses entry.Image_URL exactly (no fallbacks)
+ *  - Flag uses assets/flags/{Country_Code}.svg (no fallbacks)
+ *  - Video uses entry.Video_URL exactly (no normalization)
+ * Keeps data-* needed by sorting.js to flip Pos/Pts for "Jury Points".
  */
 
 (function () {
@@ -19,22 +22,18 @@
     return params.get(name);
   }
 
-  function getFlagUrl(countryCode) {
-    return `assets/flags/${(countryCode || '').toLowerCase()}.svg`;
+  // Strict, original-style URL builders (no fallbacks)
+  function getFlagUrl(entry) {
+    const code = (entry.Country_Code || entry.CountryCode || '').toLowerCase();
+    return `assets/flags/${code}.svg`;
   }
-
   function getImageUrl(entry) {
-    return entry.Image_URL || entry.Thumbnail || `assets/images/${escapeHTML(entry.Country || 'default')}.jpg`;
+    // Use ONLY the field you’ve been storing
+    return entry.Image_URL;
   }
-
-  // Try to obtain/create a Supabase client without hard failing if not present
-  function getSupabaseClient() {
-    if (window.supabaseClient?.from) return window.supabaseClient;
-    if (window.supabase?.createClient && window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
-      window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
-      return window.supabaseClient;
-    }
-    return null; // gracefully handled later
+  function getVideoUrl(entry) {
+    // Use ONLY the stored video URL as-is
+    return entry.Video_URL;
   }
 
   // ---------- Rendering ----------
@@ -44,7 +43,7 @@
     wrapper.setAttribute('role', 'button');
     wrapper.tabIndex = 0;
 
-    // Points/ranks
+    // Points/ranks (for sorting + score-circle display)
     const totalPoints    = Number(entry.Final_TotalPoints)     || 0;
     const juryPoints     = Number(entry.Final_JuryPoints)      || 0;
     const televotePoints = Number(entry.Final_TelevotePoints)  || 0;
@@ -53,14 +52,14 @@
     const juryRank       = Number(entry.Final_JuryRank)        || 0;
     const televoteRank   = Number(entry.Final_TelevoteRank)    || 0;
 
-    // DNQ logic
+    // DNQ logic matches earlier behavior
     const dnq = (
       !entry.Final_Rank ||
       Number(entry.Final_Rank) === 0 ||
       String(entry.QualifiedFinal || '').toUpperCase() === 'N'
     );
 
-    // Data attributes for sorting & display
+    // Data attributes for sorting & score updates (used by sorting.js)
     wrapper.dataset.total        = String(totalPoints);
     wrapper.dataset.jury         = String(juryPoints);
     wrapper.dataset.televote     = String(televotePoints);
@@ -76,8 +75,10 @@
     if (entry.Song)    wrapper.dataset.song = String(entry.Song).toLowerCase();
     if (entry.Country) wrapper.dataset.country = String(entry.Country).toLowerCase();
 
+    // Strict URLs (no fallback logic)
     const imageUrl = getImageUrl(entry);
-    const flagUrl  = getFlagUrl(entry.Country_Code || entry.CountryCode || '');
+    const flagUrl  = getFlagUrl(entry);
+    const videoUrl = getVideoUrl(entry);
 
     const titleHTML = `
       <div class="title-line">
@@ -90,6 +91,7 @@
       </div>
     `;
 
+    // Initial circles default to TOTAL (sorting.js will overwrite when needed)
     const rankDisplay   = dnq ? 'NQ' : (totalRank || '');
     const pointsDisplay = dnq ? 'NQ' : (totalPoints || '');
 
@@ -97,14 +99,14 @@
     const pointsClass = dnq ? 'score-circle dnq score-pts' : 'score-circle score-pts';
 
     wrapper.innerHTML = `
-      <div class="preview-container" data-video-url="${escapeHTML(entry.Video_URL || entry.Video || '')}">
-        <img src="${escapeHTML(imageUrl)}" alt="${escapeHTML(entry.Artist || '')}" />
+      <div class="preview-container" data-video-url="${escapeHTML(videoUrl || '')}">
+        <img src="${escapeHTML(imageUrl || '')}" alt="${escapeHTML(entry.Artist || '')}" />
       </div>
 
       <div class="video-title-with-icon" style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
         <div style="display:flex;align-items:center;gap:10px;">
           <a href="country.html?country=${encodeURIComponent(entry.Country || '')}" onclick="event.stopPropagation()">
-            <img class="flag-icon" src="${escapeHTML(flagUrl)}" alt="Flag" />
+            <img class="flag-icon" src="${escapeHTML(flagUrl || '')}" alt="Flag" />
           </a>
           <div class="video-title-text">
             ${titleHTML}
@@ -123,16 +125,16 @@
       </div>
     `;
 
-    // Click to open modal
+    // Click to open modal (expects global window.openVideoModal from modal.js)
     wrapper.addEventListener('click', () => {
-      const videoUrl = wrapper.querySelector('.preview-container')?.getAttribute('data-video-url');
-      if (!videoUrl) return;
+      const v = wrapper.querySelector('.preview-container')?.getAttribute('data-video-url');
+      if (!v) return;
       if (window.openVideoModal) {
-        window.openVideoModal({ url: videoUrl, entry });
+        window.openVideoModal({ url: v, entry });
       }
     });
 
-    // Keyboard
+    // Keyboard accessibility
     wrapper.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -155,14 +157,14 @@
     if (window.triggerInitialSort) window.triggerInitialSort();
   }
 
-  // ---------- Data loading (Supabase) ----------
+  // ---------- Data loading (Supabase, strict) ----------
   async function fetchAndRender(queryFn, errorMsg, emptyMsg) {
-    const supa = getSupabaseClient();
+    const supa = window.supabaseClient; // strict: expect a globally-initialized client
     const container = document.getElementById('video-container');
 
     if (!supa) {
       if (container) {
-        container.innerHTML = `<p style="padding:16px">Supabase client not available. Please initialize it (window.supabaseClient) or set SUPABASE_URL / SUPABASE_ANON_KEY.</p>`;
+        container.innerHTML = `<p style="padding:16px">Supabase client not available. Initialize window.supabaseClient before loading video.js.</p>`;
       }
       return;
     }
@@ -184,9 +186,9 @@
   // Country page loader: expects ?country=CountryName
   function loadCountry() {
     const country = getQueryParam('country');
+    const container = document.getElementById('video-container');
+
     if (!country) {
-      // If no param, you can fallback to showing latest entries or winners; here we just show a hint.
-      const container = document.getElementById('video-container');
       if (container) {
         container.innerHTML = `<p style="padding:16px">No country specified. Add <code>?country=Sweden</code> (example) to the URL.</p>`;
       }
@@ -197,7 +199,7 @@
       (supa) => supa
         .from('douzepoints')
         .select('*')
-        .ilike('Country', country)               // case-insensitive match; adjust to eq() if you store canonical names
+        .ilike('Country', country)               // use eq(...) if you require exact match
         .order('Year', { ascending: false }),
       `Error loading ${country}`,
       `No entries found for country: ${country}`
