@@ -1,10 +1,8 @@
 /**
  * video.js
- * Reverted to strict, original behavior:
- *  - Thumbnail uses entry.Image_URL exactly (no fallbacks)
- *  - Flag uses assets/flags/{Country_Code}.svg (no fallbacks)
- *  - Video uses entry.Video_URL exactly (no normalization)
- * Keeps data-* needed by sorting.js to flip Pos/Pts for "Jury Points".
+ * Updated to use inline URL builders:
+ *  - const countryCode, imageUrl, flagUrl, path
+ * Keeps data-* attributes for sorting.js compatibility.
  */
 
 (function () {
@@ -20,20 +18,6 @@
   function getQueryParam(name) {
     const params = new URLSearchParams(window.location.search);
     return params.get(name);
-  }
-
-  // Strict, original-style URL builders (no fallbacks)
-  function getFlagUrl(entry) {
-    const code = (entry.Country_Code || entry.CountryCode || '').toLowerCase();
-    return `/flags/${code}.png`;
-  }
-  function getImageUrl(entry) {
-    // Use ONLY the field you’ve been storing
-    return entry.Image_URL;
-  }
-  function getVideoUrl(entry) {
-    // Use ONLY the stored video URL as-is
-    return entry.Video_URL;
   }
 
   // ---------- Rendering ----------
@@ -52,22 +36,20 @@
     const juryRank       = Number(entry.Final_JuryRank)        || 0;
     const televoteRank   = Number(entry.Final_TelevoteRank)    || 0;
 
-    // DNQ logic matches earlier behavior
+    // DNQ logic
     const dnq = (
       !entry.Final_Rank ||
       Number(entry.Final_Rank) === 0 ||
       String(entry.QualifiedFinal || '').toUpperCase() === 'N'
     );
 
-    // Data attributes for sorting & score updates (used by sorting.js)
+    // Data attributes for sorting
     wrapper.dataset.total        = String(totalPoints);
     wrapper.dataset.jury         = String(juryPoints);
     wrapper.dataset.televote     = String(televotePoints);
-
     wrapper.dataset.totalrank    = String(totalRank);
     wrapper.dataset.juryrank     = String(juryRank);
     wrapper.dataset.televoterank = String(televoteRank);
-
     wrapper.dataset.dnq          = dnq ? '1' : '0';
 
     if (entry.Year)    wrapper.dataset.year = String(entry.Year);
@@ -75,10 +57,12 @@
     if (entry.Song)    wrapper.dataset.song = String(entry.Song).toLowerCase();
     if (entry.Country) wrapper.dataset.country = String(entry.Country).toLowerCase();
 
-    // Strict URLs (no fallback logic)
-    const imageUrl = getImageUrl(entry);
-    const flagUrl  = getFlagUrl(entry);
-    const videoUrl = getVideoUrl(entry);
+    // --- NEW URL logic (as per request) ---
+    const countryCode = entry.Country_Code?.toLowerCase();
+    const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
+    const flagUrl = `/flags/${countryCode}.png`;
+    const videoUrl = entry.Video_URL; // unchanged
+    const path = window.location.pathname;
 
     const titleHTML = `
       <div class="title-line">
@@ -91,10 +75,8 @@
       </div>
     `;
 
-    // Initial circles default to TOTAL (sorting.js will overwrite when needed)
     const rankDisplay   = dnq ? 'NQ' : (totalRank || '');
     const pointsDisplay = dnq ? 'NQ' : (totalPoints || '');
-
     const rankClass   = dnq ? 'score-circle dnq score-pos' : 'score-circle score-pos';
     const pointsClass = dnq ? 'score-circle dnq score-pts' : 'score-circle score-pts';
 
@@ -125,7 +107,7 @@
       </div>
     `;
 
-    // Click to open modal (expects global window.openVideoModal from modal.js)
+    // Modal click
     wrapper.addEventListener('click', () => {
       const v = wrapper.querySelector('.preview-container')?.getAttribute('data-video-url');
       if (!v) return;
@@ -134,7 +116,6 @@
       }
     });
 
-    // Keyboard accessibility
     wrapper.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -157,9 +138,9 @@
     if (window.triggerInitialSort) window.triggerInitialSort();
   }
 
-  // ---------- Data loading (Supabase, strict) ----------
+  // ---------- Data loading ----------
   async function fetchAndRender(queryFn, errorMsg, emptyMsg) {
-    const supa = window.supabaseClient; // strict: expect a globally-initialized client
+    const supa = window.supabaseClient;
     const container = document.getElementById('video-container');
 
     if (!supa) {
@@ -183,7 +164,7 @@
     renderVideos(data);
   }
 
-  // Country page loader: expects ?country=CountryName
+  // ---------- Country loader ----------
   function loadCountry() {
     const country = getQueryParam('country');
     const container = document.getElementById('video-container');
@@ -199,16 +180,13 @@
       (supa) => supa
         .from('douzepoints')
         .select('*')
-        .ilike('Country', country)               // use eq(...) if you require exact match
+        .ilike('Country', country)
         .order('Year', { ascending: false }),
       `Error loading ${country}`,
       `No entries found for country: ${country}`
     );
   }
 
-  // ---------- Boot ----------
   document.addEventListener('DOMContentLoaded', loadCountry);
-
-  // Expose for other scripts (optional)
   window.renderVideos = renderVideos;
 })();
