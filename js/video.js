@@ -1,34 +1,45 @@
+// file: app.js
 import { supabase } from './supabaseClient.js';
 
 // ---------------- State ----------------
 let pointsMode = 'total';   // 'total' | 'jury'
 let lastData = [];          // cache so we can re-render without refetch
 
-// --- Shared Helpers ---
+// --- DOM refs ---
 const container = document.getElementById('video-container');
 
+// --- Helpers ---
 function isDNQ(entry) {
   // Treat as DNQ if no final result or explicitly flagged as not qualified
   return !entry.Final_Rank || entry.Final_Rank === 0 || (entry.QualifiedFinal && entry.QualifiedFinal === 'N');
 }
 
-function getRankAndPoints(entry) {
-  if (isDNQ(entry)) {
-    return { rank: 'DNQ', points: 'DNQ' };
-  }
+function pointsModeFromSelect(sel) {
+  const val  = (sel.value ?? '').toString().toLowerCase().trim();
+  const text = (sel.options?.[sel.selectedIndex]?.text ?? '').toString().toLowerCase().trim();
+  return (val.includes('jury') || text.includes('jury')) ? 'jury' : 'total';
+}
+
+function getDisplayedRankAndPoints(entry) {
+  if (isDNQ(entry)) return { rank: 'DNQ', points: 'DNQ', dnq: true };
+
   if (pointsMode === 'jury') {
     return {
       rank: entry.Final_JuryRank ?? '',
-      points: entry.Final_JuryPoints ?? 0
+      points: entry.Final_JuryPoints ?? 0,
+      dnq: false
     };
   }
+
   // default = total
   return {
     rank: entry.Final_Rank ?? '',
-    points: entry.Final_TotalPoints ?? 0
+    points: entry.Final_TotalPoints ?? 0,
+    dnq: false
   };
 }
 
+// --- Renderers ---
 function renderEntry(entry) {
   const countryCode = entry.Country_Code?.toLowerCase();
   const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
@@ -49,55 +60,54 @@ function renderEntry(entry) {
     ? `<b>${entry.Song}</b><br>${entry.Artist}<br>${entry.Country}`
     : `<b>${entry.Artist}</b><br>${entry.Song}<br>${entry.Year}`;
 
-  const didNotQualify = isDNQ(entry);
-  const { rank, points } = getRankAndPoints(entry);
-
-  const rankClass = didNotQualify ? 'score-circle dnq' : 'score-circle';
-  const pointsClass = didNotQualify ? 'score-circle dnq' : 'score-circle';
+  const display = getDisplayedRankAndPoints(entry);
+  const rankClass = display.dnq ? 'score-circle dnq' : 'score-circle';
+  const pointsClass = display.dnq ? 'score-circle dnq' : 'score-circle';
 
   div.innerHTML = `
-    <div class="preview-container">
-      <img src="${imageUrl}" alt="${entry.Artist}" />
-    </div>
-    <div class="video-title-with-icon" onclick="event.stopPropagation()" style="display: flex; justify-content: space-between; align-items: center;">
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <a href="country.html?country=${entry.Country}">
-          <img class="flag-icon" src="${flagUrl}" alt="Flag">
-        </a>
-        <div class="video-title-text">
-          ${titleHTML}
-        </div>
-      </div>
-      <div class="score-wrapper">
-        <table class="score-table">
-          <tr>
-            <th>Pos</th>
-            <th>Pts</th>
-          </tr>
-          <tr>
-            <td><div class="${rankClass}">${rank}</div></td>
-            <td><div class="${pointsClass}">${points}</div></td>
-          </tr>
-        </table>
-      </div>
-    </div>
-  `;
+     <div class="preview-container">
+       <img src="${imageUrl}" alt="${entry.Artist}" />
+     </div>
+     <div class="video-title-with-icon" onclick="event.stopPropagation()" style="display: flex; justify-content: space-between; align-items: center;">
+       <div style="display: flex; align-items: center; gap: 10px;">
+         <a href="country.html?country=${entry.Country}">
+           <img class="flag-icon" src="${flagUrl}" alt="Flag">
+         </a>
+         <div class="video-title-text">
+           ${titleHTML}
+         </div>
+       </div>
+       <div class="score-wrapper">
+         <table class="score-table">
+           <tr>
+             <th>Pos</th>
+             <th>Pts</th>
+           </tr>
+           <tr>
+             <td><div class="${rankClass}">${display.rank}</div></td>
+             <td><div class="${pointsClass}">${display.points}</div></td>
+           </tr>
+         </table>
+       </div>
+     </div>
+   `;
 
   div.onclick = () => GDriveOpenModalWithVideo(entry.Video_URL);
   return div;
 }
 
 function renderFromCache() {
-  if (!lastData?.length) return;
+  if (!lastData?.length || !container) return;
   container.innerHTML = '';
   lastData.forEach(entry => container.appendChild(renderEntry(entry)));
 
-  // Re-apply any initial sort if your page uses it
+  // If your page has a sorting routine, let it re-apply here
   if (typeof triggerInitialSort === 'function') {
-    triggerInitialSort();
+    triggerInitialSort(pointsMode); // pass mode so your sorter can react, if needed
   }
 }
 
+// --- Data fetch + render ---
 async function fetchAndRender(queryFn, errorMsg, emptyMsg) {
   const { data, error } = await queryFn();
   if (error) {
@@ -213,14 +223,14 @@ function wirePointsDropdown() {
   const sel = document.getElementById('points-select');
   if (!sel) return;
 
-  const updateMode = () => {
-    pointsMode = sel.value === 'Jury Points' ? 'jury' : 'total';
+  const apply = () => {
+    pointsMode = pointsModeFromSelect(sel);
     renderFromCache(); // re-render with the new mode
   };
 
-  // initial mode (in case the page loads with Jury Points preselected)
-  updateMode();
-  sel.addEventListener('change', updateMode);
+  // initial (covers pre-selected dropdown)
+  apply();
+  sel.addEventListener('change', apply);
 }
 
 // --- Route Dispatcher ---
