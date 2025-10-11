@@ -1,8 +1,9 @@
 /**
  * video.js
- * Updated to use inline URL builders:
- *  - const countryCode, imageUrl, flagUrl, path
- * Keeps data-* attributes for sorting.js compatibility.
+ * - Uses inline URL vars (countryCode, imageUrl, flagUrl, path)
+ * - Clicks anywhere (including thumbnail) open video modal only
+ * - No fallback link opening in new tab
+ * - Keeps data-* attributes for sorting.js
  */
 
 (function () {
@@ -57,11 +58,11 @@
     if (entry.Song)    wrapper.dataset.song = String(entry.Song).toLowerCase();
     if (entry.Country) wrapper.dataset.country = String(entry.Country).toLowerCase();
 
-    // --- NEW URL logic (as per request) ---
+    // --- Requested URL logic ---
     const countryCode = entry.Country_Code?.toLowerCase();
     const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
     const flagUrl = `/flags/${countryCode}.png`;
-    const videoUrl = entry.Video_URL; // unchanged
+    const videoUrl = entry.Video_URL;
     const path = window.location.pathname;
 
     const titleHTML = `
@@ -82,7 +83,7 @@
 
     wrapper.innerHTML = `
       <div class="preview-container" data-video-url="${escapeHTML(videoUrl || '')}">
-        <img src="${escapeHTML(imageUrl || '')}" alt="${escapeHTML(entry.Artist || '')}" />
+        <img class="thumbnail" src="${escapeHTML(imageUrl || '')}" alt="${escapeHTML(entry.Artist || '')}" />
       </div>
 
       <div class="video-title-with-icon" style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
@@ -107,19 +108,24 @@
       </div>
     `;
 
-    // Modal click
-    wrapper.addEventListener('click', () => {
-      const v = wrapper.querySelector('.preview-container')?.getAttribute('data-video-url');
-      if (!v) return;
-      if (window.openVideoModal) {
+    // --- Modal click only ---
+    const openModal = () => {
+      const v = videoUrl;
+      if (v && window.openVideoModal) {
         window.openVideoModal({ url: v, entry });
       }
+    };
+
+    wrapper.addEventListener('click', openModal);
+    wrapper.querySelector('.thumbnail').addEventListener('click', (e) => {
+      e.stopPropagation();
+      openModal();
     });
 
     wrapper.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        wrapper.click();
+        openModal();
       }
     });
 
