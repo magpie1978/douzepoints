@@ -499,29 +499,43 @@ function layoutWithinParentZones(){
 function drawConnections(){
   const svg = document.getElementById("connections");
   const container = document.getElementById("tree");
-  const rect = container.getBoundingClientRect();
-  svg.setAttribute("width", rect.width);
-  svg.setAttribute("height", rect.height);
-  svg.setAttribute("viewBox", `0 0 ${rect.width} ${rect.height}`);
-  while(svg.firstChild) svg.removeChild(svg.firstChild);
+  const rowsWrap = document.getElementById("rows");
 
-  const BUS_INSET = 14;   // keep each family bus inside its reserved slot
+  // Use scroll sizes so SVG spans the full scrollable area, not just the visible part.
+  const width  = Math.max(container.scrollWidth, rowsWrap.scrollWidth, container.getBoundingClientRect().width);
+  // Height: cover container height plus some buffer to include buses above rows.
+  const height = Math.max(container.scrollHeight, rowsWrap.getBoundingClientRect().height + 200);
+
+  // Size the SVG to the full content area
+  svg.setAttribute("width", width);
+  svg.setAttribute("height", height);
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  // Also set inline styles to avoid any CSS constraints
+  svg.style.width  = width + "px";
+  svg.style.height = height + "px";
+
+  // Clear previous lines
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  // All geometry below is computed relative to the container's left/top
+  const rect = container.getBoundingClientRect();
+
+  const BUS_INSET = 14;
   const LINE_W = "2";
 
-  // tiny, deterministic vertical separation per family (-8,0,+8) so buses never visually merge
   function busOffsetForKey(key){
     let h=0; for(let i=0;i<key.length;i++) h=(h*31 + key.charCodeAt(i))|0;
-    const r = Math.abs(h)%3; // 0,1,2
+    const r = Math.abs(h)%3;
     return r===0? -8 : r===1? 0 : 8;
   }
 
   const centerOf = el => {
-    const r=el.getBoundingClientRect();
+    const r = el.getBoundingClientRect();
     return {
-      cx: r.left-rect.left + r.width/2,
-      top: r.top-rect.top,
-      midY: r.top-rect.top + r.height/2,
-      bottom: r.top-rect.top + r.height
+      cx: r.left - rect.left + r.width/2,
+      top: r.top  - rect.top,
+      midY: r.top - rect.top + r.height/2,
+      bottom: r.top - rect.top + r.height
     };
   };
 
@@ -542,7 +556,7 @@ function drawConnections(){
   rows.forEach((row, gi)=>{
     const nextRow = rows[gi+1];
 
-    // Marriage lines (through card centers)
+    // Marriage lines
     row.querySelectorAll('.couple').forEach(w=>{
       const [aEl,bEl]=w.querySelectorAll('.person'); if(!aEl||!bEl) return;
       const pa=centerOf(aEl), pb=centerOf(bEl);
@@ -553,9 +567,9 @@ function drawConnections(){
     if(!nextRow) return;
 
     const nextRect = nextRow.getBoundingClientRect();
-    const baseBusY = nextRect.top - rect.top - 12; // baseline bus above children row
+    const baseBusY = nextRect.top - rect.top - 12;
 
-    // === Couples (parent) → their family-slot (children)
+    // Couples → their own family-slot
     row.querySelectorAll('.couple').forEach(w=>{
       const [aEl,bEl]=w.querySelectorAll('.person'); if(!aEl||!bEl) return;
       const a=aEl.dataset.id, b=bEl.dataset.id;
@@ -585,16 +599,14 @@ function drawConnections(){
 
       addLine(parentX, yStart, parentX, busY, '--child', LINE_W);
       if (parentX !== parentXClamped) addLine(parentX, busY, parentXClamped, busY, '--child', LINE_W);
-
       addLine(busX1, busY, busX2, busY, '--child', LINE_W);
-
       childPersons.forEach(p=>{
         const c=centerOf(p);
         addLine(c.cx, busY, c.cx, c.top, '--child', LINE_W);
       });
     });
 
-    // === Singles (if any) → their family-slot
+    // Singles → their own family-slot
     Array.from(row.children).forEach(ch=>{
       if(ch.classList.contains('couple')) return;
       if(ch.classList.contains('family-slot') || ch.classList.contains('family-group')) return;
@@ -626,7 +638,6 @@ function drawConnections(){
 
       addLine(parent.cx, parent.bottom, parent.cx, busY, '--child', LINE_W);
       if (parent.cx !== pxClamped) addLine(parent.cx, busY, pxClamped, busY, '--child', LINE_W);
-
       addLine(busX1, busY, busX2, busY, '--child', LINE_W);
       childPersons.forEach(p=>{
         const c=centerOf(p);
