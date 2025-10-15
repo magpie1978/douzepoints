@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Belgian Royal Family — Orthogonal Tree (reserved slots, aligned branches)</title>
+<title>Belgian Royal Family — Orthogonal Tree (aligned branches)</title>
 <style>
   :root{
     --bg:#0f111a; --card:#1a1d29; --text:#e6e6e6; --muted:#9aa0a6;
@@ -30,7 +30,7 @@
   /* Couple stays together */
   .couple{display:flex; gap:var(--gap); flex:0 0 auto}
 
-  /* For generations >= 1 we render reserved slots which we size & position in JS */
+  /* For generations >= 1 we render reserved slots which JS sizes/positions */
   .family-slot{
     position:relative; flex:0 0 auto; width:auto; margin-left:0; /* JS sets width + margin-left */
   }
@@ -81,7 +81,7 @@
 <body>
 <div class="page">
   <h1>Belgian Royal Family — Orthogonal Tree</h1>
-  <div class="subtitle">Each branch gets reserved width and is centered under its parents; rows never wrap (scroll horizontally if needed).</div>
+  <div class="subtitle">Each branch gets reserved space and is centered directly under its parent. Rows never wrap (scroll horizontally if needed).</div>
   <div class="divider"></div>
 
   <div id="tree" class="tree">
@@ -161,7 +161,7 @@ const childrenOfSingle = (a)   => PEOPLE.filter(c=>(c.parents||[]).includes(a));
    gens[1+] = array of FAMILY GROUPS: { parentKey, blocks[], sortKey } */
 function buildGenerations(){
   const gens = [];
-  // Gen 0 root couple
+  // Gen 0 root couple (change to philippe/mathilde if you prefer)
   gens.push([ { type:"couple", a:"albertII", b:"paola", primary:"albertII" } ]);
 
   let depth = 0;
@@ -184,6 +184,7 @@ function buildGenerations(){
                  : { type:"single", id:k.id, primary:k.id };
       });
 
+      // Sort within this family by the child's DOB (only within the family)
       childBlocks.sort((A,B)=>{
         const pa=byId.get(A.primary), pb=byId.get(B.primary);
         const ay=birthYear(pa), by=birthYear(pb);
@@ -195,7 +196,8 @@ function buildGenerations(){
     }
 
     if(!groups.length) break;
-    groups.sort((g1,g2)=> g1.sortKey - g2.sortKey);
+
+    // (Visual order is driven by parent anchor positions in layoutReservedSlots)
     gens.push(groups);
     depth++; if(depth>12) break;
   }
@@ -258,7 +260,7 @@ function render(){
 
   // Layout & connectors
   alignRootToChildren();
-  layoutReservedSlots();   // <-- NEW: compute widths & positions per branch
+  layoutReservedSlots();   // compute widths & positions per branch (under their own parents)
   queueMicrotask(drawConnections);
   window.addEventListener("resize", ()=>{ alignRootToChildren(); layoutReservedSlots(); drawConnections(); }, {passive:true});
 }
@@ -289,6 +291,7 @@ function renderPerson(id){
 /* ----------------------- Dialog ----------------------- */
 const dlg = document.getElementById('personDialog');
 document.getElementById('dlgClose').addEventListener('click', ()=>dlg.close());
+
 function openDialogFor(id){
   const p = byId.get(id); if(!p) return;
   document.getElementById('dlgName').textContent  = p.name || '(Unknown)';
@@ -351,32 +354,35 @@ function alignRootToChildren(){
   row0.style.transform = `translateX(${delta}px)`;
 }
 
-/* Build parent anchors for a row */
-function parentAnchorsForRow(row, treeRect){
-  const anchors = new Map();
-  // couples
-  row.querySelectorAll('.couple').forEach(w=>{
-    const [aEl,bEl]=w.querySelectorAll('.person'); if(!aEl||!bEl) return;
-    const ra=aEl.getBoundingClientRect(), rb=bEl.getBoundingClientRect();
-    const x = ((ra.left-treeRect.left + ra.width/2) + (rb.left-treeRect.left + rb.width/2))/2;
-    const key = `c:${aEl.dataset.id}+${bEl.dataset.id}`;
-    anchors.set(key, x);
-  });
-  // singles in this row (if any)
-  Array.from(row.children).forEach(ch=>{
-    if(ch.classList.contains('couple')) return;
-    if(ch.classList.contains('family-slot') || ch.classList.contains('family-group')) return;
-    const pEl = ch.classList.contains('person') ? ch : ch.querySelector('.person');
-    if(!pEl) return;
-    const r=pEl.getBoundingClientRect();
-    const x = r.left-treeRect.left + r.width/2;
-    const key = `s:${pEl.dataset.id}`;
-    anchors.set(key, x);
-  });
-  return anchors;
+/* Helper: find exact parent anchor X for a key like "c:philippe+mathilde" or "s:albertII" */
+function getAnchorXForKey(row, key, treeRect){
+  const [type, ids] = key.split(':');
+  if (type === 'c') {
+    const [a,b] = ids.split('+');
+    // couple wrapper with data-a / data-b (support either order)
+    let couple = row.querySelector(`.couple[data-a="${a}"][data-b="${b}"]`);
+    if (!couple) couple = row.querySelector(`.couple[data-a="${b}"][data-b="${a}"]`);
+    if (!couple) return Infinity;
+
+    const persons = couple.querySelectorAll('.person');
+    if (persons.length < 2) return Infinity;
+
+    const rA = persons[0].getBoundingClientRect();
+    const rB = persons[1].getBoundingClientRect();
+    const cxA = rA.left - treeRect.left + rA.width/2;
+    const cxB = rB.left - treeRect.left + rB.width/2;
+    return (cxA + cxB) / 2;
+  } else {
+    // single
+    const id = ids;
+    const p = row.querySelector(`.person[data-id="${id}"]`);
+    if (!p) return Infinity;
+    const r = p.getBoundingClientRect();
+    return r.left - treeRect.left + r.width/2;
+  }
 }
 
-/* ----------------------- NEW: Reserved-slot layout per generation ----------------------- */
+/* ----------------------- Reserved-slot layout per generation ----------------------- */
 function layoutReservedSlots(){
   const tree = document.getElementById("tree");
   const rect = tree.getBoundingClientRect();
@@ -388,36 +394,19 @@ function layoutReservedSlots(){
     const next = rows[gi + 1];
     if (!next) continue;
 
-    // Parent anchors for this row (key -> x)
-    const anchors = (function parentAnchorsForRow(){
-      const m = new Map();
-      // couples
-      row.querySelectorAll('.couple').forEach(w=>{
-        const [aEl,bEl]=w.querySelectorAll('.person'); if(!aEl||!bEl) return;
-        const ra=aEl.getBoundingClientRect(), rb=bEl.getBoundingClientRect();
-        const x = ((ra.left-rect.left + ra.width/2) + (rb.left-rect.left + rb.width/2))/2;
-        m.set(`c:${aEl.dataset.id}+${bEl.dataset.id}`, x);
-      });
-      // singles (if any)
-      Array.from(row.children).forEach(ch=>{
-        if (ch.classList.contains('couple')) return;
-        if (ch.classList.contains('family-slot') || ch.classList.contains('family-group')) return;
-        const pEl = ch.classList.contains('person') ? ch : ch.querySelector('.person');
-        if (!pEl) return;
-        const r=pEl.getBoundingClientRect();
-        m.set(`s:${pEl.dataset.id}`, r.left-rect.left + r.width/2);
-      });
-      return m;
-    })();
-
-    // Collect slots with their anchor X, then sort by anchor (== parent order on the page)
+    // Collect the slots and compute their exact parent anchor X from this row
     const slots = Array.from(next.querySelectorAll('.family-slot'))
-      .map(slot => ({ slot, key: slot.dataset.parentKey, ax: anchors.get(slot.dataset.parentKey) ?? Infinity }))
+      .map(slot => {
+        const key = slot.dataset.parentKey;
+        const ax  = getAnchorXForKey(row, key, rect);
+        return { slot, key, ax };
+      })
+      // Order strictly by parent anchor (left→right as parents actually appear)
       .sort((A,B) => A.ax - B.ax);
 
-    // Lay out left → right in that order, reserving space per branch
-    let lineX = 0;     // current left edge in container coords
-    let cursor = 0;    // minimal allowed left for the next slot (prevents overlap)
+    // Lay out left → right, reserving width per branch and staying centered on anchor
+    let lineX = 0;  // current left edge in container coords
+    let cursor = 0; // minimal allowed left for the next slot (prevents overlap)
 
     slots.forEach(({slot, ax})=>{
       const group = slot.querySelector('.family-group');
@@ -427,9 +416,9 @@ function layoutReservedSlots(){
       slot.style.marginLeft = '0px';
       slot.style.width = 'auto';
 
-      const gw = group.getBoundingClientRect().width;     // natural width of this branch
+      const gw = group.getBoundingClientRect().width;  // natural width of this branch
       const targetLeft = (ax === Infinity) ? cursor : ax - gw/2;
-      const finalLeft  = Math.max(targetLeft, cursor);    // don’t cross previous branch
+      const finalLeft  = Math.max(targetLeft, cursor); // don’t cross previous branch
 
       const ml = Math.max(0, Math.round(finalLeft - lineX));
       slot.style.marginLeft = `${ml}px`;
@@ -441,7 +430,7 @@ function layoutReservedSlots(){
   }
 }
 
-/* ----------------------- Connectors: orthogonal routing ----------------------- */
+/* ----------------------- Connectors: orthogonal routing with family-local buses ----------------------- */
 function drawConnections(){
   const svg = document.getElementById("connections");
   const container = document.getElementById("tree");
@@ -454,9 +443,8 @@ function drawConnections(){
   const BUS_INSET = 14;   // keep each family bus inside its reserved slot
   const LINE_W = "2";
 
-  // tiny, deterministic vertical separation per family
+  // tiny, deterministic vertical separation per family (-8,0,+8) so buses never visually merge
   function busOffsetForKey(key){
-    // simple hash → {-8, 0, +8}
     let h=0; for(let i=0;i<key.length;i++) h=(h*31 + key.charCodeAt(i))|0;
     const r = Math.abs(h)%3; // 0,1,2
     return r===0? -8 : r===1? 0 : 8;
