@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Belgian Royal Family — Aligned Tree (with sibling & generation separation)</title>
+<title>Belgian Royal Family — Aligned Tree (fixed separation & illegitimate links)</title>
 <style>
   :root{
     --bg:#0f111a; --card:#1a1d29; --text:#e6e6e6;
     --muted:#9aa0a6; --accent:#e50914;
     --marriage:#d1d5db; --child:#9ca3af;
-    --radius:16px; --gap:16px;
+    --radius:16px; --gap:16px;               /* base gap */
   }
   html,body{margin:0;background:var(--bg);color:var(--text);
     font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -22,13 +22,14 @@
   .connections{position:absolute;inset:0;pointer-events:none;z-index:0}
 
   .generation-row{
-    position:relative; display:flex; flex-wrap:nowrap; gap:var(--gap);
+    position:relative; display:flex; flex-wrap:nowrap;
+    gap:var(--gap); /* gap between FAMILY SLOTS (different parents) */
     justify-content:flex-start; margin:36px 0; padding-block:8px 56px; z-index:1;
     width:max(100%, 100px);
   }
   .couple{display:flex; gap:var(--gap); flex:0 0 auto}
   .family-slot{position:relative; flex:0 0 auto}
-  .family-group{display:flex; gap:var(--gap); flex:0 0 auto}
+  .family-group{display:flex; gap:32px; flex:0 0 auto} /* gap between SIBLINGS (min); overridden in JS */
 
   .person{
     display:flex; align-items:center; width:280px; flex:0 0 280px;
@@ -74,8 +75,8 @@
 <div class="page">
   <h1>Belgian Royal Family — Zone-Aligned Tree</h1>
   <div class="subtitle">
-    Illegitimate children display inline with siblings (dotted connectors from the biological parent).  
-    Siblings are spaced consistently and parent rows separate when their children need more room.
+    • Illegitimate children are placed to the left of their biological parent on the row below and linked with a dotted connector drawn slightly above the solid sibling bus.<br/>
+    • Siblings have guaranteed spacing, and different parents’ groups are separated so Philippe’s children never “join” Astrid’s.
   </div>
   <div class="divider"></div>
 
@@ -148,11 +149,12 @@ const MARRIAGES = [
   { partners:["laurent","claire"],     date:"2003-04-12", place:"Brussels" },
 ];
 
-/* ----------------------- Config ----------------------- */
-const SIBLING_GAP = 36;          // min space between siblings (px)
-const MIN_INTER_GROUP_GAP = 60;  // min gap between adjacent sibling groups across parent zones (px)
-const SHIFT_GEN = { 2: 260 };    // keep Gen 2 shifted RIGHT to avoid Delphine overlap
-const ILLEGIT_OFFSET = -8;       // dotted bus above solid
+/* ----------------------- Layout Config ----------------------- */
+const SIBLING_GAP = 44;              // guaranteed min pixels between siblings in same group
+const ROW_SLOT_GAP = { 2: 96 };      // extra gap between different parents’ groups on specific generations
+const MIN_INTER_GROUP_GAP = 140;     // min visual gap between adjacent parent groups (prevents “joined” look)
+const SHIFT_GEN = { 2: 260 };        // keep Generation 2 moved right (away from Delphine)
+const ILLEGIT_OFFSET = -8;           // dotted bus sits slightly above solid bus
 
 /* ----------------------- Helpers ----------------------- */
 const byId = new Map(PEOPLE.map(p=>[p.id,p]));
@@ -194,9 +196,9 @@ function buildGenerations(){
         const ib = childrenIllegitFrom(b);
 
         const kidsCombined = [
-          ...ia.map(k => ({ from:"a",      illegit:true,  person:k })),
-          ...j .map(k => ({ from:"couple", illegit:false, person:k })),
-          ...ib.map(k => ({ from:"b",      illegit:true,  person:k })),
+          ...ia.map(k => ({ from:"a",      illegit:true,  person:k })),   // left of parent A
+          ...j .map(k => ({ from:"couple", illegit:false, person:k })),   // joint center
+          ...ib.map(k => ({ from:"b",      illegit:true,  person:k })),   // right of parent B
         ];
 
         if (kidsCombined.length){
@@ -265,6 +267,9 @@ function render(){
     row.className = "generation-row";
     row.dataset.generation = gi;
 
+    // EXTRA separation between different parents’ groups for target generations
+    if (ROW_SLOT_GAP[gi]) row.style.gap = ROW_SLOT_GAP[gi] + "px";
+
     if(gi===0){
       level.forEach(block=>{
         if(block.type==="couple"){
@@ -272,8 +277,8 @@ function render(){
           wrap.className = "couple";
           wrap.dataset.a = block.a; wrap.dataset.b = block.b;
           wrap.appendChild(renderPerson(block.a));
-          wrap.appendChild(renderPerson(block.b));
           row.appendChild(wrap);
+          wrap.appendChild(renderPerson(block.b));
         }else{
           row.appendChild(renderPerson(block.id));
         }
@@ -287,13 +292,11 @@ function render(){
         if (group.a) { slot.dataset.a = group.a; slot.dataset.b = group.b; }
         if (group.single) { slot.dataset.single = group.single; }
 
-        // family group with guaranteed sibling spacing
         const gEl = document.createElement("div");
         gEl.className = "family-group";
-        gEl.style.gap = SIBLING_GAP + "px"; // <<< enforce sibling spacing
+        gEl.style.gap = SIBLING_GAP + "px"; // enforce sibling spacing
 
         group.blocks.forEach(block=>{
-          // Wrap each child cluster in a real element so we can adjust spacing later if needed
           const holder = document.createElement("div");
           holder.className = "child-wrap";
           holder.dataset.meta = JSON.stringify(block.meta||{});
@@ -319,19 +322,19 @@ function render(){
     rowsEl.appendChild(row);
   });
 
-  // Layout & connectors: order matters
+  // Layout & connectors
   alignRootToChildren();
   layoutWithinParentZonesStrict();
   centerParentsOverChildren();
   layoutWithinParentZonesStrict();
 
-  // Separate parent anchors when their children collide (ensures room between sibling groups & rows)
-  separateParentsForChildren(MIN_INTER_GROUP_GAP);
+  // Keep distinct parents’ children separated (prevents “joined” Philippe ↔ Astrid groups)
+  separateParentGroups(MIN_INTER_GROUP_GAP);
   layoutWithinParentZonesStrict();
   centerParentsOverChildren();
   layoutWithinParentZonesStrict();
 
-  // Keep Gen 2 to the RIGHT (away from Delphine)
+  // Keep Generation 2 shifted right (per your request)
   applyGenerationShift(SHIFT_GEN);
 
   queueMicrotask(drawConnections);
@@ -341,7 +344,7 @@ function render(){
     layoutWithinParentZonesStrict();
     centerParentsOverChildren();
     layoutWithinParentZonesStrict();
-    separateParentsForChildren(MIN_INTER_GROUP_GAP);
+    separateParentGroups(MIN_INTER_GROUP_GAP);
     layoutWithinParentZonesStrict();
     centerParentsOverChildren();
     layoutWithinParentZonesStrict();
@@ -487,7 +490,7 @@ function centerX(el, treeRect){
   return r.left - treeRect.left + r.width/2;
 }
 
-/* STRICT zoning (prevents cross-zone drift/overlap) */
+/* STRICT zoning: keep each parent’s children within their zone under that parent */
 function layoutWithinParentZonesStrict(){
   const tree = document.getElementById("tree");
   const rect = tree.getBoundingClientRect();
@@ -521,7 +524,7 @@ function layoutWithinParentZonesStrict(){
       if(!slot) return;
 
       const group = slot.querySelector('.family-group');
-      group.style.gap = SIBLING_GAP + "px"; // ensure min sibling spacing at layout time
+      group.style.gap = SIBLING_GAP + "px";
 
       const zoneL = (i===0) ? 0 : mids[i-1];
       const zoneR = (i===parents.length-1) ? canvasRight : mids[i];
@@ -544,7 +547,7 @@ function layoutWithinParentZonesStrict(){
   }
 }
 
-/* Center parents above their children envelope */
+/* Center parents above their children envelope without crossing neighbor midlines */
 function centerParentsOverChildren(){
   const tree = document.getElementById("tree");
   const rect = tree.getBoundingClientRect();
@@ -595,8 +598,8 @@ function centerParentsOverChildren(){
   }
 }
 
-/* NEW: ensure adjacent sibling groups (across parent zones) have enough gap by pushing parents apart */
-function separateParentsForChildren(minGap=MIN_INTER_GROUP_GAP){
+/* Keep adjacent parent groups visually separated by at least minGap */
+function separateParentGroups(minGap=MIN_INTER_GROUP_GAP){
   const tree = document.getElementById("tree");
   const rect = tree.getBoundingClientRect();
   const rows = Array.from(document.querySelectorAll('.generation-row'));
@@ -607,11 +610,7 @@ function separateParentsForChildren(minGap=MIN_INTER_GROUP_GAP){
     const parents = parentsInRow(row);
     if (!parents.length) continue;
 
-    // Map slots in next row by parent key, keep order as in parents[]
     const slots = parents.map(p=> next.querySelector(`.family-slot[data-parent-key="${p.key}"]`) || null);
-
-    // We'll shift parents to the right cumulatively if needed
-    let cumulativeShift = 0;
 
     for (let i=0; i<parents.length-1; i++){
       const leftSlot  = slots[i];
@@ -628,18 +627,16 @@ function separateParentsForChildren(minGap=MIN_INTER_GROUP_GAP){
 
       const leftEdge  = Math.max(...leftCards.map(c=>c.getBoundingClientRect().right - rect.left));
       const rightEdge = Math.min(...rightCards.map(c=>c.getBoundingClientRect().left - rect.left));
-
       const gap = rightEdge - leftEdge;
-      if (gap < minGap) {
-        const need = (minGap - gap);
 
-        // Push the (i+1)th parent and everything to its right by 'need' pixels
+      if (gap < minGap) {
+        // Push the right parent and all to its right so groups don’t touch
+        const need = (minGap - gap);
         for (let j=i+1; j<parents.length; j++){
           const el = parents[j].type==='couple' ? parents[j].el : parents[j].el;
           const ml = parseFloat(getComputedStyle(el).marginLeft || "0");
           el.style.marginLeft = `${ml + need}px`;
         }
-        cumulativeShift += need;
       }
     }
   }
@@ -655,7 +652,7 @@ function applyGenerationShift(shiftMap){
   });
 }
 
-/* ----------------------- Connectors (solid for joint; dotted for illegitimate) ----------------------- */
+/* ----------------------- Connectors ----------------------- */
 function drawConnections(){
   const svg       = document.getElementById("connections");
   const container = document.getElementById("tree");
@@ -726,9 +723,10 @@ function drawConnections(){
 
     if(!nextRow) return;
 
+    // Draw base buses slightly above/below with dotted for illegitimate
     const baseBusY = nextRow.getBoundingClientRect().top - containerRect.top - 12;
 
-    // Couples → joint (solid) + illegitimate (dotted above)
+    // Couples → one slot containing joint + illegitimate (grouped by meta.from)
     row.querySelectorAll('.couple').forEach(w=>{
       const [aEl,bEl]=w.querySelectorAll('.person'); if(!aEl||!bEl) return;
       const a=aEl.dataset.id, b=bEl.dataset.id;
@@ -776,9 +774,9 @@ function drawConnections(){
         });
       }
 
-      drawBus(coupleX, yStart, xsJoint, false);
-      drawBus(pa.cx,    pa.bottom, xsA,     true);
-      drawBus(pb.cx,    pb.bottom, xsB,     true);
+      drawBus(coupleX, yStart, xsJoint, false); // solid joint bus (Philippe+Mathilde, Astrid+Lorenz, etc.)
+      drawBus(pa.cx,    pa.bottom, xsA,     true);  // dotted (illegitimate) from A
+      drawBus(pb.cx,    pb.bottom, xsB,     true);  // dotted (illegitimate) from B
     });
 
     // Single parent rows → split solid vs dotted by meta.illegit
