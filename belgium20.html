@@ -383,51 +383,59 @@ function layoutReservedSlots(){
   const GAP = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gap')) || 16;
 
   const rows = Array.from(document.querySelectorAll('.generation-row'));
-  for(let gi=0; gi<rows.length-1; gi++){
-    const row = rows[gi];
-    const next = rows[gi+1];
-    if(!next) continue;
+  for (let gi = 0; gi < rows.length - 1; gi++) {
+    const row  = rows[gi];
+    const next = rows[gi + 1];
+    if (!next) continue;
 
-    const anchors = parentAnchorsForRow(row, rect);
+    // Parent anchors for this row (key -> x)
+    const anchors = (function parentAnchorsForRow(){
+      const m = new Map();
+      // couples
+      row.querySelectorAll('.couple').forEach(w=>{
+        const [aEl,bEl]=w.querySelectorAll('.person'); if(!aEl||!bEl) return;
+        const ra=aEl.getBoundingClientRect(), rb=bEl.getBoundingClientRect();
+        const x = ((ra.left-rect.left + ra.width/2) + (rb.left-rect.left + rb.width/2))/2;
+        m.set(`c:${aEl.dataset.id}+${bEl.dataset.id}`, x);
+      });
+      // singles (if any)
+      Array.from(row.children).forEach(ch=>{
+        if (ch.classList.contains('couple')) return;
+        if (ch.classList.contains('family-slot') || ch.classList.contains('family-group')) return;
+        const pEl = ch.classList.contains('person') ? ch : ch.querySelector('.person');
+        if (!pEl) return;
+        const r=pEl.getBoundingClientRect();
+        m.set(`s:${pEl.dataset.id}`, r.left-rect.left + r.width/2);
+      });
+      return m;
+    })();
 
-    // Start-of-line X in container coords (left edge of row content)
-    let lineX = 0;           // running "current left" position for slots
-    let cursor = 0;          // minimal allowed left for next slot (prevents overlap)
+    // Collect slots with their anchor X, then sort by anchor (== parent order on the page)
+    const slots = Array.from(next.querySelectorAll('.family-slot'))
+      .map(slot => ({ slot, key: slot.dataset.parentKey, ax: anchors.get(slot.dataset.parentKey) ?? Infinity }))
+      .sort((A,B) => A.ax - B.ax);
 
-    // Process each slot left→right (already sorted by oldest child at build time)
-    const slots = Array.from(next.querySelectorAll('.family-slot'));
-    slots.forEach(slot=>{
+    // Lay out left → right in that order, reserving space per branch
+    let lineX = 0;     // current left edge in container coords
+    let cursor = 0;    // minimal allowed left for the next slot (prevents overlap)
+
+    slots.forEach(({slot, ax})=>{
+      const group = slot.querySelector('.family-group');
+      if (!group) return;
+
+      // reset before measuring
       slot.style.marginLeft = '0px';
       slot.style.width = 'auto';
 
-      const group = slot.querySelector('.family-group');
-      if(!group) return;
+      const gw = group.getBoundingClientRect().width;     // natural width of this branch
+      const targetLeft = (ax === Infinity) ? cursor : ax - gw/2;
+      const finalLeft  = Math.max(targetLeft, cursor);    // don’t cross previous branch
 
-      // Natural width of this family group (sum of cards + inner gaps)
-      const gw = group.getBoundingClientRect().width;
-
-      // Desired center under its parent
-      const key = slot.dataset.parentKey;
-      const centerX = anchors.get(key);
-      if(centerX == null){ // fallback: place after cursor
-        slot.style.marginLeft = `${Math.max(0, cursor - lineX)}px`;
-        slot.style.width = `${gw}px`;
-        lineX = cursor + gw + GAP;
-        cursor = lineX;
-        return;
-      }
-
-      // Target and final placement
-      const targetLeft = centerX - gw/2;
-      const finalLeft = Math.max(targetLeft, cursor);
-
-      // Convert to margin-left from current lineX
       const ml = Math.max(0, Math.round(finalLeft - lineX));
       slot.style.marginLeft = `${ml}px`;
       slot.style.width = `${Math.ceil(gw)}px`;
 
-      // Advance line/cursor
-      lineX = finalLeft + gw + GAP;
+      lineX  = finalLeft + gw + GAP;
       cursor = lineX;
     });
   }
