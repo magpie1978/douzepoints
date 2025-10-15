@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Belgian Royal Family — Orthogonal Tree (Aligned Families)</title>
+<style>
+  :root{
+    --bg:#0f111a; --card:#1a1d29; --text:#e6e6e6; --muted:#9aa0a6;
+    --accent:#e50914; --marriage:#d1d5db; --child:#9ca3af; --radius:16px;
+  }
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .page{max-width:2200px;margin:24px auto;padding:0 16px 64px;position:relative}
+  @media (min-width:2200px){ .page{max-width:96vw} }
+
+  h1{margin:0 0 8px}
+  .subtitle{color:var(--muted);margin-bottom:24px}
+  .divider{height:1px;background:var(--accent);opacity:.6;margin:12px 0 24px}
+
+  .tree{position:relative;overflow-x:auto}
+  .connections{position:absolute;inset:0;pointer-events:none;z-index:0}
+
+  /* One strict row per generation. Horizontal scroll if needed. */
+  .generation-row{
+    width:100%; position:relative; display:flex; flex-wrap:nowrap; gap:16px;
+    justify-content:flex-start; margin:36px 0; padding-block:8px 48px; z-index:1;
+    will-change: transform;
+  }
+
+  /* Blocks */
+  .couple{display:flex; gap:16px; flex:0 0 auto}
+  .family-group{display:flex; gap:16px; flex:0 0 auto; position:relative;} /* shifted to align to parent */
+
+  /* Person card — fixed size across all generations */
+  .person{
+    display:flex; align-items:center; width:280px; flex:0 0 280px;
+    background:var(--card); border-radius:var(--radius);
+    border:1px solid rgba(255,255,255,.06); box-shadow:0 6px 20px rgba(0,0,0,.25); overflow:hidden;
+    cursor:pointer; transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .person:hover{ transform:translateY(-2px); box-shadow:0 10px 28px rgba(0,0,0,.35); }
+  .thumb{width:88px;height:110px;object-fit:cover;background:#22252f;flex-shrink:0}
+  .placeholder{width:88px;height:110px;display:grid;place-items:center;background:#22252f;color:#6b7280;font-size:11px}
+  .person-body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
+  .name{margin:0;font-weight:700;font-size:15px}
+  .lifespan{margin:0;color:var(--muted);font-size:12px}
+  .title{margin:0;color:#c9d1d9;font-size:12px}
+
+  /* Dialog */
+  dialog.person-dialog{
+    width:min(640px,96vw); border:1px solid rgba(255,255,255,.08); border-radius:16px;
+    background:#111426; color:var(--text); padding:0; box-shadow:0 30px 90px rgba(0,0,0,.6);
+  }
+  dialog::backdrop{ background:rgba(0,0,0,.55); backdrop-filter:saturate(120%) blur(2px); }
+  .dlg-header{ display:flex; align-items:center; gap:14px; padding:16px; border-bottom:1px solid rgba(255,255,255,.08); }
+  .dlg-header .thumb{ width:70px; height:88px; border-radius:12px; }
+  .dlg-title{ display:flex; flex-direction:column; gap:4px; }
+  .dlg-name{ font-weight:800; font-size:18px; }
+  .dlg-sub{ color:#c9d1d9; font-size:13px; }
+  .dlg-content{ padding:16px; display:grid; gap:12px; }
+  .field{ display:grid; grid-template-columns:120px 1fr; gap:10px; align-items:start; }
+  .field .label{ color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  .field .value{ font-size:14px; }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{ padding:4px 8px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:999px; font-size:12px; color:#d1d5db; }
+  .dlg-footer{ display:flex; justify-content:flex-end; gap:8px; padding:12px 16px; border-top:1px solid rgba(255,255,255,.08); }
+  .btn{ background:#1f2340; border:1px solid rgba(255,255,255,.14); color:#fff; border-radius:10px; padding:8px 12px; cursor:pointer; }
+  .btn:hover{ background:#2a2f55; }
+
+  @media (max-width:560px){
+    .person{width:92vw;max-width:360px;flex:0 0 auto}
+    .thumb,.placeholder{width:76px;height:96px}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Belgian Royal Family — Orthogonal Tree</h1>
+  <div class="subtitle">Children groups are centered under their parents. Cards are fixed-size; each generation stays on one row (scroll horizontally if needed).</div>
+  <div class="divider"></div>
+
+  <div id="tree" class="tree">
+    <svg id="connections" class="connections" preserveAspectRatio="none"></svg>
+    <div id="rows"></div>
+  </div>
+</div>
+
+<!-- Person dialog -->
+<dialog id="personDialog" class="person-dialog" aria-modal="true">
+  <div class="dlg-header">
+    <div class="thumb placeholder" id="dlgThumb">Photo</div>
+    <div class="dlg-title">
+      <div class="dlg-name" id="dlgName">Name</div>
+      <div class="dlg-sub" id="dlgTitle">Title / Style</div>
+    </div>
+  </div>
+  <div class="dlg-content">
+    <div class="field"><div class="label">Birth</div><div class="value" id="dlgBirth">—</div></div>
+    <div class="field"><div class="label">Marriages</div><div class="value" id="dlgMarriages">—</div></div>
+    <div class="field"><div class="label">Death</div><div class="value" id="dlgDeath">—</div></div>
+    <div class="field"><div class="label">Notes</div><div class="value" id="dlgNotes">Placeholder biography text goes here.</div></div>
+    <div class="field"><div class="label">Children</div><div class="value"><div class="chips" id="dlgChildren"></div></div></div>
+  </div>
+  <div class="dlg-footer"><button class="btn" id="dlgClose">Close</button></div>
+</dialog>
+
+<script>
+/* ----------------------- Data (swap in your DB) ----------------------- */
+const PEOPLE = [
+  // Gen 0 (root couple in this example)
+  { id:"albertII", name:"Albert II", title:"King of the Belgians", birth:"1934-06-06" },
+  { id:"paola",    name:"Paola",     title:"Queen of the Belgians", birth:"1937-09-11" },
+
+  // Gen 1 (children + spouses)
+  { id:"philippe", name:"Philippe",  title:"King of the Belgians", birth:"1960-04-15", parents:["albertII","paola"] },
+  { id:"mathilde", name:"Mathilde",  title:"Queen of the Belgians", birth:"1973-01-20" },
+  { id:"astrid",   name:"Astrid",    title:"Princess of Belgium", birth:"1962-06-05", parents:["albertII","paola"] },
+  { id:"lorenz",   name:"Lorenz",    title:"Prince of Belgium", birth:"1955-12-16" },
+  { id:"laurent",  name:"Laurent",   title:"Prince of Belgium", birth:"1963-10-19", parents:["albertII","paola"] },
+  { id:"claire",   name:"Claire",    title:"Princess of Belgium", birth:"1974-01-18" },
+
+  // Gen 2 (grandchildren)
+  { id:"elisabeth",   name:"Elisabeth",  title:"Princess of Belgium, Duchess of Brabant", birth:"2001-10-25", parents:["philippe","mathilde"] },
+  { id:"gabriel",     name:"Gabriel",    title:"Prince of Belgium", birth:"2003-08-20", parents:["philippe","mathilde"] },
+  { id:"emmanuel",    name:"Emmanuel",   title:"Prince of Belgium", birth:"2005-10-04", parents:["philippe","mathilde"] },
+  { id:"eleonore",    name:"Eléonore",   title:"Princess of Belgium", birth:"2008-04-16", parents:["philippe","mathilde"] },
+
+  { id:"amedeo",      name:"Amedeo",     title:"Prince of Belgium", birth:"1986-02-21", parents:["astrid","lorenz"] },
+  { id:"maria_laura", name:"Maria Laura",title:"Princess of Belgium", birth:"1988-08-26", parents:["astrid","lorenz"] },
+  { id:"joachim",     name:"Joachim",    title:"Prince of Belgium", birth:"1991-12-09", parents:["astrid","lorenz"] },
+  { id:"luisa_maria", name:"Luisa Maria",title:"Princess of Belgium", birth:"1995-10-11", parents:["astrid","lorenz"] },
+  { id:"laetitia_maria", name:"Laetitia Maria", title:"Princess of Belgium", birth:"2003-11-23", parents:["astrid","lorenz"] },
+
+  { id:"louise",   name:"Louise",   title:"Princess of Belgium", birth:"2004-02-06", parents:["laurent","claire"] },
+  { id:"nicolas",  name:"Nicolas",  title:"Prince of Belgium",   birth:"2005-12-13", parents:["laurent","claire"] },
+  { id:"aymeric",  name:"Aymeric",  title:"Prince of Belgium",   birth:"2005-12-13", parents:["laurent","claire"] },
+];
+
+const MARRIAGES = [
+  { partners:["albertII","paola"],     date:"1959-07-02", place:"Rome" },
+  { partners:["philippe","mathilde"],  date:"1999-12-04", place:"Brussels" },
+  { partners:["astrid","lorenz"],      date:"1984-09-22", place:"Brussels" },
+  { partners:["laurent","claire"],     date:"2003-04-12", place:"Brussels" },
+];
+
+/* ----------------------- Helpers ----------------------- */
+const byId = new Map(PEOPLE.map(p=>[p.id,p]));
+const spouseOf    = id => { const m=MARRIAGES.find(m=>m.partners.includes(id)); if(!m) return null; const [a,b]=m.partners; return a===id? b : a; };
+const marriagesOf = id => MARRIAGES.filter(m=>m.partners.includes(id));
+const birthYear   = p => p?.birth ? +p.birth.slice(0,4) : 9999;
+const childrenOfCouple = (a,b) => PEOPLE.filter(c=>{ const s=new Set(c.parents||[]); return s.has(a)&&s.has(b); });
+const childrenOfSingle = (a)   => PEOPLE.filter(c=>(c.parents||[]).includes(a));
+
+/* ----------------------- Build generations (top-down) ----------------------- */
+/* gens[0] = array of blocks (couple/single)
+   gens[1+] = array of FAMILY GROUPS: { parentKey, blocks[], sortKey }
+   Each step flattens previous level to blocks before expanding, so deeper gens render. */
+function buildGenerations(){
+  const gens = [];
+
+  // Gen 0 root couple (change to "philippe","mathilde" if you prefer)
+  gens.push([ { type:"couple", a:"albertII", b:"paola", primary:"albertII" } ]);
+
+  let depth = 0;
+  while(true){
+    const prev = gens[depth];
+    if(!prev) break;
+
+    // Normalize sources (blocks to expand from)
+    const sources = (depth === 0) ? prev : prev.flatMap(group => group.blocks);
+
+    // Build family groups for the NEXT generation
+    const groups = []; // each: { parentKey, blocks[], sortKey }
+
+    for (const block of sources){
+      const parentKey = block.type==="couple" ? `c:${block.a}+${block.b}` : `s:${block.id}`;
+      const kids = block.type==="couple" ? childrenOfCouple(block.a, block.b) : childrenOfSingle(block.id);
+      if(!kids.length) continue;
+
+      const childBlocks = kids.map(k=>{
+        const s = spouseOf(k.id);
+        return s ? { type:"couple", a:k.id, b:s, primary:k.id }
+                 : { type:"single", id:k.id, primary:k.id };
+      });
+
+      // Sort within this family by the child's DOB
+      childBlocks.sort((A,B)=>{
+        const pa=byId.get(A.primary), pb=byId.get(B.primary);
+        const ay=birthYear(pa), by=birthYear(pb);
+        return ay - by || (pa?.name||"").localeCompare(pb?.name||"");
+      });
+
+      const first = byId.get(childBlocks[0].primary);
+      groups.push({ parentKey, blocks: childBlocks, sortKey: birthYear(first) });
+    }
+
+    if(!groups.length) break;
+
+    // Families left→right by oldest child's DOB
+    groups.sort((g1,g2)=> g1.sortKey - g2.sortKey);
+
+    gens.push(groups);
+    depth++; if(depth>12) break;
+  }
+
+  return gens;
+}
+
+/* ----------------------- Render ----------------------- */
+function render(){
+  const rowsEl = document.getElementById("rows");
+  rowsEl.innerHTML = "";
+  const gens = buildGenerations();
+
+  gens.forEach((level, gi)=>{
+    const row = document.createElement("div");
+    row.className = "generation-row";
+    row.dataset.generation = gi;
+
+    if(gi===0){
+      // Row of parents (plain blocks)
+      level.forEach(block=>{
+        if(block.type==="couple"){
+          const wrap = document.createElement("div");
+          wrap.className = "couple";
+          wrap.dataset.a = block.a; wrap.dataset.b = block.b;
+          wrap.appendChild(renderPerson(block.a));
+          wrap.appendChild(renderPerson(block.b));
+          row.appendChild(wrap);
+        }else{
+          row.appendChild(renderPerson(block.id));
+        }
+      });
+    } else {
+      // Row of family groups
+      level.forEach(group=>{
+        const gEl = document.createElement("div");
+        gEl.className = "family-group";
+        gEl.dataset.parentKey = group.parentKey;
+
+        group.blocks.forEach(block=>{
+          if(block.type==="couple"){
+            const wrap = document.createElement("div");
+            wrap.className = "couple";
+            wrap.dataset.a = block.a; wrap.dataset.b = block.b;
+            wrap.appendChild(renderPerson(block.a));
+            wrap.appendChild(renderPerson(block.b));
+            gEl.appendChild(wrap);
+          }else{
+            gEl.appendChild(renderPerson(block.id));
+          }
+        });
+
+        row.appendChild(gEl);
+      });
+    }
+
+    rowsEl.appendChild(row);
+  });
+
+  // Alignments + connectors
+  alignRootToChildren();
+  alignFamiliesUnderParents();
+  queueMicrotask(drawConnections);
+  window.addEventListener("resize", ()=>{ alignRootToChildren(); alignFamiliesUnderParents(); drawConnections(); }, {passive:true});
+}
+
+function renderPerson(id){
+  const p = byId.get(id);
+  const card = document.createElement("article");
+  card.className = "person";
+  card.dataset.id = id;
+
+  const ph = document.createElement("div");
+  ph.className = "placeholder";
+  ph.textContent = "Photo";
+  card.appendChild(ph);
+
+  const body = document.createElement("div");
+  body.className = "person-body";
+  const h = document.createElement("h3"); h.className="name"; h.textContent = p.name;
+  const l = document.createElement("div"); l.className="lifespan"; l.textContent = p.birth ? `b. ${p.birth.slice(0,4)}` : "";
+  const t = document.createElement("p"); t.className="title"; t.textContent = p.title||"";
+  body.appendChild(h); if(l.textContent) body.appendChild(l); if(t.textContent) body.appendChild(t);
+  card.appendChild(body);
+
+  card.addEventListener('click', ()=>openDialogFor(id));
+  return card;
+}
+
+/* ----------------------- Dialog ----------------------- */
+const dlg = document.getElementById('personDialog');
+document.getElementById('dlgClose').addEventListener('click', ()=>dlg.close());
+
+function openDialogFor(id){
+  const p = byId.get(id); if(!p) return;
+  document.getElementById('dlgName').textContent  = p.name || '(Unknown)';
+  document.getElementById('dlgTitle').textContent = p.title || '—';
+  document.getElementById('dlgThumb').textContent = 'Photo';
+
+  document.getElementById('dlgBirth').textContent = p.birth
+    ? new Date(p.birth).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'})
+    : '—';
+  document.getElementById('dlgDeath').textContent = p.death
+    ? new Date(p.death).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'})
+    : '—';
+
+  const ms = marriagesOf(id);
+  document.getElementById('dlgMarriages').textContent = ms.length
+    ? ms.map(m=>{
+        const [a,b]=m.partners; const sid=a===id?b:a; const s=byId.get(sid);
+        const when = m.date ? ` on ${new Date(m.date).toLocaleDateString()}` : '';
+        const where= m.place? ` in ${m.place}` : '';
+        return `${s?.name||sid}${when}${where}`;
+      }).join(' • ')
+    : '—';
+
+  const kids = PEOPLE.filter(k => (k.parents||[]).includes(id)).sort((a,b)=>birthYear(a)-birthYear(b));
+  const ct = document.getElementById('dlgChildren'); ct.innerHTML='';
+  (kids.length?kids:[{name:'No children listed', birth:null}]).forEach(k=>{
+    const chip=document.createElement('span'); chip.className='chip';
+    chip.textContent = k.birth ? `${k.name} (b. ${k.birth.slice(0,4)})` : k.name;
+    ct.appendChild(chip);
+  });
+
+  dlg.showModal();
+}
+
+/* ----------------------- Alignments ----------------------- */
+function alignRootToChildren(){
+  const tree = document.getElementById("tree");
+  const rect = tree.getBoundingClientRect();
+
+  const row0 = document.querySelector('.generation-row[data-generation="0"]');
+  const row1 = document.querySelector('.generation-row[data-generation="1"]');
+  if(!row0 || !row1) return;
+
+  const kidsEls = Array.from(row1.querySelectorAll('.person'));
+  if(kidsEls.length===0) return;
+
+  const kRects = kidsEls.map(el=>el.getBoundingClientRect());
+  const minX = Math.min(...kRects.map(r=>r.left - rect.left + r.width/2));
+  const maxX = Math.max(...kRects.map(r=>r.left - rect.left + r.width/2));
+  const childrenCenter = (minX + maxX) / 2;
+
+  const couple = row0.querySelector('.couple');
+  if(!couple) return;
+  const [pA,pB] = couple.querySelectorAll('.person');
+  if(!pA || !pB) return;
+  const ra = pA.getBoundingClientRect(); const rb = pB.getBoundingClientRect();
+  const coupleCenter = ((ra.left-rect.left + ra.width/2) + (rb.left-rect.left + rb.width/2))/2;
+
+  const delta = childrenCenter - coupleCenter;
+  row0.style.transform = `translateX(${delta}px)`;
+}
+
+/* Center each .family-group under its parent, then resolve overlaps */
+function alignFamiliesUnderParents(){
+  const tree = document.getElementById("tree");
+  const rect = tree.getBoundingClientRect();
+  const rows = Array.from(document.querySelectorAll('.generation-row'));
+
+  for(let gi=0; gi<rows.length-1; gi++){
+    const row = rows[gi];
+    const next = rows[gi+1];
+    if(!next) continue;
+
+    // 1) Parent anchors (x)
+    const parentAnchors = new Map(); // key -> x coordinate
+    // couples
+    row.querySelectorAll('.couple').forEach(w=>{
+      const [aEl,bEl]=w.querySelectorAll('.person'); if(!aEl||!bEl) return;
+      const ra=aEl.getBoundingClientRect(), rb=bEl.getBoundingClientRect();
+      const x = ((ra.left-rect.left + ra.width/2) + (rb.left-rect.left + rb.width/2))/2;
+      const key = `c:${aEl.dataset.id}+${bEl.dataset.id}`;
+      parentAnchors.set(key, x);
+    });
+    // singles
+    Array.from(row.children).forEach(ch=>{
+      if(ch.classList.contains('couple')) return;
+      if(ch.classList.contains('family-group')) return;
+      const pEl = ch.classList.contains('person') ? ch : ch.querySelector('.person');
+      if(!pEl) return;
+      const r=pEl.getBoundingClientRect();
+      const x = r.left-rect.left + r.width/2;
+      const key = `s:${pEl.dataset.id}`;
+      parentAnchors.set(key, x);
+    });
+
+    // 2) Center each next-row family-group under its parent anchor
+    next.querySelectorAll('.family-group').forEach(gEl=>{
+      const key = gEl.dataset.parentKey;
+      const anchorX = parentAnchors.get(key);
+      if(anchorX==null) return;
+      const gr = gEl.getBoundingClientRect();
+      const centerX = gr.left - rect.left + gr.width/2;
+      const delta = Math.round(anchorX - centerX);
+
+      const current = parseFloat(gEl.dataset.dx||"0");
+      const newDx = current + delta;
+      gEl.style.marginLeft = `${newDx}px`;
+      gEl.dataset.dx = String(newDx);
+    });
+
+    // 3) Prevent overlaps between adjacent family groups (left -> right sweep)
+    resolveRowOverlaps(next);
+  }
+}
+
+/* Simple collision avoidance so groups don't overlap after centering */
+function resolveRowOverlaps(row){
+  const tree = document.getElementById("tree");
+  const rect = tree.getBoundingClientRect();
+  const GAP = 16; // same as CSS row gap
+
+  const groups = Array.from(row.querySelectorAll('.family-group'));
+  if (!groups.length) return;
+
+  let cursor = -Infinity; // minimal allowed left edge for current group
+
+  groups.forEach(gEl => {
+    // measure current group
+    let r = gEl.getBoundingClientRect();
+    let left = r.left - rect.left;
+    const width = r.width;
+
+    // if this group's left intrudes, push it right
+    if (left < cursor) {
+      const delta = Math.ceil(cursor - left);
+      const current = parseFloat(gEl.dataset.dx || "0");
+      const newDx = current + delta;
+      gEl.style.marginLeft = `${newDx}px`;
+      gEl.dataset.dx = String(newDx);
+
+      // re-measure
+      r = gEl.getBoundingClientRect();
+      left = r.left - rect.left;
+    }
+
+    cursor = left + width + GAP; // set next minimal left
+  });
+}
+
+/* ----------------------- Connectors: orthogonal routing ----------------------- */
+function drawConnections(){
+  const svg = document.getElementById("connections");
+  const container = document.getElementById("tree");
+  const rect = container.getBoundingClientRect();
+  svg.setAttribute("width", rect.width);
+  svg.setAttribute("height", rect.height);
+  svg.setAttribute("viewBox", `0 0 ${rect.width} ${rect.height}`);
+  while(svg.firstChild) svg.removeChild(svg.firstChild);
+
+  const centerOf = el => {
+    const r=el.getBoundingClientRect();
+    return { cx: r.left-rect.left + r.width/2, top: r.top-rect.top, midY: r.top-rect.top + r.height/2, bottom: r.top-rect.top + r.height };
+  };
+
+  function addLine(x1,y1,x2,y2, colorVar, width="2", opacity="0.95"){
+    const ln=document.createElementNS("http://www.w3.org/2000/svg","line");
+    ln.setAttribute("x1",x1); ln.setAttribute("y1",y1);
+    ln.setAttribute("x2",x2); ln.setAttribute("y2",y2);
+    ln.setAttribute("stroke", getComputedStyle(document.documentElement).getPropertyValue(colorVar) || '#9ca3af');
+    ln.setAttribute("stroke-width", width);
+    ln.setAttribute("opacity", opacity);
+    ln.setAttribute("shape-rendering","crispEdges");
+    svg.appendChild(ln);
+  }
+
+  const rows = Array.from(document.querySelectorAll('.generation-row'));
+  rows.forEach((row, gi)=>{
+    const nextRow = rows[gi+1];
+    // Marriages (through card centers)
+    row.querySelectorAll('.couple').forEach(w=>{
+      const [aEl,bEl]=w.querySelectorAll('.person'); if(!aEl||!bEl) return;
+      const pa=centerOf(aEl), pb=centerOf(bEl);
+      const y=(pa.midY+pb.midY)/2;
+      addLine(Math.min(pa.cx,pb.cx), y, Math.max(pa.cx,pb.cx), y, '--marriage', '3');
+    });
+
+    if(!nextRow) return;
+    const nextRect = nextRow.getBoundingClientRect();
+    const busY = nextRect.top - rect.top - 10; // 10px above children row
+
+    // Couples → vertical to bus → bus across family → drops to kids
+    row.querySelectorAll('.couple').forEach(w=>{
+      const [aEl,bEl]=w.querySelectorAll('.person'); if(!aEl||!bEl) return;
+      const a=aEl.dataset.id, b=bEl.dataset.id;
+      const pa=centerOf(aEl), pb=centerOf(bEl);
+      const mx=(pa.cx+pb.cx)/2;
+
+      const gEl = nextRow.querySelector(`.family-group[data-parent-key="c:${a}+${b}"]`);
+      if(!gEl) return;
+      const childPersons = Array.from(gEl.querySelectorAll('.person'));
+      if(!childPersons.length) return;
+
+      const xs = childPersons.map(p=>centerOf(p).cx);
+      const busX1 = Math.min(...xs, mx), busX2 = Math.max(...xs, mx);
+
+      const yStart=(pa.midY+pb.midY)/2;
+      addLine(mx, yStart, mx, busY, '--child', '2');   // vertical
+      addLine(busX1, busY, busX2, busY, '--child', '2'); // horizontal bus
+      childPersons.forEach(p=>{
+        const c=centerOf(p);
+        addLine(c.cx, busY, c.cx, c.top, '--child', '2'); // drops
+      });
+    });
+
+    // Singles (if any)
+    Array.from(row.children).forEach(ch=>{
+      if(ch.classList.contains('couple')) return;
+      if(ch.classList.contains('family-group')) return;
+      const pEl = ch.classList.contains('person') ? ch : ch.querySelector('.person');
+      if(!pEl) return;
+      const id = pEl.dataset.id;
+      const parent=centerOf(pEl);
+
+      const gEl = nextRow.querySelector(`.family-group[data-parent-key="s:${id}"]`);
+      if(!gEl) return;
+      const childPersons = Array.from(gEl.querySelectorAll('.person'));
+      if(!childPersons.length) return;
+
+      const xs = childPersons.map(p=>centerOf(p).cx);
+      const busX1 = Math.min(...xs, parent.cx), busX2 = Math.max(...xs, parent.cx);
+
+      addLine(parent.cx, parent.bottom, parent.cx, busY, '--child', '2');
+      addLine(busX1, busY, busX2, busY, '--child', '2');
+      childPersons.forEach(p=>{
+        const c=centerOf(p);
+        addLine(c.cx, busY, c.cx, c.top, '--child', '2');
+      });
+    });
+  });
+}
+
+/* ----------------------- Init ----------------------- */
+render();
+</script>
+</body>
+</html>
