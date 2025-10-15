@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Belgian Royal Family — Aligned Tree (fixed separation & illegitimate links)</title>
+<title>Belgian Royal Family — Aligned Tree (fixed: no cross-family joins)</title>
 <style>
   :root{
     --bg:#0f111a; --card:#1a1d29; --text:#e6e6e6;
@@ -29,7 +29,7 @@
   }
   .couple{display:flex; gap:var(--gap); flex:0 0 auto}
   .family-slot{position:relative; flex:0 0 auto}
-  .family-group{display:flex; gap:32px; flex:0 0 auto} /* gap between SIBLINGS (min); overridden in JS */
+  .family-group{display:flex; gap:44px; flex:0 0 auto} /* guaranteed sibling spacing */
 
   .person{
     display:flex; align-items:center; width:280px; flex:0 0 280px;
@@ -75,8 +75,8 @@
 <div class="page">
   <h1>Belgian Royal Family — Zone-Aligned Tree</h1>
   <div class="subtitle">
-    • Illegitimate children are placed to the left of their biological parent on the row below and linked with a dotted connector drawn slightly above the solid sibling bus.<br/>
-    • Siblings have guaranteed spacing, and different parents’ groups are separated so Philippe’s children never “join” Astrid’s.
+    Illegitimate children shown to the left of their biological parent on the row below with dotted connectors (slightly above the solid bus).<br/>
+    Sibling spacing is guaranteed; buses are hard-clamped to each family’s zone so Philippe’s children cannot visually “join” Astrid’s.
   </div>
   <div class="divider"></div>
 
@@ -150,11 +150,10 @@ const MARRIAGES = [
 ];
 
 /* ----------------------- Layout Config ----------------------- */
-const SIBLING_GAP = 44;              // guaranteed min pixels between siblings in same group
-const ROW_SLOT_GAP = { 2: 96 };      // extra gap between different parents’ groups on specific generations
-const MIN_INTER_GROUP_GAP = 140;     // min visual gap between adjacent parent groups (prevents “joined” look)
-const SHIFT_GEN = { 2: 260 };        // keep Generation 2 moved right (away from Delphine)
-const ILLEGIT_OFFSET = -8;           // dotted bus sits slightly above solid bus
+const SIBLING_GAP = 44;               // min pixels between siblings in same group
+const MIN_INTER_GROUP_GAP = 140;      // keeps different parents' groups visually separate
+const SHIFT_GEN = { 2: 260 };         // move Gen 2 to the RIGHT
+const ILLEGIT_OFFSET = -8;            // dotted bus sits slightly above solid bus
 
 /* ----------------------- Helpers ----------------------- */
 const byId = new Map(PEOPLE.map(p=>[p.id,p]));
@@ -267,9 +266,6 @@ function render(){
     row.className = "generation-row";
     row.dataset.generation = gi;
 
-    // EXTRA separation between different parents’ groups for target generations
-    if (ROW_SLOT_GAP[gi]) row.style.gap = ROW_SLOT_GAP[gi] + "px";
-
     if(gi===0){
       level.forEach(block=>{
         if(block.type==="couple"){
@@ -277,8 +273,8 @@ function render(){
           wrap.className = "couple";
           wrap.dataset.a = block.a; wrap.dataset.b = block.b;
           wrap.appendChild(renderPerson(block.a));
-          row.appendChild(wrap);
           wrap.appendChild(renderPerson(block.b));
+          row.appendChild(wrap);
         }else{
           row.appendChild(renderPerson(block.id));
         }
@@ -294,13 +290,12 @@ function render(){
 
         const gEl = document.createElement("div");
         gEl.className = "family-group";
-        gEl.style.gap = SIBLING_GAP + "px"; // enforce sibling spacing
+        gEl.style.gap = SIBLING_GAP + "px";
 
         group.blocks.forEach(block=>{
           const holder = document.createElement("div");
           holder.className = "child-wrap";
           holder.dataset.meta = JSON.stringify(block.meta||{});
-
           if(block.type==="couple"){
             const wrap = document.createElement("div");
             wrap.className = "couple";
@@ -327,14 +322,11 @@ function render(){
   layoutWithinParentZonesStrict();
   centerParentsOverChildren();
   layoutWithinParentZonesStrict();
-
-  // Keep distinct parents’ children separated (prevents “joined” Philippe ↔ Astrid groups)
   separateParentGroups(MIN_INTER_GROUP_GAP);
   layoutWithinParentZonesStrict();
   centerParentsOverChildren();
   layoutWithinParentZonesStrict();
 
-  // Keep Generation 2 shifted right (per your request)
   applyGenerationShift(SHIFT_GEN);
 
   queueMicrotask(drawConnections);
@@ -630,7 +622,6 @@ function separateParentGroups(minGap=MIN_INTER_GROUP_GAP){
       const gap = rightEdge - leftEdge;
 
       if (gap < minGap) {
-        // Push the right parent and all to its right so groups don’t touch
         const need = (minGap - gap);
         for (let j=i+1; j<parents.length; j++){
           const el = parents[j].type==='couple' ? parents[j].el : parents[j].el;
@@ -687,6 +678,7 @@ function drawConnections(){
 
   const LINE_W = "2";
   const BUS_INSET = 14;
+  const SAFE_PAD = 6;               // NEW: keeps buses from touching zone edges (prevents “joining” look)
 
   const centerOf = el => {
     const r = el.getBoundingClientRect();
@@ -723,10 +715,9 @@ function drawConnections(){
 
     if(!nextRow) return;
 
-    // Draw base buses slightly above/below with dotted for illegitimate
     const baseBusY = nextRow.getBoundingClientRect().top - containerRect.top - 12;
 
-    // Couples → one slot containing joint + illegitimate (grouped by meta.from)
+    // Couples → joint (solid) + illegitimate (dotted above) — STRICTLY CLIPPED TO SLOT
     row.querySelectorAll('.couple').forEach(w=>{
       const [aEl,bEl]=w.querySelectorAll('.person'); if(!aEl||!bEl) return;
       const a=aEl.dataset.id, b=bEl.dataset.id;
@@ -749,37 +740,44 @@ function drawConnections(){
       const yStart=(pa.midY+pb.midY)/2;
 
       const sr = slot.getBoundingClientRect();
-      const slotL = sr.left - containerRect.left + BUS_INSET;
-      const slotR = sr.left - containerRect.left + sr.width - BUS_INSET;
+      const slotL = sr.left - containerRect.left + BUS_INSET + SAFE_PAD;
+      const slotR = sr.left - containerRect.left + sr.width - BUS_INSET - SAFE_PAD;
 
       function drawBus(fromX, fromY, xs, dashed=false){
         if(!xs.length) return;
         const dash = dashed? "4 4" : null;
+
         const parentClamped = Math.min(Math.max(fromX, slotL), slotR);
         const minX = Math.min(...xs), maxX = Math.max(...xs);
         const busY = baseBusY + (dashed ? ILLEGIT_OFFSET : 0);
-        const bus1 = Math.min(minX, parentClamped) - 0.5;
-        const bus2 = Math.max(maxX, parentClamped) + 0.5;
 
-        addLine(fromX, fromY, fromX, busY, '--child', LINE_W, "0.95", dash);
-        if (fromX !== parentClamped) addLine(fromX, busY, parentClamped, busY, '--child', LINE_W, "0.95", dash);
+        // NEW: hard-clip horizontal bus strictly within [slotL, slotR]
+        const bus1 = Math.max(slotL, Math.min(minX, parentClamped)) - 0.5;
+        const bus2 = Math.min(slotR, Math.max(maxX, parentClamped)) + 0.5;
+
+        // Vertical down to bus
+        addLine(fromX, fromY, parentClamped, busY, '--child', LINE_W, "0.95", dash);
+        // Horizontal bus (clipped)
         addLine(bus1, busY, bus2, busY, '--child', LINE_W, "0.95", dash);
 
+        // Risers up to each child
         xs.forEach(x=>{
+          // clip riser start to bus segment bounds too
+          const xClamped = Math.min(Math.max(x, bus1), bus2);
           let targetTop = Infinity;
           slot.querySelectorAll('.family-group .person').forEach(card=>{
             const c=centerOf(card); if (Math.abs(c.cx - x) < 1.1) targetTop = Math.min(targetTop, c.top);
           });
-          if (isFinite(targetTop)) addLine(x, busY, x, targetTop, '--child', LINE_W, "0.95", dash);
+          if (isFinite(targetTop)) addLine(xClamped, busY, xClamped, targetTop, '--child', LINE_W, "0.95", dash);
         });
       }
 
-      drawBus(coupleX, yStart, xsJoint, false); // solid joint bus (Philippe+Mathilde, Astrid+Lorenz, etc.)
+      drawBus(coupleX, yStart, xsJoint, false); // solid joint bus
       drawBus(pa.cx,    pa.bottom, xsA,     true);  // dotted (illegitimate) from A
       drawBus(pb.cx,    pb.bottom, xsB,     true);  // dotted (illegitimate) from B
     });
 
-    // Single parent rows → split solid vs dotted by meta.illegit
+    // Single parent rows → split solid vs dotted by meta.illegit — also clipped to slot
     Array.from(row.children).forEach(ch=>{
       if(ch.classList.contains('couple')) return;
       if(ch.classList.contains('family-slot') || ch.classList.contains('family-group')) return;
@@ -802,28 +800,30 @@ function drawConnections(){
       });
 
       const sr = slot.getBoundingClientRect();
-      const slotL = sr.left - containerRect.left + BUS_INSET;
-      const slotR = sr.left - containerRect.left + sr.width - BUS_INSET;
+      const slotL = sr.left - containerRect.left + BUS_INSET + SAFE_PAD;
+      const slotR = sr.left - containerRect.left + sr.width - BUS_INSET - SAFE_PAD;
 
       function drawBus(fromX, fromY, xs, dashed=false){
         if(!xs.length) return;
         const dash = dashed? "4 4" : null;
+
         const parentClamped = Math.min(Math.max(fromX, slotL), slotR);
         const minX = Math.min(...xs), maxX = Math.max(...xs);
         const busY = baseBusY + (dashed ? ILLEGIT_OFFSET : 0);
-        const bus1 = Math.min(minX, parentClamped) - 0.5;
-        const bus2 = Math.max(maxX, parentClamped) + 0.5;
 
-        addLine(fromX, fromY, fromX, busY, '--child', LINE_W, "0.95", dash);
-        if (fromX !== parentClamped) addLine(fromX, busY, parentClamped, busY, '--child', LINE_W, "0.95", dash);
+        const bus1 = Math.max(slotL, Math.min(minX, parentClamped)) - 0.5;
+        const bus2 = Math.min(slotR, Math.max(maxX, parentClamped)) + 0.5;
+
+        addLine(fromX, fromY, parentClamped, busY, '--child', LINE_W, "0.95", dash);
         addLine(bus1, busY, bus2, busY, '--child', LINE_W, "0.95", dash);
 
         xs.forEach(x=>{
+          const xClamped = Math.min(Math.max(x, bus1), bus2);
           let targetTop = Infinity;
           slot.querySelectorAll('.family-group .person').forEach(card=>{
             const c=centerOf(card); if (Math.abs(c.cx - x) < 1.1) targetTop = Math.min(targetTop, c.top);
           });
-          if (isFinite(targetTop)) addLine(x, busY, x, targetTop, '--child', LINE_W, "0.95", dash);
+          if (isFinite(targetTop)) addLine(xClamped, busY, xClamped, targetTop, '--child', LINE_W, "0.95", dash);
         });
       }
 
