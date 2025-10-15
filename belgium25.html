@@ -481,7 +481,7 @@ function drawConnections(){
   const container = document.getElementById("tree");
   const rowsWrap  = document.getElementById("rows");
 
-  // 1) Full content bounds across ALL rows
+  // --- Full content bounds across ALL rows (for full-scroll SVG) ---
   const containerRect = container.getBoundingClientRect();
   const rows = Array.from(document.querySelectorAll('.generation-row'));
 
@@ -499,29 +499,26 @@ function drawConnections(){
   if (minLeft > 0) minLeft = 0;
 
   const PAD = 120;
-
-  // 2) Size SVG to full scrollable/content area
   const fullWidth  = Math.max(container.scrollWidth, rowsWrap.scrollWidth, Math.ceil(maxRight - minLeft + PAD));
   const fullHeight = Math.max(container.scrollHeight, rowsWrap.scrollHeight, Math.ceil(maxBottom + PAD));
+
   svg.setAttribute("width",  fullWidth);
   svg.setAttribute("height", fullHeight);
   svg.setAttribute("viewBox", `0 0 ${fullWidth} ${fullHeight}`);
   svg.style.width  = fullWidth + "px";
   svg.style.height = fullHeight + "px";
 
-  // 3) Clear & helpers
   while (svg.firstChild) svg.removeChild(svg.firstChild);
-  const rect = containerRect;
 
-  const BUS_INSET = 14;
+  const rect = containerRect;
   const LINE_W = "2";
+  const BUS_INSET = 14; // still used for clamping the parent anchor jog (not the bus extents)
 
   function busOffsetForKey(key){
     let h=0; for(let i=0;i<key.length;i++) h=(h*31 + key.charCodeAt(i))|0;
     const r = Math.abs(h)%3;
     return r===0? -8 : r===1? 0 : 8;
   }
-
   const centerOf = el => {
     const r = el.getBoundingClientRect();
     return {
@@ -531,7 +528,6 @@ function drawConnections(){
       bottom: r.top - rect.top + r.height
     };
   };
-
   function addLine(x1,y1,x2,y2, colorVar, width=LINE_W, opacity="0.95"){
     const ln=document.createElementNS("http://www.w3.org/2000/svg","line");
     ln.setAttribute("x1",x1); ln.setAttribute("y1",y1);
@@ -544,7 +540,6 @@ function drawConnections(){
     svg.appendChild(ln);
   }
 
-  // 4) Draw all marriages & parent→children connections
   rows.forEach((row, gi)=>{
     const nextRow = rows[gi+1];
 
@@ -561,7 +556,7 @@ function drawConnections(){
     const nextRect = nextRow.getBoundingClientRect();
     const baseBusY = nextRect.top - rect.top - 12;
 
-    // === Couples (parent) → their family-slot (children) — BUS SPANS ONLY CHILDREN
+    // === Couples (parent) → their family-slot (children) — BUS SPANS ONLY CHILDREN (no slot clamp) ===
     row.querySelectorAll('.couple').forEach(w=>{
       const [aEl,bEl]=w.querySelectorAll('.person'); if(!aEl||!bEl) return;
       const a=aEl.dataset.id, b=bEl.dataset.id;
@@ -580,42 +575,38 @@ function drawConnections(){
       const slotL = sr.left - rect.left + BUS_INSET;
       const slotR = sr.left - rect.left + sr.width - BUS_INSET;
 
-      // Collect one X per CHILD only (ignore spouses)
+      // Child centers: first .person of each couple = the child; singles directly inside the group.
       const childXs = [];
-      // couples: first .person in each couple wrapper is the child (by our render order)
       slot.querySelectorAll('.family-group > .couple').forEach(c=>{
-        const childCard = c.querySelector('.person'); // first
+        const childCard = c.querySelector('.person');
         if (childCard) childXs.push(centerOf(childCard).cx);
       });
-      // singles: the .person directly in the group
       slot.querySelectorAll('.family-group > .person').forEach(p=>{
         childXs.push(centerOf(p).cx);
       });
       if(!childXs.length) return;
 
+      // Clamp only the parent anchor to the slot, so the vertical jog lands inside,
+      // but DO NOT clamp the bus span itself.
       const parentXClamped = Math.min(Math.max(parentX, slotL), slotR);
 
-      // Span must include all children and the clamped parent anchor
+      // Bus span: cover ALL children + the clamped parent anchor, with a tiny epsilon.
+      const EPS = 0.5;
       const minChildX = Math.min(...childXs);
       const maxChildX = Math.max(...childXs);
-      const spanMin = Math.min(minChildX, parentXClamped);
-      const spanMax = Math.max(maxChildX, parentXClamped);
+      const busX1 = Math.min(minChildX, parentXClamped) - EPS;
+      const busX2 = Math.max(maxChildX, parentXClamped) + EPS;
 
-      // Clamp final bus to slot AFTER ensuring it covers children
-      const busX1 = Math.max(spanMin, slotL);
-      const busX2 = Math.min(spanMax, slotR);
-
-      // vertical from parent anchor
+      // Parent vertical + possible horizontal jog at bus level
       addLine(parentX, yStart, parentX, busY, '--child', LINE_W);
-      // jog at bus level if anchor was clamped
       if (parentX !== parentXClamped) addLine(parentX, busY, parentXClamped, busY, '--child', LINE_W);
 
-      // family-local bus (covers all children, including Laurent)
+      // Bus (now guaranteed to extend past Laurent's center)
       addLine(busX1, busY, busX2, busY, '--child', LINE_W);
 
-      // drops to each CHILD (use child Xs only)
+      // Drops from bus to each child center
       childXs.forEach(x=>{
-        // find nearest child's top at this x
+        // nearest child's top at this x
         let targetTop = Infinity;
         slot.querySelectorAll('.family-group > .couple > .person, .family-group > .person').forEach(card=>{
           const c = centerOf(card);
@@ -625,7 +616,7 @@ function drawConnections(){
       });
     });
 
-    // === Singles (if any) → their family-slot (kept as-is; singles act as both parent & child card)
+    // === Singles (if any) → their family-slot (unchanged) ===
     Array.from(row.children).forEach(ch=>{
       if(ch.classList.contains('couple')) return;
       if(ch.classList.contains('family-slot') || ch.classList.contains('family-group')) return;
@@ -646,7 +637,6 @@ function drawConnections(){
       const slotL = sr.left - rect.left + BUS_INSET;
       const slotR = sr.left - rect.left + sr.width - BUS_INSET;
 
-      // child Xs: each person directly in the family group (there are no spouse pairs here)
       const childXs = [];
       slot.querySelectorAll('.family-group > .person').forEach(p=>{
         childXs.push(centerOf(p).cx);
@@ -655,13 +645,11 @@ function drawConnections(){
 
       const pxClamped = Math.min(Math.max(parent.cx, slotL), slotR);
 
+      const EPS = 0.5;
       const minChildX = Math.min(...childXs);
       const maxChildX = Math.max(...childXs);
-      const spanMin = Math.min(minChildX, pxClamped);
-      const spanMax = Math.max(maxChildX, pxClamped);
-
-      const busX1 = Math.max(spanMin, slotL);
-      const busX2 = Math.min(spanMax, slotR);
+      const busX1 = Math.min(minChildX, pxClamped) - EPS;
+      const busX2 = Math.max(maxChildX, pxClamped) + EPS;
 
       addLine(parent.cx, parent.bottom, parent.cx, busY, '--child', LINE_W);
       if (parent.cx !== pxClamped) addLine(parent.cx, busY, pxClamped, busY, '--child', LINE_W);
@@ -679,6 +667,7 @@ function drawConnections(){
     });
   });
 }
+
 
 /* ----------------------- Init ----------------------- */
 render();
