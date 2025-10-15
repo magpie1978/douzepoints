@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Belgian Royal Family — Aligned Tree (illegitimate children supported)</title>
+<title>Belgian Royal Family — Aligned Tree (with sibling & generation separation)</title>
 <style>
   :root{
     --bg:#0f111a; --card:#1a1d29; --text:#e6e6e6;
@@ -74,8 +74,8 @@
 <div class="page">
   <h1>Belgian Royal Family — Zone-Aligned Tree</h1>
   <div class="subtitle">
-    Illegitimate children render like everyone else. Connectors are dotted from the single biological parent; joint children use a solid line from the couple center.  
-    Illegitimate children are positioned to the <strong>left</strong> of their biological parent within the children group. Dotted buses are drawn slightly <strong>above</strong> the solid bus.
+    Illegitimate children display inline with siblings (dotted connectors from the biological parent).  
+    Siblings are spaced consistently and parent rows separate when their children need more room.
   </div>
   <div class="divider"></div>
 
@@ -148,6 +148,12 @@ const MARRIAGES = [
   { partners:["laurent","claire"],     date:"2003-04-12", place:"Brussels" },
 ];
 
+/* ----------------------- Config ----------------------- */
+const SIBLING_GAP = 36;          // min space between siblings (px)
+const MIN_INTER_GROUP_GAP = 60;  // min gap between adjacent sibling groups across parent zones (px)
+const SHIFT_GEN = { 2: 260 };    // keep Gen 2 shifted RIGHT to avoid Delphine overlap
+const ILLEGIT_OFFSET = -8;       // dotted bus above solid
+
 /* ----------------------- Helpers ----------------------- */
 const byId = new Map(PEOPLE.map(p=>[p.id,p]));
 const spouseOf    = id => { const m=MARRIAGES.find(m=>m.partners.includes(id)); if(!m) return null; const [a,b]=m.partners; return a===id? b : a; };
@@ -166,10 +172,9 @@ const childrenOfSingle = pid => PEOPLE.filter(c=>{
   const ps=c.parents||[]; return ps.includes(pid);
 });
 
-/* ----------------------- Build generations (ONE slot per parent group) ----------------------- */
+/* ----------------------- Build generations ----------------------- */
 function buildGenerations(){
   const gens = [];
-  // Root: one couple (Albert II & Paola)
   gens.push([ { type:"couple", a:"albertII", b:"paola", primary:"albertII" } ]);
 
   let depth=0;
@@ -184,15 +189,14 @@ function buildGenerations(){
       if (block.type==="couple"){
         const a=block.a, b=block.b;
 
-        // Children: illegit from A (left) + joint (middle) + illegit from B (right)
         const j  = childrenJoint(a,b);
         const ia = childrenIllegitFrom(a);
         const ib = childrenIllegitFrom(b);
 
         const kidsCombined = [
-          ...ia.map(k => ({ from:"a",      illegit:true,  person:k })),   // left
-          ...j .map(k => ({ from:"couple", illegit:false, person:k })),   // middle
-          ...ib.map(k => ({ from:"b",      illegit:true,  person:k })),   // right
+          ...ia.map(k => ({ from:"a",      illegit:true,  person:k })),
+          ...j .map(k => ({ from:"couple", illegit:false, person:k })),
+          ...ib.map(k => ({ from:"b",      illegit:true,  person:k })),
         ];
 
         if (kidsCombined.length){
@@ -203,7 +207,6 @@ function buildGenerations(){
               ? { type:"couple", a:k.id, b:s, primary:k.id, meta:{ from:entry.from, illegit:entry.illegit } }
               : { type:"single", id:k.id,              primary:k.id, meta:{ from:entry.from, illegit:entry.illegit } };
           }).sort((A,B)=>{
-            // keep subgroup order (a -> couple -> b), then by birth, then name
             const pa=byId.get(A.primary), pb=byId.get(B.primary);
             const ay=pa?.birth? +pa.birth.slice(0,4):9999;
             const by=pb?.birth? +pb.birth.slice(0,4):9999;
@@ -229,7 +232,6 @@ function buildGenerations(){
             ? { type:"couple", a:k.id, b:s, primary:k.id, meta:{ from:"single", illegit:illeg } }
             : { type:"single", id:k.id,              primary:k.id, meta:{ from:"single", illegit:illeg } };
         }).sort((A,B)=>{
-          // illegitimate first (left), then legitimate, each by birth/name
           const iA = A.meta?.illegit ? 0 : 1;
           const iB = B.meta?.illegit ? 0 : 1;
           if (iA !== iB) return iA - iB;
@@ -285,12 +287,17 @@ function render(){
         if (group.a) { slot.dataset.a = group.a; slot.dataset.b = group.b; }
         if (group.single) { slot.dataset.single = group.single; }
 
+        // family group with guaranteed sibling spacing
         const gEl = document.createElement("div");
         gEl.className = "family-group";
+        gEl.style.gap = SIBLING_GAP + "px"; // <<< enforce sibling spacing
+
         group.blocks.forEach(block=>{
+          // Wrap each child cluster in a real element so we can adjust spacing later if needed
           const holder = document.createElement("div");
-          holder.style.display = "contents";
+          holder.className = "child-wrap";
           holder.dataset.meta = JSON.stringify(block.meta||{});
+
           if(block.type==="couple"){
             const wrap = document.createElement("div");
             wrap.className = "couple";
@@ -312,14 +319,20 @@ function render(){
     rowsEl.appendChild(row);
   });
 
-  // Layout & connectors
+  // Layout & connectors: order matters
   alignRootToChildren();
-  layoutWithinParentZonesStrict();   // strict zoning keeps groups in their own zones
+  layoutWithinParentZonesStrict();
   centerParentsOverChildren();
   layoutWithinParentZonesStrict();
 
-  // >>> Shift specific generations horizontally (move Generation 2 to the RIGHT)
-  applyGenerationShift({ 2: 260 }); // px; increase if you want more rightward offset
+  // Separate parent anchors when their children collide (ensures room between sibling groups & rows)
+  separateParentsForChildren(MIN_INTER_GROUP_GAP);
+  layoutWithinParentZonesStrict();
+  centerParentsOverChildren();
+  layoutWithinParentZonesStrict();
+
+  // Keep Gen 2 to the RIGHT (away from Delphine)
+  applyGenerationShift(SHIFT_GEN);
 
   queueMicrotask(drawConnections);
 
@@ -328,7 +341,11 @@ function render(){
     layoutWithinParentZonesStrict();
     centerParentsOverChildren();
     layoutWithinParentZonesStrict();
-    applyGenerationShift({ 2: 260 });
+    separateParentsForChildren(MIN_INTER_GROUP_GAP);
+    layoutWithinParentZonesStrict();
+    centerParentsOverChildren();
+    layoutWithinParentZonesStrict();
+    applyGenerationShift(SHIFT_GEN);
     drawConnections();
   }, {passive:true});
 }
@@ -504,6 +521,7 @@ function layoutWithinParentZonesStrict(){
       if(!slot) return;
 
       const group = slot.querySelector('.family-group');
+      group.style.gap = SIBLING_GAP + "px"; // ensure min sibling spacing at layout time
 
       const zoneL = (i===0) ? 0 : mids[i-1];
       const zoneR = (i===parents.length-1) ? canvasRight : mids[i];
@@ -577,6 +595,56 @@ function centerParentsOverChildren(){
   }
 }
 
+/* NEW: ensure adjacent sibling groups (across parent zones) have enough gap by pushing parents apart */
+function separateParentsForChildren(minGap=MIN_INTER_GROUP_GAP){
+  const tree = document.getElementById("tree");
+  const rect = tree.getBoundingClientRect();
+  const rows = Array.from(document.querySelectorAll('.generation-row'));
+
+  for (let gi = 0; gi < rows.length - 1; gi++) {
+    const row  = rows[gi];
+    const next = rows[gi + 1];
+    const parents = parentsInRow(row);
+    if (!parents.length) continue;
+
+    // Map slots in next row by parent key, keep order as in parents[]
+    const slots = parents.map(p=> next.querySelector(`.family-slot[data-parent-key="${p.key}"]`) || null);
+
+    // We'll shift parents to the right cumulatively if needed
+    let cumulativeShift = 0;
+
+    for (let i=0; i<parents.length-1; i++){
+      const leftSlot  = slots[i];
+      const rightSlot = slots[i+1];
+      if (!leftSlot || !rightSlot) continue;
+
+      const leftGroup  = leftSlot.querySelector('.family-group');
+      const rightGroup = rightSlot.querySelector('.family-group');
+      if (!leftGroup || !rightGroup) continue;
+
+      const leftCards  = Array.from(leftGroup.querySelectorAll('.person'));
+      const rightCards = Array.from(rightGroup.querySelectorAll('.person'));
+      if (!leftCards.length || !rightCards.length) continue;
+
+      const leftEdge  = Math.max(...leftCards.map(c=>c.getBoundingClientRect().right - rect.left));
+      const rightEdge = Math.min(...rightCards.map(c=>c.getBoundingClientRect().left - rect.left));
+
+      const gap = rightEdge - leftEdge;
+      if (gap < minGap) {
+        const need = (minGap - gap);
+
+        // Push the (i+1)th parent and everything to its right by 'need' pixels
+        for (let j=i+1; j<parents.length; j++){
+          const el = parents[j].type==='couple' ? parents[j].el : parents[j].el;
+          const ml = parseFloat(getComputedStyle(el).marginLeft || "0");
+          el.style.marginLeft = `${ml + need}px`;
+        }
+        cumulativeShift += need;
+      }
+    }
+  }
+}
+
 /* Apply per-generation horizontal shifts (positive = move RIGHT) */
 function applyGenerationShift(shiftMap){
   const rows = Array.from(document.querySelectorAll('.generation-row'));
@@ -622,7 +690,6 @@ function drawConnections(){
 
   const LINE_W = "2";
   const BUS_INSET = 14;
-  const ILLEGIT_OFFSET = -8; // dotted buses sit ABOVE the solid bus
 
   const centerOf = el => {
     const r = el.getBoundingClientRect();
@@ -661,7 +728,7 @@ function drawConnections(){
 
     const baseBusY = nextRow.getBoundingClientRect().top - containerRect.top - 12;
 
-    // Couples → one slot containing joint + illegitimate (grouped by meta.from)
+    // Couples → joint (solid) + illegitimate (dotted above)
     row.querySelectorAll('.couple').forEach(w=>{
       const [aEl,bEl]=w.querySelectorAll('.person'); if(!aEl||!bEl) return;
       const a=aEl.dataset.id, b=bEl.dataset.id;
@@ -670,7 +737,7 @@ function drawConnections(){
       if(!slot) return;
 
       const xsA=[], xsJoint=[], xsB=[];
-      slot.querySelectorAll('.family-group > div').forEach(holder=>{
+      slot.querySelectorAll('.family-group > .child-wrap').forEach(holder=>{
         const meta = JSON.parse(holder.dataset.meta||'{}');
         const card = holder.querySelector('.person'); if(!card) return;
         const cx = centerOf(card).cx;
@@ -692,7 +759,7 @@ function drawConnections(){
         const dash = dashed? "4 4" : null;
         const parentClamped = Math.min(Math.max(fromX, slotL), slotR);
         const minX = Math.min(...xs), maxX = Math.max(...xs);
-        const busY = baseBusY + (dashed ? ILLEGIT_OFFSET : 0); // dotted ABOVE solid
+        const busY = baseBusY + (dashed ? ILLEGIT_OFFSET : 0);
         const bus1 = Math.min(minX, parentClamped) - 0.5;
         const bus2 = Math.max(maxX, parentClamped) + 0.5;
 
@@ -709,9 +776,9 @@ function drawConnections(){
         });
       }
 
-      drawBus(coupleX, yStart, xsJoint, false); // solid
-      drawBus(pa.cx,    pa.bottom, xsA,     true);  // dotted from parent A (above)
-      drawBus(pb.cx,    pb.bottom, xsB,     true);  // dotted from parent B (above)
+      drawBus(coupleX, yStart, xsJoint, false);
+      drawBus(pa.cx,    pa.bottom, xsA,     true);
+      drawBus(pb.cx,    pb.bottom, xsB,     true);
     });
 
     // Single parent rows → split solid vs dotted by meta.illegit
@@ -729,7 +796,7 @@ function drawConnections(){
       const parent = centerOf(pEl);
 
       const xsSolid=[], xsDotted=[];
-      slot.querySelectorAll('.family-group > div').forEach(holder=>{
+      slot.querySelectorAll('.family-group > .child-wrap').forEach(holder=>{
         const meta = JSON.parse(holder.dataset.meta||'{}');
         const card = holder.querySelector('.person'); if(!card) return;
         const cx = centerOf(card).cx;
@@ -745,7 +812,7 @@ function drawConnections(){
         const dash = dashed? "4 4" : null;
         const parentClamped = Math.min(Math.max(fromX, slotL), slotR);
         const minX = Math.min(...xs), maxX = Math.max(...xs);
-        const busY = baseBusY + (dashed ? ILLEGIT_OFFSET : 0); // dotted ABOVE solid
+        const busY = baseBusY + (dashed ? ILLEGIT_OFFSET : 0);
         const bus1 = Math.min(minX, parentClamped) - 0.5;
         const bus2 = Math.max(maxX, parentClamped) + 0.5;
 
@@ -762,8 +829,8 @@ function drawConnections(){
         });
       }
 
-      drawBus(parent.cx, parent.bottom, xsSolid,  false); // legitimate
-      drawBus(parent.cx, parent.bottom, xsDotted, true);  // illegitimate (above)
+      drawBus(parent.cx, parent.bottom, xsSolid,  false);
+      drawBus(parent.cx, parent.bottom, xsDotted, true);
     });
   });
 }
