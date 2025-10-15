@@ -146,38 +146,47 @@ const MARRIAGES = [
 /* ----------------------- Helpers ----------------------- */
 const byId = new Map(PEOPLE.map(p=>[p.id,p]));
 const spouseOf    = id => { const m=MARRIAGES.find(m=>m.partners.includes(id)); if(!m) return null; const [a,b]=m.partners; return a===id? b : a; };
-const marriagesOf = id => MARRIAGES.filter(m=>m.partners.includes(id)); /* keep ONLY this one */
+const marriagesOf = id => MARRIAGES.filter(m=>m.partners.includes(id));
 const birthYear   = p => p?.birth ? +p.birth.slice(0,4) : 9999;
 const childrenOfCouple = (a,b) => PEOPLE.filter(c=>{ const s=new Set(c.parents||[]); return s.has(a)&&s.has(b); });
 const childrenOfSingle = (a)   => PEOPLE.filter(c=>(c.parents||[]).includes(a));
 
 /* ----------------------- Build generations (top-down) ----------------------- */
+/* gens[0] = array of blocks (couple/single)
+   gens[1+] = array of FAMILY GROUPS: { parentKey, blocks[], sortKey }
+   On each loop, we flatten the previous level to 'sources' blocks before expanding. */
 function buildGenerations(){
   const gens = [];
-  // Gen 0: Albert II & Paola
+
+  // Gen 0 root: Albert II & Paola (you can swap to Philippe & Mathilde if preferred)
   gens.push([ { type:"couple", a:"albertII", b:"paola", primary:"albertII" } ]);
 
-  // Expand downwards generation by generation
   let depth = 0;
   while(true){
-    const prev = gens[depth]; if(!prev) break;
+    const prev = gens[depth];
+    if(!prev) break;
 
-    // Collect children blocks grouped by parent block
-    const groups = []; // { parentKey, blocks[], sortKey }
-    for (const block of prev){
+    // Normalize sources = blocks to expand from
+    const sources = (depth === 0)
+      ? prev // already blocks
+      : prev.flatMap(group => group.blocks); // flatten groups to blocks
+
+    // Build family groups for the NEXT generation
+    const groups = []; // each: { parentKey, blocks[], sortKey }
+
+    for (const block of sources){
       const parentKey = block.type==="couple" ? `c:${block.a}+${block.b}` : `s:${block.id}`;
       const kids = block.type==="couple" ? childrenOfCouple(block.a, block.b) : childrenOfSingle(block.id);
-
       if(!kids.length) continue;
 
-      // Each child becomes a couple-block if married, else single-block
+      // child becomes couple if married, else single
       const childBlocks = kids.map(k=>{
         const s = spouseOf(k.id);
         return s ? { type:"couple", a:k.id, b:s, primary:k.id }
                  : { type:"single", id:k.id, primary:k.id };
       });
 
-      // Sort within this family by the child's DOB (primary)
+      // Sort within this family by child's DOB
       childBlocks.sort((A,B)=>{
         const pa=byId.get(A.primary), pb=byId.get(B.primary);
         const ay=birthYear(pa), by=birthYear(pb);
@@ -190,14 +199,14 @@ function buildGenerations(){
 
     if(!groups.length) break;
 
-    // Order families by their oldest child's DOB
+    // Families left→right by oldest child's DOB
     groups.sort((g1,g2)=> g1.sortKey - g2.sortKey);
 
-    // Push this generation's family groups
     gens.push(groups);
-    depth++; if(depth>8) break;
+    depth++; if(depth>12) break;
   }
-  return gens; // gens[0] = blocks; gens[1+] = array of family groups
+
+  return gens;
 }
 
 /* ----------------------- Render ----------------------- */
@@ -222,8 +231,7 @@ function render(){
           wrap.appendChild(renderPerson(block.b));
           row.appendChild(wrap);
         }else{
-          const person = renderPerson(block.id);
-          row.appendChild(person);
+          row.appendChild(renderPerson(block.id));
         }
       });
     } else {
