@@ -112,34 +112,23 @@
 const PEOPLE = [
   // Gen 0
   { id:"albertII", name:"Albert II", title:"King of the Belgians", birth:"1934-06-06", photo:"https://upload.wikimedia.org/wikipedia/commons/1/19/Albert_II%2C_King_of_Belgium.jpg" },
-  { id:"paola", name:"Paola", title:"Queen of the Belgians", birth:"1937-09-11",
-    photo:"https://upload.wikimedia.org/wikipedia/commons/f/f5/Queen_Paola_of_Belgium%2C_at_Rashtrapati_Bhavan%2C_in_New_Delhi_on_November_04%2C_2008_%281%29_%28cropped%29.jpg" },
+  { id:"paola", name:"Paola", title:"Queen of the Belgians", birth:"1937-09-11", photo:"https://upload.wikimedia.org/wikipedia/commons/f/f5/Queen_Paola_of_Belgium%2C_at_Rashtrapati_Bhavan%2C_in_New_Delhi_on_November_04%2C_2008_%281%29_%28cropped%29.jpg" },
 
   // Gen 1
-  { id:"philippe", name:"Philippe", title:"King of the Belgians", birth:"1960-04-15", parents:["albertII","paola"],
-    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/King_Philippe_of_Belgium_2017.jpg/320px-King_Philippe_of_Belgium_2017.jpg" },
-  { id:"mathilde", name:"Mathilde", title:"Queen of the Belgians", birth:"1973-01-20",
-    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Queen_Mathilde_in_2022.jpg/320px-Queen_Mathilde_in_2022.jpg" },
+  { id:"philippe", name:"Philippe", title:"King of the Belgians", birth:"1960-04-15", parents:["albertII","paola"], photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/King_Philippe_of_Belgium_%28January_2025%29.jpg/500px-King_Philippe_of_Belgium_%28January_2025%29.jpg" },
+  { id:"mathilde", name:"Mathilde", title:"Queen of the Belgians", birth:"1973-01-20", photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Queen_Mathilde_in_2022.jpg/320px-Queen_Mathilde_in_2022.jpg" },
 
-  { id:"astrid", name:"Astrid", title:"Princess of Belgium", birth:"1962-06-05", parents:["albertII","paola"],
-    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Princess_Astrid_of_Belgium_2022.jpg/320px-Princess_Astrid_of_Belgium_2022.jpg" },
-  { id:"lorenz", name:"Lorenz", title:"Prince of Belgium", birth:"1955-12-16",
-    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Prince_Lorenz_of_Belgium_2010.jpg/320px-Prince_Lorenz_of_Belgium_2010.jpg" },
+  { id:"astrid", name:"Astrid", title:"Princess of Belgium", birth:"1962-06-05", parents:["albertII","paola"], photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Fumio_Kishida_and_Princess_Astrid_of_Belgium_at_the_Kantei_in_2022_%281%29_%28cropped%29.jpg/500px-Fumio_Kishida_and_Princess_Astrid_of_Belgium_at_the_Kantei_in_2022_%281%29_%28cropped%29.jpg" },
+  { id:"lorenz", name:"Lorenz", title:"Prince of Belgium", birth:"1955-12-16", photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Prince_Lorenz_of_Belgium%2C_Archduke_of_Austria-Este.jpg/500px-Prince_Lorenz_of_Belgium%2C_Archduke_of_Austria-Este.jpg" },
 
-  { id:"laurent", name:"Laurent", title:"Prince of Belgium", birth:"1963-10-19", parents:["albertII","paola"],
-    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Prince_Laurent_of_Belgium_2015.jpg/320px-Prince_Laurent_of_Belgium_2015.jpg" },
-  { id:"claire", name:"Claire", title:"Princess of Belgium", birth:"1974-01-18",
-    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Princess_Claire_of_Belgium_2014.jpg/320px-Princess_Claire_of_Belgium_2014.jpg" },
+  { id:"laurent", name:"Laurent", title:"Prince of Belgium", birth:"1963-10-19", parents:["albertII","paola"], photo:"https://en.wikipedia.org/wiki/File:Laurent_of_Belgium_(2021).jpg" },
+  { id:"claire", name:"Claire", title:"Princess of Belgium", birth:"1974-01-18", photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Princess_Claire_of_Belgium_%282011%29.jpg/500px-Princess_Claire_of_Belgium_%282011%29.jpg" },
 
   // Gen 2 (Philippe + Mathilde)
-  { id:"elisabeth", name:"Elisabeth", title:"Princess of Belgium, Duchess of Brabant", birth:"2001-10-25", parents:["philippe","mathilde"],
-    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Princess_Elisabeth_of_Belgium_2023.jpg/320px-Princess_Elisabeth_of_Belgium_2023.jpg" },
-  { id:"gabriel", name:"Gabriel", title:"Prince of Belgium", birth:"2003-08-20", parents:["philippe","mathilde"],
-    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Prince_Gabriel_of_Belgium_2019.jpg/320px-Prince_Gabriel_of_Belgium_2019.jpg" },
-  { id:"emmanuel", name:"Emmanuel", title:"Prince of Belgium", birth:"2005-10-04", parents:["philippe","mathilde"],
-    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Prince_Emmanuel_of_Belgium_2019.jpg/320px-Prince_Emmanuel_of_Belgium_2019.jpg" },
-  { id:"eleonore", name:"Eléonore", title:"Princess of Belgium", birth:"2008-04-16", parents:["philippe","mathilde"],
-    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Princess_El%C3%A9onore_of_Belgium_2019.jpg/320px-Princess_El%C3%A9onore_of_Belgium_2019.jpg" },
+  { id:"elisabeth", name:"Elisabeth", title:"Princess of Belgium, Duchess of Brabant", birth:"2001-10-25", parents:["philippe","mathilde"], photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/2023_Princess_Elisabeth%2C_Duchess_of_Brabant_%28cropped%2901.JPG/500px-2023_Princess_Elisabeth%2C_Duchess_of_Brabant_%28cropped%2901.JPG" },
+  { id:"gabriel", name:"Gabriel", title:"Prince of Belgium", birth:"2003-08-20", parents:["philippe","mathilde"], photo:"https://upload.wikimedia.org/wikipedia/commons/8/84/HRH_Prince_Gabriel_AD_2023_KMS_%28cropped%29.jpg" },
+  { id:"emmanuel", name:"Emmanuel", title:"Prince of Belgium", birth:"2005-10-04", parents:["philippe","mathilde"], photo:"https://api.brusselstimes.com/wp-content/uploads/2024/08/af72e65a-prince-gabriel-fete-nationale-2022-belga-bruno-fahy.jpg" },
+  { id:"eleonore", name:"Eléonore", title:"Princess of Belgium", birth:"2008-04-16", parents:["philippe","mathilde"], photo:"https://media.tatler.com/photos/661e3d71bacb954e7581ea09/1:1/w_2056,h_2056,c_limit/Princess_Eleonore_160424_2RDHJF4.jpg" },
 
   // Gen 2 (Astrid + Lorenz)
   { id:"amedeo", name:"Amedeo", title:"Prince of Belgium", birth:"1986-02-21", parents:["astrid","lorenz"],
