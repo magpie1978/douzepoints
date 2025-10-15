@@ -126,7 +126,7 @@ const PEOPLE = [
   { id:"albertII", name:"Albert II", title:"King of the Belgians", birth:"1934-06-06" },
   { id:"paola", name:"Paola Ruffo di Calabria", title:"Queen of the Belgians", birth:"1937-09-11" },
  
-  // Gen 1 (root couple)
+  // Gen 1 (children)
   { id:"philippe", name:"Philippe", title:"King of the Belgians", birth:"1960-04-15", parents:["albertII","paola"] },
   { id:"mathilde", name:"Mathilde", title:"Queen of the Belgians", birth:"1973-01-20", parents:["albertII","paola"]  },
 
@@ -134,15 +134,12 @@ const PEOPLE = [
   { id:"elisabeth", name:"Elisabeth", title:"Princess of Belgium, Duchess of Brabant", birth:"2001-10-25", parents:["philippe","mathilde"] },
   { id:"gabriel",   name:"Gabriel",   title:"Prince of Belgium", birth:"2003-08-20", parents:["philippe","mathilde"] },
   { id:"emmanuel",  name:"Emmanuel",  title:"Prince of Belgium", birth:"2005-10-04", parents:["philippe","mathilde"] },
-  { id:"eleonore",  name:"Eléonore",  title:"Princess of Belgium", birth:"2008-04-16", parents:["philippe","mathilde"] },
-
-  // Example scaffold for future data:
-  // { id:"elisabeth_spouse", name:"(Name)", title:"", birth:"1999-01-01" },
+  { id:"eleonore",  name:"Eléonore",  title:"Princess of Belgium", birth:"2008-04-16", parents:["philippe","mathilde"] }//,
 ];
 
 const MARRIAGES = [
   { partners:["albertII","paola"], date:"1999-12-04", place:"Brussels" },
-  { partners:["philippe","mathilde"], date:"1999-12-04", place:"Brussels" },
+  { partners:["philippe","mathilde"], date:"1999-12-04", place:"Brussels" }//,
   
   
   // Later: { partners:["elisabeth","elisabeth_spouse"], date:"YYYY-MM-DD", place:"" },
