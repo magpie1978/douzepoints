@@ -163,9 +163,10 @@ const birthYear = p => p?.birth ? Number(p.birth.slice(0,4)) : 9999;
 function buildGenerations(){
   const gens = [];
   // Root couple (Gen 0): King & Queen
-  const rootMarriage = MARRIAGES.find(m=>new Set(m.partners).has("philippe") && new Set(m.partners).has("mathilde"));
+  //const rootMarriage = MARRIAGES.find(m=>new Set(m.partners).has("philippe") && new Set(m.partners).has("mathilde"));
+  const rootMarriage = MARRIAGES.find(m=>new Set(m.partners).has("albertII") && new Set(m.partners).has("paola"));
   if(!rootMarriage) throw new Error("Root marriage (King & Queen) not found.");
-  gens.push([ { type:"couple", a:"philippe", b:"mathilde", primary:"philippe" } ]);
+  gens.push([ { type:"couple", a:"albertII", b:"paola", primary:"albertII" } ]);
 
   // Gen n+1 from Gen n
   let depth = 0;
