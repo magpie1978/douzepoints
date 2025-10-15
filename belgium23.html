@@ -497,28 +497,56 @@ function layoutWithinParentZones(){
 
 /* ----------------------- Connectors: orthogonal routing with family-local buses ----------------------- */
 function drawConnections(){
-  const svg = document.getElementById("connections");
+  const svg       = document.getElementById("connections");
   const container = document.getElementById("tree");
-  const rowsWrap = document.getElementById("rows");
+  const rowsWrap  = document.getElementById("rows");
 
-  // Use scroll sizes so SVG spans the full scrollable area, not just the visible part.
-  const width  = Math.max(container.scrollWidth, rowsWrap.scrollWidth, container.getBoundingClientRect().width);
-  // Height: cover container height plus some buffer to include buses above rows.
-  const height = Math.max(container.scrollHeight, rowsWrap.getBoundingClientRect().height + 200);
+  // --- 1) Find the full content bounds across ALL rows (left/right/bottom) ---
+  const containerRect = container.getBoundingClientRect();
+  const rows = Array.from(document.querySelectorAll('.generation-row'));
 
-  // Size the SVG to the full content area
-  svg.setAttribute("width", width);
-  svg.setAttribute("height", height);
-  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-  // Also set inline styles to avoid any CSS constraints
-  svg.style.width  = width + "px";
-  svg.style.height = height + "px";
+  let minLeft = Infinity, maxRight = -Infinity, maxBottom = -Infinity;
+
+  rows.forEach(row=>{
+    const rr = row.getBoundingClientRect();
+    const left   = rr.left  - containerRect.left;
+    const right  = rr.right - containerRect.left;
+    const bottom = rr.bottom - containerRect.top;
+
+    if (left   < minLeft)  minLeft  = left;
+    if (right  > maxRight) maxRight = right;
+    if (bottom > maxBottom)maxBottom = bottom;
+  });
+
+  // In case transforms/margins make minLeft negative, normalize
+  if (!isFinite(minLeft)) minLeft = 0;
+  if (minLeft > 0) minLeft = 0;
+
+  const PAD = 120; // headroom for buses and future rows
+
+  // --- 2) Size the SVG to the full content rect (not just the visible viewport) ---
+  const fullWidth  = Math.max(
+    container.scrollWidth,
+    rowsWrap.scrollWidth,
+    Math.ceil(maxRight - minLeft + PAD)
+  );
+  const fullHeight = Math.max(
+    container.scrollHeight,
+    rowsWrap.scrollHeight,
+    Math.ceil(maxBottom + PAD)
+  );
+
+  svg.setAttribute("width",  fullWidth);
+  svg.setAttribute("height", fullHeight);
+  svg.setAttribute("viewBox", `0 0 ${fullWidth} ${fullHeight}`);
+  svg.style.width  = fullWidth + "px";
+  svg.style.height = fullHeight + "px";
 
   // Clear previous lines
   while (svg.firstChild) svg.removeChild(svg.firstChild);
 
   // All geometry below is computed relative to the container's left/top
-  const rect = container.getBoundingClientRect();
+  const rect = containerRect;
 
   const BUS_INSET = 14;
   const LINE_W = "2";
@@ -551,8 +579,7 @@ function drawConnections(){
     svg.appendChild(ln);
   }
 
-  const rows = Array.from(document.querySelectorAll('.generation-row'));
-
+  // --- 3) Draw all marriages and parent→children connections for every adjacent pair of rows ---
   rows.forEach((row, gi)=>{
     const nextRow = rows[gi+1];
 
@@ -646,6 +673,7 @@ function drawConnections(){
     });
   });
 }
+
 
 /* ----------------------- Init ----------------------- */
 render();
