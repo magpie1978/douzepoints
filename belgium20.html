@@ -443,8 +443,16 @@ function drawConnections(){
   svg.setAttribute("viewBox", `0 0 ${rect.width} ${rect.height}`);
   while(svg.firstChild) svg.removeChild(svg.firstChild);
 
-  const BUS_INSET = 12; // keep each family bus inside its reserved slot
+  const BUS_INSET = 14;   // keep each family bus inside its reserved slot
   const LINE_W = "2";
+
+  // tiny, deterministic vertical separation per family
+  function busOffsetForKey(key){
+    // simple hash → {-8, 0, +8}
+    let h=0; for(let i=0;i<key.length;i++) h=(h*31 + key.charCodeAt(i))|0;
+    const r = Math.abs(h)%3; // 0,1,2
+    return r===0? -8 : r===1? 0 : 8;
+  }
 
   const centerOf = el => {
     const r=el.getBoundingClientRect();
@@ -464,6 +472,7 @@ function drawConnections(){
     ln.setAttribute("stroke-width", width);
     ln.setAttribute("opacity", opacity);
     ln.setAttribute("shape-rendering","crispEdges");
+    ln.setAttribute("stroke-linecap","square");
     svg.appendChild(ln);
   }
 
@@ -483,50 +492,52 @@ function drawConnections(){
     if(!nextRow) return;
 
     const nextRect = nextRow.getBoundingClientRect();
-    const busY = nextRect.top - rect.top - 10; // bus just above the children row
+    const baseBusY = nextRect.top - rect.top - 12; // baseline bus above children row
 
     // === Couples (parent) → their family-slot (children)
     row.querySelectorAll('.couple').forEach(w=>{
       const [aEl,bEl]=w.querySelectorAll('.person'); if(!aEl||!bEl) return;
       const a=aEl.dataset.id, b=bEl.dataset.id;
+      const key = `c:${a}+${b}`;
       const pa=centerOf(aEl), pb=centerOf(bEl);
-      const mx=(pa.cx+pb.cx)/2;
+      const parentX=(pa.cx+pb.cx)/2;
       const yStart=(pa.midY+pb.midY)/2;
 
-      const slot = nextRow.querySelector(`.family-slot[data-parent-key="c:${a}+${b}"]`);
+      const slot = nextRow.querySelector(`.family-slot[data-parent-key="${key}"]`);
       if(!slot) return;
+
+      const offset = busOffsetForKey(key);
+      const busY = baseBusY + offset;
 
       const sr = slot.getBoundingClientRect();
       const slotL = sr.left - rect.left + BUS_INSET;
       const slotR = sr.left - rect.left + sr.width - BUS_INSET;
 
-      // Child cards within ONLY this family's slot
       const childPersons = Array.from(slot.querySelectorAll('.family-group .person'));
       if(!childPersons.length) return;
 
       const xs = childPersons.map(p=>centerOf(p).cx);
-      // clamp parent anchor x to slot bounds before we join the bus
-      const mxClamped = Math.min(Math.max(mx, slotL), slotR);
-      // bus only spans inside this slot, covering children + the clamped anchor
-      let busX1 = Math.max(Math.min(...xs, mxClamped), slotL);
-      let busX2 = Math.min(Math.max(...xs, mxClamped), slotR);
+      const parentXClamped = Math.min(Math.max(parentX, slotL), slotR);
 
-      // Vertical from parent anchor down to bus Y
-      addLine(mx, yStart, mx, busY, '--child', LINE_W);
-      // If anchor is outside the bus (because of clamping), jog horizontally at bus level
-      if (mx !== mxClamped) addLine(mx, busY, mxClamped, busY, '--child', LINE_W);
+      const busX1 = Math.max(Math.min(...xs, parentXClamped), slotL);
+      const busX2 = Math.min(Math.max(...xs, parentXClamped), slotR);
 
-      // Horizontal bus (inside this slot only)
+      // vertical from parent anchor
+      addLine(parentX, yStart, parentX, busY, '--child', LINE_W);
+      // jog at bus level if anchor was outside slot
+      if (parentX !== parentXClamped) addLine(parentX, busY, parentXClamped, busY, '--child', LINE_W);
+
+      // family-local bus
       addLine(busX1, busY, busX2, busY, '--child', LINE_W);
 
-      // Drops to each child (ONLY children in this slot)
+      // drops to children (ONLY inside this slot)
       childPersons.forEach(p=>{
         const c=centerOf(p);
         addLine(c.cx, busY, c.cx, c.top, '--child', LINE_W);
       });
     });
 
-    // === Singles (if any in this row) → their family-slot
+    // === Singles (if any) → their family-slot
     Array.from(row.children).forEach(ch=>{
       if(ch.classList.contains('couple')) return;
       if(ch.classList.contains('family-slot') || ch.classList.contains('family-group')) return;
@@ -534,10 +545,14 @@ function drawConnections(){
       const pEl = ch.classList.contains('person') ? ch : ch.querySelector('.person');
       if(!pEl) return;
       const id = pEl.dataset.id;
+      const key = `s:${id}`;
       const parent=centerOf(pEl);
 
-      const slot = nextRow.querySelector(`.family-slot[data-parent-key="s:${id}"]`);
+      const slot = nextRow.querySelector(`.family-slot[data-parent-key="${key}"]`);
       if(!slot) return;
+
+      const offset = busOffsetForKey(key);
+      const busY = baseBusY + offset;
 
       const sr = slot.getBoundingClientRect();
       const slotL = sr.left - rect.left + BUS_INSET;
@@ -549,8 +564,8 @@ function drawConnections(){
       const xs = childPersons.map(p=>centerOf(p).cx);
       const pxClamped = Math.min(Math.max(parent.cx, slotL), slotR);
 
-      let busX1 = Math.max(Math.min(...xs, pxClamped), slotL);
-      let busX2 = Math.min(Math.max(...xs, pxClamped), slotR);
+      const busX1 = Math.max(Math.min(...xs, pxClamped), slotL);
+      const busX2 = Math.min(Math.max(...xs, pxClamped), slotR);
 
       addLine(parent.cx, parent.bottom, parent.cx, busY, '--child', LINE_W);
       if (parent.cx !== pxClamped) addLine(parent.cx, busY, pxClamped, busY, '--child', LINE_W);
