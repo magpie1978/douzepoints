@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Belgian Royal Family — Orthogonal Tree</title>
+<style>
+  :root{
+    --bg:#0f111a; --card:#1a1d29; --text:#e6e6e6; --muted:#9aa0a6;
+    --accent:#e50914; --marriage:#d1d5db; --child:#9ca3af; --radius:16px;
+  }
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .page{max-width:2200px;margin:24px auto;padding:0 16px 64px;position:relative}
+  @media (min-width:2200px){ .page{max-width:96vw} }
+
+  h1{margin:0 0 8px}
+  .subtitle{color:var(--muted);margin-bottom:24px}
+  .divider{height:1px;background:var(--accent);opacity:.6;margin:12px 0 24px}
+
+  .tree{position:relative;overflow-x:auto}
+  .connections{position:absolute;inset:0;pointer-events:none;z-index:0}
+
+  /* One strict row per generation (no wrapping). Bottom padding = space for connectors if needed. */
+  .generation-row{
+    width:100%; position:relative; display:flex; flex-wrap:nowrap; gap:16px;
+    justify-content:flex-start; margin:36px 0; padding-block:8px 48px; z-index:1;
+    will-change: transform; /* we may shift Gen 0 for centering */
+  }
+
+  /* Couple stays together as one block */
+  .couple{display:flex; gap:16px}
+
+  /* Person card with left thumbnail placeholder */
+  .person{
+    display:flex; align-items:center; width:280px; background:var(--card); border-radius:var(--radius);
+    border:1px solid rgba(255,255,255,.06); box-shadow:0 6px 20px rgba(0,0,0,.25); overflow:hidden;
+  }
+  .thumb{width:88px;height:110px;object-fit:cover;background:#22252f;flex-shrink:0}
+  .placeholder{width:88px;height:110px;display:grid;place-items:center;background:#22252f;color:#6b7280;font-size:11px}
+  .person-body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
+  .name{margin:0;font-weight:700;font-size:15px}
+  .lifespan{margin:0;color:var(--muted);font-size:12px}
+  .title{margin:0;color:#c9d1d9;font-size:12px}
+
+  @media (max-width:560px){
+    .person{width:92vw;max-width:360px}
+    .thumb,.placeholder{width:76px;height:96px}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Belgian Royal Family — Orthogonal Tree</h1>
+  <div class="subtitle">Gen 0 starts with the reigning King & Queen (couple midpoint aligned over their children). Connectors are straight: parent ↓, bus line above the children row →, then vertical drops ↓ to each child.</div>
+  <div class="divider"></div>
+
+  <div id="tree" class="tree">
+    <svg id="connections" class="connections" preserveAspectRatio="none"></svg>
+    <div id="rows"></div>
+  </div>
+</div>
+
+<script>
+/* ----------------------- Data (swap in your DB) ----------------------- */
+const PEOPLE = [
+  // Gen 0 (root couple)
+  { id:"philippe", name:"Philippe", title:"King of the Belgians", birth:"1960-04-15" },
+  { id:"mathilde", name:"Mathilde", title:"Queen of the Belgians", birth:"1973-01-20" },
+
+  // Gen 1 (children)
+  { id:"elisabeth", name:"Elisabeth", title:"Princess of Belgium, Duchess of Brabant", birth:"2001-10-25", parents:["philippe","mathilde"] },
+  { id:"gabriel",   name:"Gabriel",   title:"Prince of Belgium", birth:"2003-08-20", parents:["philippe","mathilde"] },
+  { id:"emmanuel",  name:"Emmanuel",  title:"Prince of Belgium", birth:"2005-10-04", parents:["philippe","mathilde"] },
+  { id:"eleonore",  name:"Eléonore",  title:"Princess of Belgium", birth:"2008-04-16", parents:["philippe","mathilde"] },
+
+  // Add more descendants/spouses as they appear:
+  // { id:"elisabeth_spouse", name:"...", birth:"1999-01-01" },
+];
+
+const MARRIAGES = [
+  { partners:["philippe","mathilde"] },
+  // Later: { partners:["elisabeth","elisabeth_spouse"] },
+];
+
+/* ----------------------- Helpers ----------------------- */
+const byId = new Map(PEOPLE.map(p=>[p.id,p]));
+const childrenOf = (idA,idB=null)=>
+  PEOPLE.filter(c=>{
+    const ps = new Set(c.parents||[]);
+    return idB ? (ps.has(idA) && ps.has(idB)) : ps.has(idA);
+  });
+const spouseOf = (id)=>{ const m=MARRIAGES.find(m=>m.partners.includes(id)); if(!m) return null; const [a,b]=m.partners; return a===id? b : a; };
+const birthYear = p => p?.birth ? Number(p.birth.slice(0,4)) : 9999;
+
+/* ----------------------- Build generations (rule-driven) ----------------------- */
+function buildGenerations(){
+  const gens = [];
+  // Root couple (Gen 0): King & Queen
+  const rootMarriage = MARRIAGES.find(m=>new Set(m.partners).has("philippe") && new Set(m.partners).has("mathilde"));
+  if(!rootMarriage) throw new Error("Root marriage (King & Queen) not found.");
+  gens.push([ { type:"couple", a:"philippe", b:"mathilde", primary:"philippe" } ]);
+
+  // Gen n+1 from Gen n
+  let depth = 0;
+  while(true){
+    const prev = gens[depth]; if(!prev) break;
+    const next = []; const seen = new Set();
+
+    for(const block of prev){
+      if(block.type==="couple"){
+        const kids = childrenOf(block.a, block.b);
+        for(const k of kids){
+          if(seen.has(k.id)) continue; seen.add(k.id);
+          const s = spouseOf(k.id);
+          if(s){ next.push({ type:"couple", a:k.id, b:s, primary:k.id }); }
+          else { next.push({ type:"single", id:k.id, primary:k.id }); }
+        }
+      }else{
+        const kids = childrenOf(block.id);
+        for(const k of kids){
+          if(seen.has(k.id)) continue; seen.add(k.id);
+          const s = spouseOf(k.id);
+          if(s){ next.push({ type:"couple", a:k.id, b:s, primary:k.id }); }
+          else { next.push({ type:"single", id:k.id, primary:k.id }); }
+        }
+      }
+    }
+
+    if(next.length===0) break;
+    next.sort((A,B)=>{
+      const pa=byId.get(A.primary), pb=byId.get(B.primary);
+      const ay=birthYear(pa), by=birthYear(pb);
+      return ay - by || (pa?.name||"").localeCompare(pb?.name||"");
+    });
+    gens.push(next);
+    depth++; if(depth>8) break;
+  }
+  return gens;
+}
+
+/* ----------------------- Render ----------------------- */
+function render(){
+  const rowsEl = document.getElementById("rows");
+  rowsEl.innerHTML = "";
+  const gens = buildGenerations();
+
+  gens.forEach((blocks, gi)=>{
+    const row = document.createElement("div");
+    row.className = "generation-row";
+    row.dataset.generation = gi;
+
+    blocks.forEach(block=>{
+      if(block.type==="couple"){
+        const wrap = document.createElement("div");
+        wrap.className = "couple";
+        wrap.id = `block-${block.a}-${block.b}`;
+        wrap.dataset.a = block.a;
+        wrap.dataset.b = block.b;
+
+        wrap.appendChild(renderPerson(block.a));
+        wrap.appendChild(renderPerson(block.b));
+        row.appendChild(wrap);
+      }else{
+        const person = renderPerson(block.id);
+        person.id = `block-${block.id}`;
+        row.appendChild(person);
+      }
+    });
+
+    rowsEl.appendChild(row);
+  });
+
+  // Align Gen 0 couple midpoint over the center of Gen 1
+  alignRootToChildren();
+
+  // Draw connectors after layout
+  queueMicrotask(drawConnections);
+  window.addEventListener("resize", ()=>{ alignRootToChildren(); drawConnections(); }, {passive:true});
+}
+
+function renderPerson(id){
+  const p = byId.get(id);
+  const card = document.createElement("article");
+  card.className = "person";
+  card.dataset.id = id;
+
+  const ph = document.createElement("div");
+  ph.className = "placeholder";
+  ph.textContent = "Photo";
+  card.appendChild(ph);
+
+  const body = document.createElement("div");
+  body.className = "person-body";
+  const h = document.createElement("h3"); h.className="name"; h.textContent = p.name;
+  const l = document.createElement("div"); l.className="lifespan"; l.textContent = p.birth ? `b. ${p.birth.slice(0,4)}` : "";
+  const t = document.createElement("p"); t.className="title"; t.textContent = p.title||"";
+  body.appendChild(h); if(l.textContent) body.appendChild(l); if(t.textContent) body.appendChild(t);
+  card.appendChild(body);
+  return card;
+}
+
+/* ----------------------- Align Gen 0 horizontally with Gen 1 ----------------------- */
+function alignRootToChildren(){
+  const tree = document.getElementById("tree");
+  const rect = tree.getBoundingClientRect();
+
+  const row0 = document.querySelector('.generation-row[data-generation="0"]');
+  const row1 = document.querySelector('.generation-row[data-generation="1"]');
+  if(!row0 || !row1) return;
+
+  const kidsEls = Array.from(row1.querySelectorAll('.person'));
+  if(kidsEls.length===0) return;
+
+  const kRects = kidsEls.map(el=>el.getBoundingClientRect());
+  const minX = Math.min(...kRects.map(r=>r.left - rect.left + r.width/2));
+  const maxX = Math.max(...kRects.map(r=>r.left - rect.left + r.width/2));
+  const childrenCenter = (minX + maxX) / 2;
+
+  const couple = row0.querySelector('.couple');
+  if(!couple) return;
+  const [kingEl, queenEl] = couple.querySelectorAll('.person');
+  if(!kingEl || !queenEl) return;
+  const kr = kingEl.getBoundingClientRect();
+  const qr = queenEl.getBoundingClientRect();
+  const kingCx = kr.left - rect.left + kr.width/2;
+  const queenCx = qr.left - rect.left + qr.width/2;
+  const coupleCenter = (kingCx + queenCx) / 2;
+
+  const delta = childrenCenter - coupleCenter;
+  row0.style.transform = `translateX(${delta}px)`;
+}
+
+/* ----------------------- Connectors: orthogonal routing ----------------------- */
+/* For each parent (single or couple):
+   1) Vertical from parent anchor (single = bottom center; couple = marriage midpoint at card-center Y)
+   2) Horizontal "bus" just ABOVE the children row (shared y)
+   3) Vertical drops from bus to each child top
+*/
+function drawConnections(){
+  const svg = document.getElementById("connections");
+  const container = document.getElementById("tree");
+  const rect = container.getBoundingClientRect();
+  svg.setAttribute("width", rect.width);
+  svg.setAttribute("height", rect.height);
+  svg.setAttribute("viewBox", `0 0 ${rect.width} ${rect.height}`);
+  while(svg.firstChild) svg.removeChild(svg.firstChild);
+
+  // Cache positions
+  const pos = new Map();
+  document.querySelectorAll(".person").forEach(el=>{
+    const r=el.getBoundingClientRect();
+    pos.set(el.dataset.id,{
+      left: r.left-rect.left,
+      cx: r.left-rect.left + r.width/2,
+      top: r.top-rect.top,
+      midY: r.top-rect.top + r.height/2,
+      bottom: (r.top-rect.top)+r.height
+    });
+  });
+
+  // Quick helpers to add SVG segments
+  function addLine(x1,y1,x2,y2, colorVar, width="2", opacity="0.95"){
+    const ln=document.createElementNS("http://www.w3.org/2000/svg","line");
+    ln.setAttribute("x1",x1); ln.setAttribute("y1",y1);
+    ln.setAttribute("x2",x2); ln.setAttribute("y2",y2);
+    ln.setAttribute("stroke", getComputedStyle(document.documentElement).getPropertyValue(colorVar) || '#9ca3af');
+    ln.setAttribute("stroke-width", width);
+    ln.setAttribute("opacity", opacity);
+    ln.setAttribute("shape-rendering","crispEdges");
+    svg.appendChild(ln);
+  }
+
+  // 1) Draw marriage lines (center of cards), for all couples
+  document.querySelectorAll(".couple").forEach(w=>{
+    const [aEl,bEl] = w.querySelectorAll(".person");
+    if(!aEl || !bEl) return;
+    const a=aEl.dataset.id, b=bEl.dataset.id;
+    const pa = pos.get(a), pb = pos.get(b);
+    if(!pa || !pb) return;
+    const y = (pa.midY + pb.midY)/2;
+    addLine(Math.min(pa.cx,pb.cx), y, Math.max(pa.cx,pb.cx), y, '--marriage', '3');
+  });
+
+  // 2) Build an index of children present in the NEXT generation row (so we only connect to visible kids)
+  const gensEls = Array.from(document.querySelectorAll('.generation-row'));
+  const genChildrenMap = new Map(); // key: gen index -> array of child ids present
+  gensEls.forEach((row, i)=>{
+    const nextRow = gensEls[i+1];
+    if(!nextRow) return;
+    const nextIds = Array.from(nextRow.querySelectorAll('.person')).map(el=>el.dataset.id);
+    genChildrenMap.set(i, new Set(nextIds));
+  });
+
+  // 3) For each row, connect each parent block to its kids in the NEXT row with orthogonal routing
+  gensEls.forEach((row, gi)=>{
+    const nextRow = gensEls[gi+1];
+    if(!nextRow) return;
+
+    const nextRect = nextRow.getBoundingClientRect();
+    const busY = nextRect.top - rect.top - 10; // 10px ABOVE the children row
+
+    // Couples first
+    row.querySelectorAll(".couple").forEach(w=>{
+      const [aEl,bEl] = w.querySelectorAll(".person");
+      if(!aEl || !bEl) return;
+      const a=aEl.dataset.id, b=bEl.dataset.id;
+      const pa = pos.get(a), pb = pos.get(b);
+      if(!pa || !pb) return;
+
+      // children of this couple that are present in next row
+      const kids = PEOPLE.filter(p=>{
+        const s=new Set(p.parents||[]);
+        return s.has(a) && s.has(b);
+      }).filter(k => genChildrenMap.get(gi)?.has(k.id));
+
+      if(kids.length===0) return;
+
+      const mx = (pa.cx + pb.cx)/2;
+      const childXs = kids.map(k=>pos.get(k.id)?.cx).filter(v=>Number.isFinite(v));
+      if(childXs.length===0) return;
+
+      // Define bus span to include both the kids and the parent midpoint for a clean T-junction
+      const busX1 = Math.min(...childXs, mx);
+      const busX2 = Math.max(...childXs, mx);
+
+      // Vertical down from the parents (couple midpoint) to the bus
+      const yStart = (pa.midY + pb.midY)/2;
+      addLine(mx, yStart, mx, busY, '--child', '2');
+
+      // Horizontal bus above the children row
+      addLine(busX1, busY, busX2, busY, '--child', '2');
+
+      // Vertical drops from bus to each child top
+      kids.forEach(k=>{
+        const kc = pos.get(k.id); if(!kc) return;
+        addLine(kc.cx, busY, kc.cx, kc.top, '--child', '2');
+      });
+    });
+
+    // Singles (if any) in this row
+    row.querySelectorAll(".person").forEach(pEl=>{
+      // Skip if part of a couple (already handled)
+      if(pEl.parentElement && pEl.parentElement.classList.contains('couple')) return;
+
+      const id = pEl.dataset.id;
+      const parentPos = pos.get(id);
+      if(!parentPos) return;
+
+      const kids = PEOPLE.filter(k => (k.parents||[]).includes(id))
+                         .filter(k => genChildrenMap.get(gi)?.has(k.id));
+      if(kids.length===0) return;
+
+      const childXs = kids.map(k=>pos.get(k.id)?.cx).filter(v=>Number.isFinite(v));
+      if(childXs.length===0) return;
+
+      const px = parentPos.cx;
+      const busX1 = Math.min(...childXs, px);
+      const busX2 = Math.max(...childXs, px);
+
+      // Vertical from parent's bottom center to bus
+      addLine(px, parentPos.bottom, px, busY, '--child', '2');
+
+      // Horizontal bus
+      addLine(busX1, busY, busX2, busY, '--child', '2');
+
+      // Drops to each child
+      kids.forEach(k=>{
+        const kc = pos.get(k.id); if(!kc) return;
+        addLine(kc.cx, busY, kc.cx, kc.top, '--child', '2');
+      });
+    });
+  });
+}
+
+/* ----------------------- Init ----------------------- */
+render();
+</script>
+</body>
+</html>
