@@ -27,11 +27,11 @@
     will-change: transform;
   }
 
-  /* A couple stays together as a block; children of a parent are grouped too */
+  /* Blocks */
   .couple{display:flex; gap:16px; flex:0 0 auto}
-  .family-group{display:flex; gap:16px; flex:0 0 auto; position:relative;} /* we shift this to align to parent */
+  .family-group{display:flex; gap:16px; flex:0 0 auto; position:relative;}
 
-  /* Lock every person card to the same size */
+  /* Person card — fixed size across all generations */
   .person{
     display:flex; align-items:center; width:280px; flex:0 0 280px;
     background:var(--card); border-radius:var(--radius);
@@ -46,7 +46,7 @@
   .lifespan{margin:0;color:var(--muted);font-size:12px}
   .title{margin:0;color:#c9d1d9;font-size:12px}
 
-  /* Dialog styles */
+  /* Dialog */
   dialog.person-dialog{
     width:min(640px,96vw); border:1px solid rgba(255,255,255,.08); border-radius:16px;
     background:#111426; color:var(--text); padding:0; box-shadow:0 30px 90px rgba(0,0,0,.6);
@@ -107,11 +107,11 @@
 <script>
 /* ----------------------- Data (swap in your DB) ----------------------- */
 const PEOPLE = [
-  // Gen 0 (parents of Philippe for a richer demo)
+  // Gen 0
   { id:"albertII", name:"Albert II", title:"King of the Belgians", birth:"1934-06-06" },
   { id:"paola",    name:"Paola",     title:"Queen of the Belgians", birth:"1937-09-11" },
 
-  // Gen 1 (their children + spouses)
+  // Gen 1 (children + spouses)
   { id:"philippe", name:"Philippe",  title:"King of the Belgians", birth:"1960-04-15", parents:["albertII","paola"] },
   { id:"mathilde", name:"Mathilde",  title:"Queen of the Belgians", birth:"1973-01-20" },
   { id:"astrid",   name:"Astrid",    title:"Princess of Belgium", birth:"1962-06-05", parents:["albertII","paola"] },
@@ -146,7 +146,7 @@ const MARRIAGES = [
 /* ----------------------- Helpers ----------------------- */
 const byId = new Map(PEOPLE.map(p=>[p.id,p]));
 const spouseOf    = id => { const m=MARRIAGES.find(m=>m.partners.includes(id)); if(!m) return null; const [a,b]=m.partners; return a===id? b : a; };
-const marriagesOf = id => MARRIAGES.filter(m=>m.partners.includes(id));
+const marriagesOf = id => MARRIAGES.filter(m=>m.partners.includes(id)); /* keep ONLY this one */
 const birthYear   = p => p?.birth ? +p.birth.slice(0,4) : 9999;
 const childrenOfCouple = (a,b) => PEOPLE.filter(c=>{ const s=new Set(c.parents||[]); return s.has(a)&&s.has(b); });
 const childrenOfSingle = (a)   => PEOPLE.filter(c=>(c.parents||[]).includes(a));
@@ -154,7 +154,7 @@ const childrenOfSingle = (a)   => PEOPLE.filter(c=>(c.parents||[]).includes(a));
 /* ----------------------- Build generations (top-down) ----------------------- */
 function buildGenerations(){
   const gens = [];
-  // Gen 0: Albert II & Paola (switch to Philippe & Mathilde if you want that as root)
+  // Gen 0: Albert II & Paola
   gens.push([ { type:"couple", a:"albertII", b:"paola", primary:"albertII" } ]);
 
   // Expand downwards generation by generation
@@ -170,7 +170,7 @@ function buildGenerations(){
 
       if(!kids.length) continue;
 
-      // Turn each child into a block (couple if married, else single)
+      // Each child becomes a couple-block if married, else single-block
       const childBlocks = kids.map(k=>{
         const s = spouseOf(k.id);
         return s ? { type:"couple", a:k.id, b:s, primary:k.id }
@@ -184,7 +184,6 @@ function buildGenerations(){
         return ay - by || (pa?.name||"").localeCompare(pb?.name||"");
       });
 
-      // Family sort key = oldest child's DOB (to order families left→right)
       const first = byId.get(childBlocks[0].primary);
       groups.push({ parentKey, blocks: childBlocks, sortKey: birthYear(first) });
     }
@@ -194,11 +193,11 @@ function buildGenerations(){
     // Order families by their oldest child's DOB
     groups.sort((g1,g2)=> g1.sortKey - g2.sortKey);
 
-    // Flatten to next-gen "blocks" but we also keep groups for alignment in render()
+    // Push this generation's family groups
     gens.push(groups);
     depth++; if(depth>8) break;
   }
-  return gens; // Note: gens[0] = array of parent blocks; gens[1+] = array of family groups
+  return gens; // gens[0] = blocks; gens[1+] = array of family groups
 }
 
 /* ----------------------- Render ----------------------- */
@@ -228,7 +227,7 @@ function render(){
         }
       });
     } else {
-      // Row of family groups: each item in level is { parentKey, blocks[] }
+      // Row of family groups
       level.forEach(group=>{
         const gEl = document.createElement("div");
         gEl.className = "family-group";
@@ -254,13 +253,9 @@ function render(){
     rowsEl.appendChild(row);
   });
 
-  // Align Gen 0 midpoint over the center of Gen 1 (optional)
+  // Alignments + connectors
   alignRootToChildren();
-
-  // Align every family-group center under its parent anchor
   alignFamiliesUnderParents();
-
-  // Draw connectors after layout/alignments
   queueMicrotask(drawConnections);
   window.addEventListener("resize", ()=>{ alignRootToChildren(); alignFamiliesUnderParents(); drawConnections(); }, {passive:true});
 }
@@ -288,10 +283,9 @@ function renderPerson(id){
   return card;
 }
 
-/* ----------------------- Dialog rendering ----------------------- */
+/* ----------------------- Dialog ----------------------- */
 const dlg = document.getElementById('personDialog');
 document.getElementById('dlgClose').addEventListener('click', ()=>dlg.close());
-const marriagesOf = id => MARRIAGES.filter(m=>m.partners.includes(id));
 
 function openDialogFor(id){
   const p = byId.get(id); if(!p) return;
@@ -397,7 +391,6 @@ function alignFamiliesUnderParents(){
       const centerX = gr.left - rect.left + gr.width/2;
       const delta = Math.round(anchorX - centerX);
 
-      // Use margin-left so layout expands horizontally and avoids overlaps ahead
       const current = parseFloat(gEl.dataset.dx||"0");
       const newDx = current + delta;
       gEl.style.marginLeft = `${newDx}px`;
@@ -416,7 +409,6 @@ function drawConnections(){
   svg.setAttribute("viewBox", `0 0 ${rect.width} ${rect.height}`);
   while(svg.firstChild) svg.removeChild(svg.firstChild);
 
-  // Cache centers
   const centerOf = el => {
     const r=el.getBoundingClientRect();
     return { cx: r.left-rect.left + r.width/2, top: r.top-rect.top, midY: r.top-rect.top + r.height/2, bottom: r.top-rect.top + r.height };
@@ -436,7 +428,7 @@ function drawConnections(){
   const rows = Array.from(document.querySelectorAll('.generation-row'));
   rows.forEach((row, gi)=>{
     const nextRow = rows[gi+1];
-    // Draw marriages (center through cards)
+    // marriages
     row.querySelectorAll('.couple').forEach(w=>{
       const [aEl,bEl]=w.querySelectorAll('.person'); if(!aEl||!bEl) return;
       const pa=centerOf(aEl), pb=centerOf(bEl);
@@ -448,14 +440,13 @@ function drawConnections(){
     const nextRect = nextRow.getBoundingClientRect();
     const busY = nextRect.top - rect.top - 10;
 
-    // Couples: parent anchor at couple midpoint → vertical to bus → bus across family → drops
+    // Couples → bus → drops
     row.querySelectorAll('.couple').forEach(w=>{
       const [aEl,bEl]=w.querySelectorAll('.person'); if(!aEl||!bEl) return;
       const a=aEl.dataset.id, b=bEl.dataset.id;
       const pa=centerOf(aEl), pb=centerOf(bEl);
       const mx=(pa.cx+pb.cx)/2;
 
-      // Find this parent's family group in next row
       const gEl = nextRow.querySelector(`.family-group[data-parent-key="c:${a}+${b}"]`);
       if(!gEl) return;
       const childPersons = Array.from(gEl.querySelectorAll('.person'));
@@ -464,19 +455,16 @@ function drawConnections(){
       const xs = childPersons.map(p=>centerOf(p).cx);
       const busX1 = Math.min(...xs, mx), busX2 = Math.max(...xs, mx);
 
-      // vertical down from parent anchor
       const yStart=(pa.midY+pb.midY)/2;
-      addLine(mx, yStart, mx, busY, '--child', '2');
-      // horizontal bus
-      addLine(busX1, busY, busX2, busY, '--child', '2');
-      // drops
+      addLine(mx, yStart, mx, busY, '--child', '2');   // vertical
+      addLine(busX1, busY, busX2, busY, '--child', '2'); // horizontal bus
       childPersons.forEach(p=>{
         const c=centerOf(p);
-        addLine(c.cx, busY, c.cx, c.top, '--child', '2');
+        addLine(c.cx, busY, c.cx, c.top, '--child', '2'); // drops
       });
     });
 
-    // Singles (if any)
+    // Singles
     Array.from(row.children).forEach(ch=>{
       if(ch.classList.contains('couple')) return;
       if(ch.classList.contains('family-group')) return;
