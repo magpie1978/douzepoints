@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Belgian Royal Family — Zone-Aligned Tree (images + dialog)</title>
+<style>
+  :root{
+    --bg:#0f111a; --card:#1a1d29; --text:#e6e6e6; --muted:#9aa0a6;
+    --accent:#e50914; --marriage:#d1d5db; --child:#9ca3af; --radius:16px;
+    --gap:16px;
+  }
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .page{max-width:2400px;margin:24px auto;padding:0 16px 64px;position:relative}
+  @media (min-width:2400px){ .page{max-width:96vw} }
+
+  h1{margin:0 0 8px}
+  .subtitle{color:var(--muted);margin-bottom:24px}
+  .divider{height:1px;background:var(--accent);opacity:.6;margin:12px 0 24px}
+
+  .tree{position:relative;overflow-x:auto}
+  .connections{position:absolute;inset:0;pointer-events:none;z-index:0}
+
+  /* One strict row per generation (no wrap). */
+  .generation-row{
+    width:max(100%, 100px); position:relative; display:flex; flex-wrap:nowrap;
+    gap:var(--gap); justify-content:flex-start; margin:36px 0; padding-block:8px 56px; z-index:1;
+  }
+
+  /* Couple stays together */
+  .couple{display:flex; gap:var(--gap); flex:0 0 auto}
+
+  /* Rows >= 1 render reserved slots that JS sizes/positions */
+  .family-slot{ position:relative; flex:0 0 auto; width:auto; margin-left:0; }
+  .family-group{display:flex; gap:var(--gap); flex:0 0 auto; position:relative; }
+
+  /* Fixed-size person cards across all gens */
+  .person{
+    display:flex; align-items:center; width:280px; flex:0 0 280px;
+    background:var(--card); border-radius:var(--radius);
+    border:1px solid rgba(255,255,255,.06); box-shadow:0 6px 20px rgba(0,0,0,.25); overflow:hidden;
+    cursor:pointer; transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .person:hover{ transform:translateY(-2px); box-shadow:0 10px 28px rgba(0,0,0,.35); }
+  .thumb{width:88px;height:110px;object-fit:cover;background:#22252f;flex-shrink:0}
+  .placeholder{width:88px;height:110px;display:grid;place-items:center;background:#22252f;color:#6b7280;font-size:11px}
+  .person-body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
+  .name{margin:0;font-weight:700;font-size:15px}
+  .title{margin:0;color:#c9d1d9;font-size:12px}
+  .lifespan{margin:0;color:var(--muted);font-size:12px}
+
+  /* Dialog */
+  dialog.person-dialog{
+    width:min(640px,96vw); border:1px solid rgba(255,255,255,.08); border-radius:16px;
+    background:#111426; color:#fff; padding:0; box-shadow:0 30px 90px rgba(0,0,0,.6);
+  }
+  dialog::backdrop{ background:rgba(0,0,0,.55); backdrop-filter:saturate(120%) blur(2px); }
+  .dlg-header{ display:flex; align-items:center; gap:14px; padding:16px; border-bottom:1px solid rgba(255,255,255,.08); }
+  .dlg-header .thumb{ width:70px; height:88px; border-radius:12px; object-fit:cover; }
+  .dlg-title{ display:flex; flex-direction:column; gap:4px; }
+  .dlg-name{ font-weight:800; font-size:18px; }
+  .dlg-sub{ color:#c9d1d9; font-size:13px; }
+  .dlg-content{ padding:16px; display:grid; gap:12px; }
+  .field{ display:grid; grid-template-columns:120px 1fr; gap:10px; align-items:start; }
+  .field .label{ color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  .field .value{ font-size:14px; }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{ padding:4px 8px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:999px; font-size:12px; color:#d1d5db; }
+  .dlg-footer{ display:flex; justify-content:flex-end; gap:8px; padding:12px 16px; border-top:1px solid rgba(255,255,255,.08); }
+  .btn{ background:#1f2340; border:1px solid rgba(255,255,255,.14); color:#fff; border-radius:10px; padding:8px 12px; cursor:pointer; }
+  .btn:hover{ background:#2a2f55; }
+
+  @media (max-width:560px){
+    .person{width:92vw;max-width:360px;flex:0 0 auto}
+    .thumb,.placeholder{width:76px;height:96px}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Belgian Royal Family — Zone-Aligned Tree</h1>
+  <div class="subtitle">Parents are centered over their children; children are clamped to their parents’ zone; connectors cover the full scroll width; portraits via <code>photo</code> URLs.</div>
+  <div class="divider"></div>
+
+  <div id="tree" class="tree">
+    <svg id="connections" class="connections" preserveAspectRatio="none"></svg>
+    <div id="rows"></div>
+  </div>
+</div>
+
+<!-- Person dialog -->
+<dialog id="personDialog" class="person-dialog" aria-modal="true">
+  <div class="dlg-header">
+    <div id="dlgThumb" class="placeholder" style="width:70px;height:88px;display:grid;place-items:center;">Photo</div>
+    <div class="dlg-title">
+      <div class="dlg-name" id="dlgName">Name</div>
+      <div class="dlg-sub" id="dlgTitle">Title / Style</div>
+    </div>
+  </div>
+  <div class="dlg-content">
+    <div class="field"><div class="label">Birth</div><div class="value" id="dlgBirth">—</div></div>
+    <div class="field"><div class="label">Marriages</div><div class="value" id="dlgMarriages">—</div></div>
+    <div class="field"><div class="label">Death</div><div class="value" id="dlgDeath">—</div></div>
+    <div class="field"><div class="label">Children</div><div class="value"><div class="chips" id="dlgChildren"></div></div></div>
+  </div>
+  <div class="dlg-footer"><button class="btn" id="dlgClose">Close</button></div>
+</dialog>
+
+<script>
+/* ----------------------- Data (plug your DB here) ----------------------- */
+/* Add `photo` URLs (Wikimedia suggested). Below are examples; replace/add the rest. */
+const PEOPLE = [
+  // Gen 0
+  { id:"albertII", name:"Albert II", title:"King of the Belgians", birth:"1934-06-06",
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/King_Albert_II_greets_U.S._Secretary_of_Defense_2013.jpg/320px-King_Albert_II_greets_U.S._Secretary_of_Defense_2013.jpg" },
+  { id:"paola", name:"Paola", title:"Queen of the Belgians", birth:"1937-09-11",
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Paola_Ruffo_di_Calabria_1961.jpg/320px-Paola_Ruffo_di_Calabria_1961.jpg" },
+
+  // Gen 1
+  { id:"philippe", name:"Philippe", title:"King of the Belgians", birth:"1960-04-15", parents:["albertII","paola"],
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/King_Philippe_of_Belgium_2017.jpg/320px-King_Philippe_of_Belgium_2017.jpg" },
+  { id:"mathilde", name:"Mathilde", title:"Queen of the Belgians", birth:"1973-01-20",
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Queen_Mathilde_in_2022.jpg/320px-Queen_Mathilde_in_2022.jpg" },
+
+  { id:"astrid", name:"Astrid", title:"Princess of Belgium", birth:"1962-06-05", parents:["albertII","paola"],
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Princess_Astrid_of_Belgium_2022.jpg/320px-Princess_Astrid_of_Belgium_2022.jpg" },
+  { id:"lorenz", name:"Lorenz", title:"Prince of Belgium", birth:"1955-12-16",
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Prince_Lorenz_of_Belgium_2010.jpg/320px-Prince_Lorenz_of_Belgium_2010.jpg" },
+
+  { id:"laurent", name:"Laurent", title:"Prince of Belgium", birth:"1963-10-19", parents:["albertII","paola"],
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Prince_Laurent_of_Belgium_2015.jpg/320px-Prince_Laurent_of_Belgium_2015.jpg" },
+  { id:"claire", name:"Claire", title:"Princess of Belgium", birth:"1974-01-18",
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Princess_Claire_of_Belgium_2014.jpg/320px-Princess_Claire_of_Belgium_2014.jpg" },
+
+  // Gen 2 (Philippe + Mathilde)
+  { id:"elisabeth", name:"Elisabeth", title:"Princess of Belgium, Duchess of Brabant", birth:"2001-10-25", parents:["philippe","mathilde"],
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Princess_Elisabeth_of_Belgium_2023.jpg/320px-Princess_Elisabeth_of_Belgium_2023.jpg" },
+  { id:"gabriel", name:"Gabriel", title:"Prince of Belgium", birth:"2003-08-20", parents:["philippe","mathilde"],
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Prince_Gabriel_of_Belgium_2019.jpg/320px-Prince_Gabriel_of_Belgium_2019.jpg" },
+  { id:"emmanuel", name:"Emmanuel", title:"Prince of Belgium", birth:"2005-10-04", parents:["philippe","mathilde"],
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Prince_Emmanuel_of_Belgium_2019.jpg/320px-Prince_Emmanuel_of_Belgium_2019.jpg" },
+  { id:"eleonore", name:"Eléonore", title:"Princess of Belgium", birth:"2008-04-16", parents:["philippe","mathilde"],
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Princess_El%C3%A9onore_of_Belgium_2019.jpg/320px-Princess_El%C3%A9onore_of_Belgium_2019.jpg" },
+
+  // Gen 2 (Astrid + Lorenz)
+  { id:"amedeo", name:"Amedeo", title:"Prince of Belgium", birth:"1986-02-21", parents:["astrid","lorenz"],
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Prince_Amedeo_of_Belgium_2013.jpg/320px-Prince_Amedeo_of_Belgium_2013.jpg" },
+  { id:"maria_laura", name:"Maria Laura", title:"Princess of Belgium", birth:"1988-08-26", parents:["astrid","lorenz"],
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Princess_Maria-Laura_of_Belgium_2011.jpg/320px-Princess_Maria-Laura_of_Belgium_2011.jpg" },
+  { id:"joachim", name:"Joachim", title:"Prince of Belgium", birth:"1991-12-09", parents:["astrid","lorenz"],
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Prince_Joachim_of_Belgium_2013.jpg/320px-Prince_Joachim_of_Belgium_2013.jpg" },
+  { id:"luisa_maria", name:"Luisa Maria", title:"Princess of Belgium", birth:"1995-10-11", parents:["astrid","lorenz"],
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Princess_Luisa_Maria_of_Belgium_2013.jpg/320px-Princess_Luisa_Maria_of_Belgium_2013.jpg" },
+  { id:"laetitia_maria", name:"Laetitia Maria", title:"Princess of Belgium", birth:"2003-11-23", parents:["astrid","lorenz"],
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Princess_Laetitia_Maria_of_Belgium_2013.jpg/320px-Princess_Laetitia_Maria_of_Belgium_2013.jpg" },
+
+  // Gen 2 (Laurent + Claire)
+  { id:"louise", name:"Louise", title:"Princess of Belgium", birth:"2004-02-06", parents:["laurent","claire"],
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Princess_Louise_of_Belgium_2014.jpg/320px-Princess_Louise_of_Belgium_2014.jpg" },
+  { id:"nicolas", name:"Nicolas", title:"Prince of Belgium", birth:"2005-12-13", parents:["laurent","claire"],
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Prince_Nicolas_of_Belgium_2014.jpg/320px-Prince_Nicolas_of_Belgium_2014.jpg" },
+  { id:"aymeric", name:"Aymeric", title:"Prince of Belgium", birth:"2005-12-13", parents:["laurent","claire"],
+    photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Prince_Aymeric_of_Belgium_2014.jpg/320px-Prince_Aymeric_of_Belgium_2014.jpg" },
+];
+
+const MARRIAGES = [
+  { partners:["albertII","paola"],     date:"1959-07-02", place:"Rome" },
+  { partners:["philippe","mathilde"],  date:"1999-12-04", place:"Brussels" },
+  { partners:["astrid","lorenz"],      date:"1984-09-22", place:"Brussels" },
+  { partners:["laurent","claire"],     date:"2003-04-12", place:"Brussels" },
+];
+
+/* ----------------------- Helpers ----------------------- */
+const byId = new Map(PEOPLE.map(p=>[p.id,p]));
+const spouseOf    = id => { const m=MARRIAGES.find(m=>m.partners.includes(id)); if(!m) return null; const [a,b]=m.partners; return a===id? b : a; };
+const marriagesOf = id => MARRIAGES.filter(m=>m.partners.includes(id));
+const birthYear   = p => p?.birth ? +p.birth.slice(0,4) : 9999;
+const childrenOfCouple = (a,b) => PEOPLE.filter(c=>{ const s=new Set(c.parents||[]); return s.has(a)&&s.has(b); });
+const childrenOfSingle = (a)   => PEOPLE.filter(c=>(c.parents||[]).includes(a));
+
+/* ----------------------- Build generations (top-down) ----------------------- */
+function buildGenerations(){
+  const gens = [];
+  // Gen 0 root couple (change to philippe/mathilde if you prefer)
+  gens.push([ { type:"couple", a:"albertII", b:"paola", primary:"albertII" } ]);
+
+  let depth = 0;
+  while(true){
+    const prev = gens[depth];
+    if(!prev) break;
+
+    const sources = (depth === 0) ? prev : prev.flatMap(group => group.blocks);
+
+    const groups = [];
+    for (const block of sources){
+      const parentKey = block.type==="couple" ? `c:${block.a}+${block.b}` : `s:${block.id}`;
+      const kids = block.type==="couple" ? childrenOfCouple(block.a, block.b) : childrenOfSingle(block.id);
+      if(!kids.length) continue;
+
+      const childBlocks = kids.map(k=>{
+        const s = spouseOf(k.id);
+        return s ? { type:"couple", a:k.id, b:s, primary:k.id }
+                 : { type:"single", id:k.id, primary:k.id };
+      });
+
+      // Sort within this family by child's DOB
+      childBlocks.sort((A,B)=>{
+        const pa=byId.get(A.primary), pb=byId.get(B.primary);
+        const ay=birthYear(pa), by=birthYear(pb);
+        return ay - by || (pa?.name||"").localeCompare(pb?.name||"");
+      });
+
+      const first = byId.get(childBlocks[0].primary);
+      groups.push({ parentKey, blocks: childBlocks, sortKey: birthYear(first) });
+    }
+
+    if(!groups.length) break;
+    gens.push(groups);
+    depth++; if(depth>12) break;
+  }
+
+  return gens;
+}
+
+/* ----------------------- Render ----------------------- */
+function render(){
+  const rowsEl = document.getElementById("rows");
+  rowsEl.innerHTML = "";
+  const gens = buildGenerations();
+
+  gens.forEach((level, gi)=>{
+    const row = document.createElement("div");
+    row.className = "generation-row";
+    row.dataset.generation = gi;
+
+    if(gi===0){
+      level.forEach(block=>{
+        if(block.type==="couple"){
+          const wrap = document.createElement("div");
+          wrap.className = "couple";
+          wrap.dataset.a = block.a; wrap.dataset.b = block.b;
+          wrap.appendChild(renderPerson(block.a));
+          wrap.appendChild(renderPerson(block.b));
+          row.appendChild(wrap);
+        }else{
+          row.appendChild(renderPerson(block.id));
+        }
+      });
+    } else {
+      level.forEach(group=>{
+        const slot = document.createElement("div");
+        slot.className = "family-slot";
+        slot.dataset.parentKey = group.parentKey;
+
+        const gEl = document.createElement("div");
+        gEl.className = "family-group";
+        group.blocks.forEach(block=>{
+          if(block.type==="couple"){
+            const wrap = document.createElement("div");
+            wrap.className = "couple";
+            wrap.dataset.a = block.a; wrap.dataset.b = block.b;
+            wrap.appendChild(renderPerson(block.a));
+            wrap.appendChild(renderPerson(block.b));
+            gEl.appendChild(wrap);
+          }else{
+            gEl.appendChild(renderPerson(block.id));
+          }
+        });
+
+        slot.appendChild(gEl);
+        row.appendChild(slot);
+      });
+    }
+
+    rowsEl.appendChild(row);
+  });
+
+  // Layout & connectors (order matters)
+  alignRootToChildren();
+  layoutWithinParentZones();   // place children inside parents' zones (may push later parents)
+  centerParentsOverChildren(); // center each parent over their own children
+  layoutWithinParentZones();   // re-clamp children after any parent shifts
+  queueMicrotask(drawConnections);
+
+  window.addEventListener("resize", ()=>{
+    alignRootToChildren();
+    layoutWithinParentZones();
+    centerParentsOverChildren();
+    layoutWithinParentZones();
+    drawConnections();
+  }, {passive:true});
+}
+
+/* Person card: 1) name, 2) title, 3) dates; left portrait uses `photo` if present */
+function renderPerson(id){
+  const p = byId.get(id);
+
+  function formatDates(person){
+    const b = person.birth ? person.birth.slice(0,4) : null;
+    const d = person.death ? person.death.slice(0,4) : null;
+    if (b && d) return `${b}–${d}`;
+    if (b)      return `${b}–`;
+    if (d)      return `–${d}`;
+    return "";
+  }
+
+  const card = document.createElement("article");
+  card.className = "person";
+  card.dataset.id = id;
+
+  if (p.photo){
+    const img = document.createElement("img");
+    img.className = "thumb";
+    img.src = p.photo;
+    img.alt = p.name || "Portrait";
+    img.loading = "lazy";
+    card.appendChild(img);
+  } else {
+    const ph = document.createElement("div");
+    ph.className = "placeholder";
+    ph.textContent = "Photo";
+    card.appendChild(ph);
+  }
+
+  const body = document.createElement("div");
+  body.className = "person-body";
+
+  const h = document.createElement("h3");
+  h.className = "name";
+  h.textContent = p.name || "(Unknown)";
+
+  const t = document.createElement("p");
+  t.className = "title";
+  t.textContent = p.title || "";
+
+  const dates = document.createElement("div");
+  dates.className = "lifespan";
+  dates.textContent = formatDates(p);
+
+  body.appendChild(h);
+  if (t.textContent) body.appendChild(t);
+  if (dates.textContent) body.appendChild(dates);
+
+  card.appendChild(body);
+  card.addEventListener('click', ()=>openDialogFor(id));
+  return card;
+}
+
+/* ----------------------- Dialog ----------------------- */
+const dlg = document.getElementById('personDialog');
+document.getElementById('dlgClose').addEventListener('click', ()=>dlg.close());
+function openDialogFor(id){
+  const p = byId.get(id); if(!p) return;
+
+  document.getElementById('dlgName').textContent  = p.name || '(Unknown)';
+  document.getElementById('dlgTitle').textContent = p.title || '—';
+
+  const thumbHost = document.getElementById('dlgThumb');
+  thumbHost.innerHTML = "";
+  if (p.photo){
+    const img = document.createElement("img");
+    img.className = "thumb";
+    img.src = p.photo;
+    img.alt = p.name || "Portrait";
+    img.loading = "lazy";
+    thumbHost.classList.remove('placeholder');
+    thumbHost.appendChild(img);
+  } else {
+    thumbHost.classList.add('placeholder');
+    thumbHost.textContent = "Photo";
+  }
+
+  document.getElementById('dlgBirth').textContent = p.birth
+    ? new Date(p.birth).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'})
+    : '—';
+  document.getElementById('dlgDeath').textContent = p.death
+    ? new Date(p.death).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'})
+    : '—';
+
+  const ms = marriagesOf(id);
+  document.getElementById('dlgMarriages').textContent = ms.length
+    ? ms.map(m=>{
+        const [a,b]=m.partners; const sid=a===id?b:a; const s=byId.get(sid);
+        const when = m.date ? ` on ${new Date(m.date).toLocaleDateString()}` : '';
+        const where= m.place? ` in ${m.place}` : '';
+        return `${s?.name||sid}${when}${where}`;
+      }).join(' • ')
+    : '—';
+
+  const kids = PEOPLE.filter(k => (k.parents||[]).includes(id))
+                     .sort((a,b)=> (a.birth||'').localeCompare(b.birth||''));
+  const ct = document.getElementById('dlgChildren'); ct.innerHTML='';
+  (kids.length?kids:[{name:'No children listed', birth:null}]).forEach(k=>{
+    const chip=document.createElement('span'); chip.className='chip';
+    chip.textContent = k.birth ? `${k.name} (b. ${k.birth.slice(0,4)})` : k.name;
+    ct.appendChild(chip);
+  });
+
+  dlg.showModal();
+}
+
+/* ----------------------- Geometry helpers ----------------------- */
+function alignRootToChildren(){
+  const tree = document.getElementById("tree");
+  const rect = tree.getBoundingClientRect();
+  const row0 = document.querySelector('.generation-row[data-generation="0"]');
+  const row1 = document.querySelector('.generation-row[data-generation="1"]');
+  if(!row0 || !row1) return;
+
+  const kidsEls = Array.from(row1.querySelectorAll('.person'));
+  if(kidsEls.length===0) return;
+
+  const kRects = kidsEls.map(el=>el.getBoundingClientRect());
+  const minX = Math.min(...kRects.map(r=>r.left - rect.left + r.width/2));
+  const maxX = Math.max(...kRects.map(r=>r.left - rect.left + r.width/2));
+  const childrenCenter = (minX + maxX) / 2;
+
+  const couple = row0.querySelector('.couple');
+  if(!couple) return;
+  const [pA,pB] = couple.querySelectorAll('.person');
+  if(!pA || !pB) return;
+  const ra = pA.getBoundingClientRect(); const rb = pB.getBoundingClientRect();
+  const coupleCenter = ((ra.left-rect.left + ra.width/2) + (rb.left-rect.left + rb.width/2))/2;
+
+  const delta = childrenCenter - coupleCenter;
+  row0.style.transform = `translateX(${delta}px)`;
+}
+
+function getParentsInRow(row){
+  const list = [];
+  row.querySelectorAll('.couple').forEach(cpl=>{
+    const [aEl,bEl] = cpl.querySelectorAll('.person'); if(!aEl||!bEl) return;
+    list.push({ type:'couple', el:cpl, a:aEl.dataset.id, b:bEl.dataset.id, key:`c:${aEl.dataset.id}+${bEl.dataset.id}` });
+  });
+  Array.from(row.children).forEach(ch=>{
+    if(ch.classList.contains('couple')) return;
+    if(ch.classList.contains('family-slot') || ch.classList.contains('family-group')) return;
+    const pEl = ch.classList.contains('person') ? ch : ch.querySelector('.person');
+    if(!pEl) return;
+    list.push({ type:'single', el:pEl, id:pEl.dataset.id, key:`s:${pEl.dataset.id}` });
+  });
+  return list;
+}
+
+function anchorXForParent(p, treeRect){
+  if(p.type==='couple'){
+    const persons = p.el.querySelectorAll('.person');
+    const rA = persons[0].getBoundingClientRect();
+    const rB = persons[1].getBoundingClientRect();
+    const cxA = rA.left - treeRect.left + rA.width/2;
+    const cxB = rB.left - treeRect.left + rB.width/2;
+    return (cxA + cxB)/2;
+  }else{
+    const r = p.el.getBoundingClientRect();
+    return r.left - treeRect.left + r.width/2;
+  }
+}
+
+/* ----------------------- Zone layout: clamp children to their own parent zone ----------------------- */
+function layoutWithinParentZones(){
+  const tree = document.getElementById("tree");
+  const rect = tree.getBoundingClientRect();
+  const GAP = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gap')) || 16;
+  const MAX_ITERS = 6;
+
+  const rows = Array.from(document.querySelectorAll('.generation-row'));
+  for(let gi=0; gi<rows.length-1; gi++){
+    const row = rows[gi];
+    const next = rows[gi+1];
+    if(!next) continue;
+
+    const parents = getParentsInRow(row);
+
+    for(let iter=0; iter<MAX_ITERS; iter++){
+      const anchors = parents.map(p=>anchorXForParent(p, rect));
+      const mids = [];
+      for(let i=0;i<anchors.length-1;i++) mids.push( (anchors[i]+anchors[i+1]) / 2 );
+
+      let pushed = false;
+
+      for(let i=0;i<parents.length;i++){
+        const p = parents[i];
+        const key = p.key;
+        const slot = next.querySelector(`.family-slot[data-parent-key="${key}"]`);
+        if(!slot) continue;
+
+        const group = slot.querySelector('.family-group');
+        slot.style.marginLeft = '0px';
+        slot.style.width = 'auto';
+        const gw = group.getBoundingClientRect().width;
+
+        const ax = anchors[i];
+        const zoneL = (i===0) ? -Infinity : mids[i-1];
+        const zoneR = (i===parents.length-1) ? Infinity : mids[i];
+
+        const neededLeft = ax - gw/2;
+        const neededRight = ax + gw/2;
+
+        if (neededLeft < zoneL) {
+          const delta = Math.ceil(zoneL - neededLeft + GAP);
+          const currentML = parseFloat(getComputedStyle(p.el).marginLeft || "0");
+          p.el.style.marginLeft = `${currentML + delta}px`;
+          pushed = true;
+          break;
+        }
+        if (neededRight > zoneR) {
+          const delta = Math.ceil(neededRight - zoneR + GAP);
+          for(let j=i+1;j<parents.length;j++){
+            const pj = parents[j];
+            const ml = parseFloat(getComputedStyle(pj.el).marginLeft || "0");
+            pj.el.style.marginLeft = `${ml + delta}px`;
+          }
+          pushed = true;
+          break;
+        }
+      }
+
+      if(!pushed){
+        const anchors2 = parents.map(p=>anchorXForParent(p, rect));
+        const mids2 = [];
+        for(let i=0;i<anchors2.length-1;i++) mids2.push( (anchors2[i]+anchors2[i+1]) / 2 );
+
+        let lineX = 0;
+
+        const slots = parents.map((p,i)=>{
+          const slot = next.querySelector(`.family-slot[data-parent-key="${p.key}"]`);
+          return { slot, i };
+        }).filter(o=>o.slot);
+
+        slots.forEach(({slot, i})=>{
+          const group = slot.querySelector('.family-group');
+          slot.style.marginLeft = '0px';
+          slot.style.width = 'auto';
+
+          const gw = group.getBoundingClientRect().width;
+          const ax = anchors2[i];
+          const zoneL = (i===0) ? -Infinity : mids2[i-1];
+          const zoneR = (i===parents.length-1) ? Infinity : mids2[i];
+
+          const targetLeft = ax - gw/2;
+          const clampedLeft = Math.max(targetLeft, zoneL);
+          const finalLeft = Math.min(clampedLeft, zoneR - gw);
+
+          const ml = Math.max(0, Math.round(finalLeft - lineX));
+          slot.style.marginLeft = `${ml}px`;
+          slot.style.width = `${Math.ceil(gw)}px`;
+
+          lineX  = finalLeft + gw + GAP;
+        });
+
+        break;
+      }
+    }
+  }
+}
+
+/* ----------------------- Center parents directly over their own children ----------------------- */
+function centerParentsOverChildren(){
+  const tree = document.getElementById("tree");
+  const rect = tree.getBoundingClientRect();
+  const GAP  = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gap')) || 16;
+
+  const rows = Array.from(document.querySelectorAll('.generation-row'));
+  for (let gi = 0; gi < rows.length - 1; gi++) {
+    const row  = rows[gi];
+    const next = rows[gi + 1];
+    if (!next) continue;
+
+    const parents = [];
+    row.querySelectorAll('.couple').forEach(cpl=>{
+      const [aEl,bEl] = cpl.querySelectorAll('.person'); if(!aEl||!bEl) return;
+      parents.push({ type:'couple', el:cpl, key:`c:${aEl.dataset.id}+${bEl.dataset.id}` });
+    });
+    Array.from(row.children).forEach(ch=>{
+      if(ch.classList.contains('couple')) return;
+      if(ch.classList.contains('family-slot') || ch.classList.contains('family-group')) return;
+      const pEl = ch.classList.contains('person') ? ch : ch.querySelector('.person');
+      if(!pEl) return;
+      parents.push({ type:'single', el:pEl, key:`s:${pEl.dataset.id}` });
+    });
+    if (!parents.length) continue;
+
+    const anchorX = p=>{
+      if(p.type==='couple'){
+        const ps = p.el.querySelectorAll('.person');
+        const rA = ps[0].getBoundingClientRect(), rB = ps[1].getBoundingClientRect();
+        const cxA = rA.left - rect.left + rA.width/2, cxB = rB.left - rect.left + rB.width/2;
+        return (cxA + cxB) / 2;
+      } else {
+        const r = p.el.getBoundingClientRect();
+        return r.left - rect.left + r.width/2;
+      }
+    };
+
+    const currentAnchors = parents.map(anchorX);
+
+    const desired = parents.map((p,i)=>{
+      const slot = next.querySelector(`.family-slot[data-parent-key="${p.key}"]`);
+      if(!slot) return currentAnchors[i];
+
+      const xs = [];
+      slot.querySelectorAll('.family-group > .couple').forEach(c=>{
+        const childCard = c.querySelector('.person');
+        if(childCard){
+          const rc = childCard.getBoundingClientRect();
+          xs.push(rc.left - rect.left + rc.width/2);
+        }
+      });
+      slot.querySelectorAll('.family-group > .person').forEach(card=>{
+        const rc = card.getBoundingClientRect();
+        xs.push(rc.left - rect.left + rc.width/2);
+      });
+      if (!xs.length) return currentAnchors[i];
+
+      const minX = Math.min(...xs), maxX = Math.max(...xs);
+      return (minX + maxX) / 2;
+    });
+
+    const mids = [];
+    for (let i=0;i<currentAnchors.length-1;i++) mids.push( (currentAnchors[i]+currentAnchors[i+1]) / 2 );
+
+    parents.forEach((p,i)=>{
+      const aNow = currentAnchors[i];
+      const want = desired[i];
+      const leftBound  = (i===0) ? -Infinity : (mids[i-1] + GAP*0.5);
+      const rightBound = (i===parents.length-1) ? Infinity : (mids[i] - GAP*0.5);
+      const aNew = Math.max(leftBound, Math.min(want, rightBound));
+      const delta = Math.round(aNew - aNow);
+      if (delta !== 0) {
+        const ml = parseFloat(getComputedStyle(p.el).marginLeft || "0");
+        p.el.style.marginLeft = `${ml + delta}px`;
+      }
+    });
+  }
+}
+
+/* ----------------------- Connectors: full-scroll SVG + child-span buses ----------------------- */
+function drawConnections(){
+  const svg       = document.getElementById("connections");
+  const container = document.getElementById("tree");
+  const rowsWrap  = document.getElementById("rows");
+
+  // 1) Full content bounds across ALL rows
+  const containerRect = container.getBoundingClientRect();
+  const rows = Array.from(document.querySelectorAll('.generation-row'));
+
+  let minLeft = Infinity, maxRight = -Infinity, maxBottom = -Infinity;
+  rows.forEach(row=>{
+    const rr = row.getBoundingClientRect();
+    const left   = rr.left  - containerRect.left;
+    const right  = rr.right - containerRect.left;
+    const bottom = rr.bottom - containerRect.top;
+    if (left   < minLeft)  minLeft  = left;
+    if (right  > maxRight) maxRight = right;
+    if (bottom > maxBottom)maxBottom = bottom;
+  });
+  if (!isFinite(minLeft)) minLeft = 0;
+  if (minLeft > 0) minLeft = 0;
+
+  const PAD = 120;
+  const fullWidth  = Math.max(container.scrollWidth, rowsWrap.scrollWidth, Math.ceil(maxRight - minLeft + PAD));
+  const fullHeight = Math.max(container.scrollHeight, rowsWrap.scrollHeight, Math.ceil(maxBottom + PAD));
+  svg.setAttribute("width",  fullWidth);
+  svg.setAttribute("height", fullHeight);
+  svg.setAttribute("viewBox", `0 0 ${fullWidth} ${fullHeight}`);
+  svg.style.width  = fullWidth + "px";
+  svg.style.height = fullHeight + "px";
+
+  // 2) Clear & helpers
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  const rect = containerRect;
+
+  const LINE_W = "2";
+  const BUS_INSET = 14; // only used to clamp parent anchor jog, not the bus span
+
+  function busOffsetForKey(key){
+    let h=0; for(let i=0;i<key.length;i++) h=(h*31 + key.charCodeAt(i))|0;
+    const r = Math.abs(h)%3;
+    return r===0? -8 : r===1? 0 : 8;
+  }
+
+  const centerOf = el => {
+    const r = el.getBoundingClientRect();
+    return {
+      cx: r.left - rect.left + r.width/2,
+      top: r.top  - rect.top,
+      midY: r.top - rect.top + r.height/2,
+      bottom: r.top - rect.top + r.height
+    };
+  };
+
+  function addLine(x1,y1,x2,y2, colorVar, width=LINE_W, opacity="0.95"){
+    const ln=document.createElementNS("http://www.w3.org/2000/svg","line");
+    ln.setAttribute("x1",x1); ln.setAttribute("y1",y1);
+    ln.setAttribute("x2",x2); ln.setAttribute("y2",y2);
+    ln.setAttribute("stroke", getComputedStyle(document.documentElement).getPropertyValue(colorVar) || '#9ca3af');
+    ln.setAttribute("stroke-width", width);
+    ln.setAttribute("opacity", opacity);
+    ln.setAttribute("shape-rendering","crispEdges");
+    ln.setAttribute("stroke-linecap","square");
+    svg.appendChild(ln);
+  }
+
+  // 3) Draw marriages & parent→children connections (bus spans ONLY child centers)
+  rows.forEach((row, gi)=>{
+    const nextRow = rows[gi+1];
+
+    // Marriage lines
+    row.querySelectorAll('.couple').forEach(w=>{
+      const [aEl,bEl]=w.querySelectorAll('.person'); if(!aEl||!bEl) return;
+      const pa=centerOf(aEl), pb=centerOf(bEl);
+      const y=(pa.midY+pb.midY)/2;
+      addLine(Math.min(pa.cx,pb.cx), y, Math.max(pa.cx,pb.cx), y, '--marriage', '3');
+    });
+
+    if(!nextRow) return;
+
+    const nextRect = nextRow.getBoundingClientRect();
+    const baseBusY = nextRect.top - rect.top - 12;
+
+    // Couples → their family-slot
+    row.querySelectorAll('.couple').forEach(w=>{
+      const [aEl,bEl]=w.querySelectorAll('.person'); if(!aEl||!bEl) return;
+      const a=aEl.dataset.id, b=bEl.dataset.id;
+      const key = `c:${a}+${b}`;
+      const pa=centerOf(aEl), pb=centerOf(bEl);
+      const parentX=(pa.cx+pb.cx)/2;
+      const yStart=(pa.midY+pb.midY)/2;
+
+      const slot = nextRow.querySelector(`.family-slot[data-parent-key="${key}"]`);
+      if(!slot) return;
+
+      const offset = busOffsetForKey(key);
+      const busY = baseBusY + offset;
+
+      const sr = slot.getBoundingClientRect();
+      const slotL = sr.left - rect.left + BUS_INSET;
+      const slotR = sr.left - rect.left + sr.width - BUS_INSET;
+
+      // Child centers only (first card in each couple wrapper is the child)
+      const childXs = [];
+      slot.querySelectorAll('.family-group > .couple').forEach(c=>{
+        const childCard = c.querySelector('.person');
+        if (childCard) childXs.push(centerOf(childCard).cx);
+      });
+      slot.querySelectorAll('.family-group > .person').forEach(p=>{
+        childXs.push(centerOf(p).cx);
+      });
+      if(!childXs.length) return;
+
+      // clamp only the parent anchor jog
+      const parentXClamped = Math.min(Math.max(parentX, slotL), slotR);
+
+      // bus spans full children range (+ parent anchor), no extra clamping
+      const EPS = 0.5;
+      const minChildX = Math.min(...childXs);
+      const maxChildX = Math.max(...childXs);
+      const busX1 = Math.min(minChildX, parentXClamped) - EPS;
+      const busX2 = Math.max(maxChildX, parentXClamped) + EPS;
+
+      addLine(parentX, yStart, parentX, busY, '--child', LINE_W);
+      if (parentX !== parentXClamped) addLine(parentX, busY, parentXClamped, busY, '--child', LINE_W);
+      addLine(busX1, busY, busX2, busY, '--child', LINE_W);
+
+      childXs.forEach(x=>{
+        let targetTop = Infinity;
+        slot.querySelectorAll('.family-group > .couple > .person, .family-group > .person').forEach(card=>{
+          const c = centerOf(card);
+          if (Math.abs(c.cx - x) < 1.1) targetTop = Math.min(targetTop, c.top);
+        });
+        if (isFinite(targetTop)) addLine(x, busY, x, targetTop, '--child', LINE_W);
+      });
+    });
+
+    // Singles → their family-slot
+    Array.from(row.children).forEach(ch=>{
+      if(ch.classList.contains('couple')) return;
+      if(ch.classList.contains('family-slot') || ch.classList.contains('family-group')) return;
+
+      const pEl = ch.classList.contains('person') ? ch : ch.querySelector('.person');
+      if(!pEl) return;
+      const id = pEl.dataset.id;
+      const key = `s:${id}`;
+      const parent=centerOf(pEl);
+
+      const slot = nextRow.querySelector(`.family-slot[data-parent-key="${key}"]`);
+      if(!slot) return;
+
+      const offset = busOffsetForKey(key);
+      const busY = baseBusY + offset;
+
+      const sr = slot.getBoundingClientRect();
+      const slotL = sr.left - rect.left + BUS_INSET;
+      const slotR = sr.left - rect.left + sr.width - BUS_INSET;
+
+      const childXs = [];
+      slot.querySelectorAll('.family-group > .person').forEach(p=>{
+        childXs.push(centerOf(p).cx);
+      });
+      if(!childXs.length) return;
+
+      const pxClamped = Math.min(Math.max(parent.cx, slotL), slotR);
+
+      const EPS = 0.5;
+      const minChildX = Math.min(...childXs);
+      const maxChildX = Math.max(...childXs);
+      const busX1 = Math.min(minChildX, pxClamped) - EPS;
+      const busX2 = Math.max(maxChildX, pxClamped) + EPS;
+
+      addLine(parent.cx, parent.bottom, parent.cx, busY, '--child', LINE_W);
+      if (parent.cx !== pxClamped) addLine(parent.cx, busY, pxClamped, busY, '--child', LINE_W);
+      addLine(busX1, busY, busX2, busY, '--child', LINE_W);
+
+      childXs.forEach(x=>{
+        let targetTop = Infinity;
+        slot.querySelectorAll('.family-group > .person').forEach(card=>{
+          const c = centerOf(card);
+          if (Math.abs(c.cx - x) < 1.1) targetTop = Math.min(targetTop, c.top);
+        });
+        if (isFinite(targetTop)) addLine(x, busY, x, targetTop, '--child', LINE_W);
+      });
+    });
+  });
+}
+
+/* ----------------------- Init ----------------------- */
+render();
+</script>
+</body>
+</html>
