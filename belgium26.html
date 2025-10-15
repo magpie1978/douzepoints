@@ -269,6 +269,17 @@ function render(){
 
 function renderPerson(id){
   const p = byId.get(id);
+
+  // helper to build a compact dates line
+  function formatDates(person){
+    const b = person.birth ? person.birth.slice(0,4) : null;
+    const d = person.death ? person.death.slice(0,4) : null;
+    if (b && d) return `${b}–${d}`;
+    if (b)      return `${b}–`;
+    if (d)      return `–${d}`;
+    return "";  // no dates available
+  }
+
   const card = document.createElement("article");
   card.className = "person";
   card.dataset.id = id;
@@ -278,18 +289,35 @@ function renderPerson(id){
   ph.textContent = "Photo";
   card.appendChild(ph);
 
-  
   const body = document.createElement("div");
   body.className = "person-body";
-  const h = document.createElement("h3"); h.className="name"; h.textContent = p.name;
-  const t = document.createElement("p"); t.className="title"; t.textContent = p.title||"";
-  const l = document.createElement("div"); l.className="lifespan"; l.textContent = p.birth ? `b. ${p.birth.slice(0,4)}` : "";
-  body.appendChild(h); if(l.textContent) body.appendChild(l); if(t.textContent) body.appendChild(t);
+
+  // 1) Name
+  const h = document.createElement("h3");
+  h.className = "name";
+  h.textContent = p.name || "(Unknown)";
+
+  // 2) Title (second line)
+  const t = document.createElement("p");
+  t.className = "title";
+  t.textContent = p.title || "";
+
+  // 3) Dates (third line)
+  const dates = document.createElement("div");
+  dates.className = "lifespan";
+  dates.textContent = formatDates(p);
+
+  // Append in the desired order (skip empty lines gracefully)
+  body.appendChild(h);
+  if (t.textContent) body.appendChild(t);
+  if (dates.textContent) body.appendChild(dates);
+
   card.appendChild(body);
 
   card.addEventListener('click', ()=>openDialogFor(id));
   return card;
 }
+
 
 /* ----------------------- Dialog ----------------------- */
 const dlg = document.getElementById('personDialog');
