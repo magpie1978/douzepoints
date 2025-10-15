@@ -289,7 +289,7 @@ function render(){
         gEl.className = "family-group";
         group.blocks.forEach(block=>{
           const holder = document.createElement("div");
-          holder.style.display = "contents"; // keep meta without adding layout
+          holder.style.display = "contents";
           holder.dataset.meta = JSON.stringify(block.meta||{});
           if(block.type==="couple"){
             const wrap = document.createElement("div");
@@ -318,8 +318,8 @@ function render(){
   centerParentsOverChildren();
   layoutWithinParentZonesStrict();
 
-  // >>> NEW: shift specific generations horizontally (e.g., Gen 2 to the left)
-  applyGenerationLeftShift({ 2: -260 }); // px; tweak the value to move Gen 2 further left/right
+  // >>> Shift specific generations horizontally (move Generation 2 to the RIGHT)
+  applyGenerationShift({ 2: 260 }); // px; increase if you want more rightward offset
 
   queueMicrotask(drawConnections);
 
@@ -328,7 +328,7 @@ function render(){
     layoutWithinParentZonesStrict();
     centerParentsOverChildren();
     layoutWithinParentZonesStrict();
-    applyGenerationLeftShift({ 2: -260 });
+    applyGenerationShift({ 2: 260 });
     drawConnections();
   }, {passive:true});
 }
@@ -577,9 +577,8 @@ function centerParentsOverChildren(){
   }
 }
 
-/* NEW: apply per-generation horizontal shifts (e.g., move Generation 2 left) */
-function applyGenerationLeftShift(shiftMap){
-  // shiftMap example: { 2: -260 } to move generation index 2 by -260px
+/* Apply per-generation horizontal shifts (positive = move RIGHT) */
+function applyGenerationShift(shiftMap){
   const rows = Array.from(document.querySelectorAll('.generation-row'));
   rows.forEach(row=>{
     const gi = +row.dataset.generation;
