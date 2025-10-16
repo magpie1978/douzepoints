@@ -85,6 +85,25 @@
   .btn.ghost { border-color: rgba(255,255,255,.2); }
 
   .banner-divider { position: fixed; top: 0; left: 0; right: 0; height: 1px; background: var(--accent); opacity: .6; }
+
+  /* --- Force rectangular image in the left column --- */
+.person .avatar {
+  border-radius: 0 !important;   /* kill any circular mask */
+  overflow: hidden;               /* keep image clipped to the rectangle */
+}
+
+.person .avatar img {
+  border-radius: 0 !important;    /* kill any inherited rounding on the img */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;               /* fill the area without distortion */
+}
+
+/* In case an old global rule is lingering */
+.avatar, .avatar * {
+  border-radius: 0 !important;
+}
+
 </style>
 </head>
 <body>
