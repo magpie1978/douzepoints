@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dynamic People Graph — Parents + Multiple Partners</title>
+<style>
+  :root {
+    --bg: #0f111a;
+    --panel: #1c1f2b;
+    --accent: #e50914;
+    --text: #e8e8e8;
+    --muted: #bdbdbd;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; height: 100vh; overflow: hidden;
+    background: var(--bg); color: var(--text);
+    font-family: 'Raleway', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  }
+
+  /* Toolbar */
+  .toolbar {
+    position: fixed; top: 10px; left: 12px; z-index: 10;
+    display: flex; gap: 8px; align-items: center;
+    background: rgba(20,24,38,.85);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 12px; padding: 8px;
+    backdrop-filter: blur(6px);
+  }
+  .btn { background: transparent; border: 1px solid var(--accent); color: var(--text);
+    padding: 6px 10px; border-radius: 10px; cursor: pointer; }
+  .btn:hover { background: rgba(229,9,20,.12); }
+  .btn.ghost { border-color: rgba(255,255,255,.2); }
+
+  /* SVG underlay */
+  #connector {
+    position: absolute; inset: 0; width: 100vw; height: 100vh;
+    pointer-events: none; z-index: 0;
+  }
+  /* Lines */
+  .edge { stroke: var(--accent); stroke-width: 3; }           /* single parent→child */
+  .bus, .stem, .drop { stroke: var(--accent); stroke-width: 3; } /* two-parents bus */
+  .spouse { stroke: var(--accent); stroke-width: 2; opacity: .9; }
+
+  /* Person cards */
+  .person {
+    position: absolute; z-index: 1;
+    display: grid; grid-template-columns: 1fr 2fr;
+    width: 360px; height: 120px;
+    background: var(--panel);
+    border: 2px solid var(--accent);
+    border-radius: 14px; overflow: hidden;
+    cursor: grab; user-select: none;
+    box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 0 1px rgba(229,9,20,.25) inset;
+  }
+  .avatar { width:100%; height:100%; background:#222; border-radius:0 !important; overflow:hidden; }
+  .avatar img { width:100%; height:100%; object-fit:cover; display:block; border-radius:0 !important; }
+  .avatar, .avatar * { border-radius: 0 !important; }
+
+  .details { display:flex; flex-direction:column; justify-content:center; padding: 12px 16px; }
+  .name { font-weight: 700; font-size: 1.1rem; }
+  .title { font-size: .9rem; color: var(--muted); margin-top: 4px; }
+  .actions { margin-top: 10px; }
+  .actions .btn { padding: 4px 8px; }
+
+  /* Modal editor */
+  .modal {
+    position: fixed; inset: 0; display: none; place-items: center;
+    background: rgba(0,0,0,.55); z-index: 20;
+  }
+  .modal[open] { display: grid; }
+  .dialog {
+    width: min(720px, 92vw);
+    background: #141826; border: 1px solid rgba(255,255,255,.1); border-radius: 16px;
+    box-shadow: 0 30px 70px rgba(0,0,0,.5);
+    padding: 18px;
+  }
+  .grid { display: grid; gap: 12px; }
+  .row { display: grid; gap: 8px; }
+  label { font-size: .9rem; color: var(--muted); }
+  input[type="text"], input[type="url"], select {
+    width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,.15);
+    background: #0f1320; color: var(--text);
+  }
+  select[multiple] { min-height: 120px; }
+  input[type="file"] { color: var(--muted); }
+  .dialog .buttons { display:flex; gap:10px; justify-content:flex-end; margin-top:8px; }
+
+  .banner-divider { position: fixed; top: 0; left: 0; right: 0; height: 1px; background: var(--accent); opacity: .6; z-index: 9; }
+</style>
+</head>
+<body>
+  <div class="banner-divider"></div>
+
+  <div class="toolbar">
+    <button class="btn" id="addPerson">Add Person</button>
+    <button class="btn ghost" id="resetAll" title="Clear everything">Reset</button>
+  </div>
+
+  <svg id="connector" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+  <div id="cards-root"></div>
+
+  <!-- Editor Modal -->
+  <div class="modal" id="editor" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
+    <div class="dialog">
+      <h2 id="dlgTitle">Edit Person</h2>
+      <div class="grid">
+        <div class="row">
+          <label for="name">Person Name</label>
+          <input id="name" type="text" placeholder="e.g., Jane Doe" />
+        </div>
+        <div class="row">
+          <label for="title">Person Title</label>
+          <input id="title" type="text" placeholder="e.g., Head of Design" />
+        </div>
+        <div class="row">
+          <label for="imgUrl">Image URL (optional)</label>
+          <input id="imgUrl" type="url" placeholder="https://example.com/photo.jpg" />
+          <small style="color:var(--muted)">If both file and URL are provided, the uploaded file takes priority.</small>
+        </div>
+        <div class="row">
+          <label for="imgFile">Upload Image (optional)</label>
+          <input id="imgFile" type="file" accept="image/*" />
+        </div>
+
+        <!-- Parents -->
+        <div class="row" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div>
+            <label for="motherSel">Mother</label>
+            <select id="motherSel"></select>
+          </div>
+          <div>
+            <label for="fatherSel">Father</label>
+            <select id="fatherSel"></select>
+          </div>
+        </div>
+
+        <!-- NEW: Multiple Partners -->
+        <div class="row">
+          <label for="partnersSel">Partners / Spouses (multi-select)</label>
+          <select id="partnersSel" multiple></select>
+          <small style="color:var(--muted)">Tip: Cmd/Ctrl+Click to select multiple partners.</small>
+        </div>
+
+        <div class="buttons">
+          <button class="btn ghost" id="clearImg" type="button">Clear Photo</button>
+          <button class="btn" id="cancel" type="button">Cancel</button>
+          <button class="btn" id="apply" type="button">Apply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ========= PERSISTENCE ========= */
+const STORE_KEY = 'people-graph:v5';
+function defaultState() {
+  return {
+    nodes: {
+      A1: { id:'A1', name:'Person A', title:'Title goes here', imgSrc:'', x:180, y:220, motherId:null, fatherId:null, partners:[] },
+      B2: { id:'B2', name:'Person B', title:'Title goes here', imgSrc:'', x:620, y:220, motherId:null, fatherId:null, partners:[] }
+    },
+    edges: [],            // single-parent edges: {from, to}
+    triEdges: [],         // two-parent bus: {parents:[p1,p2], child}
+    nextId: 3
+  };
+}
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    const s = raw ? JSON.parse(raw) : defaultState();
+    // backfill fields
+    Object.values(s.nodes).forEach(n => {
+      if (!('motherId' in n)) n.motherId = null;
+      if (!('fatherId' in n)) n.fatherId = null;
+      if (!Array.isArray(n.partners)) n.partners = [];
+    });
+    if (!Array.isArray(s.edges)) s.edges = [];
+    if (!Array.isArray(s.triEdges)) s.triEdges = [];
+    return s;
+  } catch { return defaultState(); }
+}
+function saveState() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+let state = loadState();
+
+/* ========= ELEMENTS ========= */
+const svg = document.getElementById('connector');
+const cardsRoot = document.getElementById('cards-root');
+const addBtn = document.getElementById('addPerson');
+const resetBtn = document.getElementById('resetAll');
+
+const editor = document.getElementById('editor');
+const nameIn = document.getElementById('name');
+const titleIn = document.getElementById('title');
+const urlIn = document.getElementById('imgUrl');
+const fileIn = document.getElementById('imgFile');
+const motherSel = document.getElementById('motherSel');
+const fatherSel = document.getElementById('fatherSel');
+const partnersSel = document.getElementById('partnersSel');
+const applyBt = document.getElementById('apply');
+const cancelBt = document.getElementById('cancel');
+const clearBt = document.getElementById('clearImg');
+
+let editingId = null;
+
+/* ========= GEOMETRY ========= */
+function sizeSVG() { svg.setAttribute('viewBox', `0 0 ${innerWidth} ${innerHeight}`); }
+function cardCenter(el) { const r = el.getBoundingClientRect(); return { x: r.left + r.width/2, y: r.top + r.height/2 }; }
+
+/* ========= 1→1 parent→child lines ========= */
+function edgeId(e) { return `edge-${e.from}-${e.to}`; }
+function ensureEdgeElement(edge) {
+  const id = edgeId(edge);
+  let line = document.getElementById(id);
+  if (!line) {
+    line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.classList.add('edge');
+    line.id = id;
+    svg.appendChild(line);
+  }
+  return line;
+}
+function updateEdgePosition(edge) {
+  const aEl = document.getElementById(edge.from);
+  const bEl = document.getElementById(edge.to);
+  if (!aEl || !bEl) return;
+  const a = cardCenter(aEl), b = cardCenter(bEl);
+  const line = ensureEdgeElement(edge);
+  line.setAttribute('x1', a.x); line.setAttribute('y1', a.y);
+  line.setAttribute('x2', b.x); line.setAttribute('y2', b.y);
+}
+
+/* ========= 2→1 bus (two parents) ========= */
+function parentsKey(p1,p2){ const [a,b]=[p1,p2].sort(); return `${a}|${b}`; }
+function groupTriEdges() {
+  const groups = new Map();
+  for (const t of state.triEdges) {
+    const key = parentsKey(t.parents[0], t.parents[1]);
+    if (!groups.has(key)) groups.set(key, { parents:[...t.parents].sort(), children:new Set() });
+    groups.get(key).children.add(t.child);
+  }
+  for (const g of groups.values()) g.children = [...g.children];
+  return groups;
+}
+function ensureBusElems(key) {
+  let stem = document.getElementById(`stem-${key}`);
+  if (!stem) {
+    stem = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    stem.id = `stem-${key}`; stem.classList.add('stem');
+    svg.appendChild(stem);
+  }
+  let bus = document.getElementById(`bus-${key}`);
+  if (!bus) {
+    bus = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    bus.id = `bus-${key}`; bus.classList.add('bus');
+    svg.appendChild(bus);
+  }
+  return { stem, bus };
+}
+function ensureDropElem(key, childId) {
+  const id = `drop-${key}-${childId}`;
+  let drop = document.getElementById(id);
+  if (!drop) {
+    drop = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    drop.id = id; drop.classList.add('drop');
+    svg.appendChild(drop);
+  }
+  return drop;
+}
+function updateBusGroup(key, group) {
+  const [p1,p2] = group.parents;
+  const p1El = document.getElementById(p1);
+  const p2El = document.getElementById(p2);
+  if (!p1El || !p2El) return;
+
+  const a = cardCenter(p1El), b = cardCenter(p2El);
+  const mid = { x: (a.x + b.x)/2, y: (a.y + b.y)/2 };
+
+  const childCenters = group.children
+    .map(id => ({ id, el: document.getElementById(id) }))
+    .filter(o => o.el)
+    .map(o => ({ id:o.id, ...cardCenter(o.el) }));
+  if (childCenters.length === 0) return;
+
+  const xs = childCenters.map(c => c.x);
+  const ys = childCenters.map(c => c.y);
+  const childrenBelow = Math.min(...ys) > mid.y;
+  const busY = childrenBelow ? Math.min(...ys) - 50 : mid.y + 60;
+
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+
+  const { stem, bus } = ensureBusElems(key);
+  stem.setAttribute('x1', mid.x); stem.setAttribute('y1', mid.y);
+  stem.setAttribute('x2', mid.x); stem.setAttribute('y2', busY);
+
+  bus.setAttribute('x1', minX); bus.setAttribute('y1', busY);
+  bus.setAttribute('x2', maxX); bus.setAttribute('y2', busY);
+
+  const existingDrops = new Set();
+  for (const c of childCenters) {
+    const drop = ensureDropElem(key, c.id);
+    drop.setAttribute('x1', c.x); drop.setAttribute('y1', busY);
+    drop.setAttribute('x2', c.x); drop.setAttribute('y2', c.y);
+    existingDrops.add(drop.id);
+  }
+  // cleanup stale drops
+  [...svg.querySelectorAll(`[id^="drop-${key}-"]`)].forEach(d => {
+    if (!existingDrops.has(d.id)) d.remove();
+  });
+}
+function updateAllBuses() {
+  const groups = groupTriEdges();
+  const validBusIds = new Set();
+  for (const [key] of groups.entries()) {
+    validBusIds.add(`stem-${key}`); validBusIds.add(`bus-${key}`);
+  }
+  [...svg.querySelectorAll('.stem, .bus')].forEach(el => {
+    if (!validBusIds.has(el.id)) el.remove();
+  });
+  for (const [key, group] of groups.entries()) updateBusGroup(key, group);
+}
+
+/* ========= Spouse/Partner lines (many-to-many pairs) ========= */
+function partnerKey(a,b){ const [x,y]=[a,b].sort(); return `sp-${x}-${y}`; }
+function ensureSpouseElem(a,b){
+  const id = partnerKey(a,b);
+  let line = document.getElementById(id);
+  if(!line){
+    line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.id = id; line.classList.add('spouse');
+    svg.appendChild(line);
+  }
+  return line;
+}
+function updateSpousePosition(a,b){
+  const aEl = document.getElementById(a);
+  const bEl = document.getElementById(b);
+  if(!aEl || !bEl) return;
+  const A = cardCenter(aEl), B = cardCenter(bEl);
+  // Slight vertical offset so spouse lines don't perfectly overlap buses if aligned
+  const off = 0; // set to e.g. 8 if you want a gentle offset
+  const line = ensureSpouseElem(a,b);
+  line.setAttribute('x1', A.x); line.setAttribute('y1', A.y + off);
+  line.setAttribute('x2', B.x); line.setAttribute('y2', B.y + off);
+}
+function updateAllSpouses(){
+  // Build all unique partner pairs from nodes
+  const pairs = new Set();
+  for (const n of Object.values(state.nodes)) {
+    for (const p of n.partners || []) {
+      if (state.nodes[p]) pairs.add(partnerKey(n.id, p));
+    }
+  }
+  // Remove stale spouse lines
+  [...svg.querySelectorAll('.spouse')].forEach(line=>{
+    if(!pairs.has(line.id)) line.remove();
+  });
+  // Draw/update existing pairs
+  for (const key of pairs) {
+    const [,a,b] = key.match(/^sp-(.+)-(.+)$/);
+    updateSpousePosition(a,b);
+  }
+}
+
+/* ========= UPDATE HELPERS ========= */
+function updateEdgesForNode(nodeId) {
+  // single-parent edges involving this node
+  state.edges.forEach(e => { if (e.from === nodeId || e.to === nodeId) updateEdgePosition(e); });
+  // buses involving this node
+  const groups = groupTriEdges();
+  for (const [key, g] of groups.entries()) {
+    if (g.parents.includes(nodeId) || g.children.includes(nodeId)) updateBusGroup(key, g);
+  }
+  // spouses involving this node
+  for (const p of state.nodes[nodeId].partners || []) updateSpousePosition(nodeId, p);
+  // and any where this node is someone else's partner
+  for (const n of Object.values(state.nodes)) {
+    if ((n.partners || []).includes(nodeId)) updateSpousePosition(n.id, nodeId);
+  }
+}
+function updateAllEdges() {
+  state.edges.forEach(updateEdgePosition);
+  updateAllBuses();
+  updateAllSpouses();
+}
+
+/* ========= RENDERING ========= */
+function renderNode(node) {
+  let el = document.getElementById(node.id);
+  if (!el) {
+    el = document.createElement('div');
+    el.id = node.id;
+    el.className = 'person';
+    el.innerHTML = `
+      <div class="avatar"><img alt="${node.name} photo"></div>
+      <div class="details">
+        <div class="name"></div>
+        <div class="title"></div>
+        <div class="actions"><button class="btn" data-edit>Edit</button></div>
+      </div>
+    `;
+    cardsRoot.appendChild(el);
+    attachCardEvents(el);
+  }
+  el.querySelector('.name').textContent = node.name || '';
+  el.querySelector('.title').textContent = node.title || '';
+  const img = el.querySelector('img');
+  if (node.imgSrc) img.src = node.imgSrc; else img.removeAttribute('src');
+  el.style.transform = `translate(${node.x}px, ${node.y}px)`;
+}
+function renderAll() {
+  [...cardsRoot.children].forEach(ch => { if (!state.nodes[ch.id]) ch.remove(); });
+  Object.values(state.nodes).forEach(renderNode);
+
+  sizeSVG();
+
+  // Clean parent single edges that no longer exist
+  [...svg.querySelectorAll('.edge')].forEach(line => {
+    const exists = state.edges.some(e => line.id === edgeId(e));
+    if (!exists) line.remove();
+  });
+
+  updateAllEdges();
+}
+
+/* ========= EDGE MGMT FROM PARENT FIELDS ========= */
+function addSingleParentEdge(parentId, childId) {
+  if (!parentId) return;
+  const from = parentId < childId ? parentId : childId;
+  const to   = parentId < childId ? childId : parentId;
+  if (!state.edges.some(e => e.from === from && e.to === to)) {
+    state.edges.push({ from, to });
+  }
+}
+function triExists(p1,p2,child) {
+  const [a,b]=[p1,p2].sort();
+  return state.triEdges.some(t => t.child===child && t.parents[0]===a && t.parents[1]===b);
+}
+function addTwoParentTriEdge(motherId, fatherId, childId) {
+  if (!motherId || !fatherId || motherId === fatherId) return;
+  const [a,b]=[motherId,fatherId].sort();
+  if (!triExists(a,b,childId)) state.triEdges.push({ parents:[a,b], child:childId });
+}
+
+/* ========= SPOUSE MGMT (bidirectional) ========= */
+function setPartnersFor(id, newPartners) {
+  const node = state.nodes[id];
+  const prev = new Set(node.partners || []);
+  const next = new Set(newPartners.filter(pid => pid !== id && state.nodes[pid]));
+
+  // remove stale links (both sides)
+  for (const pid of prev) {
+    if (!next.has(pid)) {
+      const other = state.nodes[pid];
+      if (other) other.partners = (other.partners || []).filter(x => x !== id);
+    }
+  }
+  // add new links (both sides)
+  for (const pid of next) {
+    const other = state.nodes[pid];
+    if (!other) continue;
+    if (!other.partners) other.partners = [];
+    if (!other.partners.includes(id)) other.partners.push(id);
+  }
+
+  node.partners = [...next];
+}
+
+/* ========= DRAGGING ========= */
+let dragging = null, start = {x:0,y:0}, origin = {x:0,y:0};
+function getTranslate(el){
+  const m = getComputedStyle(el).transform;
+  if (m === 'none') return {x:0,y:0};
+  const parts = m.match(/matrix\(([^)]+)\)/);
+  if (!parts) return {x:0,y:0};
+  const nums = parts[1].split(',').map(Number);
+  return {x: nums[4], y: nums[5]};
+}
+function onDown(e){
+  const el = e.currentTarget;
+  if (e.target.closest('.actions')) return;
+  dragging = el; el.style.cursor = 'grabbing';
+  origin = getTranslate(el);
+  start = {x: e.clientX, y: e.clientY};
+  e.preventDefault();
+}
+function onMove(e){
+  if (!dragging) return;
+  const dx = e.clientX - start.x, dy = e.clientY - start.y;
+  dragging.style.transform = `translate(${origin.x + dx}px, ${origin.y + dy}px)`;
+  updateEdgesForNode(dragging.id);
+}
+function onUp(){
+  if (!dragging) return;
+  dragging.style.cursor = 'grab';
+  const pos = getTranslate(dragging);
+  const n = state.nodes[dragging.id];
+  n.x = pos.x; n.y = pos.y;
+  saveState();
+  dragging = null;
+}
+function attachCardEvents(el){
+  el.addEventListener('mousedown', onDown);
+  addEventListener('mousemove', onMove);
+  addEventListener('mouseup', onUp);
+  el.addEventListener('dblclick', () => openEditor(el.id));
+  el.querySelector('[data-edit]').addEventListener('click', (ev) => { ev.stopPropagation(); openEditor(el.id); });
+}
+
+/* ========= EDITOR ========= */
+function optionsList(excludeId){
+  const none = `<option value="">(None)</option>`;
+  const opts = Object.values(state.nodes)
+    .filter(n => n.id !== excludeId)
+    .map(n => `<option value="${n.id}">${n.name || n.id}</option>`).join('');
+  return { none, opts };
+}
+function buildPartnersOptions(excludeId, selectedIds){
+  const sel = new Set(selectedIds || []);
+  partnersSel.innerHTML = Object.values(state.nodes)
+    .filter(n => n.id !== excludeId)
+    .map(n => `<option value="${n.id}" ${sel.has(n.id)?'selected':''}>${n.name || n.id}</option>`).join('');
+}
+
+function openEditor(id) {
+  editingId = id;
+  const n = state.nodes[id];
+
+  nameIn.value = n.name || '';
+  titleIn.value = n.title || '';
+  urlIn.value = '';
+  fileIn.value = '';
+
+  const { none, opts } = optionsList(id);
+  motherSel.innerHTML = none + opts;
+  fatherSel.innerHTML = none + opts;
+
+  motherSel.value = n.motherId || '';
+  fatherSel.value = n.fatherId || '';
+
+  buildPartnersOptions(id, n.partners);
+
+  editor.setAttribute('open','');
+  setTimeout(()=> nameIn.focus(), 0);
+}
+function closeEditor() { editor.removeAttribute('open'); editingId = null; }
+cancelBt.addEventListener('click', closeEditor);
+editor.addEventListener('click', (e)=> { if (e.target === editor) closeEditor(); });
+addEventListener('keydown', (e)=> { if (e.key === 'Escape' && editor.hasAttribute('open')) closeEditor(); });
+
+applyBt.addEventListener('click', () => {
+  if (!editingId) return;
+  const n = state.nodes[editingId];
+
+  // Save name/title/image first
+  n.name = nameIn.value || n.name || 'Person';
+  n.title = titleIn.value || '';
+  const imgEl = document.querySelector(`#${CSS.escape(editingId)} img`);
+  const finishAndPersist = () => {
+    saveState();
+    renderNode(n);
+    updateEdgesForNode(editingId);
+    closeEditor();
+  };
+
+  // Parents
+  const oldMother = n.motherId, oldFather = n.fatherId;
+  const newMother = motherSel.value || null;
+  const newFather = fatherSel.value || null;
+
+  n.motherId = newMother;
+  n.fatherId = newFather;
+
+  // Rebuild parent links for this child
+  if (oldMother || oldFather) {
+    const prevParents = [oldMother, oldFather].filter(Boolean);
+    // remove prior 1→1 edges involving those parents
+    state.edges = state.edges.filter(e => {
+      const touchesChild = (e.from === editingId || e.to === editingId);
+      const touchesPrevParent = prevParents.includes(e.from) || prevParents.includes(e.to);
+      return !(touchesChild && touchesPrevParent);
+    });
+    // remove all triEdges for this child
+    state.triEdges = state.triEdges.filter(t => t.child !== editingId);
+  }
+  if (newMother && newFather && newMother !== newFather) {
+    addTwoParentTriEdge(newMother, newFather, editingId);
+  } else if (newMother || newFather) {
+    addSingleParentEdge(newMother || newFather, editingId);
+  }
+
+  // Partners (multi-select; bidirectional)
+  const selected = [...partnersSel.options].filter(o => o.selected).map(o => o.value);
+  setPartnersFor(editingId, selected);
+
+  // Image handling (optional)
+  if (fileIn.files && fileIn.files[0]) {
+    const reader = new FileReader();
+    reader.onload = () => { n.imgSrc = reader.result; imgEl.src = n.imgSrc; finishAndPersist(); };
+    reader.readAsDataURL(fileIn.files[0]);
+  } else if (urlIn.value.trim()) {
+    const u = urlIn.value.trim();
+    const test = new Image();
+    test.onload = () => { n.imgSrc = u; imgEl.src = u; finishAndPersist(); };
+    test.onerror = () => { alert('Could not load image from URL.'); finishAndPersist(); };
+    test.src = u;
+  } else {
+    finishAndPersist();
+  }
+});
+
+clearBt.addEventListener('click', () => {
+  if (!editingId) return;
+  const n = state.nodes[editingId];
+  n.imgSrc = '';
+  const imgEl = document.querySelector(`#${CSS.escape(editingId)} img`);
+  imgEl.removeAttribute('src');
+  saveState();
+});
+
+/* ========= ACTIONS ========= */
+addBtn.addEventListener('click', () => {
+  const id = `N${state.nextId++}`;
+  const baseX = innerWidth/2 - 180, baseY = innerHeight/2 - 60;
+  const jitter = (n)=> Math.round(n + (Math.random()*120 - 60));
+  state.nodes[id] = { id, name:`Person ${id}`, title:'Title goes here', imgSrc:'', x:jitter(baseX), y:jitter(baseY), motherId:null, fatherId:null, partners:[] };
+  saveState();
+  renderNode(state.nodes[id]);
+  updateAllEdges();
+  openEditor(id);
+});
+
+resetBtn.addEventListener('click', () => {
+  if (!confirm('Clear all people and connections?')) return;
+  state = defaultState();
+  saveState();
+  cardsRoot.innerHTML = '';
+  svg.innerHTML = '';
+  renderAll();
+});
+
+/* ========= INIT ========= */
+function init() { sizeSVG(); renderAll(); }
+addEventListener('resize', () => { sizeSVG(); updateAllEdges(); });
+init();
+</script>
+</body>
+</html>
