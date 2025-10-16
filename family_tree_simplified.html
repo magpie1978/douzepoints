@@ -44,26 +44,117 @@
 </div>
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTyAtltPPDRBFKDKCDr8VA-Ii_vh-5MgoqspQfxlfhtPerjaW95IZeJAnfMvnavMD4sWwwSbt9AQtwo/pub?gid=0&single=true&output=csv";
-const CARD_W=360, CARD_H=120, SNAP_GRID=40;
+const CARD_W=360, CARD_H=120, SNAP_GRID=40, PADDING=200;
 const world=document.getElementById('world'), svg=document.getElementById('connector'), cards=document.getElementById('cards-root');
 
-function snap(v){return Math.round(v/SNAP_GRID)*SNAP_GRID;}
-function clamp0(v){return Math.max(0,v);}
+// ---------- Helpers
+const snap=v=>Math.round(v/SNAP_GRID)*SNAP_GRID; const clamp0=v=>Math.max(0,v);
+const ensureLine=(id,cls)=>{let l=document.getElementById(id);if(!l){l=document.createElementNS('http://www.w3.org/2000/svg','line');l.id=id;l.classList.add(cls);svg.appendChild(l);}return l;};
+const removeByPrefix=(p)=>svg.querySelectorAll(`[id^="${p}"]`).forEach(e=>e.remove());
+
 function updateWorldSize(nodes){
-  let maxX=1200,maxY=800;
-  Object.values(nodes).forEach(n=>{if(n.x+CARD_W>maxX)maxX=n.x+CARD_W;if(n.y+CARD_H>maxY)maxY=n.y+CARD_H;});
-  world.style.width=(maxX+200)+'px';world.style.height=(maxY+200)+'px';
+  let maxX=1200,maxY=800;Object.values(nodes).forEach(n=>{maxX=Math.max(maxX,n.x+CARD_W);maxY=Math.max(maxY,n.y+CARD_H);});
+  world.style.width=(maxX+PADDING)+"px"; world.style.height=(maxY+PADDING)+"px";
 }
-function ensureLine(id,cls){let l=document.getElementById(id);if(!l){l=document.createElementNS('http://www.w3.org/2000/svg','line');l.id=id;l.classList.add(cls);svg.appendChild(l);}return l;}
-function drawEdge(a,b,dotted){const id='edge-'+a+'-'+b,l=ensureLine(id,'edge');if(dotted)l.classList.add('dotted');else l.classList.remove('dotted');const A=document.getElementById(a),B=document.getElementById(b);if(!A||!B)return;const rA=A.getBoundingClientRect(),rB=B.getBoundingClientRect(),cxA=rA.left+rA.width/2,cyA=rA.top+rA.height/2,cxB=rB.left+rB.width/2,cyB=rB.top+rB.height/2;l.setAttribute('x1',cxA);l.setAttribute('y1',cyA);l.setAttribute('x2',cxB);l.setAttribute('y2',cyB);}
-function fetchCsv(url){return fetch(url).then(r=>r.text());}
-function parseCsv(t){const r=[];let i=0,f='',row=[],q=false;while(i<t.length){const c=t[i];if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=c;}else if(c==='"')q=true;else if(c===','){row.push(f);f='';}else if(c==='\n'||c==='\r'){if(f.length||row.length){row.push(f);r.push(row);row=[];f='';}if(c==='\r'&&t[i+1]==='\n')i++;}else f+=c;i++;}if(f.length||row.length){row.push(f);r.push(row);}return r;}
-function rowsFromCsvTable(rows){const headers=rows[0].map(h=>h.trim().toLowerCase());return rows.slice(1).map(r=>{const o={};headers.forEach((h,i)=>o[h]=r[i]);return o;});}
-function buildState(rows){const nodes={},edges=[];rows.forEach(r=>{const id=r.id,name=r.name||id,title=r.title||'',img=r.img||r.image_url||'',x=clamp0(snap(Number(r.x)||400)),y=clamp0(snap(Number(r.y)||400));nodes[id]={id,name,title,img,x,y,mother:r.mother_id,father:r.father_id,illegitimate:r.illegitimate==='true'};});
-Object.values(nodes).forEach(c=>{const m=nodes[c.mother],f=nodes[c.father];if(m&&f){edges.push({a:m.id,b:f.id});}else if(m||f){edges.push({a:(m||f).id,b:c.id,dotted:c.illegitimate});}});
-return{nodes,edges};}
-function render(state){cards.innerHTML='';Object.values(state.nodes).forEach(n=>{const el=document.createElement('div');el.id=n.id;el.className='person';el.style.transform=`translate(${n.x}px,${n.y}px)`;el.innerHTML=`<div class='avatar'><img src='${n.img}'></div><div class='details'><div class='name'>${n.name}</div><div class='title'>${n.title}</div></div>`;cards.appendChild(el);});updateWorldSize(state.nodes);state.edges.forEach(e=>drawEdge(e.a,e.b,e.dotted));}
-function init(){fetchCsv(CSV_URL).then(parseCsv).then(rowsFromCsvTable).then(buildState).then(render);}init();
+
+// ---------- CSV
+function fetchCsv(url){return fetch(url).then(r=>{if(!r.ok)throw new Error(r.status);return r.text();});}
+function parseCsv(t){const out=[];let i=0,f='',row=[],q=false;while(i<t.length){const c=t[i];if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=c;}else if(c==='"')q=true;else if(c===','){row.push(f);f='';}else if(c==='
+'||c==='
+'){if(f.length||row.length){row.push(f);out.push(row);row=[];f='';}if(c==='
+'&&t[i+1]==='
+')i++;}else f+=c;i++;}if(f.length||row.length){row.push(f);out.push(row);}return out;}
+function rowsFromCsvTable(rows){if(!rows.length)return[];const H=rows[0].map(h=>h.trim().toLowerCase());return rows.slice(1).map(r=>{const o={};H.forEach((h,i)=>o[h]=(r[i]||'').toString().trim());return o;}).filter(o=>o.id);}
+
+// ---------- Build graph state (no editing, no dragging)
+function buildState(rows){
+  const nodes={};
+  rows.forEach(r=>{
+    const id=r.id; if(!id) return;
+    const x=clamp0(snap(Number(r.x)||400)); const y=clamp0(snap(Number(r.y)||400));
+    nodes[id]={ id, name:r.name||id, title:r.title||'', img:r.img||r.image_url||'', x, y,
+                mother:r.mother_id||'', father:r.father_id||'', partners:(r.partners||'').split(';').map(s=>s.trim()).filter(Boolean), illegit:(r.illegitimate||'').toLowerCase()==='true' };
+  });
+  // Edges: single-parent child links; Tri-groups: two parents -> multiple children (bus)
+  const singleEdges=[]; // {p, c, dotted}
+  const triMap=new Map(); // key "p1|p2" => {p1,p2,children:[]}
+  Object.values(nodes).forEach(c=>{
+    const m=nodes[c.mother]||null, f=nodes[c.father]||null;
+    if(m && f && m.id!==f.id){
+      const k=[m.id,f.id].sort().join('|');
+      if(!triMap.has(k)) triMap.set(k,{p1:[m.id,f.id].sort()[0], p2:[m.id,f.id].sort()[1], children:[]});
+      triMap.get(k).children.push(c.id);
+    } else if(m || f){
+      const p=(m||f).id; singleEdges.push({p, c:c.id, dotted:c.illegit});
+    }
+  });
+  return {nodes, singleEdges, triGroups:[...triMap.values()]};
+}
+
+// ---------- Rendering
+function renderNodes(state){
+  cards.innerHTML='';
+  Object.values(state.nodes).forEach(n=>{
+    const el=document.createElement('div'); el.id=n.id; el.className='person';
+    el.style.transform=`translate(${n.x}px,${n.y}px)`;
+    el.innerHTML=`<div class='avatar'><img src='${n.img}' alt='${n.name}'></div><div class='details'><div class='name'>${n.name}</div><div class='title'>${n.title}</div></div>`;
+    cards.appendChild(el);
+  });
+}
+
+// Coordinates derived from stored x/y so SVG and cards share the same space (no viewport math!)
+const centerX = n => n.x + CARD_W/2; const centerY = n => n.y + CARD_H/2; const topY = n => n.y; const botY = n => n.y + CARD_H;
+
+function drawSingleEdges(state){
+  removeByPrefix('edge-');
+  state.singleEdges.forEach(e=>{
+    const p=state.nodes[e.p], c=state.nodes[e.c]; if(!p||!c) return;
+    const id=`edge-${e.p}-${e.c}`; const l=ensureLine(id,'edge');
+    if(e.dotted) l.classList.add('dotted'); else l.classList.remove('dotted');
+    l.setAttribute('x1', centerX(p)); l.setAttribute('y1', centerY(p));
+    l.setAttribute('x2', centerX(c)); l.setAttribute('y2', centerY(c));
+  });
+}
+
+function drawTriGroups(state){
+  // remove old stems/buses/drops
+  removeByPrefix('stem-'); removeByPrefix('bus-'); removeByPrefix('drop-');
+  state.triGroups.forEach(g=>{
+    const p1=state.nodes[g.p1], p2=state.nodes[g.p2]; if(!p1||!p2||!g.children.length) return;
+    const midX=(centerX(p1)+centerX(p2))/2, midY=(centerY(p1)+centerY(p2))/2;
+    const kids=g.children.map(id=>state.nodes[id]).filter(Boolean);
+    const xs=kids.map(k=>centerX(k)), tops=kids.map(k=>topY(k)), bots=kids.map(k=>botY(k));
+    const minTop=Math.min.apply(null,tops), maxBot=Math.max.apply(null,bots);
+    const GAP=24, MIN_STEM=24; let busY;
+    if(minTop>midY){ busY=Math.max(midY+MIN_STEM, minTop-GAP); }
+    else if(maxBot<midY){ busY=Math.min(midY-MIN_STEM, maxBot+GAP); }
+    else{ busY=midY+MIN_STEM; }
+    const minX=Math.min.apply(null,xs), maxX=Math.max.apply(null,xs);
+    const stem=ensureLine(`stem-${g.p1}|${g.p2}`,'stem'); stem.setAttribute('x1',midX); stem.setAttribute('y1',midY); stem.setAttribute('x2',midX); stem.setAttribute('y2',busY);
+    const bus=ensureLine(`bus-${g.p1}|${g.p2}`,'bus'); bus.setAttribute('x1',minX); bus.setAttribute('y1',busY); bus.setAttribute('x2',maxX); bus.setAttribute('y2',busY);
+    kids.forEach(k=>{
+      const drop=ensureLine(`drop-${g.p1}|${g.p2}-${k.id}`,'drop');
+      // choose nearest vertical anchor (top or bottom) to busY
+      const anchorY = Math.abs(busY - topY(k)) <= Math.abs(busY - botY(k)) ? topY(k) : botY(k);
+      drop.setAttribute('x1', centerX(k)); drop.setAttribute('y1', busY);
+      drop.setAttribute('x2', centerX(k)); drop.setAttribute('y2', anchorY);
+    });
+  });
+}
+
+function render(state){
+  renderNodes(state);
+  updateWorldSize(state.nodes);
+  drawSingleEdges(state);
+  drawTriGroups(state);
+}
+
+function init(){
+  fetchCsv(CSV_URL).then(parseCsv).then(rowsFromCsvTable).then(buildState).then(render).catch(e=>{
+    console.error(e); alert('Failed to load CSV: '+e.message);
+  });
+}
+init();
 </script>
 </body>
 </html>
