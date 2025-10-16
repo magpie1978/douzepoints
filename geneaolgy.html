@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connected People</title>
+<style>
+  body {
+    background: #0f111a;
+    color: #fff;
+    font-family: 'Raleway', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  .person {
+    position: absolute;
+    background: #1c1f2b;
+    border: 2px solid #e50914;
+    border-radius: 10px;
+    padding: 20px 30px;
+    cursor: grab;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(229,9,20,0.5);
+    user-select: none;
+  }
+
+  svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+  <svg id="connector"></svg>
+  <div id="personA" class="person" style="top: 200px; left: 200px;">Person A</div>
+  <div id="personB" class="person" style="top: 200px; left: 600px;">Person B</div>
+
+  <script>
+    const personA = document.getElementById('personA');
+    const personB = document.getElementById('personB');
+    const svg = document.getElementById('connector');
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+
+    line.setAttribute('stroke', '#e50914');
+    line.setAttribute('stroke-width', '3');
+    svg.appendChild(line);
+
+    function updateLine() {
+      const aRect = personA.getBoundingClientRect();
+      const bRect = personB.getBoundingClientRect();
+
+      const x1 = aRect.left + aRect.width / 2;
+      const y1 = aRect.top + aRect.height / 2;
+      const x2 = bRect.left + bRect.width / 2;
+      const y2 = bRect.top + bRect.height / 2;
+
+      line.setAttribute('x1', x1);
+      line.setAttribute('y1', y1);
+      line.setAttribute('x2', x2);
+      line.setAttribute('y2', y2);
+    }
+
+    updateLine();
+
+    // Drag functionality
+    let selected = null, offsetX, offsetY;
+
+    document.querySelectorAll('.person').forEach(el => {
+      el.addEventListener('mousedown', e => {
+        selected = el;
+        offsetX = e.clientX - el.offsetLeft;
+        offsetY = e.clientY - el.offsetTop;
+        el.style.cursor = 'grabbing';
+      });
+    });
+
+    document.addEventListener('mousemove', e => {
+      if (selected) {
+        selected.style.left = e.clientX - offsetX + 'px';
+        selected.style.top = e.clientY - offsetY + 'px';
+        updateLine();
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (selected) selected.style.cursor = 'grab';
+      selected = null;
+    });
+
+    window.addEventListener('resize', updateLine);
+  </script>
+</body>
+</html>
