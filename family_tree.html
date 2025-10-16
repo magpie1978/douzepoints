@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Editable Connected People</title>
+<title>Editable Connected People (Persistent)</title>
 <style>
   :root {
     --bg: #0f111a;
@@ -83,9 +83,7 @@
   }
   .btn.primary { background: var(--accent); border-color: var(--accent); }
   .btn.ghost { border-color: rgba(255,255,255,.2); }
-  .hint { font-size: .8rem; color: var(--muted); }
 
-  /* Banner divider */
   .banner-divider { position: fixed; top: 0; left: 0; right: 0; height: 1px; background: var(--accent); opacity: .6; }
 </style>
 </head>
@@ -144,7 +142,7 @@
         <div class="row">
           <label for="imgUrl">Image URL (optional)</label>
           <input id="imgUrl" type="url" placeholder="https://example.com/photo.jpg" />
-          <div class="hint">If both file and URL are provided, the uploaded file takes priority.</div>
+          <small style="color:var(--muted)">If both file and URL are provided, the uploaded file takes priority.</small>
         </div>
         <div class="row">
           <label for="imgFile">Upload Image (optional)</label>
@@ -160,12 +158,69 @@
   </div>
 
 <script>
-  // ===== Connectors (full-viewport SVG) =====
+  // ========== Persistence (localStorage) ==========
+  const STORE_KEY = 'connected-people:v1';
+
+  // Read persisted state or return defaults
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return defaultState();
+      const state = JSON.parse(raw);
+      // Backfill any missing defaults for forward-compat
+      return { A: { ...defaultState().A, ...state.A }, B: { ...defaultState().B, ...state.B } };
+    } catch {
+      return defaultState();
+    }
+  }
+
+  function saveState(state) {
+    localStorage.setItem(STORE_KEY, JSON.stringify(state));
+  }
+
+  function defaultState() {
+    return {
+      A: { name: 'Person A', title: 'Title goes here', imgSrc: '', imgUrl: '', x: 180, y: 220 },
+      B: { name: 'Person B', title: 'Title goes here', imgSrc: '', imgUrl: '', x: 620, y: 220 }
+    };
+  }
+
+  // ========== Elements / Connector ==========
   const svg  = document.getElementById('connector');
   const link = document.getElementById('link');
   const cardA = document.getElementById('personA');
   const cardB = document.getElementById('personB');
 
+  const nameA = document.getElementById('nameA');
+  const titleA = document.getElementById('titleA');
+  const imgA = document.getElementById('imgA');
+
+  const nameB = document.getElementById('nameB');
+  const titleB = document.getElementById('titleB');
+  const imgB = document.getElementById('imgB');
+
+  let state = loadState();
+
+  // Apply state to DOM
+  function syncDOM() {
+    // Names / titles / images
+    nameA.textContent = state.A.name;
+    titleA.textContent = state.A.title;
+    if (state.A.imgSrc) imgA.src = state.A.imgSrc; else imgA.removeAttribute('src');
+
+    nameB.textContent = state.B.name;
+    titleB.textContent = state.B.title;
+    if (state.B.imgSrc) imgB.src = state.B.imgSrc; else imgB.removeAttribute('src');
+
+    // Positions
+    cardA.style.transform = `translate(${state.A.x}px, ${state.A.y}px)`;
+    cardB.style.transform = `translate(${state.B.x}px, ${state.B.y}px)`;
+
+    sizeSVG();
+    updateLine();
+  }
+
+  // Keep the SVG coordinate space in CSS pixels
   function sizeSVG() {
     svg.setAttribute('viewBox', `0 0 ${innerWidth} ${innerHeight}`);
   }
@@ -181,18 +236,20 @@
     link.setAttribute('x2', b.x);
     link.setAttribute('y2', b.y);
   }
-  sizeSVG(); updateLine();
+
+  // Initial paint
+  syncDOM();
   addEventListener('resize', () => { sizeSVG(); updateLine(); });
 
-  // ===== Dragging (via transform: translate) =====
+  // ========== Dragging (persists on mouseup) ==========
   let dragging = null, start = {x:0,y:0}, origin = {x:0,y:0};
   function getTranslate(el){
     const m = getComputedStyle(el).transform;
     if (m === 'none') return {x:0,y:0};
     const nums = m.match(/matrix\(([^)]+)\)/);
     if (!nums) return {x:0,y:0};
-    const [a,b,c,d,e,f] = nums[1].split(',').map(Number);
-    return {x:e, y:f};
+    const parts = nums[1].split(',').map(Number);
+    return {x: parts[4], y: parts[5]};
   }
   function onDown(e){
     const el = e.currentTarget;
@@ -209,7 +266,13 @@
     updateLine();
   }
   function onUp(){
-    if (dragging) dragging.style.cursor = 'grab';
+    if (!dragging) return;
+    dragging.style.cursor = 'grab';
+    // Persist final position
+    const t = getTranslate(dragging);
+    if (dragging.id === 'personA') { state.A.x = t.x; state.A.y = t.y; }
+    else                           { state.B.x = t.x; state.B.y = t.y; }
+    saveState(state);
     dragging = null;
   }
   [cardA, cardB].forEach(el => {
@@ -219,7 +282,7 @@
   addEventListener('mousemove', onMove);
   addEventListener('mouseup', onUp);
 
-  // ===== Editor Modal =====
+  // ========== Editor Modal (persists on Apply) ==========
   const modal   = document.getElementById('editor');
   const sel     = document.getElementById('target');
   const nameIn  = document.getElementById('name');
@@ -230,17 +293,16 @@
   const cancelBt= document.getElementById('cancel');
   const clearBt = document.getElementById('clearImg');
 
-  // Buttons on cards
   document.querySelectorAll('[data-edit]').forEach(b=>{
     b.addEventListener('click', ()=> openEditor(b.dataset.edit));
   });
 
   function openEditor(target){
     sel.value = target;
-    const {nameEl, titleEl, imgEl} = parts(target);
-    nameIn.value  = nameEl.textContent.trim();
-    titleIn.value = titleEl.textContent.trim();
-    urlIn.value   = imgEl.getAttribute('data-src-url') || '';
+    const s = state[target];
+    nameIn.value  = s.name || '';
+    titleIn.value = s.title || '';
+    urlIn.value   = s.imgUrl || '';
     fileIn.value  = '';
     modal.setAttribute('open','');
     setTimeout(()=> nameIn.focus(), 0);
@@ -250,77 +312,73 @@
   }
   cancelBt.addEventListener('click', closeEditor);
 
-  // Map person parts
-  function parts(tag){
-    if (tag === 'A') {
-      return {
-        card: cardA,
-        nameEl: document.getElementById('nameA'),
-        titleEl: document.getElementById('titleA'),
-        imgEl: document.getElementById('imgA')
-      };
-    }
-    return {
-      card: cardB,
-      nameEl: document.getElementById('nameB'),
-      titleEl: document.getElementById('titleB'),
-      imgEl: document.getElementById('imgB')
-    };
+  function targetParts(tag){
+    return tag === 'A'
+      ? { nameEl: nameA, titleEl: titleA, imgEl: imgA }
+      : { nameEl: nameB, titleEl: titleB, imgEl: imgB };
   }
 
-  // Apply changes (file has priority over URL)
-  applyBt.addEventListener('click', async ()=>{
+  // Apply changes (file has priority over URL) + persist
+  applyBt.addEventListener('click', ()=>{
     const target = sel.value;
-    const {nameEl, titleEl, imgEl} = parts(target);
+    const { nameEl, titleEl, imgEl } = targetParts(target);
+    const s = state[target];
 
-    nameEl.textContent  = nameIn.value || (target === 'A' ? 'Person A' : 'Person B');
-    titleEl.textContent = titleIn.value || 'Title goes here';
+    s.name  = nameIn.value || (target === 'A' ? 'Person A' : 'Person B');
+    s.title = titleIn.value || 'Title goes here';
+    nameEl.textContent = s.name;
+    titleEl.textContent = s.title;
 
     const url = urlIn.value.trim();
-
     if (fileIn.files && fileIn.files[0]) {
       const file = fileIn.files[0];
       const reader = new FileReader();
       reader.onload = () => {
-        imgEl.src = reader.result;             // data URL
-        imgEl.removeAttribute('data-src-url'); // we used a file
+        s.imgSrc = reader.result;  // data URL (persists as text)
+        s.imgUrl = '';             // clear stored URL since file took priority
+        imgEl.src = s.imgSrc;
+        saveState(state);
         updateLine();
       };
       reader.readAsDataURL(file);
+      closeEditor();
     } else if (url) {
-      // Try loading the provided URL; if it fails, keep previous image
       const testImg = new Image();
       testImg.onload = () => {
-        imgEl.src = url;
-        imgEl.setAttribute('data-src-url', url);
+        s.imgSrc = url;  // store the URL directly
+        s.imgUrl = url;
+        imgEl.src = s.imgSrc;
+        saveState(state);
         updateLine();
+        closeEditor();
       };
-      testImg.onerror = () => {
-        alert('Could not load image from URL. Please check the link.');
-      };
+      testImg.onerror = () => alert('Could not load image from URL. Please check the link.');
       testImg.src = url;
     } else {
-      // Clear photo if neither file nor url
+      // Clear if neither provided
+      s.imgSrc = '';
+      s.imgUrl = '';
       imgEl.removeAttribute('src');
-      imgEl.removeAttribute('data-src-url');
-      updateLine();
+      saveState(state);
+      closeEditor();
     }
-
-    closeEditor();
   });
 
-  // Clear photo quickly
+  // Clear photo quickly (and persist)
   clearBt.addEventListener('click', ()=>{
-    const {imgEl} = parts(sel.value);
+    const tgt = sel.value;
+    const { imgEl } = targetParts(tgt);
+    state[tgt].imgSrc = '';
+    state[tgt].imgUrl = '';
     imgEl.removeAttribute('src');
-    imgEl.removeAttribute('data-src-url');
+    saveState(state);
   });
 
   // Close modal on backdrop click or Escape
   modal.addEventListener('click', (e)=> { if (e.target === modal) closeEditor(); });
   addEventListener('keydown', (e)=> { if (e.key === 'Escape' && modal.hasAttribute('open')) closeEditor(); });
 
-  // Initial paint after layout settles
+  // One more update after fonts/layout settle
   requestAnimationFrame(updateLine);
 </script>
 </body>
