@@ -1,97 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Connected People</title>
 <style>
   body {
-    background: #0f111a;
-    color: #fff;
-    font-family: 'Raleway', sans-serif;
+    margin: 0;
     height: 100vh;
     overflow: hidden;
-    margin: 0;
+    background: #0f111a;
+    color: #fff;
+    font-family: 'Raleway', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  }
+
+  /* Full-screen SVG so the line never gets clipped */
+  #connector {
+    position: absolute;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none; /* let mouse events pass through */
   }
 
   .person {
     position: absolute;
+    left: 0; top: 0;
     background: #1c1f2b;
     border: 2px solid #e50914;
-    border-radius: 10px;
-    padding: 20px 30px;
+    border-radius: 12px;
+    padding: 16px 24px;
     cursor: grab;
-    text-align: center;
-    box-shadow: 0 0 10px rgba(229,9,20,0.5);
     user-select: none;
-  }
-
-  svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: none;
+    box-shadow: 0 0 12px rgba(229, 9, 20, 0.35);
+    transform: translate(0,0);
   }
 </style>
 </head>
 <body>
-  <svg id="connector"></svg>
-  <div id="personA" class="person" style="top: 200px; left: 200px;">Person A</div>
-  <div id="personB" class="person" style="top: 200px; left: 600px;">Person B</div>
+  <!-- The connector line lives here -->
+  <svg id="connector" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <line id="link" x1="0" y1="0" x2="0" y2="0" stroke="#e50914" stroke-width="3" />
+  </svg>
 
-  <script>
-    const personA = document.getElementById('personA');
-    const personB = document.getElementById('personB');
-    const svg = document.getElementById('connector');
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  <!-- People -->
+  <div id="personA" class="person" style="transform: translate(200px, 200px);">Person A</div>
+  <div id="personB" class="person" style="transform: translate(600px, 200px);">Person B</div>
 
-    line.setAttribute('stroke', '#e50914');
-    line.setAttribute('stroke-width', '3');
-    svg.appendChild(line);
+<script>
+  const svg = document.getElementById('connector');
+  const link = document.getElementById('link');
+  const personA = document.getElementById('personA');
+  const personB = document.getElementById('personB');
 
-    function updateLine() {
-      const aRect = personA.getBoundingClientRect();
-      const bRect = personB.getBoundingClientRect();
+  // Keep the SVG's coordinate space in CSS pixels (easy math)
+  function sizeSVG() {
+    svg.setAttribute('viewBox', `0 0 ${window.innerWidth} ${window.innerHeight}`);
+  }
 
-      const x1 = aRect.left + aRect.width / 2;
-      const y1 = aRect.top + aRect.height / 2;
-      const x2 = bRect.left + bRect.width / 2;
-      const y2 = bRect.top + bRect.height / 2;
+  function centerOf(el) {
+    const r = el.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  }
 
-      line.setAttribute('x1', x1);
-      line.setAttribute('y1', y1);
-      line.setAttribute('x2', x2);
-      line.setAttribute('y2', y2);
-    }
+  function updateLine() {
+    const a = centerOf(personA);
+    const b = centerOf(personB);
+    link.setAttribute('x1', a.x);
+    link.setAttribute('y1', a.y);
+    link.setAttribute('x2', b.x);
+    link.setAttribute('y2', b.y);
+  }
 
+  sizeSVG();
+  updateLine();
+
+  // Dragging (uses transform: translate for smoother movement)
+  let drag = null;
+  let start = { x: 0, y: 0 };
+  let origin = { x: 0, y: 0 };
+
+  function getTranslate(el) {
+    const m = getComputedStyle(el).transform;
+    if (m === 'none') return { x: 0, y: 0 };
+    const parts = m.match(/matrix\(([^)]+)\)/);
+    if (!parts) return { x: 0, y: 0 };
+    const nums = parts[1].split(',').map(Number);
+    return { x: nums[4], y: nums[5] };
+  }
+
+  function onDown(e) {
+    drag = e.currentTarget;
+    drag.style.cursor = 'grabbing';
+    const t = getTranslate(drag);
+    origin = { x: t.x, y: t.y };
+    start = { x: e.clientX, y: e.clientY };
+    e.preventDefault();
+  }
+
+  function onMove(e) {
+    if (!drag) return;
+    const dx = e.clientX - start.x;
+    const dy = e.clientY - start.y;
+    drag.style.transform = `translate(${origin.x + dx}px, ${origin.y + dy}px)`;
     updateLine();
+  }
 
-    // Drag functionality
-    let selected = null, offsetX, offsetY;
+  function onUp() {
+    if (drag) drag.style.cursor = 'grab';
+    drag = null;
+  }
 
-    document.querySelectorAll('.person').forEach(el => {
-      el.addEventListener('mousedown', e => {
-        selected = el;
-        offsetX = e.clientX - el.offsetLeft;
-        offsetY = e.clientY - el.offsetTop;
-        el.style.cursor = 'grabbing';
-      });
-    });
+  [personA, personB].forEach(el => el.addEventListener('mousedown', onDown));
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onUp);
+  window.addEventListener('resize', () => { sizeSVG(); updateLine(); });
 
-    document.addEventListener('mousemove', e => {
-      if (selected) {
-        selected.style.left = e.clientX - offsetX + 'px';
-        selected.style.top = e.clientY - offsetY + 'px';
-        updateLine();
-      }
-    });
-
-    document.addEventListener('mouseup', () => {
-      if (selected) selected.style.cursor = 'grab';
-      selected = null;
-    });
-
-    window.addEventListener('resize', updateLine);
-  </script>
+  // Initial paint after fonts/layout settle
+  requestAnimationFrame(updateLine);
+</script>
 </body>
 </html>
