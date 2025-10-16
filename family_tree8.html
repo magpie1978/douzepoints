@@ -5,89 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Interactive Family Tree</title>
 <style>
-  :root {
-    --bg: #0f111a;
-    --panel: #1c1f2b;
-    --accent: #e50914;
-    --text: #e8e8e8;
-    --muted: #bdbdbd;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; height: 100vh; overflow: hidden;
-    background: var(--bg); color: var(--text);
-    font-family: 'Raleway', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  }
+  :root { --bg:#0f111a; --panel:#1c1f2b; --accent:#e50914; --text:#e8e8e8; --muted:#bdbdbd; }
+  *{box-sizing:border-box}
+  body{margin:0;height:100vh;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Raleway',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .toolbar{position:fixed;top:10px;left:12px;z-index:10;display:flex;gap:8px;align-items:center;background:rgba(20,24,38,.85);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:8px;backdrop-filter:blur(6px)}
+  .btn{background:transparent;border:1px solid var(--accent);color:var(--text);padding:6px 10px;border-radius:10px;cursor:pointer}
+  .btn:hover{background:rgba(229,9,20,.12)} .btn.ghost{border-color:rgba(255,255,255,.2)}
+  #connector{position:absolute;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:0}
+  .edge,.bus,.stem,.drop,.spouse{stroke:var(--accent);stroke-width:3;fill:none}
+  .spouse{stroke-width:2;opacity:.9}
+  .person{position:absolute;z-index:1;display:grid;grid-template-columns:1fr 2fr;width:360px;height:120px;background:var(--panel);border:2px solid var(--accent);border-radius:14px;overflow:hidden;cursor:grab;user-select:none;box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 1px rgba(229,9,20,.25) inset}
+  .avatar{width:100%;height:100%;background:#222;border-radius:0!important;overflow:hidden}
+  .avatar img{width:100%;height:100%;object-fit:cover;display:block;border-radius:0!important}
+  .details{display:flex;flex-direction:column;justify-content:center;padding:12px 16px}
+  .name{font-weight:700;font-size:1.1rem}
+  .title{font-size:.9rem;color:var(--muted);margin-top:4px}
+  .actions{margin-top:10px}.actions .btn{padding:4px 8px}
 
-  /* Toolbar */
-  .toolbar {
-    position: fixed; top: 10px; left: 12px; z-index: 10;
-    display: flex; gap: 8px; align-items: center;
-    background: rgba(20,24,38,.85);
-    border: 1px solid rgba(255,255,255,.12);
-    border-radius: 12px; padding: 8px;
-    backdrop-filter: blur(6px);
-  }
-  .btn {
-    background: transparent; border: 1px solid var(--accent);
-    color: var(--text); padding: 6px 10px; border-radius: 10px; cursor: pointer;
-  }
-  .btn:hover { background: rgba(229,9,20,.12); }
-  .btn.ghost { border-color: rgba(255,255,255,.2); }
-
-  /* SVG underlay */
-  #connector {
-    position: absolute; inset: 0; width: 100vw; height: 100vh;
-    pointer-events: none; z-index: 0;
-  }
-  .edge, .bus, .stem, .drop, .spouse {
-    stroke: var(--accent); stroke-width: 3; fill: none;
-  }
-  .spouse { stroke-width: 2; opacity: .9; }
-
-  /* Person cards */
-  .person {
-    position: absolute; z-index: 1;
-    display: grid; grid-template-columns: 1fr 2fr;
-    width: 360px; height: 120px;
-    background: var(--panel);
-    border: 2px solid var(--accent);
-    border-radius: 14px; overflow: hidden;
-    cursor: grab; user-select: none;
-    box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 0 1px rgba(229,9,20,.25) inset;
-  }
-  .avatar { width:100%; height:100%; background:#222; border-radius:0 !important; overflow:hidden; }
-  .avatar img { width:100%; height:100%; object-fit:cover; display:block; border-radius:0 !important; }
-  .avatar, .avatar * { border-radius:0 !important; }
-
-  .details { display:flex; flex-direction:column; justify-content:center; padding: 12px 16px; }
-  .name { font-weight: 700; font-size: 1.1rem; }
-  .title { font-size: .9rem; color: var(--muted); margin-top: 4px; }
-  .actions { margin-top: 10px; }
-  .actions .btn { padding: 4px 8px; }
-
-  /* Modal editor */
-  .modal {
-    position: fixed; inset: 0; display: none; place-items: center;
-    background: rgba(0,0,0,.55); z-index: 20;
-  }
-  .modal[open] { display: grid; }
-  .dialog {
-    width: min(720px, 92vw);
-    background: #141826; border: 1px solid rgba(255,255,255,.1); border-radius: 16px;
-    box-shadow: 0 30px 70px rgba(0,0,0,.5);
-    padding: 18px;
-  }
-  .grid { display: grid; gap: 12px; }
-  .row { display: grid; gap: 8px; }
-  label { font-size: .9rem; color: var(--muted); }
-  input[type="text"], input[type="url"], select {
-    width: 100%; padding: 10px 12px; border-radius: 10px;
-    border: 1px solid rgba(255,255,255,.15);
-    background: #0f1320; color: var(--text);
-  }
-  select[multiple] { min-height: 100px; }
-  .dialog .buttons { display:flex; gap:10px; justify-content:flex-end; margin-top:8px; }
+  .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.55);z-index:20}
+  .modal[open]{display:grid}
+  .dialog{width:min(720px,92vw);background:#141826;border:1px solid rgba(255,255,255,.1);border-radius:16px;box-shadow:0 30px 70px rgba(0,0,0,.5);padding:18px}
+  .grid{display:grid;gap:12px}.row{display:grid;gap:8px}
+  label{font-size:.9rem;color:var(--muted)}
+  input[type="text"],input[type="url"],select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:#0f1320;color:var(--text)}
+  select[multiple]{min-height:100px}
+  .dialog .buttons{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
 </style>
 </head>
 <body>
@@ -99,7 +41,6 @@
   <svg id="connector" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
   <div id="cards-root"></div>
 
-  <!-- Edit dialog -->
   <div class="modal" id="editor" role="dialog" aria-modal="true">
     <div class="dialog">
       <h2>Edit Person</h2>
@@ -108,17 +49,14 @@
         <div class="row"><label>Title</label><input id="title" type="text"></div>
         <div class="row"><label>Image URL</label><input id="imgUrl" type="url" placeholder="https://example.com/pic.jpg"></div>
         <div class="row"><label>Upload image</label><input id="imgFile" type="file" accept="image/*"></div>
-
         <div class="row" style="grid-template-columns:1fr 1fr; gap:10px;">
           <div><label>Mother</label><select id="motherSel"></select></div>
           <div><label>Father</label><select id="fatherSel"></select></div>
         </div>
-
         <div class="row">
           <label>Partners / Spouses (multi-select)</label>
           <select id="partnersSel" multiple></select>
         </div>
-
         <div class="buttons">
           <button class="btn ghost" id="clearImg">Clear Photo</button>
           <button class="btn" id="cancel">Cancel</button>
@@ -130,27 +68,24 @@
 
 <script>
 /* ========= Persistence ========= */
-const STORE_KEY='familytree_v3';
+const STORE_KEY='familytree_v3_fixed';
 function defaultState(){
   return {
     nodes:{
       A1:{id:'A1',name:'Person A',title:'Title goes here',imgSrc:'',x:200,y:200,motherId:null,fatherId:null,partners:[]},
       B2:{id:'B2',name:'Person B',title:'Title goes here',imgSrc:'',x:600,y:200,motherId:null,fatherId:null,partners:[]}
     },
-    edges:[],            // 1→1 parent→child: {from, to}
-    triEdges:[],         // 2→1 parents→child: {parents:[id1,id2], child}
-    nextId:3
+    edges:[], triEdges:[], nextId:3
   };
 }
-let state=load();
-function load(){
+let state = (function load(){
   try{
-    const s=JSON.parse(localStorage.getItem(STORE_KEY)||'null')||defaultState();
-    Object.values(s.nodes).forEach(n=>{ n.motherId??=null; n.fatherId??=null; n.partners??=[]; });
+    const s = JSON.parse(localStorage.getItem(STORE_KEY) || 'null') || defaultState();
+    Object.values(s.nodes).forEach(n=>{ n.motherId??=null; n.fatherId??=null; n.partners??=[]; n.x??=100; n.y??=100; });
     s.edges??=[]; s.triEdges??=[];
     return s;
-  }catch{return defaultState();}
-}
+  }catch(e){ console.error(e); return defaultState(); }
+})();
 function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
 
 /* ========= Elements ========= */
@@ -163,7 +98,6 @@ const motherSel=document.getElementById('motherSel'), fatherSel=document.getElem
 const partnersSel=document.getElementById('partnersSel');
 const applyBt=document.getElementById('apply'), cancelBt=document.getElementById('cancel'), clearBt=document.getElementById('clearImg');
 const addBt=document.getElementById('addPerson'), resetBt=document.getElementById('resetAll');
-
 let editingId=null;
 
 /* ========= Geometry helpers ========= */
@@ -171,7 +105,7 @@ function sizeSVG(){ svg.setAttribute('viewBox', `0 0 ${innerWidth} ${innerHeight
 function cardRect(id){
   const el=document.getElementById(id); if(!el) return null;
   const r=el.getBoundingClientRect();
-  return{ el, cx:r.left+r.width/2, cy:r.top+r.height/2, topx:r.left+r.width/2, topy:r.top, bottomy:r.bottom };
+  return { el, cx:r.left+r.width/2, cy:r.top+r.height/2, topx:r.left+r.width/2, topy:r.top, bottomy:r.bottom };
 }
 
 /* ========= SVG helpers ========= */
@@ -200,11 +134,10 @@ function groupTriEdges(){
 function ensureBusElems(k){ const stem=ensureLine(`stem-${k}`,'stem'); const bus=ensureLine(`bus-${k}`,'bus'); return {stem,bus}; }
 function ensureDropElem(k,cid){ return ensureLine(`drop-${k}-${cid}`,'drop'); }
 
-/* Improved bus logic: clamp to child midpoints; always connect; anchor to nearest edge */
+/* Bus logic: clamps to child midpoints; always connects; anchors to nearest edge */
 function updateBusGroup(key, group) {
   const [p1,p2]=group.parents;
   const R1=cardRect(p1), R2=cardRect(p2); if(!R1||!R2) return;
-
   const mid={ x:(R1.cx+R2.cx)/2, y:(R1.cy+R2.cy)/2 };
 
   const childRects=group.children.map(id=>({ id, r:cardRect(id) })).filter(o=>o.r);
@@ -227,7 +160,7 @@ function updateBusGroup(key, group) {
     busY = Math.max(...childBotYs) + GAP_BELOW;
     busY = Math.min(busY, mid.y - MIN_STEM);
   }else{
-    busY = mid.y + MIN_STEM; // children straddle; put bus just below midpoint
+    busY = mid.y + MIN_STEM; // children straddle midpoint
   }
 
   const minX = Math.min(...childXs);
@@ -246,7 +179,7 @@ function updateBusGroup(key, group) {
 
   for(const {id,r} of childRects){
     const drop=ensureDropElem(key,id);
-    const anchorY = busAbove ? r.topy : (busBelow ? r.bottomy : (Math.abs(busY-r.topy) <= Math.abs(busY-r.bottomy) ? r.topy : r.bottomy));
+    const anchorY = busAbove ? r.topy : (busBelow ? r.bottomy : (Math.abs(busY-r.topy)<=Math.abs(busY-r.bottomy)?r.topy:r.bottomy));
     drop.setAttribute('x1',r.topx); drop.setAttribute('y1',busY);
     drop.setAttribute('x2',r.topx); drop.setAttribute('y2',anchorY);
     keep.add(drop.id);
@@ -254,7 +187,6 @@ function updateBusGroup(key, group) {
   [...svg.querySelectorAll(`[id^="drop-${key}-"]`)].forEach(d=>{ if(!keep.has(d.id)) d.remove(); });
 }
 function updateAllBuses(){
-  // Clear previous buses/drops then rebuild from state for correctness
   [...svg.querySelectorAll('.stem,.bus,.drop')].forEach(el=>el.remove());
   const groups=groupTriEdges();
   for(const [k,g] of groups) updateBusGroup(k,g);
@@ -284,7 +216,6 @@ function updateAllSpouses(){
 
 /* ========= Update edges ========= */
 function updateAllEdges(){
-  // simple approach: clear and redraw for correctness
   [...svg.querySelectorAll('.edge')].forEach(el=>el.remove());
   state.edges.forEach(drawEdge);
   updateAllBuses();
@@ -309,8 +240,7 @@ function renderNode(n){
   }
   el.querySelector('.name').textContent=n.name||'';
   el.querySelector('.title').textContent=n.title||'';
-  const img=el.querySelector('img');
-  if(n.imgSrc) img.src=n.imgSrc; else img.removeAttribute('src');
+  const img=el.querySelector('img'); if(n.imgSrc) img.src=n.imgSrc; else img.removeAttribute('src');
   el.style.transform=`translate(${n.x}px, ${n.y}px)`;
 }
 function renderAll(){
@@ -325,9 +255,9 @@ let dragging=null, start={x:0,y:0}, origin={x:0,y:0};
 function getTranslate(el){
   const m=getComputedStyle(el).transform;
   if(m==='none') return {x:0,y:0};
-  const parts=m.match(/matrix\(([^)]+)\)/);
+  const parts = m.match(/matrix\(([^)]+)\)/);  /* <-- FIXED REGEX */
   if(!parts) return {x:0,y:0};
-  const nums=parts[1].split(',').map(Number);
+  const nums = parts[1].split(',').map(Number);
   return {x:nums[4], y:nums[5]};
 }
 function onDown(e){
@@ -377,7 +307,6 @@ function partnersHTML(excludeId, selected=[]){
     .map(n=>`<option value="${n.id}" ${set.has(n.id)?'selected':''}>${n.name||n.id}</option>`)
     .join('');
 }
-
 function openEditor(id){
   editingId=id;
   const n=state.nodes[id];
@@ -386,87 +315,72 @@ function openEditor(id){
   motherSel.innerHTML = optionsHTML(id, true, [n.motherId].filter(Boolean));
   fatherSel.innerHTML = optionsHTML(id, true, [n.fatherId].filter(Boolean));
   partnersSel.innerHTML = partnersHTML(id, n.partners);
-
   editor.setAttribute('open','');
   setTimeout(()=>nameIn.focus(),0);
 }
 function closeEditor(){ editor.removeAttribute('open'); editingId=null; }
 cancelBt.addEventListener('click', closeEditor);
-editor.addEventListener('click', (e)=>{ if(e.target===editor) closeEditor(); });
-window.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && editor.hasAttribute('open')) closeEditor(); });
+editor.addEventListener('click', e=>{ if(e.target===editor) closeEditor(); });
+window.addEventListener('keydown', e=>{ if(e.key==='Escape' && editor.hasAttribute('open')) closeEditor(); });
 
 applyBt.addEventListener('click', ()=>{
   if(!editingId) return;
   const n=state.nodes[editingId];
 
-  // Save text fields
-  n.name=nameIn.value || n.name || 'Person';
-  n.title=titleIn.value || '';
+  n.name = nameIn.value || n.name || 'Person';
+  n.title = titleIn.value || '';
 
-  // Parent changes
+  // Parents
   const oldMother=n.motherId, oldFather=n.fatherId;
   const newMother=motherSel.value || null;
   const newFather=fatherSel.value || null;
   n.motherId=newMother; n.fatherId=newFather;
 
-  // Remove prior connections for this child
-  state.edges = state.edges.filter(e => {
+  // Remove old parent links for this child
+  state.edges = state.edges.filter(e=>{
     const touchesChild = (e.from===editingId || e.to===editingId);
-    const touchesPrevParent = [oldMother,oldFather].filter(Boolean).some(p => e.from===p || e.to===p);
+    const touchesPrevParent = [oldMother,oldFather].filter(Boolean).some(p=>e.from===p || e.to===p);
     return !(touchesChild && touchesPrevParent);
   });
-  state.triEdges = state.triEdges.filter(t => t.child !== editingId);
+  state.triEdges = state.triEdges.filter(t=>t.child!==editingId);
 
   // Add new parent links
-  if(newMother && newFather && newMother !== newFather){
+  if(newMother && newFather && newMother!==newFather){
     state.triEdges.push({ parents:[newMother,newFather].sort(), child:editingId });
-  }else if(newMother || newFather){
+  } else if(newMother || newFather){
     const p=newMother || newFather;
-    // normalize orientation
     const from=p<editingId?p:editingId, to=p<editingId?editingId:p;
     if(!state.edges.some(e=>e.from===from&&e.to===to)) state.edges.push({from,to});
   }
 
   // Partners (bidirectional)
-  const selected=[...partnersSel.options].filter(o=>o.selected).map(o=>o.value);
-  // remove stale on others
+  const sel=[...partnersSel.options].filter(o=>o.selected).map(o=>o.value);
   for(const prev of (n.partners||[])){
-    if(!selected.includes(prev)){
+    if(!sel.includes(prev)){
       const other=state.nodes[prev];
       if(other) other.partners = (other.partners||[]).filter(x=>x!==editingId);
     }
   }
-  // set and add reverse
-  n.partners = selected.slice();
-  for(const pid of selected){
-    const other=state.nodes[pid];
-    if(!other) continue;
+  n.partners = sel.slice();
+  for(const pid of sel){
+    const other=state.nodes[pid]; if(!other) continue;
     if(!other.partners) other.partners=[];
     if(!other.partners.includes(editingId)) other.partners.push(editingId);
   }
 
-  // Image handling (file wins over URL)
+  // Image
   const finish=()=>{ save(); renderNode(n); updateAllEdges(); closeEditor(); };
   if(imgFile.files && imgFile.files[0]){
-    const r=new FileReader();
-    r.onload=()=>{ n.imgSrc=r.result; finish(); };
-    r.readAsDataURL(imgFile.files[0]);
-  }else if(imgUrl.value.trim()){
-    const u=imgUrl.value.trim();
-    const test=new Image();
+    const r=new FileReader(); r.onload=()=>{ n.imgSrc=r.result; finish(); }; r.readAsDataURL(imgFile.files[0]);
+  } else if(imgUrl.value.trim()){
+    const u=imgUrl.value.trim(); const test=new Image();
     test.onload=()=>{ n.imgSrc=u; finish(); };
     test.onerror=()=>{ alert('Could not load image from URL.'); finish(); };
     test.src=u;
-  }else{
-    finish();
-  }
+  } else { finish(); }
 });
 
-clearBt.addEventListener('click', ()=>{
-  if(!editingId) return;
-  const n=state.nodes[editingId];
-  n.imgSrc=''; save(); renderNode(n); updateAllEdges();
-});
+clearBt.addEventListener('click', ()=>{ if(!editingId) return; const n=state.nodes[editingId]; n.imgSrc=''; save(); renderNode(n); updateAllEdges(); });
 
 /* ========= Add & Reset ========= */
 addBt.addEventListener('click', ()=>{
@@ -476,54 +390,12 @@ addBt.addEventListener('click', ()=>{
   state.nodes[id]={ id, name:`Person ${id}`, title:'Title goes here', imgSrc:'', x:jitter(baseX), y:jitter(baseY), motherId:null, fatherId:null, partners:[] };
   save(); renderNode(state.nodes[id]); updateAllEdges(); openEditor(id);
 });
-
 resetBt.addEventListener('click', ()=>{
   if(!confirm('Clear all people and connections?')) return;
   state=defaultState(); save(); renderAll();
 });
 
-/* ========= Dragging ========= */
-let dragging=null, start={x:0,y:0}, origin={x:0,y:0};
-function getTranslate(el){
-  const m=getComputedStyle(el).transform;
-  if(m==='none') return {x:0,y:0};
-  const parts=m.match(/matrix\\(([^)]+)\\)/);
-  if(!parts) return {x:0,y:0};
-  const nums=parts[1].split(',').map(Number);
-  return {x:nums[4], y:nums[5]};
-}
-function onDown(e){
-  const el=e.currentTarget;
-  if(e.target.closest('.actions')) return;
-  dragging=el; el.style.cursor='grabbing';
-  origin=getTranslate(el);
-  start={x:e.clientX, y:e.clientY};
-  e.preventDefault();
-}
-function onMove(e){
-  if(!dragging) return;
-  const dx=e.clientX-start.x, dy=e.clientY-start.y;
-  dragging.style.transform=`translate(${origin.x+dx}px, ${origin.y+dy}px)`;
-  updateEdgesForNode(dragging.id);
-}
-function onUp(){
-  if(!dragging) return;
-  dragging.style.cursor='grab';
-  const pos=getTranslate(dragging);
-  const n=state.nodes[dragging.id];
-  n.x=pos.x; n.y=pos.y;
-  save();
-  dragging=null;
-}
-function attachCardEvents(el){
-  el.addEventListener('mousedown', onDown);
-  window.addEventListener('mousemove', onMove);
-  window.addEventListener('mouseup', onUp);
-  el.addEventListener('dblclick', ()=>openEditor(el.id));
-  el.querySelector('[data-edit]').addEventListener('click', (ev)=>{ ev.stopPropagation(); openEditor(el.id); });
-}
-
-/* ========= Init ========= */
+/* ========= Init & Drag ========= */
 function init(){ sizeSVG(); renderAll(); }
 window.addEventListener('resize', ()=>{ sizeSVG(); updateAllEdges(); });
 init();
