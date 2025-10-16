@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Family Tree — View‑only</title>
+<style>
+  :root { --bg:#0f111a; --panel:#1c1f2b; --accent:#e50914; --text:#e8e8e8; --muted:#bdbdbd; }
+  * { box-sizing: border-box; }
+  body { margin:0; height:100vh; overflow:hidden; background:var(--bg); color:var(--text);
+         font-family:'Raleway',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; }
+
+  #scroll { position:absolute; inset:0; overflow:auto; }
+  #world  { position:relative; width:2400px; height:1600px; --gs:40px; }
+  #world.grid {
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size: var(--gs) var(--gs);
+    background-position: 0 0;
+  }
+
+  #connector { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+  .edge,.bus,.stem,.drop,.spouse { stroke:var(--accent); stroke-width:3; fill:none; vector-effect:non-scaling-stroke; }
+  .spouse { stroke-width:2; opacity:.9; }
+  .dotted { stroke-dasharray: 6 6; }
+
+  .person { position:absolute; z-index:1; display:grid; grid-template-columns:1fr 2fr; width:360px; height:120px;
+            background:var(--panel); border:2px solid var(--accent); border-radius:14px; overflow:hidden;
+            user-select:none; box-shadow:0 6px 18px rgba(0,0,0,.35), 0 0 0 1px rgba(229,9,20,.25) inset; }
+  .avatar { width:100%; height:100%; background:#222; border-radius:0 !important; overflow:hidden; }
+  .avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+  .details { display:flex; flex-direction:column; justify-content:center; padding:12px 16px; }
+  .name { font-weight:700; font-size:1.1rem; }
+  .title { font-size:.9rem; color:var(--muted); margin-top:4px; }
+</style>
+</head>
+<body>
+<div id="scroll">
+  <div id="world" class="grid">
+    <svg id="connector" viewBox="0 0 2400 1600" preserveAspectRatio="none"></svg>
+    <div id="cards-root"></div>
+  </div>
+</div>
+<script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTyAtltPPDRBFKDKCDr8VA-Ii_vh-5MgoqspQfxlfhtPerjaW95IZeJAnfMvnavMD4sWwwSbt9AQtwo/pub?gid=0&single=true&output=csv";
+const CARD_W=360, CARD_H=120, SNAP_GRID=40;
+const world=document.getElementById('world'), svg=document.getElementById('connector'), cards=document.getElementById('cards-root');
+
+function snap(v){return Math.round(v/SNAP_GRID)*SNAP_GRID;}
+function clamp0(v){return Math.max(0,v);}
+function updateWorldSize(nodes){
+  let maxX=1200,maxY=800;
+  Object.values(nodes).forEach(n=>{if(n.x+CARD_W>maxX)maxX=n.x+CARD_W;if(n.y+CARD_H>maxY)maxY=n.y+CARD_H;});
+  world.style.width=(maxX+200)+'px';world.style.height=(maxY+200)+'px';
+}
+function ensureLine(id,cls){let l=document.getElementById(id);if(!l){l=document.createElementNS('http://www.w3.org/2000/svg','line');l.id=id;l.classList.add(cls);svg.appendChild(l);}return l;}
+function drawEdge(a,b,dotted){const id='edge-'+a+'-'+b,l=ensureLine(id,'edge');if(dotted)l.classList.add('dotted');else l.classList.remove('dotted');const A=document.getElementById(a),B=document.getElementById(b);if(!A||!B)return;const rA=A.getBoundingClientRect(),rB=B.getBoundingClientRect(),cxA=rA.left+rA.width/2,cyA=rA.top+rA.height/2,cxB=rB.left+rB.width/2,cyB=rB.top+rB.height/2;l.setAttribute('x1',cxA);l.setAttribute('y1',cyA);l.setAttribute('x2',cxB);l.setAttribute('y2',cyB);}
+function fetchCsv(url){return fetch(url).then(r=>r.text());}
+function parseCsv(t){const r=[];let i=0,f='',row=[],q=false;while(i<t.length){const c=t[i];if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=c;}else if(c==='"')q=true;else if(c===','){row.push(f);f='';}else if(c==='\n'||c==='\r'){if(f.length||row.length){row.push(f);r.push(row);row=[];f='';}if(c==='\r'&&t[i+1]==='\n')i++;}else f+=c;i++;}if(f.length||row.length){row.push(f);r.push(row);}return r;}
+function rowsFromCsvTable(rows){const headers=rows[0].map(h=>h.trim().toLowerCase());return rows.slice(1).map(r=>{const o={};headers.forEach((h,i)=>o[h]=r[i]);return o;});}
+function buildState(rows){const nodes={},edges=[];rows.forEach(r=>{const id=r.id,name=r.name||id,title=r.title||'',img=r.img||r.image_url||'',x=clamp0(snap(Number(r.x)||400)),y=clamp0(snap(Number(r.y)||400));nodes[id]={id,name,title,img,x,y,mother:r.mother_id,father:r.father_id,illegitimate:r.illegitimate==='true'};});
+Object.values(nodes).forEach(c=>{const m=nodes[c.mother],f=nodes[c.father];if(m&&f){edges.push({a:m.id,b:f.id});}else if(m||f){edges.push({a:(m||f).id,b:c.id,dotted:c.illegitimate});}});
+return{nodes,edges};}
+function render(state){cards.innerHTML='';Object.values(state.nodes).forEach(n=>{const el=document.createElement('div');el.id=n.id;el.className='person';el.style.transform=`translate(${n.x}px,${n.y}px)`;el.innerHTML=`<div class='avatar'><img src='${n.img}'></div><div class='details'><div class='name'>${n.name}</div><div class='title'>${n.title}</div></div>`;cards.appendChild(el);});updateWorldSize(state.nodes);state.edges.forEach(e=>drawEdge(e.a,e.b,e.dotted));}
+function init(){fetchCsv(CSV_URL).then(parseCsv).then(rowsFromCsvTable).then(buildState).then(render);}init();
+</script>
+</body>
+</html>
