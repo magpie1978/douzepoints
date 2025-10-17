@@ -21,7 +21,7 @@
   .btn.danger:hover { background:rgba(255,77,79,.12); }
   .sep { width:1px; height:26px; background:rgba(255,255,255,.15); margin:0 4px; }
   .toggle { display:flex; align-items:center; gap:6px; font-size:.9rem; color:var(--muted); }
-  .num { width:72px; padding:6px 8px; border-radius:8px; border:1px solid rgba(255,255,255,.2); background:#0f1320; color:var(--text); }
+  .num { width:72px; padding:6px 8px; border-radius:8px; border:1px solid rgba(255,255,255,.2); background:#0f1320; color:#e8e8e8; }
 
   /* Scrollable stage */
   #scroll { position:absolute; inset:0; overflow:auto; }
@@ -136,7 +136,7 @@
 /* ===================== Config & State ===================== */
 var STORE_KEY='familytree_csv_snapgrid_v1';
 var PREF_KEY='snap_prefs_v1';
-var SOURCE_KEY='sheet_csv_url'; /* remember last CSV URL */
+var SOURCE_KEY='sheet_csv_url';
 var CARD_W=360, CARD_H=120, PADDING=200;
 
 /* Your default sheet to open on page load */
@@ -148,7 +148,7 @@ function clearAllCaches() {
     localStorage.removeItem(STORE_KEY);
     localStorage.removeItem(PREF_KEY);
     localStorage.removeItem(SOURCE_KEY);
-    // legacy/defensive cleanup (if names ever varied)
+    // defensive cleanup for any previous names
     localStorage.removeItem('familytree_csv_snapgrid_v1');
     localStorage.removeItem('snap_prefs_v1');
     localStorage.removeItem('sheet_csv_url');
@@ -237,6 +237,20 @@ function updateWorldSize(){
   world.style.width = Math.max(maxX, world.clientWidth) + 'px';
   world.style.height= Math.max(maxY, world.clientHeight) + 'px';
   svg.setAttribute('viewBox','0 0 '+world.clientWidth+' '+world.clientHeight);
+}
+function ensureWorldFitsForState(s) {
+  var maxX = 1200, maxY = 800;
+  Object.keys(s.nodes).forEach(function(id){
+    var n = s.nodes[id];
+    if (typeof n.x === 'number' && typeof n.y === 'number') {
+      if (n.x + CARD_W > maxX) maxX = n.x + CARD_W;
+      if (n.y + CARD_H > maxY) maxY = n.y + CARD_H;
+    }
+  });
+  maxX += PADDING; maxY += PADDING;
+  world.style.width  = maxX + 'px';
+  world.style.height = maxY + 'px';
+  svg.setAttribute('viewBox', '0 0 ' + maxX + ' ' + maxY);
 }
 function clamp0(v){ return Math.max(0, v); }
 function snap(v){ return Math.round(v / snapGrid) * snapGrid; }
@@ -712,22 +726,45 @@ function buildStateFromRows(rows){
 
   return { nodes:nodes, edges:edges, triEdges:triEdges, nextId:maxN+1 };
 }
+
+/* >>> Modified importer: pre-size world + auto-scroll to Princess Charlotte <<< */
 function importFromPublishedCsv(csvUrl){
   return fetchPublishedCsv(csvUrl)
     .then(parseCsv)
     .then(rowsFromCsvTable)
     .then(function(rows){
       if(!rows.length){ alert('No rows found (check headers).'); return; }
+
+      // Build the new state first
       var newState = buildStateFromRows(rows);
-      state = newState; save(); renderAll();
-      // snap all to grid if snap is ON
-      if(isSnapOn){
-        Object.keys(state.nodes).forEach(function(id){
-          var n=state.nodes[id];
+
+      // SNAP to grid (if on) so dimensions we compute are final
+      if (isSnapOn) {
+        Object.keys(newState.nodes).forEach(function(id){
+          var n = newState.nodes[id];
           n.x = clamp0( maybeSnap(n.x) );
           n.y = clamp0( maybeSnap(n.y) );
         });
-        save(); renderAll();
+      }
+
+      // Make the world large enough BEFORE we draw anything
+      ensureWorldFitsForState(newState);
+
+      // Swap in the state and render
+      state = newState;
+      save();
+      renderAll();
+
+      // Helpful: auto-scroll to Princess Charlotte if present
+      var candidates = Object.values(state.nodes).filter(function(n){
+        return (n.name || '').toLowerCase().trim() === 'princess charlotte';
+      });
+      if (candidates.length) {
+        var target = candidates[0];
+        var scroll = document.getElementById('scroll');
+        var centerX = Math.max(0, target.x - (scroll.clientWidth  - CARD_W) / 2);
+        var centerY = Math.max(0, target.y - (scroll.clientHeight - CARD_H) / 2);
+        scroll.scrollTo({ left: centerX, top: centerY, behavior: 'auto' });
       }
     })
     .catch(function(err){
@@ -768,7 +805,7 @@ function init(){
 window.addEventListener('resize', function(){ updateWorldSize(); updateAllEdges(); });
 init();
 
-/* ===================== Import button (still available for manual change) ===================== */
+/* ===================== Import button (manual change still available) ===================== */
 importBt.addEventListener('click', function(){
   var last = localStorage.getItem(SOURCE_KEY) || DEFAULT_CSV_URL;
   var csvUrl = prompt('Paste the Google Sheets "Publish to the web" CSV link (output=csv):', last);
