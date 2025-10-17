@@ -9,6 +9,8 @@
   * { box-sizing: border-box; }
   body { margin:0; height:100vh; overflow:hidden; background:var(--bg); color:var(--text);
          font-family:'Raleway',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; }
+
+  /* Toolbar (fixed) */
   .toolbar { position:fixed; top:10px; left:12px; z-index:100; display:flex; gap:8px; align-items:center;
              background:rgba(20,24,38,.85); border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:8px;
              backdrop-filter: blur(6px); }
@@ -19,10 +21,12 @@
   .btn.danger:hover { background:rgba(255,77,79,.12); }
   .sep { width:1px; height:26px; background:rgba(255,255,255,.15); margin:0 4px; }
   .toggle { display:flex; align-items:center; gap:6px; font-size:.9rem; color:var(--muted); }
-  .num { width:72px; padding:6px 8px; border-radius:8px; border:1px solid rgba(255,255,255,.2); background:#0f1320; color:#e8e8e8; }
+  .num { width:72px; padding:6px 8px; border-radius:8px; border:1px solid rgba(255,255,255,.2); background:#0f1320; color:var(--text); }
 
+  /* Scrollable stage */
   #scroll { position:absolute; inset:0; overflow:auto; }
   #world  { position:relative; width:2400px; height:1600px; --gs:40px; }
+  /* Grid background when snap is ON */
   #world.grid {
     background-image:
       linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
@@ -31,11 +35,13 @@
     background-position: 0 0;
   }
 
+  /* SVG underlay */
   #connector { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; }
   .edge,.bus,.stem,.drop,.spouse { stroke:var(--accent); stroke-width:3; fill:none; vector-effect:non-scaling-stroke; }
   .spouse { stroke-width:2; opacity:.9; }
   .dotted { stroke-dasharray: 6 6; }
 
+  /* Person cards */
   .person { position:absolute; z-index:1; display:grid; grid-template-columns:1fr 2fr; width:360px; height:120px;
             background:var(--panel); border:2px solid var(--accent); border-radius:14px; overflow:hidden; cursor:grab; user-select:none;
             box-shadow:0 6px 18px rgba(0,0,0,.35), 0 0 0 1px rgba(229,9,20,.25) inset; }
@@ -45,11 +51,17 @@
   .name { font-weight:700; font-size:1.1rem; }
   .title { font-size:.9rem; color:var(--muted); margin-top:4px; }
 
-  .gear { position:absolute; top:8px; right:8px; width:32px; height:32px; display:grid; place-items:center;
-          background:rgba(20,24,38,.85); border:1px solid rgba(255,255,255,.18); border-radius:8px; cursor:pointer; z-index:2; }
+  /* Gear (settings) button */
+  .gear {
+    position:absolute; top:8px; right:8px;
+    width:32px; height:32px; display:grid; place-items:center;
+    background:rgba(20,24,38,.85); border:1px solid rgba(255,255,255,.18);
+    border-radius:8px; cursor:pointer; z-index:2;
+  }
   .gear:hover { background:rgba(229,9,20,.12); border-color:var(--accent); }
   .gear svg { width:18px; height:18px; stroke:var(--text); }
 
+  /* Modal editor */
   .modal { position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.55); z-index:200; }
   .modal[open] { display:grid; }
   .dialog { width:min(740px,92vw); background:#141826; border:1px solid rgba(255,255,255,.1); border-radius:16px;
@@ -75,6 +87,7 @@
     <button class="btn ghost" id="resetAll">Reset</button>
   </div>
 
+  <!-- SCROLLABLE STAGE -->
   <div id="scroll">
     <div id="world">
       <svg id="connector" viewBox="0 0 2400 1600" preserveAspectRatio="none"></svg>
@@ -82,6 +95,7 @@
     </div>
   </div>
 
+  <!-- Editor -->
   <div class="modal" id="editor" role="dialog" aria-modal="true">
     <div class="dialog">
       <h2>Edit Person</h2>
@@ -90,18 +104,22 @@
         <div class="row"><label>Title</label><input id="title" type="text"></div>
         <div class="row"><label>Image URL</label><input id="imgUrl" type="url" placeholder="https://example.com/pic.jpg"></div>
         <div class="row"><label>Upload image</label><input id="imgFile" type="file" accept="image/*"></div>
+
         <div class="row" style="grid-template-columns:1fr 1fr; gap:10px;">
           <div><label>Mother</label><select id="motherSel"></select></div>
           <div><label>Father</label><select id="fatherSel"></select></div>
         </div>
+
         <div class="row">
           <label><input type="checkbox" id="illegitChk"> Illegitimate (single-parent dotted link)</label>
           <div class="hint">Only applies when exactly one parent is selected.</div>
         </div>
+
         <div class="row">
           <label>Partners / Spouses (multi-select)</label>
           <select id="partnersSel" multiple></select>
         </div>
+
         <div class="buttons">
           <button class="btn danger" id="deletePerson">Delete Person</button>
           <div class="buttons-right">
@@ -121,14 +139,16 @@ var PREF_KEY='snap_prefs_v1';
 var SOURCE_KEY='sheet_csv_url';
 var CARD_W=360, CARD_H=120, PADDING=200;
 
+/* Default sheet to open on page load */
 const DEFAULT_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTuhOVOmxBKNUpqZ2pw4ned_uUSne68S2gpJHPngVtYkFXJ1Q829-OMcGxjU-zeNAX9OVGGYljhftCV/pub?gid=0&single=true&output=csv";
 
-/* Clear ALL caches on load */
+/* Clear ALL caches (layout, prefs, last source) */
 function clearAllCaches() {
   try {
     localStorage.removeItem(STORE_KEY);
     localStorage.removeItem(PREF_KEY);
     localStorage.removeItem(SOURCE_KEY);
+    // defensive cleanup (legacy keys)
     localStorage.removeItem('familytree_csv_snapgrid_v1');
     localStorage.removeItem('snap_prefs_v1');
     localStorage.removeItem('sheet_csv_url');
@@ -205,7 +225,7 @@ snapChk.checked=isSnapOn;
 gridSizeInp.value=String(snapGrid);
 applySnapUI();
 
-/* ===================== World sizing ===================== */
+/* ===================== World size helpers ===================== */
 function updateWorldSize(){
   var maxX=1200, maxY=800;
   Object.keys(state.nodes).forEach(function(id){
@@ -236,11 +256,19 @@ function clamp0(v){ return Math.max(0, v); }
 function snap(v){ return Math.round(v / snapGrid) * snapGrid; }
 function maybeSnap(v){ return isSnapOn ? snap(v) : v; }
 
-/* ===================== SVG helpers ===================== */
+/* ===================== Geometry & SVG helpers ===================== */
 function cardRect(id){
   var el=document.getElementById(id); if(!el) return null;
   var r=el.getBoundingClientRect();
-  return { el:el, cx:r.left+r.width/2, cy:r.top+r.height/2, topx:r.left+r.width/2, topy:r.top, bottomy:r.bottom };
+  var wr=world.getBoundingClientRect(); // convert viewport -> world coords
+  var leftInWorld = r.left - wr.left;
+  var topInWorld  = r.top  - wr.top;
+  return { el:el,
+           cx:leftInWorld + r.width/2,
+           cy:topInWorld  + r.height/2,
+           topx:leftInWorld + r.width/2,
+           topy:topInWorld,
+           bottomy:topInWorld + r.height };
 }
 function ensureLine(id,cls){
   var l=document.getElementById(id);
@@ -369,7 +397,7 @@ function renderNode(n){
       <div class="details">\
         <button class="gear" title="Edit" aria-label="Edit">\
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">\
-            <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c0 .66.39 1.26 1 1.51.2.08.41.12.62.12H21a2 2 0 1 1 0 4h-.09c-.21 0-.42.04-.62.12-.61.25-1 .85-1 1.51z"/>\
+            <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c0 .66.39 1.26 1 1.51.2.08.41.12.62.12H21a2 2 0 1 1 0 4h-.09c-.21 0-.42.04-.62.12-.61.25-1 .85-1 1.51z"/>\
           </svg>\
         </button>\
         <div class="name"></div>\
@@ -400,7 +428,7 @@ function getTranslate(el){
 }
 function onDown(e){
   var el=e.currentTarget;
-  if(e.target.closest && (e.target.closest('.gear'))) return;
+  if(e.target.closest && (e.target.closest('.gear'))) return; // ignore gear clicks for dragging
   dragging=el; el.style.cursor='grabbing';
   origin=getTranslate(el);
   start={x:e.clientX, y:e.clientY};
@@ -418,6 +446,7 @@ function onUp(){
   dragging.style.cursor='grab';
   var pos=getTranslate(dragging);
   var n=state.nodes[dragging.id];
+  // SNAP HERE
   n.x = clamp0( maybeSnap(pos.x) );
   n.y = clamp0( maybeSnap(pos.y) );
   dragging.style.transform='translate('+n.x+'px,'+n.y+'px)';
@@ -484,6 +513,7 @@ applyBt.addEventListener('click', function(){
   n.motherId=newMother; n.fatherId=newFather;
   n.illegitimate = !!illegitChk.checked && ((!!newMother)!=(!!newFather));
 
+  // Remove previous parent links for this child
   state.edges = state.edges.filter(function(e){
     var touchesChild = (e.from===editingId || e.to===editingId);
     var prevParents = [oldMother,oldFather].filter(function(p){return !!p;});
@@ -492,6 +522,7 @@ applyBt.addEventListener('click', function(){
   });
   state.triEdges = state.triEdges.filter(function(t){ return t.child!==editingId; });
 
+  // Add new links
   if(newMother && newFather && newMother!==newFather){
     state.triEdges.push({parents:[newMother,newFather].sort(), child:editingId});
   }else if(newMother || newFather){
@@ -499,6 +530,7 @@ applyBt.addEventListener('click', function(){
     addSingleParentEdge(p, editingId, n.illegitimate);
   }
 
+  // Partners (bidirectional)
   var sel=[]; for(var i=0;i<partnersSel.options.length;i++){ if(partnersSel.options[i].selected) sel.push(partnersSel.options[i].value); }
   var prev=(n.partners||[]).slice();
   prev.forEach(function(pid){
@@ -507,6 +539,7 @@ applyBt.addEventListener('click', function(){
   n.partners=sel.slice();
   sel.forEach(function(pid){ var other=state.nodes[pid]; if(other){ if(!Array.isArray(other.partners)) other.partners=[]; if(other.partners.indexOf(editingId)<0) other.partners.push(editingId); }});
 
+  // Image
   function finish(){ save(); renderNode(n); updateWorldSize(); updateAllEdges(); closeEditor(); }
   if(imgFile.files && imgFile.files[0]){
     var r=new FileReader(); r.onload=function(){ n.imgSrc=r.result; finish(); }; r.readAsDataURL(imgFile.files[0]);
@@ -518,7 +551,14 @@ applyBt.addEventListener('click', function(){
   }else{ finish(); }
 });
 
-/* ===================== CSV IMPORT helpers ===================== */
+/* ===================== CSV IMPORT (Publish-to-web CSV link) ===================== */
+/* Expected headers (lowercased): 
+   id | name | title | img | image_url | x | y | mother_id | father_id | illegitimate | partners
+   - photo prefers **img** (falls back to **image_url** if empty)
+   - partners separated by ';' (e.g., "A1;B2")
+*/
+
+/* ---- helpers for source comparison + cache-busting ---- */
 function normalizeSourceId(url){
   try{
     const u = new URL(url);
@@ -544,12 +584,16 @@ function withNoCache(url){
   if(!url) return url;
   return url + (url.includes('?') ? '&' : '?') + 'nocache=' + Date.now();
 }
+
 function fetchPublishedCsv(csvUrl) {
+  // add cache-buster to avoid stale CDN results
   return fetch(withNoCache(csvUrl), { mode: 'cors' }).then(function(r){
     if (!r.ok) throw new Error('CSV fetch failed: ' + r.status);
     return r.text();
   });
 }
+
+/* Robust CSV parser */
 function parseCsv(text) {
   var rows=[], i=0, field='', row=[], inQ=false;
   while(i<text.length){
@@ -568,19 +612,49 @@ function parseCsv(text) {
   if(field.length || row.length){ row.push(field); rows.push(row); }
   return rows;
 }
+
+/* >>> Upgraded: trims values, auto-generates missing IDs, de-dupes IDs <<< */
+function slugifyId(s){
+  return (s||"")
+    .toString()
+    .trim()
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^\w]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 40) || "row";
+}
 function rowsFromCsvTable(rows) {
   if (!rows.length) return [];
-  var headers = rows[0].map(function(h){ return (h||'').trim().toLowerCase(); });
-  var out=[];
-  for (var r=1;r<rows.length;r++){
-    var obj={};
-    for (var c=0;c<headers.length;c++){
-      obj[headers[c] || ('col'+c)] = (rows[r][c]||'').toString().trim();
+  var headers = rows[0].map(function(h){ return (h||'').toString().trim().toLowerCase(); });
+
+  var out = [];
+  for (var r = 1; r < rows.length; r++) {
+    var obj = {};
+    for (var c = 0; c < headers.length; c++) {
+      var key = headers[c] || ('col'+c);
+      obj[key] = (rows[r][c] || '').toString().trim();
     }
-    if (obj.id) out.push(obj);
+    obj.id   = (obj.id || '').trim();
+    obj.name = (obj.name || '').trim();
+    if (!obj.id) {
+      obj.id = obj.name ? slugifyId(obj.name) : ('row' + r);
+    }
+    out.push(obj);
   }
+
+  // De-duplicate IDs if needed
+  var seen = new Set();
+  out.forEach(function(o){
+    var base = o.id;
+    var i = 1;
+    while (seen.has(o.id)) { i++; o.id = base + '-' + i; }
+    seen.add(o.id);
+  });
+
   return out;
 }
+
 function toBool(v){ var s=String(v||'').trim().toLowerCase(); return s==='true'||s==='1'||s==='yes'||s==='y'; }
 function toNum(v){ var n=Number(v); return isFinite(n)?n:null; }
 function splitIds(v){ var s=String(v||'').trim(); return s? s.split(';').map(function(x){return x.trim();}).filter(Boolean):[]; }
@@ -641,24 +715,13 @@ function buildStateFromRows(rows){
   return { nodes:nodes, edges:edges, triEdges:triEdges, nextId:maxN+1 };
 }
 
-/* ===================== Importer (pre-size + auto-scroll + diagnostics + failsafe) ===================== */
+/* >>> Importer: pre-size world BEFORE first render <<< */
 function importFromPublishedCsv(csvUrl){
   return fetchPublishedCsv(csvUrl)
     .then(parseCsv)
     .then(rowsFromCsvTable)
     .then(function(rows){
       if(!rows.length){ alert('No rows found (check headers).'); return; }
-
-      console.info('[FamilyTree] CSV rows:', rows.length);
-      console.info('[FamilyTree] Example names:', rows.slice(0,10).map(r=>r.name));
-
-      // Find any CSV rows that look like Charlotte (for debugging)
-      var charlotteRows = rows.filter(r => (r.name||'').toLowerCase().includes('charlotte'));
-      if (charlotteRows.length) {
-        console.table(charlotteRows);
-      } else {
-        console.warn('No CSV rows matched "charlotte" by name.');
-      }
 
       var newState = buildStateFromRows(rows);
 
@@ -671,56 +734,13 @@ function importFromPublishedCsv(csvUrl){
         });
       }
 
-      // Pre-size world to fit everything before first paint
+      // Make the world large enough BEFORE we draw anything
       ensureWorldFitsForState(newState);
 
-      // Render new state
+      // Swap in the state and render
       state = newState;
       save();
       renderAll();
-
-      console.info('[FamilyTree] Rendered nodes:', Object.keys(state.nodes).length);
-
-      // Sanity check: is there a node named "Princess Charlotte"?
-      var princess = Object.values(state.nodes).find(n => (n.name||'').trim().toLowerCase() === 'princess charlotte');
-
-      // Failsafe: If CSV had a "Princess Charlotte" row but node is missing, create a visible card.
-      if (!princess && charlotteRows.length) {
-        var r = charlotteRows.find(rr => (rr.name||'').trim().toLowerCase() === 'princess charlotte') || charlotteRows[0];
-        var id = r.id || 'charlotte_fallback';
-        if (!state.nodes[id]) {
-          state.nodes[id] = {
-            id: id,
-            name: r.name || 'Princess Charlotte',
-            title: r.title || '',
-            imgSrc: r.img || r.image_url || '',
-            x: clamp0( toNum(r.x)!=null ? toNum(r.x) : 440 ),
-            y: clamp0( toNum(r.y)!=null ? toNum(r.y) : 1880 ),
-            motherId: r.mother_id || null,
-            fatherId: r.father_id || null,
-            partners: splitIds(r.partners),
-            illegitimate: toBool(r.illegitimate)
-          };
-          save();
-          renderNode(state.nodes[id]);
-          updateWorldSize();
-          updateAllEdges();
-          princess = state.nodes[id];
-          console.warn('[FamilyTree] Failsafe injected Princess Charlotte node:', princess);
-        }
-      }
-
-      // If we have her, center on her
-      if (princess) {
-        var scroll = document.getElementById('scroll');
-        var centerX = Math.max(0, princess.x - (scroll.clientWidth  - CARD_W) / 2);
-        var centerY = Math.max(0, princess.y - (scroll.clientHeight - CARD_H) / 2);
-        scroll.scrollTo({ left: centerX, top: centerY, behavior: 'auto' });
-        console.info('[FamilyTree] Auto-scrolled to Princess Charlotte at', princess.x, princess.y);
-      } else {
-        console.warn('Princess Charlotte still not found after render.');
-        alert('Heads up: I couldn’t find a node named exactly "Princess Charlotte" after import. Open DevTools console for details.');
-      }
     })
     .catch(function(err){
       console.error(err);
@@ -728,7 +748,7 @@ function importFromPublishedCsv(csvUrl){
     });
 }
 
-/* ===================== Snap UI ===================== */
+/* ===================== Snap UI handlers ===================== */
 function applySnapUI(){
   world.classList.toggle('grid', isSnapOn);
   world.style.setProperty('--gs', snapGrid+'px');
@@ -747,29 +767,43 @@ gridSizeInp.addEventListener('change', function(){
 
 /* ===================== Init ===================== */
 function init(){
+  // 1) Clear ALL caches on load
   clearAllCaches();
+
+  // 2) Apply UI + base render
   applySnapUI(); updateWorldSize(); renderAll();
+
+  // 3) Record default source and auto-import it (with cache-buster inside)
   localStorage.setItem(SOURCE_KEY, DEFAULT_CSV_URL);
   importFromPublishedCsv(DEFAULT_CSV_URL);
 }
 window.addEventListener('resize', function(){ updateWorldSize(); updateAllEdges(); });
+
+// Keep connectors in sync while scrolling the canvas
+document.getElementById('scroll').addEventListener('scroll', function () {
+  updateAllEdges();
+});
+
 init();
 
-/* Manual import still available */
+/* ===================== Import button (manual change still available) ===================== */
 importBt.addEventListener('click', function(){
   var last = localStorage.getItem(SOURCE_KEY) || DEFAULT_CSV_URL;
   var csvUrl = prompt('Paste the Google Sheets "Publish to the web" CSV link (output=csv):', last);
   if(!csvUrl) return;
+
+  // Clear cached layout/prefs if different source, then import
   clearCachedStateForNewSource(csvUrl);
   localStorage.setItem(SOURCE_KEY, csvUrl);
   importFromPublishedCsv(csvUrl);
 });
 
-/* ===================== Add / Reset ===================== */
+/* ===================== Add & Reset ===================== */
 document.getElementById('addPerson').addEventListener('click', function(){
   var id='N'+(state.nextId++), baseX=world.clientWidth/2 - CARD_W/2, baseY=world.clientHeight/2 - CARD_H/2;
   function j(n){ return Math.round(n + (Math.random()*120 - 60)); }
   var x0 = j(baseX), y0 = j(baseY);
+  // snap new person if snap is ON
   state.nodes[id]={ id:id, name:'Person '+id, title:'Title goes here', imgSrc:'', 
     x: clamp0( maybeSnap(x0) ), y: clamp0( maybeSnap(y0) ),
     motherId:null, fatherId:null, partners:[], illegitimate:false };
