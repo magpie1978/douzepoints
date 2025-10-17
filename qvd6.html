@@ -265,20 +265,31 @@ function descendantsOf(rootId){
   return result;
 }
 /* Hide branch: person + their spouses + descendants (of the person) */
+/* Hide branch: person + their descendants + spouses of everyone in that set */
 function hideBranchFrom(id){
-  var n=state.nodes[id]; if(!n) return;
-  var hide=new Set();
-  hide.add(id);
-  // spouses (partners directly connected to this person)
-  (n.partners||[]).forEach(function(pid){ hide.add(pid); });
-  // descendants from the person
-  var desc = descendantsOf(id);
-  desc.forEach(function(cid){ hide.add(cid); });
+  var n = state.nodes[id]; 
+  if(!n) return;
 
-  state.hiddenIds = Array.from(hide);
+  // 1) Start with the root person and ALL of their descendants
+  var toHide = new Set([id]);
+  descendantsOf(id).forEach(function(cid){ toHide.add(cid); });
+
+  // 2) Add spouses for everyone in that set (one hop)
+  //    (This captures spouses of the root and spouses of each descendant.)
+  toHide.forEach(function(pid){
+    var p = state.nodes[pid];
+    if(!p) return;
+    (p.partners || []).forEach(function(spouseId){
+      toHide.add(spouseId);
+    });
+  });
+
+  // Persist + apply
+  state.hiddenIds = Array.from(toHide);
   save();
   applyHiddenVisibility();
 }
+
 /* Show all hidden */
 function showAll(){
   state.hiddenIds = [];
