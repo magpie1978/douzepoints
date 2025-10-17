@@ -136,8 +136,25 @@
 /* ===================== Config & State ===================== */
 var STORE_KEY='familytree_csv_snapgrid_v1';
 var PREF_KEY='snap_prefs_v1';
-var SOURCE_KEY='sheet_csv_url'; /* remember last CSV URL (for cache auto-clear) */
+var SOURCE_KEY='sheet_csv_url'; /* remember last CSV URL */
 var CARD_W=360, CARD_H=120, PADDING=200;
+
+/* Your default sheet to open on page load */
+const DEFAULT_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTuhOVOmxBKNUpqZ2pw4ned_uUSne68S2gpJHPngVtYkFXJ1Q829-OMcGxjU-zeNAX9OVGGYljhftCV/pub?gid=0&single=true&output=csv";
+
+/* Clear ALL caches (layout, prefs, last source) */
+function clearAllCaches() {
+  try {
+    localStorage.removeItem(STORE_KEY);
+    localStorage.removeItem(PREF_KEY);
+    localStorage.removeItem(SOURCE_KEY);
+    // legacy/defensive cleanup (if names ever varied)
+    localStorage.removeItem('familytree_csv_snapgrid_v1');
+    localStorage.removeItem('snap_prefs_v1');
+    localStorage.removeItem('sheet_csv_url');
+    console.info('[FamilyTree] Cleared all caches.');
+  } catch (e) {}
+}
 
 function defaultState(){
   return {
@@ -358,7 +375,7 @@ function renderNode(n){
       <div class="details">\
         <button class="gear" title="Edit" aria-label="Edit">\
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">\
-            <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c0 .66.39 1.26 1 1.51.2.08.41.12.62.12H21a2 2 0 1 1 0 4h-.09c-.21 0-.42.04-.62.12-.61.25-1 .85-1 1.51z"/>\
+            <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83 2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c0 .66.39 1.26 1 1.51.2.08.41.12.62.12H21a2 2 0 1 1 0 4h-.09c-.21 0-.42.04-.62.12-.61.25-1 .85-1 1.51z"/>\
           </svg>\
         </button>\
         <div class="name"></div>\
@@ -571,7 +588,7 @@ document.getElementById('resetAll').addEventListener('click', function(){
    - partners separated by ';' (e.g., "A1;B2")
 */
 
-/* ---- NEW: helpers for source comparison + cache-busting ---- */
+/* ---- helpers for source comparison + cache-busting ---- */
 function normalizeSourceId(url){
   try{
     const u = new URL(url);
@@ -599,7 +616,7 @@ function withNoCache(url){
 }
 
 function fetchPublishedCsv(csvUrl) {
-  // NEW: add cache-buster to avoid stale CDN results
+  // add cache-buster to avoid stale CDN results
   return fetch(withNoCache(csvUrl), { mode: 'cors' }).then(function(r){
     if (!r.ok) throw new Error('CSV fetch failed: ' + r.status);
     return r.text();
@@ -737,20 +754,28 @@ gridSizeInp.addEventListener('change', function(){
 });
 
 /* ===================== Init ===================== */
-function init(){ applySnapUI(); updateWorldSize(); renderAll(); }
+function init(){
+  // 1) Clear ALL caches on load
+  clearAllCaches();
+
+  // 2) Apply UI + base render
+  applySnapUI(); updateWorldSize(); renderAll();
+
+  // 3) Record default source and auto-import it (with cache-buster inside)
+  localStorage.setItem(SOURCE_KEY, DEFAULT_CSV_URL);
+  importFromPublishedCsv(DEFAULT_CSV_URL);
+}
 window.addEventListener('resize', function(){ updateWorldSize(); updateAllEdges(); });
 init();
 
-/* ===================== Import button (auto-clear cache on new source) ===================== */
+/* ===================== Import button (still available for manual change) ===================== */
 importBt.addEventListener('click', function(){
-  var last = localStorage.getItem(SOURCE_KEY) || '';
+  var last = localStorage.getItem(SOURCE_KEY) || DEFAULT_CSV_URL;
   var csvUrl = prompt('Paste the Google Sheets "Publish to the web" CSV link (output=csv):', last);
   if(!csvUrl) return;
 
-  // Clear saved layout/prefs if this is a different source than last time
+  // Clear cached layout/prefs if different source, then import
   clearCachedStateForNewSource(csvUrl);
-
-  // Save for next time and import
   localStorage.setItem(SOURCE_KEY, csvUrl);
   importFromPublishedCsv(csvUrl);
 });
