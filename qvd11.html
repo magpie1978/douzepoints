@@ -36,17 +36,6 @@
   .s-name{ font-weight:700; }
   .s-title{ color:var(--muted); font-size:12px; }
 
-  /* Status banner */
-  #status {
-    position:fixed; top:60px; left:50%; transform:translateX(-50%);
-    z-index:320; background:#1f2436; color:#fff; border:1px solid rgba(255,255,255,.2);
-    padding:8px 12px; border-radius:10px; font-size:14px; display:none;
-    box-shadow:0 8px 24px rgba(0,0,0,.4);
-  }
-  #status.show { display:block; }
-  #status.error { border-color:#ff7a7a; }
-  #status.success { border-color:#58d07f; }
-
   /* Scrollable stage */
   #scroll { position:absolute; inset:0; overflow:auto; }
   #world  { position:relative; width:2400px; height:1600px; }
@@ -105,9 +94,6 @@
     </div>
   </div>
 
-  <!-- STATUS BANNER -->
-  <div id="status" aria-live="polite"></div>
-
   <!-- SCROLLABLE STAGE -->
   <div id="scroll" aria-live="polite">
     <div id="world">
@@ -127,20 +113,6 @@ const CARD_W=360, CARD_H=120, PADDING=200;
 const DEFAULT_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTuhOVOmxBKNUpqZ2pw4ned_uUSne68S2gpJHPngVtYkFXJ1Q829-OMcGxjU-zeNAX9OVGGYljhftCV/pub?gid=0&single=true&output=csv";
 const FALLBACK_IMAGE = "https://i.pinimg.com/736x/3f/3c/f8/3f3cf824ceb39fa5dbd00aa986e25f54.jpg";
 
-/* Built-in DEMO CSV (used if loading fails) */
-const DEMO_CSV = `id,name,title,img,x,y,mother_id,father_id,partners,illegitimate
-victoria,Queen Victoria,Queen of the United Kingdom,,200,200,,,
-albert,Prince Albert,Prince Consort,,620,220,,,
-edward-vii,Edward VII,King of the United Kingdom,,420,420,,albert,,false
-`;
-
-function resolveCsvUrl(){
-  const urlParam = new URLSearchParams(location.search).get('csv');
-  if (urlParam) return urlParam;
-  if (window.CSV_URL) return String(window.CSV_URL);
-  return DEFAULT_CSV_URL;
-}
-
 /* ===================== Elements ===================== */
 const world=document.getElementById('world');
 const svg=document.getElementById('connector');
@@ -149,23 +121,9 @@ const infoPanel = document.getElementById('infoPanel');
 const scrollEl = document.getElementById('scroll');
 const searchInput = document.getElementById('search');
 const suggestBox = document.getElementById('suggest');
-const statusEl = document.getElementById('status');
 
 let state = { nodes:{}, edges:[], triEdges:[] };
 let dataReady = false;
-
-/* ===================== Status helper ===================== */
-function showStatus(msg, kind='info'){
-  statusEl.textContent = msg;
-  statusEl.className = ''; // reset
-  statusEl.classList.add('show');
-  if(kind==='error') statusEl.classList.add('error');
-  if(kind==='success') statusEl.classList.add('success');
-  // auto-hide after 4s for non-errors
-  if(kind!=='error'){
-    setTimeout(()=> statusEl.classList.remove('show'), 4000);
-  }
-}
 
 /* ===================== Helpers ===================== */
 function updateWorldSize(){
@@ -237,7 +195,6 @@ function renderAll(){
   updateWorldSize();
   updateAllEdges();
   dataReady = true;
-  showStatus('Loaded '+Object.keys(state.nodes).length+' people', 'success');
 }
 
 /* ===================== Focus / Search ===================== */
@@ -320,7 +277,7 @@ searchInput.addEventListener('keydown', (e)=>{
   }
 });
 
-/* ===================== CSV IMPORT ===================== */
+/* ===================== CSV IMPORT (ONLY the original sheet) ===================== */
 const withNoCache = url => url + (url.includes("?") ? "&" : "?") + "nocache=" + Date.now();
 function fetchPublishedCsv(csvUrl) {
   return fetch(withNoCache(csvUrl), { mode:'cors' })
@@ -344,4 +301,98 @@ function parseCsv(text) {
   return rows;
 }
 function slugifyId(s){
-  return (s||"").toString().trim().toLowerCase().normalize("NFKD").replace(/[^\w]+/g,"-").replace(/^-+|-+$/g,"").slic
+  return (s||"").toString().trim().toLowerCase().normalize("NFKD").replace(/[^\w]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40) || "row";
+}
+function rowsFromCsvTable(rows) {
+  if(!rows.length) return [];
+  const headers = rows[0].map(h => (h||'').toString().trim().toLowerCase());
+  const out=[];
+  for(let r=1;r<rows.length;r++){
+    const obj={};
+    for(let c=0;c<headers.length;c++){
+      const key=headers[c] || ('col'+c);
+      obj[key] = (rows[r][c] || '').toString().trim();
+    }
+    obj.id   = (obj.id || '').trim();
+    obj.name = (obj.name || '').trim();
+    if(!obj.id) obj.id = obj.name ? slugifyId(obj.name) : ('row' + r);
+    out.push(obj);
+  }
+  // De-duplicate IDs
+  const seen=new Set();
+  out.forEach(o=>{
+    const base=o.id; let i=1;
+    while(seen.has(o.id)){ i++; o.id = base + '-' + i; }
+    seen.add(o.id);
+  });
+  return out;
+}
+function toBool(v){ const s=String(v||'').trim().toLowerCase(); return s==='true'||s==='1'||s==='yes'||s==='y'; }
+function toNum(v){ const n=Number(v); return isFinite(n)?n:null; }
+function splitIds(v){ const s=String(v||'').trim(); return s? s.split(';').map(x=>x.trim()).filter(Boolean):[]; }
+
+function buildStateFromRows(rows){
+  const nodes={};
+  for(const r of rows){
+    const id=r.id;
+    nodes[id] = {
+      id,
+      name: r.name || id,
+      title: r.title || '',
+      imgSrc: r.img || r.image_url || '',
+      x: clamp0( toNum(r.x)!=null ? toNum(r.x) : 0 ),
+      y: clamp0( toNum(r.y)!=null ? toNum(r.y) : 0 ),
+      motherId: r.mother_id || null,
+      fatherId: r.father_id || null,
+      partners: splitIds(r.partners),
+      illegitimate: toBool(r.illegitimate)
+    };
+  }
+  // Build edges
+  const edges=[];
+  for(const id in nodes){
+    const child=nodes[id];
+    const m = child.motherId && nodes[child.motherId] ? child.motherId : null;
+    const f = child.fatherId && nodes[child.fatherId] ? child.fatherId : null;
+    if(m || f){
+      const p=m||f, dotted=!!child.illegitimate;
+      const from = p < id ? p : id;
+      const to   = p < id ? id : p;
+      if(!edges.some(e=>e.from===from && e.to===to)){
+        edges.push({from,to,dotted});
+      }
+    }
+  }
+  return { nodes, edges, triEdges:[] };
+}
+
+function importFromPublishedCsv(csvUrl){
+  return fetchPublishedCsv(csvUrl)
+    .then(parseCsv)
+    .then(rowsFromCsvTable)
+    .then(rows=>{
+      if(!rows.length){ throw new Error('CSV parsed but contained 0 rows. Check your headers.'); }
+      state = buildStateFromRows(rows);
+      updateWorldSize();
+      renderAll();
+    })
+    .catch(err=>{
+      console.error(err);
+      alert('Import failed: ' + err.message);
+    });
+}
+
+/* ===================== Init ===================== */
+function init(){
+  // Only use the original Google Sheets spreadsheet
+  importFromPublishedCsv(DEFAULT_CSV_URL);
+}
+window.addEventListener('resize', ()=>{ updateWorldSize(); updateAllEdges(); });
+scrollEl.addEventListener('scroll', ()=> updateAllEdges());
+infoPanel.addEventListener('click', (e)=>{ if(e.target===infoPanel) infoPanel.removeAttribute('open'); });
+window.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && infoPanel.hasAttribute('open')) infoPanel.removeAttribute('open'); });
+
+init();
+</script>
+</body>
+</html>
