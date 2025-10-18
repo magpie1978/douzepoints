@@ -27,26 +27,16 @@
   .spouse { stroke-width:2; opacity:.9; }
   .dotted { stroke-dasharray: 6 6; }
 
-  /* Person cards (drag disabled) */
+  /* Person cards (drag disabled; WHOLE CARD CLICKABLE) */
   .person { position:absolute; z-index:1; display:grid; grid-template-columns:1fr 2fr; width:360px; height:120px;
             background:var(--panel); border:2px solid var(--accent); border-radius:14px; overflow:hidden;
-            user-select:none; cursor:default;
+            user-select:none; cursor:pointer;
             box-shadow:0 6px 18px rgba(0,0,0,.35), 0 0 0 1px rgba(229,9,20,.25) inset; }
   .avatar { width:100%; height:100%; background:#222; border-radius:0 !important; overflow:hidden; }
   .avatar img { width:100%; height:100%; object-fit:cover; display:block; border-radius:0 !important; }
   .details { position:relative; display:flex; flex-direction:column; justify-content:center; padding:12px 16px; }
   .name { font-weight:700; font-size:1.1rem; }
   .title { font-size:.9rem; color:var(--muted); margin-top:4px; }
-
-  /* Info button */
-  .info-btn {
-    position:absolute; top:8px; right:8px;
-    width:32px; height:32px; display:grid; place-items:center;
-    background:rgba(20,24,38,.85); border:1px solid rgba(255,255,255,.18);
-    border-radius:8px; cursor:pointer; z-index:2;
-  }
-  .info-btn:hover { background:rgba(229,9,20,.12); border-color:var(--accent); }
-  .info-btn svg { width:18px; height:18px; stroke:var(--text); fill:none; }
 
   /* Empty info panel */
   .modal { position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.55); z-index:200; }
@@ -135,8 +125,6 @@ function savePrefs(){ localStorage.setItem(PREF_KEY, JSON.stringify({grid:snapGr
 var world=document.getElementById('world');
 var svg=document.getElementById('connector');
 var cards=document.getElementById('cards-root');
-
-/* Empty panel elements */
 var infoPanel = document.getElementById('infoPanel');
 
 /* Snap state */
@@ -308,27 +296,23 @@ function updateAllEdges(){
   updateAllSpouses();
 }
 
-/* ===================== Rendering (no dragging) ===================== */
+/* ===================== Rendering (no dragging; CLICK TO OPEN MODAL) ===================== */
 function renderNode(n){
   var el=document.getElementById(n.id);
   if(!el){
     el=document.createElement('div'); el.id=n.id; el.className='person';
+    el.setAttribute('role','button'); el.setAttribute('tabindex','0');
     el.innerHTML='<div class="avatar"><img alt="'+(n.name||'photo')+'"></div>\
       <div class="details">\
-        <button class="info-btn" title="Info" aria-label="Info">\
-          <!-- info-circle icon -->\
-          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">\
-            <circle cx="12" cy="12" r="9"></circle>\
-            <line x1="12" y1="8" x2="12.01" y2="8"></line>\
-            <line x1="11" y1="12" x2="13" y2="12"></line>\
-            <line x1="12" y1="12" x2="12" y2="16"></line>\
-          </svg>\
-        </button>\
         <div class="name"></div>\
         <div class="title"></div>\
       </div>';
     cards.appendChild(el);
-    attachCardEvents(el);
+
+    // NEW: open modal by clicking anywhere on the card
+    el.addEventListener('click', function(){ infoPanel.setAttribute('open',''); });
+    // Keyboard accessibility
+    el.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); infoPanel.setAttribute('open',''); }});
   }
   el.querySelector('.name').textContent=n.name||'';
   el.querySelector('.title').textContent=n.title||'';
@@ -340,14 +324,6 @@ function renderAll(){
   Object.keys(state.nodes).forEach(function(id){ renderNode(state.nodes[id]); });
   updateWorldSize();
   updateAllEdges();
-}
-
-function attachCardEvents(el){
-  // Only the info button remains
-  el.querySelector('.info-btn').addEventListener('click', function(ev){
-    ev.stopPropagation();
-    infoPanel.setAttribute('open','');
-  });
 }
 
 /* ===================== CSV IMPORT (auto-load) ===================== */
