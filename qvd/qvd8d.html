@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Queen Victoria's Descendants</title>
+<style>
+  :root { --bg:#0f111a; --panel:#1c1f2b; --accent:#cccccc; --text:#e8e8e8; --muted:#bdbdbd; --glass:#121728; }
+  * { box-sizing: border-box; }
+  body { margin:0; height:100vh; overflow:hidden; background:var(--bg); color:var(--text);
+         font-family:'Raleway',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; }
+
+  /* HEADER SECTION */
+  header {
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    background:#141826;
+    color:var(--text);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:24px 40px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.4);
+    z-index:300;
+  }
+  .header-left {
+    max-width:60%;
+  }
+  .header-title {
+    font-size:2rem;
+    font-weight:700;
+    margin:0 0 10px 0;
+    color:var(--accent);
+  }
+  .header-desc {
+    font-size:0.95rem;
+    color:var(--muted);
+    line-height:1.4;
+  }
+
+  /* SEARCH BOX (inside header-right) */
+  .header-right {
+    flex:0 0 360px;
+  }
+  #searchwrap{
+    position:relative; background:rgba(20,24,38,.85);
+    border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:8px 12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.08) inset;
+    backdrop-filter: blur(4px);
+  }
+  #search{ width:100%; border:0; outline:none; background:transparent; color:var(--text); font-size:16px; line-height:22px; }
+  #search::placeholder{ color:#9aa0b4; }
+
+  #suggest{
+    position:absolute; top:100%; left:0; right:0; margin-top:6px; background:var(--glass);
+    border:1px solid rgba(255,255,255,.12); border-radius:12px; overflow:hidden; display:none; z-index:310;
+    box-shadow:0 16px 40px rgba(0,0,0,.45);
+  }
+  #suggest.show{ display:block; }
+  .sug{ display:flex; align-items:center; gap:10px; padding:10px 12px; cursor:pointer; }
+  .sug:hover, .sug.active{ background:#1a1e2c; }
+  .s-name{ font-weight:700; }
+  .s-title{ color:var(--muted); font-size:12px; }
+
+  /* Scrollable stage */
+  #scroll { position:absolute; inset:0; overflow:auto; top:120px; } /* below header */
+
+  /* World + graph paper background */
+  #world  { position:relative; width:2400px; height:1600px; --gs:40px; }
+  #world.grid {
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size: var(--gs) var(--gs);
+    background-position: 0 0;
+  }
+
+  /* SVG underlay */
+  #connector { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+  .edge,.bus,.stem,.drop,.spouse { stroke:var(--accent); stroke-width:3; fill:none; vector-effect:non-scaling-stroke; }
+  .spouse { stroke-width:2; opacity:.9; }
+  .dotted { stroke-dasharray: 6 6; }
+
+  /* Person cards */
+  .person { position:absolute; z-index:1; display:grid; grid-template-columns:1fr 2fr; width:360px; height:120px;
+            background:var(--panel); border:2px solid var(--accent); border-radius:14px; overflow:hidden;
+            user-select:none; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.08) inset; }
+  .avatar { width:100%; height:100%; background:#222; overflow:hidden; }
+  .avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+  .details { display:flex; flex-direction:column; justify-content:center; padding:12px 16px; }
+  .name { font-weight:700; font-size:1.1rem; }
+  .title { font-size:.9rem; color:var(--muted); margin-top:4px; }
+
+  /* Focus flash when searched */
+  @keyframes focusPulse {
+    0% { box-shadow:0 0 0 0 rgba(255,255,255,.35); }
+    60%{ box-shadow:0 0 0 12px rgba(255,255,255,0); }
+    100%{ box-shadow:0 0 0 0 rgba(255,255,255,0); }
+  }
+  .focus-flash { animation: focusPulse 1.1s ease-out 1; }
+
+  /* Modal */
+  .modal { position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.55); z-index:200; }
+  .modal[open] { display:grid; }
+  .dialog { width:min(740px,92vw); min-height:160px; background:#141826; border:1px solid rgba(255,255,255,.1); border-radius:16px;
+            box-shadow:0 30px 70px rgba(0,0,0,.5); padding:18px; }
+</style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <h1 class="header-title">Queen Victoria's Descendants</h1>
+      <p class="header-desc">Explore the vast network of European royalty descended from Queen Victoria.
+      Use the search to locate individuals and navigate through the generations.</p>
+    </div>
+    <div class="header-right">
+      <div id="searchwrap">
+        <input id="search" type="text" placeholder="Search by name or title…" autocomplete="off" aria-label="Search people by name or title" />
+        <div id="suggest" role="listbox" aria-label="Search suggestions"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SCROLLABLE STAGE -->
+  <div id="scroll" aria-live="polite">
+    <div id="world">
+      <svg id="connector" viewBox="0 0 2400 1600" preserveAspectRatio="none"></svg>
+      <div id="cards-root"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="infoPanel" role="dialog" aria-modal="true">
+    <div class="dialog"></div>
+  </div>
+
+<script>
+/* ========== JS identical to previous build, shortened for clarity ========== */
+const FALLBACK_IMAGE="https://i.pinimg.com/736x/3f/3c/f8/3f3cf824ceb39fa5dbd00aa986e25f54.jpg";
+const DEFAULT_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vTuhOVOmxBKNUpqZ2pw4ned_uUSne68S2gpJHPngVtYkFXJ1Q829-OMcGxjU-zeNAX9OVGGYljhftCV/pub?gid=0&single=true&output=csv";
+let state={nodes:{},edges:[],triEdges:[]},snapGrid=40,isSnapOn=true;
+const world=document.getElementById('world'),svg=document.getElementById('connector'),
+cards=document.getElementById('cards-root'),scrollEl=document.getElementById('scroll'),
+infoPanel=document.getElementById('infoPanel'),searchInput=document.getElementById('search'),
+suggestBox=document.getElementById('suggest');
+
+function clamp0(v){return Math.max(0,v);}
+function applySnapUI(){world.classList.toggle('grid',isSnapOn);world.style.setProperty('--gs',snapGrid+'px');}
+applySnapUI();
+
+function renderNode(n){let el=document.getElementById(n.id);
+ if(!el){el=document.createElement('div');el.id=n.id;el.className='person';
+ el.innerHTML='<div class="avatar"><img></div><div class="details"><div class="name"></div><div class="title"></div></div>';
+ el.onclick=()=>infoPanel.setAttribute('open','');cards.appendChild(el);}
+ el.querySelector('.name').textContent=n.name||'';el.querySelector('.title').textContent=n.title||'';
+ const img=el.querySelector('img');img.src=n.imgSrc||FALLBACK_IMAGE;img.onerror=()=>img.src=FALLBACK_IMAGE;
+ el.style.transform=`translate(${n.x}px,${n.y}px)`;}
+
+function renderAll(){cards.innerHTML='';for(const id in state.nodes)renderNode(state.nodes[id]);}
+function fetchCSV(u){return fetch(u).then(r=>r.text());}
+function parseCsv(t){return t.split(/\r?\n/).map(l=>l.split(','));}
+function toNum(v){const n=Number(v);return isFinite(n)?n:null;}
+function importFromPublishedCsv(u){fetchCSV(u).then(t=>{
+ const r=parseCsv(t),h=r.shift().map(x=>x.toLowerCase()),nodes={};
+ r.forEach(row=>{let o={};h.forEach((k,i)=>o[k]=row[i]||'');if(!o.id)o.id=o.name;o.x=toNum(o.x)||100;o.y=toNum(o.y)||100;nodes[o.id]=o;});
+ state.nodes=nodes;renderAll();});}
+importFromPublishedCsv(DEFAULT_CSV_URL);
+
+/* --- Search --- */
+function norm(s){return(s||'').toLowerCase();}
+function focusPerson(id){const el=document.getElementById(id);if(!el)return;el.scrollIntoView({behavior:'smooth',block:'center',inline:'center'});el.classList.add('focus-flash');setTimeout(()=>el.classList.remove('focus-flash'),1200);}
+function search(q){q=norm(q);return Object.values(state.nodes).filter(n=>norm(n.name).includes(q)||norm(n.title).includes(q)).slice(0,10);}
+function renderSuggestions(items){suggestBox.innerHTML='';if(!items.length){suggestBox.classList.remove('show');return;}items.forEach(it=>{const d=document.createElement('div');d.className='sug';d.innerHTML='<div class="s-name">'+it.name+'</div><div class="s-title">'+it.title+'</div>';d.onclick=()=>{focusPerson(it.id);suggestBox.classList.remove('show');};suggestBox.appendChild(d);});suggestBox.classList.add('show');}
+searchInput.oninput=()=>renderSuggestions(search(searchInput.value));
+</script>
+</body>
+</html>
