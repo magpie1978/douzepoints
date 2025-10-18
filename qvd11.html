@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Queen Victoria's Descendants</title>
+<style>
+  :root {
+    --bg: #0f111a;
+    --panel: #1c1f2b;
+    --accent: #e50914;
+    --text: #e8e8e8;
+    --muted: #bdbdbd;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Raleway', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  }
+
+  /* Scrollable stage */
+  #scroll { position: absolute; inset: 0; overflow: auto; }
+  #world { position: relative; width: 2400px; height: 1600px; }
+
+  /* SVG underlay */
+  #connector { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+  .edge, .bus, .stem, .drop, .spouse {
+    stroke: var(--accent);
+    stroke-width: 3;
+    fill: none;
+    vector-effect: non-scaling-stroke;
+  }
+  .spouse { stroke-width: 2; opacity: .9; }
+  .dotted { stroke-dasharray: 6 6; }
+
+  /* Person cards */
+  .person {
+    position: absolute;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    width: 360px;
+    height: 120px;
+    background: var(--panel);
+    border: 2px solid var(--accent);
+    border-radius: 14px;
+    overflow: hidden;
+    user-select: none;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .35),
+                0 0 0 1px rgba(229, 9, 20, .25) inset;
+    transition:
+      transform .18s ease,
+      box-shadow .22s ease,
+      border-color .22s ease,
+      background-color .22s ease,
+      filter .22s ease;
+    will-change: transform, box-shadow, filter;
+  }
+  .person:hover {
+    transform: translateY(-4px) scale(1.015);
+    background-color: #1a1e2c;
+    border-color: rgba(229, 9, 20, 0.95);
+    box-shadow:
+      0 14px 28px rgba(0, 0, 0, .55),
+      0 0 0 1px rgba(229, 9, 20, .45) inset,
+      0 0 26px rgba(229, 9, 20, .35);
+    filter: saturate(1.1);
+  }
+  .person:hover .name {
+    color: #ffffff;
+    text-shadow: 0 0 6px rgba(229, 9, 20, .25);
+  }
+  .person:focus-visible {
+    outline: 2px solid rgba(229, 9, 20, .95);
+    outline-offset: 3px;
+  }
+
+  .avatar { width: 100%; height: 100%; background: #222; overflow: hidden; }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .details { display: flex; flex-direction: column; justify-content: center; padding: 12px 16px; }
+  .name { font-weight: 700; font-size: 1.1rem; }
+  .title { font-size: .9rem; color: var(--muted); margin-top: 4px; }
+
+  /* Empty info panel */
+  .modal {
+    position: fixed; inset: 0;
+    display: none;
+    place-items: center;
+    background: rgba(0, 0, 0, .55);
+    z-index: 200;
+  }
+  .modal[open] { display: grid; }
+  .dialog {
+    width: min(740px, 92vw);
+    min-height: 160px;
+    background: #141826;
+    border: 1px solid rgba(255, 255, 255, .1);
+    border-radius: 16px;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, .5);
+    padding: 18px;
+  }
+</style>
+</head>
+<body>
+  <div id="scroll">
+    <div id="world">
+      <svg id="connector" viewBox="0 0 2400 1600" preserveAspectRatio="none"></svg>
+      <div id="cards-root"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="infoPanel" role="dialog" aria-modal="true">
+    <div class="dialog"></div>
+  </div>
+
+<script>
+/* ============= CONFIG ============= */
+const CARD_W = 360, CARD_H = 120, PADDING = 200;
+const DEFAULT_CSV_URL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTuhOVOmxBKNUpqZ2pw4ned_uUSne68S2gpJHPngVtYkFXJ1Q829-OMcGxjU-zeNAX9OVGGYljhftCV/pub?gid=0&single=true&output=csv";
+const FALLBACK_IMAGE =
+  "https://i.pinimg.com/736x/3f/3c/f8/3f3cf824ceb39fa5dbd00aa986e25f54.jpg";
+
+/* ============= ELEMENTS ============= */
+const world = document.getElementById("world");
+const svg = document.getElementById("connector");
+const cards = document.getElementById("cards-root");
+const infoPanel = document.getElementById("infoPanel");
+let state = { nodes: {}, edges: [], triEdges: [] };
+
+/* ============= WORLD HELPERS ============= */
+function updateWorldSize() {
+  let maxX = 1200, maxY = 800;
+  Object.values(state.nodes).forEach(n => {
+    if (typeof n.x === "number" && typeof n.y === "number") {
+      if (n.x + CARD_W > maxX) maxX = n.x + CARD_W;
+      if (n.y + CARD_H > maxY) maxY = n.y + CARD_H;
+    }
+  });
+  maxX += PADDING; maxY += PADDING;
+  world.style.width = maxX + "px";
+  world.style.height = maxY + "px";
+  svg.setAttribute("viewBox", `0 0 ${maxX} ${maxY}`);
+}
+const clamp0 = v => Math.max(0, v);
+
+/* ============= SVG HELPERS ============= */
+function cardRect(id) {
+  const el = document.getElementById(id); if (!el) return null;
+  const r = el.getBoundingClientRect(), wr = world.getBoundingClientRect();
+  const left = r.left - wr.left, top = r.top - wr.top;
+  return { cx: left + r.width/2, cy: top + r.height/2,
+           topx: left + r.width/2, topy: top, bottomy: top + r.height };
+}
+function ensureLine(id, cls) {
+  let l = document.getElementById(id);
+  if (!l) {
+    l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    l.id = id; l.classList.add(cls);
+    l.setAttribute("vector-effect", "non-scaling-stroke");
+    svg.appendChild(l);
+  }
+  return l;
+}
+
+/* ============= CONNECTORS ============= */
+function drawEdge(e) {
+  const a = cardRect(e.from), b = cardRect(e.to);
+  if (!a || !b) return;
+  const id = `edge-${e.from}-${e.to}`;
+  const l = ensureLine(id, "edge");
+  e.dotted ? l.classList.add("dotted") : l.classList.remove("dotted");
+  l.setAttribute("x1", a.cx); l.setAttribute("y1", a.cy);
+  l.setAttribute("x2", b.cx); l.setAttribute("y2", b.cy);
+}
+function updateAllEdges() {
+  svg.querySelectorAll(".edge").forEach(e => e.remove());
+  state.edges.forEach(drawEdge);
+}
+
+/* ============= RENDERING ============= */
+function renderNode(n) {
+  let el = document.getElementById(n.id);
+  if (!el) {
+    el = document.createElement("div");
+    el.id = n.id;
+    el.className = "person";
+    el.setAttribute("role", "button");
+    el.setAttribute("tabindex", "0");
+    el.innerHTML = `
+      <div class="avatar"><img alt="${n.name || 'photo'}"></div>
+      <div class="details">
+        <div class="name"></div>
+        <div class="title"></div>
+      </div>`;
+    cards.appendChild(el);
+
+    el.addEventListener("click", () => infoPanel.setAttribute("open", ""));
+    el.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        infoPanel.setAttribute("open", "");
+      }
+    });
+  }
+  el.querySelector(".name").textContent = n.name || "";
+  el.querySelector(".title").textContent = n.title || "";
+  const img = el.querySelector("img");
+  if (n.imgSrc) img.src = n.imgSrc; else img.src = FALLBACK_IMAGE;
+
+  // fallback if image fails to load
+  img.onerror = () => { img.src = FALLBACK_IMAGE; };
+
+  el.style.transform = `translate(${n.x}px,${n.y}px)`;
+}
+function renderAll() {
+  cards.innerHTML = "";
+  Object.values(state.nodes).forEach(renderNode);
+  updateWorldSize();
+  updateAllEdges();
+}
+
+/* ============= CSV IMPORT ============= */
+const withNoCache = url => url + (url.includes("?") ? "&" : "?") + "nocache=" + Date.now();
+function fetchPublishedCsv(csvUrl) {
+  return fetch(withNoCache(csvUrl), { mode: "cors" })
+    .then(r => { if (!r.ok) throw new Error("CSV fetch failed: " + r.status); return r.text(); });
+}
+function parseCsv(text) {
+  const rows = []; let field="", row=[], inQ=false;
+  for (let i=0;i<text.length;i++) {
+    const c=text[i];
+    if(inQ){
+      if(c==='"'){ if(text[i+1]==='"'){ field+='"'; i++; } else inQ=false; }
+      else field+=c;
+    } else {
+      if(c==='"') inQ=true;
+      else if(c===','){ row.push(field); field=''; }
+      else if(c==='\n'||c==='\r'){
+        if(field.length||row.length){ row.push(field); rows.push(row); row=[]; field=''; }
+        if(c==='\r'&&text[i+1]==='\n') i++;
+      } else field+=c;
+    }
+  }
+  if(field.length||row.length){ row.push(field); rows.push(row); }
+  return rows;
+}
+function rowsFromCsvTable(rows){
+  if(!rows.length) return [];
+  const headers=rows[0].map(h=>(h||'').trim().toLowerCase());
+  const out=[];
+  for(let r=1;r<rows.length;r++){
+    const obj={};
+    for(let c=0;c<headers.length;c++){
+      const key=headers[c]||('col'+c);
+      obj[key]=(rows[r][c]||'').trim();
+    }
+    obj.id=obj.id?.trim()||obj.name?.trim()||('row'+r);
+    out.push(obj);
+  }
+  const seen=new Set();
+  out.forEach(o=>{
+    let base=o.id, i=1;
+    while(seen.has(o.id)){ i++; o.id=base+'-'+i; }
+    seen.add(o.id);
+  });
+  return out;
+}
+const toNum = v => isFinite(+v) ? +v : 0;
+const toBool = v => ['true','1','yes','y'].includes(String(v).trim().toLowerCase());
+const splitIds = v => (v||'').split(';').map(x=>x.trim()).filter(Boolean);
+
+function buildStateFromRows(rows){
+  const nodes={};
+  for(const r of rows){
+    const id=r.id;
+    nodes[id]={
+      id,
+      name:r.name||id,
+      title:r.title||'',
+      imgSrc:r.img||r.image_url||'',
+      x: clamp0(toNum(r.x)),
+      y: clamp0(toNum(r.y)),
+      motherId:r.mother_id||null,
+      fatherId:r.father_id||null,
+      partners:splitIds(r.partners),
+      illegitimate:toBool(r.illegitimate)
+    };
+  }
+  const edges=[];
+  for(const id in nodes){
+    const c=nodes[id];
+    const m=c.motherId&&nodes[c.motherId]?c.motherId:null;
+    const f=c.fatherId&&nodes[c.fatherId]?c.fatherId:null;
+    if(m||f){
+      const p=m||f, dotted=!!c.illegitimate;
+      const from=p<id?p:id, to=p<id?id:p;
+      if(!edges.some(e=>e.from===from&&e.to===to)) edges.push({from,to,dotted});
+    }
+  }
+  return {nodes,edges,triEdges:[]};
+}
+
+function importFromPublishedCsv(csvUrl){
+  fetchPublishedCsv(csvUrl)
+    .then(parseCsv)
+    .then(rowsFromCsvTable)
+    .then(rows=>{
+      state=buildStateFromRows(rows);
+      updateWorldSize();
+      renderAll();
+    })
+    .catch(err=>alert('Import failed: '+err.message));
+}
+
+/* ============= INIT ============= */
+function init(){
+  importFromPublishedCsv(DEFAULT_CSV_URL);
+}
+window.addEventListener("resize", ()=>{ updateWorldSize(); updateAllEdges(); });
+document.getElementById("scroll").addEventListener("scroll", ()=>updateAllEdges());
+infoPanel.addEventListener("click", e=>{ if(e.target===infoPanel) infoPanel.removeAttribute("open"); });
+window.addEventListener("keydown", e=>{ if(e.key==="Escape"&&infoPanel.hasAttribute("open")) infoPanel.removeAttribute("open"); });
+init();
+</script>
+</body>
+</html>
