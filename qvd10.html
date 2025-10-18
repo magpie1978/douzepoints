@@ -21,10 +21,28 @@
   .dotted { stroke-dasharray: 6 6; }
 
   /* Person cards (drag disabled; whole card clickable) */
-  .person { position:absolute; z-index:1; display:grid; grid-template-columns:1fr 2fr; width:360px; height:120px;
-            background:var(--panel); border:2px solid var(--accent); border-radius:14px; overflow:hidden;
-            user-select:none; cursor:pointer;
-            box-shadow:0 6px 18px rgba(0,0,0,.35), 0 0 0 1px rgba(229,9,20,.25) inset; }
+  .person {
+    position:absolute; z-index:1; display:grid; grid-template-columns:1fr 2fr;
+    width:360px; height:120px; background:var(--panel);
+    border:2px solid var(--accent); border-radius:14px; overflow:hidden;
+    user-select:none; cursor:pointer;
+    box-shadow:0 6px 18px rgba(0,0,0,.35), 0 0 0 1px rgba(229,9,20,.25) inset;
+    transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease, background-color .2s ease;
+  }
+  .person:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 10px 24px rgba(0,0,0,.45),
+      0 0 0 1px rgba(229,9,20,.35) inset,
+      0 0 24px rgba(229,9,20,.18);
+    border-color: rgba(229,9,20,.9);
+    background-color: #1a1e2c;
+  }
+  .person:focus-visible {
+    outline: 2px solid rgba(229,9,20,.9);
+    outline-offset: 3px;
+  }
+
   .avatar { width:100%; height:100%; background:#222; border-radius:0 !important; overflow:hidden; }
   .avatar img { width:100%; height:100%; object-fit:cover; display:block; border-radius:0 !important; }
   .details { position:relative; display:flex; flex-direction:column; justify-content:center; padding:12px 16px; }
@@ -221,7 +239,7 @@ function updateAllEdges(){
 function renderNode(n){
   var el=document.getElementById(n.id);
   if(!el){
-    el=document.createElement('div'); el.id=n.id; el.className='person';
+    el=document.createElement('div'); el.id=n.id; el.className='person'; el.setAttribute('role','button'); el.setAttribute('tabindex','0');
     el.innerHTML='<div class="avatar"><img alt="'+(n.name||'photo')+'"></div>\
       <div class="details">\
         <div class="name"></div>\
@@ -231,6 +249,13 @@ function renderNode(n){
 
     // Clicking anywhere on the card opens the (blank) info panel
     el.addEventListener('click', function(){ infoPanel.setAttribute('open',''); });
+    // Keyboard: Enter/Space to open
+    el.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        infoPanel.setAttribute('open','');
+      }
+    });
   }
   el.querySelector('.name').textContent=n.name||'';
   el.querySelector('.title').textContent=n.title||'';
