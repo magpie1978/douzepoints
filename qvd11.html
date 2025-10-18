@@ -13,39 +13,39 @@
   /* Top search bar */
   #topbar{
     position:fixed; top:12px; left:50%; transform:translateX(-50%);
-    width:min(720px, 92vw);
-    z-index:300;
+    width:min(720px, 92vw); z-index:300;
   }
   #searchwrap{
-    position:relative;
-    background:rgba(20,24,38,.85);
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:12px;
-    padding:8px 12px;
+    position:relative; background:rgba(20,24,38,.85);
+    border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:8px 12px;
     box-shadow:0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(229,9,20,.2) inset;
     backdrop-filter: blur(4px);
   }
-  #search{
-    width:100%; border:0; outline:none; background:transparent; color:var(--text);
-    font-size:16px; line-height:22px;
-  }
+  #search{ width:100%; border:0; outline:none; background:transparent; color:var(--text); font-size:16px; line-height:22px; }
   #search::placeholder{ color:#9aa0b4; }
 
   /* Suggestions dropdown */
   #suggest{
-    position:absolute; top:100%; left:0; right:0; margin-top:6px;
-    background:var(--glass);
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:12px; overflow:hidden; display:none; z-index:310;
+    position:absolute; top:100%; left:0; right:0; margin-top:6px; background:var(--glass);
+    border:1px solid rgba(255,255,255,.12); border-radius:12px; overflow:hidden; display:none; z-index:310;
     box-shadow:0 16px 40px rgba(0,0,0,.45);
   }
   #suggest.show{ display:block; }
-  .sug{
-    display:flex; align-items:center; gap:10px; padding:10px 12px; cursor:pointer;
-  }
+  .sug{ display:flex; align-items:center; gap:10px; padding:10px 12px; cursor:pointer; }
   .sug:hover, .sug.active{ background:#1a1e2c; }
-  .sug .s-name{ font-weight:700; }
-  .sug .s-title{ color:var(--muted); font-size:12px; }
+  .s-name{ font-weight:700; }
+  .s-title{ color:var(--muted); font-size:12px; }
+
+  /* Status banner */
+  #status {
+    position:fixed; top:60px; left:50%; transform:translateX(-50%);
+    z-index:320; background:#1f2436; color:#fff; border:1px solid rgba(255,255,255,.2);
+    padding:8px 12px; border-radius:10px; font-size:14px; display:none;
+    box-shadow:0 8px 24px rgba(0,0,0,.4);
+  }
+  #status.show { display:block; }
+  #status.error { border-color:#ff7a7a; }
+  #status.success { border-color:#58d07f; }
 
   /* Scrollable stage */
   #scroll { position:absolute; inset:0; overflow:auto; }
@@ -57,7 +57,7 @@
   .spouse { stroke-width:2; opacity:.9; }
   .dotted { stroke-dasharray: 6 6; }
 
-  /* Person cards (clickable) */
+  /* Person cards (clickable + hover) */
   .person {
     position:absolute; z-index:1; display:grid; grid-template-columns:1fr 2fr;
     width:360px; height:120px; background:var(--panel);
@@ -84,8 +84,8 @@
   /* Focus flash when searched */
   @keyframes focusPulse {
     0% { box-shadow:0 0 0 0 rgba(229,9,20,.7); }
-    60%{ box-shadow:0 0 0 10px rgba(229,9,20,.0); }
-    100%{ box-shadow:0 0 0 0 rgba(229,9,20,.0); }
+    60%{ box-shadow:0 0 0 10px rgba(229,9,20,0); }
+    100%{ box-shadow:0 0 0 0 rgba(229,9,20,0); }
   }
   .focus-flash { animation: focusPulse 1.2s ease-out 1; }
 
@@ -105,6 +105,9 @@
     </div>
   </div>
 
+  <!-- STATUS BANNER -->
+  <div id="status" aria-live="polite"></div>
+
   <!-- SCROLLABLE STAGE -->
   <div id="scroll" aria-live="polite">
     <div id="world">
@@ -119,10 +122,24 @@
   </div>
 
 <script>
-/* ===================== Config (no caching) ===================== */
+/* ===================== Config ===================== */
 const CARD_W=360, CARD_H=120, PADDING=200;
 const DEFAULT_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTuhOVOmxBKNUpqZ2pw4ned_uUSne68S2gpJHPngVtYkFXJ1Q829-OMcGxjU-zeNAX9OVGGYljhftCV/pub?gid=0&single=true&output=csv";
 const FALLBACK_IMAGE = "https://i.pinimg.com/736x/3f/3c/f8/3f3cf824ceb39fa5dbd00aa986e25f54.jpg";
+
+/* Built-in DEMO CSV (used if loading fails) */
+const DEMO_CSV = `id,name,title,img,x,y,mother_id,father_id,partners,illegitimate
+victoria,Queen Victoria,Queen of the United Kingdom,,200,200,,,
+albert,Prince Albert,Prince Consort,,620,220,,,
+edward-vii,Edward VII,King of the United Kingdom,,420,420,,albert,,false
+`;
+
+function resolveCsvUrl(){
+  const urlParam = new URLSearchParams(location.search).get('csv');
+  if (urlParam) return urlParam;
+  if (window.CSV_URL) return String(window.CSV_URL);
+  return DEFAULT_CSV_URL;
+}
 
 /* ===================== Elements ===================== */
 const world=document.getElementById('world');
@@ -132,9 +149,23 @@ const infoPanel = document.getElementById('infoPanel');
 const scrollEl = document.getElementById('scroll');
 const searchInput = document.getElementById('search');
 const suggestBox = document.getElementById('suggest');
+const statusEl = document.getElementById('status');
 
 let state = { nodes:{}, edges:[], triEdges:[] };
 let dataReady = false;
+
+/* ===================== Status helper ===================== */
+function showStatus(msg, kind='info'){
+  statusEl.textContent = msg;
+  statusEl.className = ''; // reset
+  statusEl.classList.add('show');
+  if(kind==='error') statusEl.classList.add('error');
+  if(kind==='success') statusEl.classList.add('success');
+  // auto-hide after 4s for non-errors
+  if(kind!=='error'){
+    setTimeout(()=> statusEl.classList.remove('show'), 4000);
+  }
+}
 
 /* ===================== Helpers ===================== */
 function updateWorldSize(){
@@ -190,9 +221,7 @@ function renderNode(n){
         <div class="title"></div>\
       </div>';
     cards.appendChild(el);
-    // Clicking anywhere on the card opens the (blank) info panel
     el.addEventListener('click', ()=> infoPanel.setAttribute('open',''));
-    // Keyboard access
     el.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); infoPanel.setAttribute('open',''); }});
   }
   el.querySelector('.name').textContent=n.name||'';
@@ -208,6 +237,7 @@ function renderAll(){
   updateWorldSize();
   updateAllEdges();
   dataReady = true;
+  showStatus('Loaded '+Object.keys(state.nodes).length+' people', 'success');
 }
 
 /* ===================== Focus / Search ===================== */
@@ -216,24 +246,17 @@ function centerOnElement(el){
   const wrect = world.getBoundingClientRect();
   const xInWorld = rect.left - wrect.left + rect.width/2;
   const yInWorld = rect.top  - wrect.top  + rect.height/2;
-
   const targetLeft = clamp0(xInWorld - scrollEl.clientWidth/2);
   const targetTop  = clamp0(yInWorld - scrollEl.clientHeight/2);
-
   scrollEl.scrollTo({ left: targetLeft, top: targetTop, behavior: 'smooth' });
 }
-
 function focusPerson(id){
   const el = document.getElementById(id);
   if(!el) return;
   centerOnElement(el);
-  el.classList.remove('focus-flash'); // restart animation
-  // force reflow to restart CSS animation
-  void el.offsetWidth;
-  el.classList.add('focus-flash');
+  el.classList.remove('focus-flash'); void el.offsetWidth; el.classList.add('focus-flash');
   el.focus({preventScroll:true});
 }
-
 function scoreMatch(n, q){
   const name = norm(n.name), title = norm(n.title);
   const exact = (name===q || title===q) ? 100 : 0;
@@ -244,17 +267,15 @@ function scoreMatch(n, q){
   const posBonus = Math.max(0, 20 - Math.min(idxName<0?99:idxName, idxTitle<0?99:idxTitle));
   return exact || (starts + includes + posBonus);
 }
-
 function search(query){
   const q = norm(query.trim());
   if(!q) return [];
-  const items = Object.values(state.nodes).map(n=>({id:n.id, name:n.name||'', title:n.title||'', score:scoreMatch(n,q)}))
-                 .filter(x=>x.score>0)
-                 .sort((a,b)=>b.score - a.score)
-                 .slice(0, 10);
-  return items;
+  return Object.values(state.nodes)
+    .map(n=>({id:n.id, name:n.name||'', title:n.title||'', score:scoreMatch(n,q)}))
+    .filter(x=>x.score>0)
+    .sort((a,b)=>b.score - a.score)
+    .slice(0, 10);
 }
-
 function renderSuggestions(items){
   suggestBox.innerHTML = '';
   if(!items.length){ suggestBox.classList.remove('show'); return; }
@@ -272,16 +293,13 @@ function renderSuggestions(items){
   });
   suggestBox.classList.add('show');
 }
-
 function pickFirstSuggestion(){
   const first = suggestBox.querySelector('.sug');
   if(first){ focusPerson(first.dataset.pid); suggestBox.classList.remove('show'); }
 }
-
 searchInput.addEventListener('input', ()=>{
   if(!dataReady) return;
-  const items = search(searchInput.value);
-  renderSuggestions(items);
+  renderSuggestions( search(searchInput.value) );
 });
 searchInput.addEventListener('keydown', (e)=>{
   if(e.key==='Enter'){ e.preventDefault(); pickFirstSuggestion(); }
@@ -296,18 +314,17 @@ searchInput.addEventListener('keydown', (e)=>{
     items.forEach(x=>x.classList.remove('active'));
     items[idx].classList.add('active');
     items[idx].scrollIntoView({block:'nearest'});
-  }
-  else if(e.key==='Tab'){
-    // accept highlighted suggestion on Tab
+  } else if (e.key==='Tab'){
     const active = suggestBox.querySelector('.sug.active');
     if(active){ e.preventDefault(); focusPerson(active.dataset.pid); suggestBox.classList.remove('show'); }
   }
 });
 
-/* ===================== CSV IMPORT (no cache, strict positions) ===================== */
-function withNoCache(url){ return url + (url.includes('?') ? '&' : '?') + 'nocache=' + Date.now(); }
+/* ===================== CSV IMPORT ===================== */
+const withNoCache = url => url + (url.includes("?") ? "&" : "?") + "nocache=" + Date.now();
 function fetchPublishedCsv(csvUrl) {
-  return fetch(withNoCache(csvUrl), { mode:'cors' }).then(r=>{ if(!r.ok) throw new Error('CSV fetch failed: '+r.status); return r.text(); });
+  return fetch(withNoCache(csvUrl), { mode:'cors' })
+    .then(r=>{ if(!r.ok) throw new Error('CSV fetch failed: '+r.status); return r.text(); });
 }
 function parseCsv(text) {
   const rows=[]; let field='', row=[], inQ=false;
@@ -327,18 +344,4 @@ function parseCsv(text) {
   return rows;
 }
 function slugifyId(s){
-  return (s||"").toString().trim().toLowerCase().normalize("NFKD").replace(/[^\w]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40) || "row";
-}
-function rowsFromCsvTable(rows) {
-  if(!rows.length) return [];
-  const headers = rows[0].map(h => (h||'').toString().trim().toLowerCase());
-  const out=[];
-  for(let r=1;r<rows.length;r++){
-    const obj={};
-    for(let c=0;c<headers.length;c++){
-      const key=headers[c] || ('col'+c);
-      obj[key] = (rows[r][c] || '').toString().trim();
-    }
-    obj.id   = (obj.id || '').trim();
-    obj.name = (obj.name || '').trim();
-    if(!obj.id) obj.id = obj.name ? slugifyId(obj.name) : ('row'
+  return (s||"").toString().trim().toLowerCase().normalize("NFKD").replace(/[^\w]+/g,"-").replace(/^-+|-+$/g,"").slic
