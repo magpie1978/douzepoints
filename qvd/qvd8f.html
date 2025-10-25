@@ -652,10 +652,16 @@ function rowsFromCsvTable(rows) {
 function toBool(v){ const s=String(v||'').trim().toLowerCase(); return s==='true'||s==='1'||s==='yes'||s==='y'; }
 function toNum(v){ const n=Number(v); return isFinite(n)?n:null; }
 function splitIds(v){ const s=String(v||'').trim(); return s? s.split(';').map(x=>x.trim()).filter(Boolean):[]; }
+function isVisibleFlag(v){ return String(v||'').trim().toLowerCase() === 'visible'; }
 
 function buildStateFromRows(rows){
   const nodes={};
-  for(const r of rows){
+
+  // 1) Only keep rows explicitly marked visible
+  const filtered = rows.filter(r => isVisibleFlag(r.visible));
+
+  // 2) Build nodes from visible rows only
+  for(const r of filtered){
     const id=r.id;
     nodes[id] = {
       id,
@@ -671,11 +677,12 @@ function buildStateFromRows(rows){
     };
   }
 
-  // make partner links symmetric & valid
+  // 3) Keep partner links only if the partner is also visible
   Object.keys(nodes).forEach(k=>{
     const n=nodes[k];
     n.partners=(n.partners||[]).filter(pid=>!!nodes[pid]);
   });
+  // Make partner links symmetric
   Object.keys(nodes).forEach(k=>{
     const n=nodes[k];
     (n.partners||[]).forEach(pid=>{
@@ -685,7 +692,7 @@ function buildStateFromRows(rows){
     });
   });
 
-  // edges and tri-edges
+  // 4) Edges & tri-edges: only between visible nodes
   const edges=[], triEdges=[];
   Object.keys(nodes).forEach(id=>{
     const child=nodes[id];
@@ -703,7 +710,7 @@ function buildStateFromRows(rows){
     }
   });
 
-  // nextId heuristic
+  // nextId heuristic (optional)
   let maxN=0;
   Object.keys(nodes).forEach(id=>{
     const m=id.match(/\d+$/); if(m){ const v=parseInt(m[0],10); if(v>maxN) maxN=v; }
@@ -717,10 +724,14 @@ function importFromPublishedCsv(csvUrl){
     .then(parseCsv)
     .then(rowsFromCsvTable)
     .then(rows=>{
-      if(!rows.length){ alert('No rows found (check headers).'); return; }
-
-      // build & optionally snap to grid (visual only)
+      // Apply visible filter in build
       let newState = buildStateFromRows(rows);
+
+      if (!Object.keys(newState.nodes).length) {
+        console.warn('CSV loaded but no rows marked visible. Add "visible" column with value "visible" for rows you want to show.');
+      }
+
+      // Snap-to-grid visually if enabled
       if (isSnapOn) {
         Object.keys(newState.nodes).forEach(id=>{
           const n=newState.nodes[id];
@@ -728,6 +739,7 @@ function importFromPublishedCsv(csvUrl){
           n.y = clamp0(Math.round(n.y / snapGrid) * snapGrid);
         });
       }
+
       ensureWorldFitsForState(newState);
       state = newState;
       save();
