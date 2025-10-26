@@ -23,12 +23,10 @@
           dob: row.dob ?? "",
           dod: row.dod ?? "",
           img: row.img ?? "",
-          generation: row.generation ?? null,
           parents: Array.isArray(row.parents) ? row.parents :
                    (row.parents ? String(row.parents).split(',').map(s => s.trim()) : []),
           spouses: Array.isArray(row.spouses) ? row.spouses :
                    (row.spouses ? String(row.spouses).split(',').map(s => s.trim()) : []),
-          visible: row.visible,
           illegitimate: row.illegitimate ?? null
         };
       }
@@ -37,7 +35,8 @@
         let query = supabase.from('people').select('*');
         if (onlyVisible) query = query.eq('visible', 'visible'); // or .eq('visible', true)
         query = query.order('generation', { ascending: true }).order('id', { ascending: true });
-
+        
+        
         const { data, error } = await query;
         if (error) throw error;
         return (data ?? []).map(toPerson);
