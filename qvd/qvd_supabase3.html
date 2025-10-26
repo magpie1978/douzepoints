@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Queen Victoria's Descendants</title>
+<style>
+  :root {
+    --bg:#0f111a;
+    --panel:#1c1f2b;
+    --accent:#cccccc;     /* line & border colour (light gray) */
+    --text:#e8e8e8;
+    --muted:#bdbdbd;
+    --glass:#121728;
+    --header-h:112px;     /* header height; used by drawer/backdrop/scroll */
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Raleway', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  }
+
+  /* ================= HEADER ================= */
+  header {
+    position: fixed; top: 0; left: 0; right: 0;
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 24px;
+    padding: 22px 34px;
+    background: #141826;
+    box-shadow: 0 6px 14px rgba(0,0,0,.45);
+    z-index: 300;
+    height: var(--header-h);
+  }
+  .header-left { max-width: 60%; }
+  .header-title {
+    margin: 0 0 8px 0;
+    font-size: 2rem; font-weight: 800; letter-spacing: .2px;
+    color: var(--text);
+  }
+  .header-desc {
+    margin: 0;
+    color: var(--muted);
+    font-size: .98rem; line-height: 1.45;
+  }
+
+  .header-right { flex: 0 0 420px; max-width: 100%; }
+
+  /* Search inside header-right */
+  #searchwrap{
+    position:relative;
+    background: rgba(20,24,38,.85);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:12px;
+    padding:8px 12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.08) inset;
+    backdrop-filter: blur(4px);
+  }
+  #search{
+    width:100%; border:0; outline:none; background:transparent;
+    color:var(--text); font-size:16px; line-height:22px;
+  }
+  #search::placeholder{ color:#9aa0b4; }
+
+  /* Suggestions dropdown */
+  #suggest{
+    position:absolute; top:100%; left:0; right:0; margin-top:6px;
+    background:var(--glass);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:12px; overflow:hidden; display:none;
+    z-index: 310;
+    box-shadow:0 16px 40px rgba(0,0,0,.45);
+  }
+  #suggest.show{ display:block; }
+  .sug{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 12px; cursor:pointer;
+  }
+  .sug:hover, .sug.active{ background:#1a1e2c; }
+  .s-name{ font-weight:700; }
+  .s-title{ color:var(--muted); font-size:12px; }
+
+  /* ================= STAGE ================= */
+  #scroll { position:absolute; left:0; right:0; bottom:0; top:var(--header-h); overflow: auto; }
+  #world  { position:relative; width:2400px; height:1600px; --gs:40px; }
+  #world.grid {
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size: var(--gs) var(--gs);
+    background-position: 0 0;
+  }
+
+  /* ================= SVG LINES ================= */
+  #connector { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+  .edge,.bus,.stem,.drop,.partner { stroke:var(--accent); stroke-width:3; fill:none; vector-effect:non-scaling-stroke; }
+  .partner { stroke-width:2; opacity:.9; }
+  .dotted { stroke-dasharray: 6 6; }
+
+  /* ================= CARDS ================= */
+  .person {
+    position:absolute; z-index:1; display:grid; grid-template-columns:1fr 2fr;
+    width:360px; height:120px;
+    background:var(--panel);
+    border:2px solid var(--accent);
+    border-radius:14px; overflow:hidden;
+    user-select:none; cursor:pointer;
+    box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.08) inset;
+    transition: transform .18s ease, box-shadow .22s ease, border-color .22s ease, background-color .22s ease, filter .22s ease;
+    will-change: transform, box-shadow, filter;
+  }
+  .person:hover {
+    transform: translateY(-4px) scale(1.015);
+    background-color:#1a1e2c;
+    border-color: rgba(255,255,255,0.6);
+    box-shadow: 0 14px 28px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.25) inset, 0 0 22px rgba(255,255,255,.18);
+    filter: saturate(1.05);
+  }
+  .person:focus-visible { outline:2px solid rgba(255,255,255,.85); outline-offset:3px; }
+
+  .avatar { width:100%; height:100%; background:#222; overflow:hidden; }
+  .avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+  .details { display:flex; flex-direction:column; justify-content:center; padding:12px 16px; }
+  .name { font-weight:700; font-size:1.1rem; }
+  .title { font-size:.9rem; color:var(--muted); margin-top:4px; }
+
+  /* Focus flash when searched */
+  @keyframes focusPulse {
+    0% { box-shadow:0 0 0 0 rgba(255,255,255,.45); }
+    60%{ box-shadow:0 0 0 12px rgba(255,255,255,0); }
+    100%{ box-shadow:0 0 0 0 rgba(255,255,255,0); }
+  }
+  .focus-flash { animation: focusPulse 1.1s ease-out 1; }
+
+  /* ================= LEFT DRAWER + BACKDROP ================= */
+  #drawer {
+    position: fixed;
+    top: var(--header-h);
+    left: 0;
+    bottom: 0;
+    width: min(520px, 92vw);
+    z-index: 400;
+    transform: translateX(-105%);
+    transition: transform .28s ease;
+    pointer-events: none;
+  }
+  #drawer .drawer-content {
+    height: 100%;
+    background: #141826;
+    border-right: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 20px 60px rgba(0,0,0,.55);
+    padding: 18px 20px;
+    overflow: auto;
+  }
+  #drawer[open] {
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+  #drawer .drawer-content h2 {
+    margin: 0 0 10px 0;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--text);
+  }
+  #drawer .drawer-body {
+    color: var(--muted);
+    font-size: .95rem;
+    line-height: 1.45;
+  }
+
+  /* Backdrop covers everything below header */
+  #backdrop {
+    position: fixed;
+    top: var(--header-h);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 350;
+    background: rgba(0,0,0,.55);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s ease;
+  }
+  #backdrop[data-show="true"] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+</style>
+</head>
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header>
+    <div class="header-left">
+      <h1 class="header-title">Queen Victoria's Descendants</h1>
+      <p class="header-desc">
+        Explore the network of European royalty descended from Queen Victoria.
+        Use the search to locate individuals and navigate through generations.
+      </p>
+    </div>
+    <div class="header-right">
+      <div id="searchwrap">
+        <input id="search" type="text" placeholder="Search by name or title…" autocomplete="off" aria-label="Search people by name or title" />
+        <div id="suggest" role="listbox" aria-label="Search suggestions"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= STAGE ================= -->
+  <div id="scroll" aria-live="polite">
+    <div id="world">
+      <svg id="connector" viewBox="0 0 2400 1600" preserveAspectRatio="none"></svg>
+      <div id="cards-root"></div>
+    </div>
+  </div>
+
+  <!-- Left drawer + backdrop -->
+  <div id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
+    <div class="drawer-content">
+      <h2 id="drawerTitle">Details</h2>
+      <div class="drawer-body">
+        <!-- blank for now -->
+      </div>
+    </div>
+  </div>
+  <div id="backdrop" aria-hidden="true"></div>
+
+<script type="module">
+/* ===================== Supabase init ===================== */
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+window.supabaseClient = supabase; // if you need it elsewhere
+
+/* ===================== Config & State ===================== */
+var STORE_KEY='familytree_supabase_snapgrid_v1';
+var PREF_KEY='snap_prefs_v1';
+
+var CARD_W=360, CARD_H=120, PADDING=200;
+
+/* Fallback image */
+const FALLBACK_IMAGE = "https://i.pinimg.com/736x/3f/3c/f8/3f3cf824ceb39fa5dbd00aa986e25f54.jpg";
+
+/* Clear caches each load to avoid stale positions */
+function clearAllCaches() {
+  try {
+    localStorage.removeItem(STORE_KEY);
+    localStorage.removeItem(PREF_KEY);
+  } catch (e) {}
+}
+
+function defaultState(){ return { nodes:{}, edges:[], triEdges:[], nextId:1 }; }
+function load(){
+  try{
+    var raw=localStorage.getItem(STORE_KEY);
+    var s=raw?JSON.parse(raw):defaultState();
+    Object.keys(s.nodes||{}).forEach(function(k){
+      var n=s.nodes[k];
+      if(n.motherId===undefined)n.motherId=null;
+      if(n.fatherId===undefined)n.fatherId=null;
+      if(!Array.isArray(n.partners))n.partners=[];
+      if(typeof n.illegitimate!=='boolean') n.illegitimate=false;
+      if(typeof n.x!=='number') n.x=100;
+      if(typeof n.y!=='number') n.y=100;
+    });
+    if(!Array.isArray(s.edges)) s.edges=[];
+    s.edges=s.edges.map(function(e){return {from:e.from,to:e.to,dotted:!!e.dotted};});
+    if(!Array.isArray(s.triEdges)) s.triEdges=[];
+    if(typeof s.nextId!=='number') s.nextId=1;
+    return s;
+  }catch(e){ console.error(e); return defaultState(); }
+}
+var state=load();
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
+
+/* Grid preference — ON by default to show graph background */
+function loadPrefs(){
+  try{
+    var p=JSON.parse(localStorage.getItem(PREF_KEY)||'{}');
+    var grid = typeof p.grid==='number' ? p.grid : 40;
+    var on = typeof p.on==='boolean' ? p.on : true;
+    return {grid:Math.max(8,Math.min(240,grid)), on:on};
+  }catch(e){ return {grid:40,on:true}; }
+}
+function savePrefs(){ localStorage.setItem(PREF_KEY, JSON.stringify({grid:snapGrid, on:isSnapOn})); }
+
+var world=document.getElementById('world');
+var svg=document.getElementById('connector');
+var cards=document.getElementById('cards-root');
+var scrollEl = document.getElementById('scroll');
+var searchInput = document.getElementById('search');
+var suggestBox = document.getElementById('suggest');
+
+/* Drawer refs */
+const drawer   = document.getElementById('drawer');
+const backdrop = document.getElementById('backdrop');
+
+var prefs=loadPrefs();
+var snapGrid=prefs.grid;
+var isSnapOn=prefs.on;
+applySnapUI();
+
+/* ===================== Drawer helpers ===================== */
+function openDrawer() {
+  drawer.setAttribute('open', '');
+  drawer.setAttribute('aria-hidden', 'false');
+  backdrop.setAttribute('data-show', 'true');
+  backdrop.setAttribute('aria-hidden', 'false');
+}
+function closeDrawer() {
+  drawer.removeAttribute('open');
+  drawer.setAttribute('aria-hidden', 'true');
+  backdrop.removeAttribute('data-show');
+  backdrop.setAttribute('aria-hidden', 'true');
+}
+backdrop.addEventListener('click', closeDrawer);
+window.addEventListener('keydown', function(e){
+  if (e.key === 'Escape' && drawer.hasAttribute('open')) closeDrawer();
+});
+
+/* ===================== World helpers ===================== */
+function updateWorldSize(){
+  var maxX=1200, maxY=800;
+  Object.keys(state.nodes).forEach(function(id){
+    var n=state.nodes[id];
+    if(n.x+CARD_W>maxX) maxX=n.x+CARD_W;
+    if(n.y+CARD_H>maxY) maxY=n.y+CARD_H;
+  });
+  maxX += PADDING; maxY += PADDING;
+  world.style.width = Math.max(maxX, world.clientWidth) + 'px';
+  world.style.height= Math.max(maxY, world.clientHeight) + 'px';
+  svg.setAttribute('viewBox','0 0 '+world.clientWidth+' '+world.clientHeight);
+}
+function ensureWorldFitsForState(s) {
+  var maxX = 1200, maxY = 800;
+  Object.keys(s.nodes).forEach(function(id){
+    var n = s.nodes[id];
+    if (typeof n.x === 'number' && typeof n.y === 'number') {
+      if (n.x + CARD_W > maxX) maxX = n.x + CARD_W;
+      if (n.y + CARD_H > maxY) maxY = n.y + CARD_H;
+    }
+  });
+  maxX += PADDING; maxY += PADDING;
+  world.style.width  = maxX + 'px';
+  world.style.height = maxY + 'px';
+  svg.setAttribute('viewBox', '0 0 ' + maxX + ' ' + maxY);
+}
+function clamp0(v){ return Math.max(0, v); }
+
+/* ===================== Geometry & SVG helpers ===================== */
+function cardRect(id){
+  var el=document.getElementById(id); if(!el) return null;
+  var r=el.getBoundingClientRect();
+  var wr=world.getBoundingClientRect();
+  var leftInWorld = r.left - wr.left;
+  var topInWorld  = r.top  - wr.top;
+  return { el:el,
+           cx:leftInWorld + r.width/2,
+           cy:topInWorld  + r.height/2,
+           topx:leftInWorld + r.width/2,
+           topy:topInWorld,
+           bottomy:topInWorld + r.height };
+}
+function ensureLine(id,cls){
+  var l=document.getElementById(id);
+  if(!l){ l=document.createElementNS('http://www.w3.org/2000/svg','line'); l.id=id; l.classList.add(cls); l.setAttribute('vector-effect','non-scaling-stroke'); svg.appendChild(l); }
+  return l;
+}
+function removeById(id){ var el=document.getElementById(id); if(el) el.remove(); }
+
+/* ===================== Connectors ===================== */
+function drawEdge(e){
+  var a=cardRect(e.from), b=cardRect(e.to); if(!a||!b) return;
+  var id='edge-'+e.from+'-'+e.to; var l=ensureLine(id,'edge');
+  if(e.dotted) l.classList.add('dotted'); else l.classList.remove('dotted');
+  l.setAttribute('x1',a.cx); l.setAttribute('y1',a.cy);
+  l.setAttribute('x2',b.cx); l.setAttribute('y2',b.cy);
+}
+function parentsKey(a,b){ var s=[a,b].sort(); return s[0]+'|'+s[1]; }
+function groupTriEdges(){
+  var m={};
+  state.triEdges.forEach(function(t){
+    var k=parentsKey(t.parents[0],t.parents[1]);
+    if(!m[k]) m[k]={parents:[].concat(t.parents).sort(), children:{}};
+    m[k].children[t.child]=true;
+  });
+  var out=new Map();
+  Object.keys(m).forEach(function(k){
+    out.set(k,{parents:m[k].parents, children:Object.keys(m[k].children)});
+  });
+  return out;
+}
+function ensureBusElems(k){ return { stem:ensureLine('stem-'+k,'stem'), bus:ensureLine('bus-'+k,'bus') }; }
+function ensureDropElem(k,cid){ return ensureLine('drop-'+k+'-'+cid,'drop'); }
+function updateBusGroup(key, group){
+  var p1=group.parents[0], p2=group.parents[1];
+  var R1=cardRect(p1), R2=cardRect(p2); if(!R1||!R2) return;
+  var mid={ x:(R1.cx+R2.cx)/2, y:(R1.cy+R2.cy)/2 };
+
+  var children=group.children.map(function(id){ return {id:id, r:cardRect(id)}; }).filter(function(o){return !!o.r;});
+  if(children.length===0) return;
+
+  if(children.length===1){
+    var r=children[0].r;
+    var anchorY = (r.topy >= mid.y) ? r.topy : r.bottomy;
+    var stem=ensureLine('stem-'+key,'stem');
+    stem.classList.remove('dotted');
+    stem.setAttribute('x1',mid.x); stem.setAttribute('y1',mid.y);
+    stem.setAttribute('x2',r.topx); stem.setAttribute('y2',anchorY);
+    removeById('bus-'+key);
+    svg.querySelectorAll('[id^="drop-'+key+'-"]').forEach(function(el){el.remove();});
+    return;
+  }
+
+  var xs=children.map(function(c){return c.r.topx;});
+  var topYs=children.map(function(c){return c.r.topy;});
+  var botYs=children.map(function(c){return c.r.bottomy;});
+  var GAP_ABOVE=24, GAP_BELOW=24, MIN_STEM=24;
+  var minTop=Math.min.apply(Math,topYs), maxBot=Math.max.apply(Math,botYs);
+  var allBelow = minTop > mid.y, allAbove = maxBot < mid.y;
+  var busY;
+  if(allBelow){ busY=minTop-GAP_ABOVE; if(busY<mid.y+MIN_STEM) busY=mid.y+MIN_STEM; }
+  else if(allAbove){ busY=maxBot+GAP_BELOW; if(busY>mid.y-MIN_STEM) busY=mid.y-MIN_STEM; }
+  else{ busY=mid.y+MIN_STEM; }
+
+  var minX=Math.min.apply(Math,xs), maxX=Math.max.apply(Math,xs);
+  var elems=ensureBusElems(key), stem=elems.stem, bus=elems.bus;
+  stem.setAttribute('x1',mid.x); stem.setAttribute('y1',mid.y);
+  stem.setAttribute('x2',mid.x); stem.setAttribute('y2',busY);
+  bus.setAttribute('x1',minX); bus.setAttribute('y1',busY);
+  bus.setAttribute('x2',maxX); bus.setAttribute('y2',busY);
+
+  var busAbove = busY <= minTop, busBelow = busY >= maxBot;
+  var keep={};
+  children.forEach(function(c){
+    var r=c.r, drop=ensureDropElem(key,c.id);
+    var anchorY= busAbove ? r.topy : (busBelow ? r.bottomy : (Math.abs(busY-r.topy)<=Math.abs(busY-r.bottomy)?r.topy:r.bottomy));
+    drop.setAttribute('x1',r.topx); drop.setAttribute('y1',busY);
+    drop.setAttribute('x2',r.topx); drop.setAttribute('y2',anchorY);
+    keep[drop.id]=true;
+  });
+  svg.querySelectorAll('[id^="drop-'+key+'-"]').forEach(function(d){ if(!keep[d.id]) d.remove(); });
+}
+function updateAllBuses(){ svg.querySelectorAll('.stem,.bus,.drop').forEach(function(e){e.remove();});
+  var groups=groupTriEdges(); groups.forEach(function(g,k){ updateBusGroup(k,g); });
+}
+
+/* ===== Partner connectors (renamed from spouse) ===== */
+function partnerKey(a,b){
+  const s = [a,b].sort();
+  return 'pt-' + s[0] + '-' + s[1];
+}
+function updatePartner(a,b){
+  const A = cardRect(a), B = cardRect(b); if(!A||!B) return;
+  const id = partnerKey(a,b);
+  const l  = ensureLine(id, 'partner');
+  l.setAttribute('x1', A.cx); l.setAttribute('y1', A.cy);
+  l.setAttribute('x2', B.cx); l.setAttribute('y2', B.cy);
+}
+function updateAllPartners(){
+  svg.querySelectorAll('.partner').forEach(e => e.remove());
+  const seen = {};
+  Object.keys(state.nodes).forEach(id => {
+    const n = state.nodes[id];
+    (n.partners || []).forEach(p => {
+      const k = partnerKey(id, p);
+      if (seen[k]) return;
+      seen[k] = true;
+      updatePartner(id, p);
+    });
+  });
+}
+
+function updateAllEdges(){
+  svg.querySelectorAll('.edge').forEach(function(e){e.remove();});
+  state.edges.forEach(drawEdge);
+  updateAllBuses();
+  updateAllPartners();
+}
+
+/* ===================== Rendering ===================== */
+function renderNode(n){
+  var el=document.getElementById(n.id);
+  if(!el){
+    el=document.createElement('div'); el.id=n.id; el.className='person';
+    el.setAttribute('role','button'); el.setAttribute('tabindex','0');
+    el.innerHTML='<div class="avatar"><img alt="'+(n.name||'photo')+'"></div>\
+      <div class="details">\
+        <div class="name"></div>\
+        <div class="title"></div>\
+      </div>';
+    cards.appendChild(el);
+
+    // Click or keyboard -> open drawer
+    el.addEventListener('click', function(){ openDrawer(); });
+    el.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openDrawer(); }});
+  }
+  el.querySelector('.name').textContent=n.name||'';
+  el.querySelector('.title').textContent=n.title||'';
+  var img=el.querySelector('img');
+  img.src = n.imgSrc || FALLBACK_IMAGE;
+  img.onerror = function(){ img.src = FALLBACK_IMAGE; };
+  el.style.transform='translate('+n.x+'px,'+n.y+'px)';
+}
+function renderAll(){
+  cards.innerHTML='';
+  Object.keys(state.nodes).forEach(function(id){ renderNode(state.nodes[id]); });
+  updateWorldSize();
+  updateAllEdges();
+  dataReady = true;
+}
+
+/* ===================== Search (name or title) ===================== */
+var dataReady = false;
+function norm(s){ return (s||'').toString().toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,''); }
+
+function centerOnElement(el){
+  const rect = el.getBoundingClientRect();
+  const wrect = world.getBoundingClientRect();
+  const xInWorld = rect.left - wrect.left + rect.width/2;
+  const yInWorld = rect.top  - wrect.top  + rect.height/2;
+  const targetLeft = clamp0(xInWorld - scrollEl.clientWidth/2);
+  const targetTop  = clamp0(yInWorld - scrollEl.clientHeight/2);
+  scrollEl.scrollTo({ left: targetLeft, top: targetTop, behavior: 'smooth' });
+}
+function focusPerson(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  centerOnElement(el);
+  el.classList.remove('focus-flash'); void el.offsetWidth; el.classList.add('focus-flash');
+  el.focus({preventScroll:true});
+}
+function scoreMatch(n, q){
+  const name = norm(n.name), title = norm(n.title);
+  const exact = (name===q || title===q) ? 100 : 0;
+  const starts = (name.startsWith(q) || title.startsWith(q)) ? 60 : 0;
+  const includes = (name.includes(q) || title.includes(q)) ? 30 : 0;
+  const idxName = name.indexOf(q);
+  const idxTitle= title.indexOf(q);
+  const posBonus = Math.max(0, 20 - Math.min(idxName<0?99:idxName, idxTitle<0?99:idxTitle));
+  return exact || (starts + includes + posBonus);
+}
+function search(query){
+  const q = norm(query.trim());
+  if(!q) return [];
+  return Object.values(state.nodes)
+    .map(n=>({id:n.id, name:n.name||'', title:n.title||'', score:scoreMatch(n,q)}))
+    .filter(x=>x.score>0)
+    .sort((a,b)=>b.score - a.score)
+    .slice(0, 10);
+}
+function renderSuggestions(items){
+  suggestBox.innerHTML = '';
+  if(!items.length){ suggestBox.classList.remove('show'); return; }
+  items.forEach((it, i)=>{
+    const div = document.createElement('div');
+    div.className = 'sug' + (i===0 ? ' active' : '');
+    div.setAttribute('role','option');
+    div.dataset.pid = it.id;
+    div.innerHTML = `<div class="s-name">${it.name}</div><div class="s-title">${it.title}</div>`;
+    div.addEventListener('click', ()=>{
+      focusPerson(it.id);
+      suggestBox.classList.remove('show');
+    });
+    suggestBox.appendChild(div);
+  });
+  suggestBox.classList.add('show');
+}
+function pickFirstSuggestion(){
+  const first = suggestBox.querySelector('.sug');
+  if(first){ focusPerson(first.dataset.pid); suggestBox.classList.remove('show'); }
+}
+
+searchInput.addEventListener('input', ()=>{
+  if(!dataReady) return;
+  renderSuggestions( search(searchInput.value) );
+});
+searchInput.addEventListener('keydown', (e)=>{
+  if(e.key==='Enter'){ e.preventDefault(); pickFirstSuggestion(); }
+  else if(e.key==='Escape'){ suggestBox.classList.remove('show'); searchInput.blur(); }
+  else if(e.key==='ArrowDown' || e.key==='ArrowUp'){
+    const items = Array.from(suggestBox.querySelectorAll('.sug'));
+    if(!items.length){ return; }
+    e.preventDefault();
+    let idx = items.findIndex(x=>x.classList.contains('active'));
+    if(e.key==='ArrowDown') idx = (idx+1) % items.length;
+    else idx = (idx-1+items.length) % items.length;
+    items.forEach(x=>x.classList.remove('active'));
+    items[idx].classList.add('active');
+    items[idx].scrollIntoView({block:'nearest'});
+  } else if (e.key==='Tab'){
+    const active = suggestBox.querySelector('.sug.active');
+    if(active){ e.preventDefault(); focusPerson(active.dataset.pid); suggestBox.classList.remove('show'); }
+  }
+});
+
+/* ===================== Supabase data loading ===================== */
+function toNum(v){ const n=Number(v); return isFinite(n)?n:null; }
+function toBool(v){
+  if (typeof v === 'boolean') return v;
+  const s=String(v||'').trim().toLowerCase();
+  return s==='true'||s==='1'||s==='yes'||s==='y';
+}
+function normKey(s){
+  return (s||'').toString()
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g,'')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+/** partners parser:
+ * - array of strings: ["albertII","paola"] or ["Queen Paola"]
+ * - array of objects: [{id:"paola"}, {name:"Queen Paola"}]
+ * - delimited string: "albertII, paola" or "Queen Paola; King Albert II"
+ */
+function parsePartnerTokens(val){
+  if (Array.isArray(val)) {
+    return val.map(v=>{
+      if (typeof v === 'string') return v;
+      if (v && typeof v === 'object') return v.id || v.name || '';
+      return '';
+    }).filter(Boolean);
+  }
+  if (val === null || val === undefined) return [];
+  const s = String(val).trim();
+  if (!s) return [];
+  return s.split(/[;,]/).map(t => t.trim()).filter(Boolean);
+}
+
+/** Build the in-memory state (nodes/edges/tri-edges) from Supabase rows */
+function buildStateFromRows(rows){
+  const nodes={};
+
+  // 1) Only keep rows explicitly marked visible (boolean true or string 'visible')
+  const filtered = rows.filter(r => {
+    const v = r.visible;
+    if (typeof v === 'boolean') return v;
+    return String(v||'').trim().toLowerCase() === 'visible';
+  });
+
+  // 2) First pass: create nodes
+  for (const r of filtered){
+    const id = String(r.id);
+    nodes[id] = {
+      id,
+      name: r.name || id,
+      title: r.title || '',
+      imgSrc: r.img || r.image_url || '',
+      x: toNum(r.x)!=null ? toNum(r.x) : 100,
+      y: toNum(r.y)!=null ? toNum(r.y) : 100,
+      motherId: r.mother_id || null,
+      fatherId: r.father_id || null,
+      parents: Array.isArray(r.parents) ? r.parents.filter(Boolean).map(String) : [],
+      illegitimate: ('illegitimate' in r) ? toBool(r.illegitimate) : false,
+      _partnerTokens: parsePartnerTokens(r.partners) // <— ONLY partners
+    };
+  }
+
+  // 3) Build lookup maps for robust resolution
+  const idSet = new Set(Object.keys(nodes));
+  const nameToId = {};
+  for (const id of Object.keys(nodes)){
+    const n = nodes[id];
+    const key = normKey(n.name);
+    if (key && !(key in nameToId)) nameToId[key] = id;
+  }
+
+  // helper: resolve a token to a node id
+  function resolvePartnerToken(tok){
+    if (!tok) return null;
+    const s = String(tok).trim();
+    if (idSet.has(s)) return s;          // exact id match
+    const byName = nameToId[normKey(s)]; // name match
+    return byName || null;
+  }
+
+  // 4) Resolve partners, keep visible-only, enforce symmetry
+  for (const id of Object.keys(nodes)){
+    const n = nodes[id];
+    const resolved = (n._partnerTokens || [])
+      .map(resolvePartnerToken)
+      .filter(pid => pid && pid !== id && idSet.has(pid));
+    n.partners = Array.from(new Set(resolved));
+    delete n._partnerTokens;
+  }
+  for (const id of Object.keys(nodes)){
+    const n = nodes[id];
+    (n.partners||[]).forEach(pid=>{
+      const other = nodes[pid];
+      if (!other) return;
+      if (!Array.isArray(other.partners)) other.partners = [];
+      if (!other.partners.includes(id)) other.partners.push(id);
+    });
+  }
+
+  // 5) Parents/children edges
+  const edges=[], triEdges=[];
+  for (const id of Object.keys(nodes)){
+    const child = nodes[id];
+    let parentIds = Array.isArray(child.parents) ? child.parents.filter(Boolean) : [];
+    if (parentIds.length === 0) {
+      if (child.motherId) parentIds.push(child.motherId);
+      if (child.fatherId) parentIds.push(child.fatherId);
+    }
+    parentIds = parentIds.filter(p => nodes[p]);
+
+    if (parentIds.length >= 2){
+      const p = parentIds.slice(0,2).sort();
+      triEdges.push({ parents:[p[0],p[1]], child:id });
+    } else if (parentIds.length === 1){
+      const p = parentIds[0];
+      const dotted = !!child.illegitimate;
+      const from = p < id ? p : id;
+      const to   = p < id ? id : p;
+      if(!edges.some(e=>e.from===from && e.to===to)){
+        edges.push({from,to,dotted});
+      }
+    }
+  }
+
+  // nextId heuristic
+  let maxN=0;
+  Object.keys(nodes).forEach(id=>{
+    const m=id.match(/\d+$/); if(m){ const v=parseInt(m[0],10); if(v>maxN) maxN=v; }
+  });
+
+  return { nodes, edges, triEdges, nextId:maxN+1 };
+}
+
+/** Query Supabase for the people */
+async function fetchRowsFromSupabase({ onlyVisible = true } = {}){
+  let query = supabase.from('qvd_website').select('*');
+
+  if (onlyVisible) {
+    // Switch to .eq('visible', true) if your column is boolean
+    query = query.eq('visible', 'visible');
+  }
+
+  query = query.order('gen', { ascending: true }).order('id', { ascending: true });
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data ?? [];
+}
+
+/** Load, transform, snap (optional), render */
+async function loadFromSupabase(){
+  const rows = await fetchRowsFromSupabase({ onlyVisible:true });
+  let newState = buildStateFromRows(rows);
+
+  if (!Object.keys(newState.nodes).length) {
+    console.warn('Supabase loaded but no rows marked visible.');
+  }
+
+  if (isSnapOn) {
+    Object.keys(newState.nodes).forEach(id=>{
+      const n=newState.nodes[id];
+      n.x = clamp0(Math.round(n.x / snapGrid) * snapGrid);
+      n.y = clamp0(Math.round(n.y / snapGrid) * snapGrid);
+    });
+  }
+
+  ensureWorldFitsForState(newState);
+  state = newState;
+  save();
+  renderAll();
+}
+
+/* Optional: realtime refresh on any change to the table */
+function startRealtime(){
+  return supabase
+    .channel('qvd_website-realtime')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'qvd_website' }, async () => {
+      try {
+        await loadFromSupabase();
+      } catch(e){ console.error('Realtime refresh failed', e); }
+    })
+    .subscribe();
+}
+
+/* ===================== Snap UI (graph paper background) ===================== */
+function applySnapUI(){
+  world.classList.toggle('grid', isSnapOn);
+  world.style.setProperty('--gs', snapGrid+'px');
+  savePrefs();
+}
+
+/* ===================== Init ===================== */
+function init(){
+  clearAllCaches();
+  applySnapUI(); updateWorldSize(); renderAll();
+
+  // Initial load from Supabase
+  loadFromSupabase().catch(err=>{
+    console.error(err);
+    alert('Load failed: ' + err.message);
+  });
+
+  // Enable realtime (optional). Comment out if not desired.
+  startRealtime();
+}
+
+window.addEventListener('resize', function(){ updateWorldSize(); updateAllEdges(); });
+document.getElementById('scroll').addEventListener('scroll', function () {
+  updateAllEdges();
+});
+
+init();
+</script>
+</body>
+</html>
