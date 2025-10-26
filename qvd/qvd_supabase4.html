@@ -766,13 +766,19 @@ async function loadFromSupabase(){
 
 /* ===== Populate the branch dropdown ===== */
 function populateBranchSelect(allRows){
-  // Find immediate children of "1": ids matching ^1:[^:]+$
-  const kids = (allRows || [])
-    .filter(r => /^1:[^:]+$/.test(String(r.id)))
-    .map(r => ({ id: String(r.id), name: r.name || String(r.id) }))
-    .sort((a,b) => a.id.localeCompare(b.id, undefined, {numeric:true}));
+  // Only ids 1:1 .. 1:9 (no letters/suffixes)
+  const CHILD_REGEX = /^1:[1-9]$/;
 
-  // Reset options (keep placeholder)
+  const kids = (allRows || [])
+    .filter(r => CHILD_REGEX.test(String(r.id)))
+    // sort numerically by the number after the colon
+    .sort((a,b) => {
+      const ai = parseInt(String(a.id).split(':')[1], 10);
+      const bi = parseInt(String(b.id).split(':')[1], 10);
+      return ai - bi;
+    })
+    .map(r => ({ id: String(r.id), name: r.name || String(r.id) }));
+
   branchSelect.innerHTML = '<option value="">— Select a branch —</option>';
   for (const k of kids){
     const opt = document.createElement('option');
@@ -781,6 +787,7 @@ function populateBranchSelect(allRows){
     branchSelect.appendChild(opt);
   }
 }
+
 
 /* ===== Apply branch visibility (DB writes + refresh) ===== */
 async function applyBranchVisibility(selectedId){
