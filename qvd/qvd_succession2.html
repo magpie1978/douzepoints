@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Line of Succession</title>
+<style>
+  :root{
+    --bg:#0f111a;
+    --panel:#1c1f2b;
+    --accent:#cccccc;
+    --text:#e8e8e8;
+    --muted:#bdbdbd;
+    --glass:#121728;
+    --header-h:96px;
+    --card-h:120px;
+    --radius:14px;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Raleway', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  }
+
+  /* Header */
+  header{
+    position:fixed; top:0; left:0; right:0;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:24px; padding:18px 28px; height:var(--header-h);
+    background:#141826; box-shadow:0 6px 14px rgba(0,0,0,.45);
+    z-index:100;
+  }
+  .title{ margin:0; font-size:1.6rem; font-weight:800; }
+  .subtitle{ margin:2px 0 0; color:var(--muted); font-size:.95rem; }
+
+  /* Main area */
+  #scroll{ position:fixed; top:var(--header-h); left:0; right:0; bottom:0; overflow:auto; }
+  .container{
+    max-width:1100px; margin:24px auto; padding:0 20px 40px;
+  }
+
+  /* Optional subtle grid backdrop */
+  .container.grid{
+    --gs:40px;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size: var(--gs) var(--gs);
+    background-position: 0 0;
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:var(--radius);
+  }
+
+  /* One person per line */
+  .list{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    padding:16px;
+  }
+
+  /* Person card */
+  .card{
+    position:relative;
+    display:grid;
+    grid-template-columns:120px 1fr;
+    align-items:stretch;
+    min-height:var(--card-h);
+    background:var(--panel);
+    border:2px solid var(--accent);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:0 6px 18px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.08) inset;
+    transition: transform .18s ease, box-shadow .22s ease, border-color .22s ease, background-color .22s ease, filter .22s ease;
+  }
+  .card:hover{
+    transform:translateY(-4px) scale(1.015);
+    background-color:#1a1e2c;
+    border-color:rgba(255,255,255,.6);
+    box-shadow:0 14px 28px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.25) inset, 0 0 22px rgba(255,255,255,.18);
+    filter:saturate(1.05);
+  }
+
+  .photo{
+    width:100%; height:100%; background:#222; overflow:hidden;
+  }
+  .photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+  .info{
+    display:flex; flex-direction:column; justify-content:center;
+    padding:12px 14px;
+  }
+  .name{ font-weight:800; font-size:1.05rem; line-height:1.2; }
+  .titles{ color:var(--muted); font-size:.95rem; margin-top:4px; line-height:1.25; }
+  .dob{ color:var(--muted); font-size:.9rem; margin-top:6px; }
+
+  /* Order badge: overlaps like a notification */
+  .badge{
+    position:absolute;
+    top:-12px; left:-12px;          /* pull it up/left so it overlaps the corner */
+    width:60px; height:60px;
+    border-radius:50%;
+    background:#0b0e18;             /* dark disc behind */
+    display:flex; align-items:center; justify-content:center;
+    z-index:2;                       /* ensure it sits above the card & borders */
+    box-shadow:
+      0 2px 6px rgba(0,0,0,.45),
+      0 0 0 2px rgba(255,255,255,.10);  /* subtle outline to pop against card */
+  }
+  .badge::after{
+    content:'';
+    position:absolute; inset:5px;
+    border-radius:50%;
+    border:2px solid var(--accent);
+    pointer-events:none;
+  }
+  .badge .num{
+    position:relative;
+    font-weight:900; font-size:1.05rem; color:var(--text);
+  }
+
+  /* Empty / error messages */
+  .status{
+    padding:20px; color:var(--muted); text-align:center;
+  }
+
+  /* Responsive tweak: stack on very narrow screens */
+  @media (max-width: 520px){
+    .card{ grid-template-columns: 100px 1fr; }
+    .badge{ width:54px; height:54px; top:-10px; left:-10px; }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1 class="title">Line of Succession</h1>
+      <p class="subtitle">People with a non-zero succession position (order_number &gt; 0)</p>
+    </div>
+  </header>
+
+  <div id="scroll">
+    <div class="container grid">
+      <div id="cards" class="list" aria-live="polite"></div>
+      <div id="status" class="status" hidden>Loading…</div>
+    </div>
+  </div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+/* === Supabase client === */
+const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* === DOM handles === */
+const cardsEl = document.getElementById('cards');
+const statusEl = document.getElementById('status');
+
+/* === Fallbacks / helpers === */
+const FALLBACK_IMAGE = "https://i.pinimg.com/736x/3f/3c/f8/3f3cf824ceb39fa5dbd00aa986e25f54.jpg";
+const safe = v => (v == null || v === '') ? '—' : String(v);
+
+/* === Render one card === */
+function renderCard(row){
+  const {
+    id,
+    name,
+    title,      // compatibility if view exposes 'title'
+    title1,     // preferred title line
+    title2,
+    dob,
+    img,
+    image_url,  // compatibility
+    order_number
+  } = row;
+
+  const t1 = title1 ?? title ?? '';
+  const t2 = title2 ?? '';
+  const imgSrc = img || image_url || FALLBACK_IMAGE;
+
+  const card = document.createElement('article');
+  card.className = 'card';
+  card.setAttribute('aria-label', safe(name));
+
+  card.innerHTML = `
+    <div class="badge" aria-hidden="true"><div class="num">${safe(order_number)}</div></div>
+    <div class="photo"><img alt="${safe(name)}" src="${imgSrc}" onerror="this.src='${FALLBACK_IMAGE}'"></div>
+    <div class="info">
+      <div class="name">${safe(name)}</div>
+      <div class="titles">${[t1, t2].filter(Boolean).join(' · ') || '—'}</div>
+      <div class="dob"><strong>DOB:</strong> ${safe(dob)}</div>
+    </div>
+  `;
+  return card;
+}
+
+/* === Render list === */
+function renderList(rows){
+  cardsEl.innerHTML = '';
+  if(!rows || rows.length === 0){
+    statusEl.hidden = false;
+    statusEl.textContent = 'No entries found.';
+    return;
+  }
+  statusEl.hidden = true;
+  const frag = document.createDocumentFragment();
+  rows.forEach(r => frag.appendChild(renderCard(r)));
+  cardsEl.appendChild(frag);
+}
+
+/* === Load from view qvd_succession ===
+   Only include order_number > 0, sorted ascending */
+async function loadSuccession(){
+  statusEl.hidden = false;
+  statusEl.textContent = 'Loading…';
+  const { data, error } = await supabase
+    .from('qvd_succession')
+    .select('*')
+    .gt('order_number', 0)
+    .order('order_number', { ascending: true });
+  if(error){
+    statusEl.hidden = false;
+    statusEl.textContent = 'Error loading data: ' + error.message;
+    console.error(error);
+    return;
+  }
+  renderList(data);
+}
+
+/* === Init === */
+function init(){
+  document.querySelector('.container').classList.add('grid');  // subtle background grid
+  document.querySelector('.container').style.setProperty('--gs','40px');
+  loadSuccession();
+}
+init();
+</script>
+</body>
+</html>
