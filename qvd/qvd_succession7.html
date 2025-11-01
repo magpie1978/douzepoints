@@ -113,7 +113,7 @@
     async function loadData(){
       statusEl.textContent = 'Loading…';
       const { data, error } = await supabase
-        .from('qvd_succession')
+        .from('qvd_website')
         .select('*')
         .gt('order_number', 0)
         .order('order_number', { ascending: true });
