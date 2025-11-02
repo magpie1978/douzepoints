@@ -204,17 +204,19 @@
 
     // Toggle handler
     toggleSwitch.addEventListener('change', () => {
-      includeExcluded = toggleSwitch.checked;
-      toggleLabel.textContent = includeExcluded
-        ? 'Exclusions Hidden'
-        : 'Exclusions Displayed';
-      renderHeader();
-      loadData();
-    });
-
-    // Initial load
+    includeExcluded = toggleSwitch.checked;
+    toggleLabel.textContent = includeExcluded
+      ? 'Exclusions Displayed'
+      : 'Exclusions Hidden';
     renderHeader();
     loadData();
+  });
+
+// Initial load
+toggleLabel.textContent = 'Exclusions Hidden'; // ensure correct label on load
+renderHeader();
+loadData();
+    
   </script>
 
   <script type="module" src="js/header.js"></script>
