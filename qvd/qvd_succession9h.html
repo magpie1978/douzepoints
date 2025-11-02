@@ -175,7 +175,7 @@
   }
 
   function makeRow(row){
-    const { name, title1, title2, dob, img, image_url, exclusion_flag, relationship_to_charles } = row;
+    const { name, title1, title2, dob, img, exclusion_flag, relationship_to_charles } = row;
     const imgSrc = img || image_url || FALLBACK_IMAGE;
     const exclusionText = includeExcluded ? formatExclusion(exclusion_flag) : '';
 
