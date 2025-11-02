@@ -233,7 +233,7 @@
     // ask only for the columns we actually render
     let query = supabase
       .from('qvd_website') // prefer MV if you created it; otherwise 'qvd_website'
-      .select('order_excl,order_incl,name,title1,title2,dob,img,image_url,exclusion_flag,relationship_to_charles')
+      .select('order_excl,order_incl,name,title1,title2,dob,img,exclusion_flag,relationship_to_charles')
       .gt(ORDER_BY_COL, 0)
       .order(ORDER_BY_COL, { ascending: true })
       .range(from, to);
