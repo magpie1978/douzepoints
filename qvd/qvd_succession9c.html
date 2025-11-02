@@ -132,9 +132,9 @@
     function renderHeader(){
       const including = includeExcluded;
       theadRow.innerHTML = `
-        <th class="pos" data-col="position"># (order_excl)</th>
-        <th data-col="photo">Photo</th>
-        <th data-col="name">Name & Titles</th>
+        <th class="pos" data-col="position"></th>
+        <th data-col="photo"></th>
+        <th data-col="name">Name</th>
         <th data-col="dob">DOB</th>
         ${including ? `<th data-col="exclusion">Exclusion</th>` : ``}
       `;
