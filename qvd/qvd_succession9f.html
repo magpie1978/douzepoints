@@ -196,12 +196,18 @@
 
     async function loadData(){
       statusEl.textContent = 'Loading…';
+      //let query = supabase
+      //  .from('qvd_website')  // or 'qvd_people_with_relationship' if you made the view
+      //  .select('*')
+      //  .gt(ORDER_BY_COL, 0)
+      //  .order(ORDER_BY_COL, { ascending: true });
+
       let query = supabase
-        .from('qvd_website')  // or 'qvd_people_with_relationship' if you made the view
-        .select('*')
+        .from('qvd_website') // or your view with relationship
+        .select('order_excl,order_incl,name,title1,title2,dob,img,image_url,exclusion_flag,relationship_to_charles')
         .gt(ORDER_BY_COL, 0)
         .order(ORDER_BY_COL, { ascending: true });
-
+      
       if(!includeExcluded){
         query = query.gt('order_excl', 0);
       }
