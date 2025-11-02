@@ -124,7 +124,7 @@
     const toggleSwitch = document.getElementById('toggleSwitch');
     const toggleLabel = document.getElementById('toggleLabel');
     const FALLBACK_IMAGE = "https://i.pinimg.com/736x/3f/3c/f8/3f3cf824ceb39fa5dbd00aa986e25f54.jpg";
-    const safe = v => (v == null || v === '') ? '—' : String(v);
+    const safe = v => (v == null || v === '') ? '' : String(v);
 
     const ORDER_BY_COL = 'order_incl';
     const DISPLAY_POS_COL = 'order_excl';
@@ -132,7 +132,7 @@
 
     function renderHeader(){
       theadRow.innerHTML = `
-        <th class="pos"># (order_excl)</th>
+        <th class="pos"></th>
         <th>Photo</th>
         <th>Name & Titles</th>
         <th>DOB</th>
