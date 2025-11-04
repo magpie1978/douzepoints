@@ -1,0 +1,291 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Line of Succession</title>
+
+  <link href="style/scoreboard.css" rel="stylesheet" />
+  <link href="style/footer.css" rel="stylesheet" />
+
+  <style>
+    :root{
+      --bg:#0f111a; --panel:#1c1f2b; --text:#e8e8e8; --muted:#bdbdbd; --border:#2a2f3f;
+      --btn:#1f2433; --btnActive:#2a3044; --accent:#e50914;
+    }
+    html,body{margin:0;background:var(--bg);color:var(--text);font-family:'Raleway',system-ui,Segoe UI,Roboto,Arial,sans-serif}
+    .main-content{max-width:1100px;margin:32px auto;padding:0 20px 60px}
+    .table-wrapper{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:auto}
+    table{width:100%;border-collapse:separate;border-spacing:0;min-width:880px}
+    thead th{position:sticky;top:0;background:#141826;text-align:left;padding:12px 14px;border-bottom:1px solid var(--border);font-weight:800}
+    tbody td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+    tbody tr:hover{background:#1a1e2c}
+    .pos{width:56px;text-align:right;font-variant-numeric:tabular-nums}
+    .thumb-wrap{display:flex;align-items:center;gap:12px}
+    .thumb{width:56px;height:56px;border-radius:8px;object-fit:cover;background:#222;border:1px solid var(--border)}
+    .name{font-weight:800;line-height:1.2}
+    .titles-stack{color:var(--muted);font-size:0.9rem;line-height:1.2;margin-top:4px}
+    .relationship-text{color:var(--muted);font-size:0.9rem;line-height:1.2;margin-top:4px;}
+    .exclusion-text{
+      color:var(--accent);
+      font-size:0.9rem;
+      font-weight:600;
+      margin-top:4px;
+      font-style:italic;
+    }
+    .muted{color:var(--muted)}
+
+    /* Toggle Switch */
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0 20px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 56px;
+      height: 28px;
+    }
+
+    .switch input {opacity: 0; width: 0; height: 0;}
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #555;
+      transition: .3s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px; width: 20px;
+      left: 4px; bottom: 4px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--accent);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(28px);
+    }
+
+    .toggle-label {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="header-container"></div>
+
+  <div class="main-content">
+    <h1 id="tableHeader">Line of Succession</h1>
+
+    <div class="toggle-container">
+      <label class="switch">
+        <input type="checkbox" id="toggleSwitch" />
+        <span class="slider"></span>
+      </label>
+      <span id="toggleLabel" class="toggle-label">Exclusions Hidden</span>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr id="thead-row">
+            <!-- dynamically populated -->
+          </tr>
+        </thead>
+        <tbody id="succession-body"></tbody>
+      </table>
+    </div>
+
+    <p id="status" class="muted" style="padding:10px 2px;"></p>
+  </div>
+
+  <div style="display:flex; justify-content:center; margin-top:12px;">
+    <button id="loadMoreBtn" style="
+      background:#2a3044; color:#e8e8e8; border:1px solid #2a2f3f;
+      padding:10px 14px; border-radius:10px; font-weight:700; cursor:pointer;">
+    Load more
+  </button>
+</div>
+
+
+  <div id="footer"></div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+  // --- Supabase credentials ---
+  const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
+  const SUPABASE_ANON_KEY =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // --- DOM refs ---
+  const tbody = document.getElementById('succession-body');
+  const statusEl = document.getElementById('status');
+  const theadRow = document.getElementById('thead-row');
+  const toggleSwitch = document.getElementById('toggleSwitch');
+  const toggleLabel = document.getElementById('toggleLabel');
+  const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+  // --- Helpers / constants ---
+  const FALLBACK_IMAGE = "https://i.pinimg.com/736x/3f/3c/f8/3f3cf824ceb39fa5dbd00aa986e25f54.jpg";
+  const safe = v => (v == null || v === '') ? '' : String(v);
+  const ORDER_BY_COL = 'order_incl';
+  const DISPLAY_POS_COL = 'order_excl';
+
+  // Pagination
+  const PAGE_SIZE = 100;         // adjust if you want smaller/larger pages
+  let includeExcluded = false;   // toggle: false = Exclusions Hidden (eligible only)
+  let page = 0;                  // 0-based page index
+  let loading = false;
+  let reachedEnd = false;
+
+  function renderHeader(){
+    theadRow.innerHTML = `
+      <th class="pos"></th>
+      <th></th>
+      <th>Name</th>
+      <th>Relationship</th>
+      <th>DOB</th>
+    `;
+  }
+
+  function formatExclusion(flag){
+    if(!flag) return '';
+    const f = flag.toLowerCase();
+    if(f.includes('rc')) return 'Excluded for being a Roman Catholic';
+    if(f.includes('illeg')) return 'Illegitimate';
+    return flag;
+  }
+
+  function makeRow(row){
+    const { name, title1, title2, dob, img, exclusion_flag, relationship_to_charles } = row;
+    const imgSrc = img || FALLBACK_IMAGE;
+    const exclusionText = includeExcluded ? formatExclusion(exclusion_flag) : '';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="pos">${safe(row[DISPLAY_POS_COL])}</td>
+      <td>
+        <div class="thumb-wrap">
+          <img class="thumb" alt="${safe(name)}" src="${imgSrc}" onerror="this.src='${FALLBACK_IMAGE}'" />
+        </div>
+      </td>
+      <td>
+        <div class="name">${safe(name)}</div>
+        <div class="titles-stack">${safe(title1)}</div>
+        <div class="titles-stack">${safe(title2)}</div>
+        ${exclusionText ? `<div class="exclusion-text">${exclusionText}</div>` : ''}
+      </td>
+      <td><div class="relationship-text">${safe(relationship_to_charles)} of King Charles III</div></td>
+      <td class="muted">${safe(dob)}</td>
+    `;
+    return tr;
+  }
+
+  function appendRows(rows){
+    const frag = document.createDocumentFragment();
+    rows.forEach(r => frag.appendChild(makeRow(r)));
+    tbody.appendChild(frag);
+  }
+
+  function setLoading(isLoading){
+    loading = isLoading;
+    loadMoreBtn.disabled = isLoading || reachedEnd;
+    loadMoreBtn.textContent = isLoading ? 'Loading…' : (reachedEnd ? 'No more results' : 'Load more');
+  }
+
+  async function fetchPage({ reset = false } = {}){
+    if (loading) return;
+    if (reset){
+      // reset pagination & UI
+      page = 0;
+      reachedEnd = false;
+      tbody.innerHTML = '';
+      statusEl.textContent = '';
+      loadMoreBtn.style.display = 'inline-block';
+      loadMoreBtn.disabled = false;
+      loadMoreBtn.textContent = 'Load more';
+    }
+    if (reachedEnd) return;
+
+    setLoading(true);
+
+    const from = page * PAGE_SIZE;
+    const to   = from + PAGE_SIZE - 1;  // inclusive
+
+    // ask only for the columns we actually render
+    let query = supabase
+      .from('qvd_website') // prefer MV if you created it; otherwise 'qvd_website'
+      .select('order_excl,order_incl,name,title1,title2,dob,img,exclusion_flag,relationship_to_charles')
+      .gt(ORDER_BY_COL, 0)
+      .order(ORDER_BY_COL, { ascending: true })
+      .range(from, to);
+
+    if (!includeExcluded){
+      query = query.gt('order_excl', 0);
+    }
+
+    const { data, error } = await query;
+    if (error){
+      statusEl.textContent = 'Error: ' + error.message;
+      setLoading(false);
+      return;
+    }
+
+    // append to table
+    appendRows(data || []);
+
+    // if fewer than PAGE_SIZE, we've hit the end
+    if (!data || data.length < PAGE_SIZE){
+      reachedEnd = true;
+      loadMoreBtn.textContent = 'No more results';
+      loadMoreBtn.disabled = true;
+    } else {
+      page += 1;
+    }
+
+    setLoading(false);
+  }
+
+  // Toggle handler — reset pagination on change
+  toggleSwitch.addEventListener('change', () => {
+    includeExcluded = toggleSwitch.checked;
+    toggleLabel.textContent = includeExcluded
+      ? 'Exclusions Displayed'
+      : 'Exclusions Hidden';
+    renderHeader();
+    fetchPage({ reset: true });
+  });
+
+  // Load-more handler
+  loadMoreBtn.addEventListener('click', () => {
+    fetchPage();
+  });
+
+  // Initial load
+  toggleLabel.textContent = 'Exclusions Hidden';
+  renderHeader();
+  fetchPage({ reset: true });
+</script>
+
+  <script type="module" src="js/header.js"></script>
+  <script src="js/footer.js" defer></script>
+</body>
+</html>

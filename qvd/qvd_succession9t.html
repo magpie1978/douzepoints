@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Line of Succession</title>
+
+  <style>
+    :root{
+      --bg:#0f111a; --panel:#1c1f2b; --text:#e8e8e8; --muted:#bdbdbd; --border:#2a2f3f;
+      --btn:#1f2433; --btnActive:#2a3044; --accent:#e50914;
+    }
+    html,body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:'Raleway',system-ui,Segoe UI,Roboto,Arial,sans-serif;
+    }
+    .main-content{max-width:1100px;margin:32px auto;padding:0 20px 60px}
+    .table-wrapper{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:auto}
+    table{width:100%;border-collapse:separate;border-spacing:0;min-width:880px}
+    thead th{position:sticky;top:0;background:#141826;text-align:left;padding:12px 14px;border-bottom:1px solid var(--border);font-weight:800}
+    tbody td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+    tbody tr:hover{background:#1a1e2c;cursor:pointer;}
+    .pos{width:56px;text-align:right;font-variant-numeric:tabular-nums}
+    .name{font-weight:600;font-size:0.9rem;line-height:1.2;}
+    .titles-stack{color:var(--muted);font-size:0.9rem;line-height:1.2;margin-top:4px}
+    .relationship-text{color:var(--muted);font-size:0.9rem;line-height:1.2;margin-top:4px;}
+    .exclusion-text{color:rgba(229,9,20,0.75);font-size:0.9rem;font-weight:500;margin-top:8px;font-style:italic;}
+    .muted{color:var(--muted);font-size:0.9rem;line-height:1.2;}
+
+    /* Toggle Switch */
+    .toggle-container{display:flex;align-items:center;gap:10px;margin:10px 0 20px;}
+    .switch{position:relative;display:inline-block;width:56px;height:28px;}
+    .switch input{opacity:0;width:0;height:0;}
+    .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#555;transition:.3s;border-radius:34px;}
+    .slider:before{position:absolute;content:"";height:20px;width:20px;left:4px;bottom:4px;background-color:white;transition:.3s;border-radius:50%;}
+    input:checked + .slider{background-color:var(--accent);}
+    input:checked + .slider:before{transform:translateX(28px);}
+    .toggle-label{color:var(--muted);font-weight:600;font-size:0.95rem;}
+
+    /* --- Expanding details row --- */
+    .details-row td{
+      padding:0;
+      border-top:none;
+      background:#151828;
+    }
+    .details-panel{
+      max-height:0;
+      overflow:hidden;
+      opacity:0;
+      transform-origin:top;
+      transform:scaleY(0.98);
+      transition:
+        max-height 0.25s ease,
+        opacity 0.25s ease,
+        transform 0.25s ease,
+        padding-top 0.25s ease,
+        padding-bottom 0.25s ease;
+      padding:0 18px;
+    }
+    .details-row.open .details-panel{
+      max-height:280px;
+      opacity:1;
+      transform:scaleY(1);
+      padding-top:12px;
+      padding-bottom:18px;
+    }
+
+    .details-inner{
+      display:flex;
+      gap:18px;
+      align-items:flex-start;
+    }
+
+    .details-photo-wrap{
+      flex:0 0 110px;
+      display:flex;
+      justify-content:center;
+    }
+
+    .details-photo{
+      width:100px;
+      height:100px;
+      border-radius:10px;
+      object-fit:cover;
+      background:#222;
+      border:1px solid var(--border);
+    }
+
+    .details-content{
+      flex:1;
+      min-width:0;
+      margin-left:16px; /* keeps text aligned with name column above */
+    }
+
+    .details-heading{
+      font-weight:700;
+      margin-bottom:8px;
+      font-size:0.95rem;
+    }
+
+    .details-text{
+      font-size:0.9rem;
+      color:var(--muted);
+      line-height:1.5;
+      white-space:normal;
+      max-height:2400px;          /* limit height */
+      overflow-y:auto;           /* scrollable area */
+      padding-right:6px;         /* space for scrollbar */
+    }
+
+
+    /* Optional: style scrollbar subtly to match dark theme */
+    .details-text::-webkit-scrollbar {
+      width:6px;
+      }
+    .details-text::-webkit-scrollbar-thumb {
+      background-color:#333;
+      border-radius:4px;
+      }
+
+    .details-text::-webkit-scrollbar-thumb:hover {
+      background-color:#444;
+      }
+    
+    .pager-btn{
+      background:#2a3044;
+      color:#e8e8e8;
+      border:1px solid #2a2f3f;
+      padding:8px 12px;
+      border-radius:10px;
+      font-weight:600;
+      cursor:pointer;
+      min-width:120px;
+    }
+    .pager-btn:disabled{
+      opacity:0.5;
+      cursor:default;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-content">
+    <h1 id="tableHeader">Line of Succession</h1>
+
+    <div class="toggle-container">
+      <label class="switch">
+        <input type="checkbox" id="toggleSwitch" />
+        <span class="slider"></span>
+      </label>
+      <span id="toggleLabel" class="toggle-label">Exclusions Hidden</span>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead><tr id="thead-row"></tr></thead>
+        <tbody id="succession-body"></tbody>
+      </table>
+    </div>
+
+    <p id="status" class="muted" style="padding:10px 2px;"></p>
+
+    <div style="display:flex;justify-content:center;align-items:center;gap:10px;margin-top:12px;">
+      <button id="prevPageBtn" class="pager-btn" style="display:none;">Previous 100</button>
+      <span id="pageInfo" class="muted" style="min-width:160px;text-align:center;"></span>
+      <button id="nextPageBtn" class="pager-btn">Next 100</button>
+    </div>
+  </div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+  const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
+  const SUPABASE_ANON_KEY =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const tbody = document.getElementById('succession-body');
+  const statusEl = document.getElementById('status');
+  const theadRow = document.getElementById('thead-row');
+  const toggleSwitch = document.getElementById('toggleSwitch');
+  const toggleLabel = document.getElementById('toggleLabel');
+  const prevPageBtn = document.getElementById('prevPageBtn');
+  const nextPageBtn = document.getElementById('nextPageBtn');
+  const pageInfoEl = document.getElementById('pageInfo');
+
+  const FALLBACK_IMAGE = "https://i.pinimg.com/736x/3f/3c/f8/3f3cf824ceb39fa5dbd00aa986e25f54.jpg";
+  const safe = v => (v == null || v === '') ? '' : String(v);
+
+  const PAGE_SIZE = 100;
+  let includeExcluded = false;
+  let currentPage = 0;
+  let loading = false;
+  let lastPage = false;
+
+  let openDetailsRow = null;
+  let openPersonRow = null;
+
+  function renderHeader(){
+    theadRow.innerHTML = `
+      <th class="pos">#</th>
+      <th></th>
+      <th>Name</th>
+      <th>Relationship</th>
+      <th>DOB</th>
+    `;
+  }
+
+  function formatExclusion(flag){
+    if(!flag) return '';
+    const f = String(flag).toLowerCase();
+    if (f.includes('rc')) return 'Excluded for being a Roman Catholic';
+    if (f.includes('illeg')) return 'Illegitimate';
+    if (f.includes('duplicate')) return 'Duplicate';
+    return flag;
+  }
+
+  function makeRow(row){
+    const { name, title1, title2, dob, img, exclusion_flag, relationship_to_charles, biography } = row;
+    const imgSrc = img || FALLBACK_IMAGE;
+    const exclusionText = includeExcluded ? formatExclusion(exclusion_flag) : '';
+
+    const tr = document.createElement('tr');
+    tr.classList.add('person-row');
+    tr.dataset.name = safe(name);
+    tr.dataset.img = imgSrc;
+    tr.dataset.bio = safe(biography);
+
+    tr.innerHTML = `
+      <td class="pos">${safe(row.order_excl)}</td>
+      <td></td>
+      <td>
+        <div class="name">${safe(name)}</div>
+        <div class="titles-stack">${safe(title1)}</div>
+        <div class="titles-stack">${safe(title2)}</div>
+        ${exclusionText ? `<div class="exclusion-text">${exclusionText}</div>` : ''}
+      </td>
+      <td><div class="relationship-text">${safe(relationship_to_charles)} of King Charles III</div></td>
+      <td class="muted">${safe(dob)}</td>
+    `;
+    return tr;
+  }
+
+  function appendRows(rows){
+    const frag = document.createDocumentFragment();
+    rows.forEach(r => frag.appendChild(makeRow(r)));
+    tbody.appendChild(frag);
+  }
+
+  function updatePagerUI(fromIndex, rowCount){
+    if (rowCount > 0){
+      const start = fromIndex + 1;
+      const end   = fromIndex + rowCount;
+      statusEl.textContent = `Showing ${start}–${end}`;
+    } else {
+      statusEl.textContent = 'No results';
+    }
+    prevPageBtn.style.display = (currentPage === 0) ? 'none' : 'inline-block';
+    prevPageBtn.disabled = currentPage === 0;
+    nextPageBtn.disabled = lastPage;
+    pageInfoEl.textContent = `Page ${currentPage + 1}`;
+  }
+
+  async function fetchPage(pageIndex = 0){
+    if (loading) return;
+    loading = true;
+    lastPage = false;
+    statusEl.textContent = 'Loading…';
+    tbody.innerHTML = '';
+    openDetailsRow = null;
+    openPersonRow = null;
+
+    try {
+      const from = pageIndex * PAGE_SIZE;
+      const to   = from + PAGE_SIZE - 1;
+
+      let query = supabase
+        .from('qvd_website')
+        .select('order_excl,order_incl,name,title1,title2,dob,img,exclusion_flag,relationship_to_charles,biography');
+
+      if (!includeExcluded){
+        query = query.gt('order_excl', 0).order('order_excl', { ascending: true });
+      } else {
+        query = query.or('order_incl.gt.0,exclusion_flag.not.is.null').order('order_incl', { ascending: true });
+      }
+
+      query = query.range(from, to);
+
+      const { data, error } = await query;
+      if (error){ statusEl.textContent = 'Error: ' + error.message; return; }
+
+      const rows = data || [];
+      appendRows(rows);
+      currentPage = pageIndex;
+      lastPage = rows.length < PAGE_SIZE;
+      updatePagerUI(from, rows.length);
+    } catch (e){
+      statusEl.textContent = 'Error: ' + (e?.message || e);
+    } finally { loading = false; }
+  }
+
+  function closeDetails(){
+    if (!openDetailsRow) return;
+    const rowToRemove = openDetailsRow;
+    rowToRemove.classList.remove('open');
+    openDetailsRow = null;
+    openPersonRow = null;
+    const panel = rowToRemove.querySelector('.details-panel');
+    if (!panel){ rowToRemove.remove(); return; }
+    const onEnd = e => {
+      if (e.propertyName === 'max-height'){
+        rowToRemove.removeEventListener('transitionend', onEnd);
+        rowToRemove.remove();
+      }
+    };
+    rowToRemove.addEventListener('transitionend', onEnd);
+  }
+
+  function openDetailsForRow(personRow){
+    const name = personRow.dataset.name || 'Unknown';
+    const imgSrc = personRow.dataset.img || FALLBACK_IMAGE;
+    const bio = personRow.dataset.bio || 'No biography available.';
+
+    if (openPersonRow === personRow){ closeDetails(); return; }
+    if (openDetailsRow){ closeDetails(); }
+
+    const detailsRow = document.createElement('tr');
+    detailsRow.classList.add('details-row');
+    detailsRow.innerHTML = `
+      <td colspan="5">
+        <div class="details-panel">
+          <div class="details-inner">
+            <div class="details-photo-wrap">
+              <img class="details-photo" alt="${safe(name)}" src="${imgSrc}" onerror="this.src='${FALLBACK_IMAGE}'" />
+            </div>
+            <div class="details-content">
+              <div class="details-heading">${safe(name)}</div>
+              <div class="details-text">${safe(bio)}</div>
+            </div>
+          </div>
+        </div>
+      </td>
+    `;
+    personRow.parentNode.insertBefore(detailsRow, personRow.nextSibling);
+    requestAnimationFrame(() => { detailsRow.classList.add('open'); });
+    openDetailsRow = detailsRow;
+    openPersonRow = personRow;
+  }
+
+  tbody.addEventListener('click', e => {
+    const personRow = e.target.closest('tr.person-row');
+    if (!personRow) return;
+    e.stopPropagation();
+    openDetailsForRow(personRow);
+  });
+
+  document.addEventListener('click', e => {
+    if (!openDetailsRow) return;
+    if (e.target.closest('.details-panel')) return;
+    if (e.target.closest('tr.person-row')) return;
+    closeDetails();
+  });
+
+  toggleSwitch.addEventListener('change', () => {
+    includeExcluded = toggleSwitch.checked;
+    toggleLabel.textContent = includeExcluded ? 'Exclusions Displayed' : 'Exclusions Hidden';
+    currentPage = 0;
+    fetchPage(0);
+  });
+
+  prevPageBtn.addEventListener('click', () => {
+    if (currentPage > 0 && !loading){ fetchPage(currentPage - 1); }
+  });
+  nextPageBtn.addEventListener('click', () => {
+    if (!lastPage && !loading){ fetchPage(currentPage + 1); }
+  });
+
+  toggleSwitch.checked = false;
+  toggleLabel.textContent = 'Exclusions Hidden';
+  renderHeader();
+  fetchPage(0);
+</script>
+</body>
+</html>
