@@ -105,8 +105,25 @@
       color:var(--muted);
       line-height:1.5;
       white-space:normal;
+      max-height:120px;          /* limit height */
+      overflow-y:auto;           /* scrollable area */
+      padding-right:6px;         /* space for scrollbar */
     }
 
+
+    /* Optional: style scrollbar subtly to match dark theme */
+    .details-text::-webkit-scrollbar {
+      width:6px;
+      }
+    .details-text::-webkit-scrollbar-thumb {
+      background-color:#333;
+      border-radius:4px;
+      }
+
+    .details-text::-webkit-scrollbar-thumb:hover {
+      background-color:#444;
+      }
+    
     .pager-btn{
       background:#2a3044;
       color:#e8e8e8;
