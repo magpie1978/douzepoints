@@ -12,7 +12,7 @@
     --text:#e8e8e8;
     --muted:#bdbdbd;
     --glass:#121728;
-    --header-h:112px;
+    --header-h:180px; /* taller header to fit text + controls */
   }
   * { box-sizing: border-box; }
   html, body { height: 100%; }
@@ -34,20 +34,20 @@
     z-index: 300;
     height: var(--header-h);
   }
-  .header-left { max-width: 60%; }
+  .header-left { max-width: 70%; }
   .header-title { margin: 0 0 8px 0; font-size: 2rem; font-weight: 800; letter-spacing: .2px; color: var(--text); }
   .header-desc { margin: 0; color: var(--muted); font-size: .98rem; line-height: 1.45; }
 
-  /* Right side: dropdown + search bar back where they were */
-  .header-right {
+  /* Controls directly below the paragraph text */
+  .header-controls {
     display:flex;
     gap:10px;
-    flex: 0 0 520px;
-    max-width: 100%;
-    align-items: stretch;
+    margin-top:20px; /* space between text and dropdown/search */
+    flex-wrap:wrap;
+    max-width:100%;
   }
 
-  /* Top-right nav buttons (from qvd_succession.html), absolutely positioned so they don't move the filters */
+  /* Top-right nav buttons (from qvd_succession.html) */
   .header-buttons{
     position:absolute;
     top:16px;
@@ -249,16 +249,18 @@
         Explore the network of European royalty descended from Queen Victoria.
         Use the search to locate individuals and navigate through generations.
       </p>
-    </div>
-    <div class="header-right">
-      <div id="branchwrap" title="Filter by branch (children of Queen Victoria)">
-        <select id="branchSelect" aria-label="Select a branch (children of Queen Victoria)">
-          <option value="">— Select a branch —</option>
-        </select>
-      </div>
-      <div id="searchwrap">
-        <input id="search" type="text" placeholder="Search by name or title…" autocomplete="off" aria-label="Search people by name or title" />
-        <div id="suggest" role="listbox" aria-label="Search suggestions"></div>
+
+      <!-- DROPDOWN + SEARCH NOW BELOW THE TEXT -->
+      <div class="header-controls">
+        <div id="branchwrap" title="Filter by branch (children of Queen Victoria)">
+          <select id="branchSelect" aria-label="Select a branch (children of Queen Victoria)">
+            <option value="">— Select a branch —</option>
+          </select>
+        </div>
+        <div id="searchwrap">
+          <input id="search" type="text" placeholder="Search by name or title…" autocomplete="off" aria-label="Search people by name or title" />
+          <div id="suggest" role="listbox" aria-label="Search suggestions"></div>
+        </div>
       </div>
     </div>
 
@@ -458,7 +460,7 @@ function updateBusGroup(key, group){
   var allBelow = minTop > mid.y, allAbove = maxBot < mid.y;
   var busY;
   if(allBelow){ busY=minTop-GAP_ABOVE; if(busY<mid.y+MIN_STEM) busY=mid.y+MIN_STEM; }
-  else if(allAbove){ busY=maxBot+GAP_BELOW; if(busY>mid.y-MIN_STEM) busY=mid.y-MIN_STEM; }
+  else if(allAbove){ busY=maxBot+GAP_BELOW; if(busY>mid.y-MIN_STEM) busY=mid.y-MIN-STEM; }
   else{ busY=mid.y+MIN_STEM; }
 
   var minX=Math.min.apply(Math,xs), maxX=Math.max.apply(Math,xs);
