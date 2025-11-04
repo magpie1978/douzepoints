@@ -307,7 +307,7 @@
         <input type="checkbox" id="toggleSwitch" />
         <span class="slider"></span>
       </label>
-      <span id="toggleLabel" class="toggle-label">Exclusions Hidden</span>
+      <span id="toggleLabel" class="toggle-label">Hide Excluded People</span>
     </div>
 
     <div class="table-wrapper">
@@ -516,7 +516,7 @@
 
   toggleSwitch.addEventListener('change', () => {
     includeExcluded = toggleSwitch.checked;
-    toggleLabel.textContent = includeExcluded ? 'Exclusions Displayed' : 'Exclusions Hidden';
+    toggleLabel.textContent = includeExcluded ? 'Shoe Excluded People' : 'Hide Excluded People';
     currentPage = 0;
     fetchPage(0);
   });
@@ -529,7 +529,7 @@
   });
 
   toggleSwitch.checked = false;
-  toggleLabel.textContent = 'Exclusions Hidden';
+  toggleLabel.textContent = 'Hide Excluded People';
   renderHeader();
   fetchPage(0);
 </script>
