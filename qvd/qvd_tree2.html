@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Queen Victoria's Descendants</title>
+<style>
+  :root {
+    --bg:#0f111a;
+    --panel:#1c1f2b;
+    --accent:#cccccc;
+    --text:#e8e8e8;
+    --muted:#bdbdbd;
+    --glass:#121728;
+    --header-h:160px; /* increased height to fit new layout */
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Raleway', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  }
+
+  header {
+    position: fixed; top: 0; left: 0; right: 0;
+    display: flex; flex-direction: column;
+    padding: 22px 34px;
+    background: #141826;
+    box-shadow: 0 6px 14px rgba(0,0,0,.45);
+    z-index: 300;
+    height: var(--header-h);
+  }
+  .header-left { max-width: 60%; }
+  .header-title { margin: 0 0 8px 0; font-size: 2rem; font-weight: 800; letter-spacing: .2px; color: var(--text); }
+  .header-desc { margin: 0; color: var(--muted); font-size: .98rem; line-height: 1.45; }
+
+  /* Container for the dropdown and search below text */
+  .header-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px; /* adds vertical spacing */
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+
+  #branchwrap{
+    min-width: 240px;
+    background: rgba(20,24,38,.85);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:12px;
+    padding:6px 10px;
+    box-shadow:0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.08) inset;
+    display:flex; align-items:center;
+  }
+  #branchSelect{
+    width:100%; border:0; outline:none; background:transparent;
+    color:var(--text); font-size:14px; line-height:22px;
+  }
+
+  #searchwrap{
+    position:relative;
+    background: rgba(20,24,38,.85);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:12px;
+    padding:8px 12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.08) inset;
+    backdrop-filter: blur(4px);
+    flex:1;
+  }
+  #search{
+    width:100%; border:0; outline:none; background:transparent;
+    color:var(--text); font-size:16px; line-height:22px;
+  }
+  #search::placeholder{ color:#9aa0b4; }
+
+  #suggest{
+    position:absolute; top:100%; left:0; right:0; margin-top:6px;
+    background:var(--glass);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:12px; overflow:hidden; display:none;
+    z-index: 310;
+    box-shadow:0 16px 40px rgba(0,0,0,.45);
+  }
+  #suggest.show{ display:block; }
+  .sug{ display:flex; align-items:center; gap:10px; padding:10px 12px; cursor:pointer; }
+  .sug:hover, .sug.active{ background:#1a1e2c; }
+  .s-name{ font-weight:700; }
+  .s-title{ color:var(--muted); font-size:12px; }
+
+  #scroll { position:absolute; left:0; right:0; bottom:0; top:var(--header-h); overflow: auto; }
+  #world  { position:relative; width:2400px; height:1600px; --gs:40px; }
+
+  /* ...rest of your CSS unchanged ... */
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1 class="header-title">Queen Victoria's Descendants</h1>
+    <p class="header-desc">
+      Explore the network of European royalty descended from Queen Victoria.
+      Use the search to locate individuals and navigate through generations.
+    </p>
+    <div class="header-controls">
+      <div id="branchwrap" title="Filter by branch (children of Queen Victoria)">
+        <select id="branchSelect" aria-label="Select a branch (children of Queen Victoria)">
+          <option value="">— Select a branch —</option>
+        </select>
+      </div>
+      <div id="searchwrap">
+        <input id="search" type="text" placeholder="Search by name or title…" autocomplete="off" aria-label="Search people by name or title" />
+        <div id="suggest" role="listbox" aria-label="Search suggestions"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Everything below remains unchanged -->
+<div id="scroll" aria-live="polite">
+  <div id="world">
+    <svg id="connector" viewBox="0 0 2400 1600" preserveAspectRatio="none"></svg>
+    <div id="cards-root"></div>
+  </div>
+</div>
+
+<div id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
+  <div class="drawer-content">
+    <h2 id="drawerTitle">Details</h2>
+    <div class="drawer-body"></div>
+  </div>
+</div>
+<div id="backdrop" aria-hidden="true"></div>
+
+<script type="module">
+  /* your existing JavaScript is unchanged */
+</script>
+</body>
+</html>
