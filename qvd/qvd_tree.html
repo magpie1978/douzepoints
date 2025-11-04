@@ -184,6 +184,15 @@
   .fact-label { color: var(--muted); text-transform: lowercase; letter-spacing: .2px; }
   .fact-value { color: var(--text); }
 
+  /* Biography block */
+  .drawer-bio {
+    margin-top: 16px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--muted);
+    white-space: pre-wrap; /* preserves line breaks from the biography field */
+  }
+
   #backdrop {
     position: fixed;
     top: var(--header-h);
@@ -274,7 +283,6 @@ function openDrawerFor(id) {
   const n = state.nodes[id];
   if (!n) return;
 
-  // Build drawer content
   const imgSrc = n.imgSrc || FALLBACK_IMAGE;
   const safe = (v) => (v == null || v === '') ? '—' : String(v);
 
@@ -298,6 +306,8 @@ function openDrawerFor(id) {
         <span class="fact-value">${safe(n.dod)}</span>
       </div>
     </div>
+
+    <div class="drawer-bio">${safe(n.biography)}</div>
   `;
   drawerBody().innerHTML = html;
 
@@ -502,7 +512,7 @@ function centerOnElement(el){
   const rect = el.getBoundingClientRect();
   const wrect = world.getBoundingClientRect();
   const xInWorld = rect.left - wrect.left + rect.width/2;
-  const yInWorld = rect.top  - wr.top  + rect.height/2; // (typo fix below)
+  const yInWorld = rect.top  - wr.top  + rect.height/2; // (typo left as-is; unused)
 }
 function focusPerson(id){
   const el = document.getElementById(id);
@@ -602,6 +612,7 @@ function buildStateFromRows(rows){
       title2: r.title2 || '',
       dob: r.dob || '',
       dod: r.dod || '',
+      biography: r.biography || '',   // <-- include biography from qvd_website
       imgSrc: r.img || r.image_url || '',
       x: toNum(r.x)!=null ? toNum(r.x) : 100,
       y: toNum(r.y)!=null ? toNum(r.y) : 100,
@@ -690,7 +701,6 @@ async function loadFromSupabase(){
 
   populateBranchSelect(rowsAll, lastSelectedBranch);
 
-  // Apply default ONCE
   if (!didApplyDefault) {
     didApplyDefault = true;
     const choice = branchSelect.value || '1:1';
@@ -726,7 +736,6 @@ function populateBranchSelect(allRows, selectedValue = ''){
 async function applyBranchVisibility(selectedId){
   if (!selectedId) return;
 
-  // remember & persist the choice
   lastSelectedBranch = selectedId;
   localStorage.setItem(BRANCH_PREF_KEY, lastSelectedBranch);
 
@@ -734,7 +743,6 @@ async function applyBranchVisibility(selectedId){
 
   branchSelect.disabled = true;
   try {
-    // 1) NULL ALL (except exemptions)
     {
       const { error } = await tablePositions
         .update({ visible: null })
@@ -743,7 +751,6 @@ async function applyBranchVisibility(selectedId){
       if (error) throw new Error('Failed to clear (NULL) visibility: ' + error.message);
     }
 
-    // 2) Set selected branch to 'visible'
     {
       const { error } = await tablePositions
         .update({ visible: 'visible' })
@@ -751,7 +758,6 @@ async function applyBranchVisibility(selectedId){
       if (error) throw new Error('Failed to set branch visible: ' + error.message);
     }
 
-    // 3) Force exemptions '1' and '1a' to 'visible'
     {
       const { error } = await tablePositions
         .update({ visible: 'visible' })
@@ -759,7 +765,6 @@ async function applyBranchVisibility(selectedId){
       if (error) console.warn('Could not force 1/1a visible:', error);
     }
 
-    // 4) Reload from the VIEW so user sees the change
     await loadFromSupabase();
   } catch (err) {
     alert(err.message || String(err));
@@ -771,7 +776,6 @@ async function applyBranchVisibility(selectedId){
 
 /* ===== Init ===== */
 function init(){
-  /* Turn grid on via JS and set grid size */
   world.classList.add('grid');
   world.style.setProperty('--gs', '40px');
 
