@@ -60,28 +60,28 @@
       padding:0 18px;
     }
     .details-row.open .details-panel{
-      max-height:260px;
+      max-height:280px; /* slightly taller for larger photo */
       opacity:1;
       transform:scaleY(1);
       padding-top:12px;
-      padding-bottom:16px;
+      padding-bottom:18px;
     }
 
     .details-inner{
       display:flex;
-      gap:16px;
+      gap:18px;
       align-items:flex-start;
     }
 
     .details-photo-wrap{
-      flex:0 0 90px;
+      flex:0 0 110px;
       display:flex;
       justify-content:center;
     }
 
     .details-photo{
-      width:80px;
-      height:80px;
+      width:100px;
+      height:100px;
       border-radius:10px;
       object-fit:cover;
       background:#222;
@@ -91,7 +91,7 @@
     .details-content{
       flex:1;
       min-width:0;
-      margin-left:14px; /* Shift text right to align with name column above */
+      margin-left:16px; /* keeps text aligned with name column above */
     }
 
     .details-heading{
@@ -249,7 +249,6 @@
     loading = true;
     lastPage = false;
     statusEl.textContent = 'Loading…';
-
     tbody.innerHTML = '';
     openDetailsRow = null;
     openPersonRow = null;
@@ -257,40 +256,28 @@
     try {
       const from = pageIndex * PAGE_SIZE;
       const to   = from + PAGE_SIZE - 1;
-
       let query = supabase
         .from('qvd_website')
         .select('order_excl,order_incl,name,title1,title2,dob,img,exclusion_flag,relationship_to_charles');
 
       if (!includeExcluded){
-        query = query
-          .gt('order_excl', 0)
-          .order('order_excl', { ascending: true });
+        query = query.gt('order_excl', 0).order('order_excl', { ascending: true });
       } else {
-        query = query
-          .or('order_incl.gt.0,exclusion_flag.not.is.null')
-          .order('order_incl', { ascending: true });
+        query = query.or('order_incl.gt.0,exclusion_flag.not.is.null').order('order_incl', { ascending: true });
       }
 
       query = query.range(from, to);
-
       const { data, error } = await query;
-      if (error){
-        statusEl.textContent = 'Error: ' + error.message;
-        return;
-      }
+      if (error){ statusEl.textContent = 'Error: ' + error.message; return; }
 
       const rows = data || [];
       appendRows(rows);
-
       currentPage = pageIndex;
       lastPage = rows.length < PAGE_SIZE;
       updatePagerUI(from, rows.length);
     } catch (e){
       statusEl.textContent = 'Error: ' + (e?.message || e);
-    } finally {
-      loading = false;
-    }
+    } finally { loading = false; }
   }
 
   function closeDetails(){
@@ -300,11 +287,8 @@
     openDetailsRow = null;
     openPersonRow = null;
     const panel = rowToRemove.querySelector('.details-panel');
-    if (!panel){
-      rowToRemove.remove();
-      return;
-    }
-    const onEnd = (e) => {
+    if (!panel){ rowToRemove.remove(); return; }
+    const onEnd = e => {
       if (e.propertyName === 'max-height'){
         rowToRemove.removeEventListener('transitionend', onEnd);
         rowToRemove.remove();
@@ -345,17 +329,17 @@
     openPersonRow = personRow;
   }
 
-  tbody.addEventListener('click', (event) => {
-    const personRow = event.target.closest('tr.person-row');
+  tbody.addEventListener('click', e => {
+    const personRow = e.target.closest('tr.person-row');
     if (!personRow) return;
-    event.stopPropagation();
+    e.stopPropagation();
     openDetailsForRow(personRow);
   });
 
-  document.addEventListener('click', (event) => {
+  document.addEventListener('click', e => {
     if (!openDetailsRow) return;
-    if (event.target.closest('.details-panel')) return;
-    if (event.target.closest('tr.person-row')) return;
+    if (e.target.closest('.details-panel')) return;
+    if (e.target.closest('tr.person-row')) return;
     closeDetails();
   });
 
@@ -369,7 +353,6 @@
   prevPageBtn.addEventListener('click', () => {
     if (currentPage > 0 && !loading){ fetchPage(currentPage - 1); }
   });
-
   nextPageBtn.addEventListener('click', () => {
     if (!lastPage && !loading){ fetchPage(currentPage + 1); }
   });
