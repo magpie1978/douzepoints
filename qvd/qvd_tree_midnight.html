@@ -225,8 +225,10 @@ header {
   min-width:0;
   padding:18px 22px 24px;
   background: radial-gradient(circle at top, #192246 0, #050814 55%);
-  overflow:hidden;
   position:relative;
+  display:flex;
+  flex-direction:column;
+  min-height:0; /* important so #scroll can shrink and scroll */
 }
 
 .main-heading-row{
