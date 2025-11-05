@@ -202,17 +202,13 @@
 
     /* main content area: dark band like the mockup bottom */
     .main-content{
-      flex:1;
-      min-width:0;
-      padding:22px 26px 32px;
-      background: linear-gradient(to bottom,
-        var(--paper-bg) 0,
-        var(--paper-bg) 4%,
-        var(--ink-soft) 4%,
-        var(--ink-band) 100%);
-      overflow:auto;
-      color:var(--card-bg);
-    }
+  flex:1;
+  min-width:0;
+  padding:22px 26px 32px;
+  background:var(--paper-bg);       /* yellow paper background */
+  overflow:auto;
+  color:var(--ink);                 /* dark text for description */
+}
 
     .main-heading-row{
       display:flex;
@@ -237,7 +233,7 @@
 
 /* --- Table and list appearance --- */
 .table-wrapper{
-  background:var(--paper-bg);          /* warm yellow background behind the list */
+  background:var(--ink-band);      /* dark blue area for the list itself */
   border:2px solid var(--ink);
   border-radius:14px;
   overflow:auto;
