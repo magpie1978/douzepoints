@@ -587,4 +587,3 @@ branchSelect.addEventListener('change', (e)=>{
 });
 
 init();
-</script>
