@@ -214,7 +214,7 @@
     display:grid; grid-template-columns:1fr 2fr;
     width:360px; height:120px;
     background:var(--panel);
-    border:1px solid var(--accent);
+    border:0.8px solid var(--accent);
     border-radius:14px; overflow:hidden;
     user-select:none; cursor:pointer;
     box-shadow: 0 6px 18px rgba(0,0,0,.55), 0 0 0 1px rgba(234,223,175,.18) inset;
@@ -254,11 +254,13 @@
     font-size:1.00rem;
     color:var(--accent);
   }
+
   .title1 {
     font-size:.8rem;
     color:var(--muted);
     margin-top:2px;
   }
+
   .title {
     font-size:.8rem;
     color:var(--muted);
