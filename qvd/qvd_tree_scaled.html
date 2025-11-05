@@ -39,8 +39,10 @@
       <a href="qvd_succession.html" class="header-btn">Line of Succession</a>
       <a href="qvd_tree.html" class="header-btn">Family Tree</a>
     </div>
+    
   </header>
 
+  <!-- Scrollable region for the family tree -->
   <div id="scroll" aria-live="polite">
     <div id="world">
       <svg id="connector" viewBox="0 0 2400 1600" preserveAspectRatio="none"></svg>
@@ -48,12 +50,15 @@
     </div>
   </div>
 
+  <!-- the left-hand side pop-out for biographies -->
   <div id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
     <div class="drawer-content">
       <h2 id="drawerTitle">Details</h2>
       <div class="drawer-body"></div>
     </div>
   </div>
+  
+  <!-- the dim background you click to close the drawer -->
   <div id="backdrop" aria-hidden="true"></div>
 
   <script type="module" src="/qvd_tree_scaled.js"></script>
