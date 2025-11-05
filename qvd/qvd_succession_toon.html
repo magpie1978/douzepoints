@@ -278,10 +278,38 @@ tbody tr:hover td{
   background:#F0E4A4;
   cursor:pointer;
 }
-.name{ color:var(--ink); }
-.titles-stack,
-.relationship-text,
-.muted{ color:var(--muted); }
+/* Table text styling (now blue) */
+.name {
+  font-weight:600;
+  font-size:0.95rem;
+  line-height:1.3;
+  color:var(--ink);               /* deep navy */
+}
+.titles-stack {
+  color:var(--muted);             /* grey-blue secondary */
+  font-size:0.82rem;
+  line-height:1.2;
+  margin-top:3px;
+}
+.relationship-text {
+  color:var(--muted);
+  font-size:0.82rem;
+  line-height:1.2;
+  margin-top:4px;
+}
+.exclusion-text {
+  color:var(--ink-soft);          /* lighter navy accent */
+  font-size:0.82rem;
+  font-weight:500;
+  margin-top:8px;
+  font-style:italic;
+}
+.muted {
+  color:var(--ink-soft);
+  font-size:0.82rem;
+  line-height:1.2;
+}
+
 .exclusion-text{
   color:var(--ink-soft);
   font-style:italic;
