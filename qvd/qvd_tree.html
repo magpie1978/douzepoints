@@ -154,11 +154,17 @@
   .s-title{ color:var(--muted); font-size:12px; }
 
   #scroll {
-    position:absolute; left:0; right:0; bottom:0; top:var(--header-h);
-    overflow: auto;
-  }
+  transform-origin: top left;
+  overflow: auto;
+  position: absolute;
+  left: 0; right: 0; bottom: 0; top: var(--header-h);
+}
+  
   #world  {
     position:relative; width:2400px; height:1600px; --gs:40px;
+    transform: scale(0.8);
+    transform-origin: top left;
+
   }
   #world.grid {
     background-image:
