@@ -232,31 +232,31 @@
     }
 
 /* --- Table and list appearance --- */
+/* Softer blue card on yellow */
 .table-wrapper{
-  background:var(--ink-band);      /* dark blue area for the list itself */
-  border:2px solid var(--ink);
+  background:#1E305A;              /* softer navy, not almost-black */
+  border:1px solid rgba(16,43,82,0.4);
   border-radius:14px;
   overflow:auto;
-  box-shadow:0 18px 35px rgba(0,0,0,0.55);
+  box-shadow:0 12px 24px rgba(0,0,0,0.35);
 }
 
-/* blue background for the list area */
+/* table body uses mid blues, yellow text */
 table{
   width:100%;
   border-collapse:separate;
   border-spacing:0;
   min-width:880px;
   font-size:0.9rem;
-  background:var(--ink-band);          /* dark blue table body */
-  color:var(--card-bg);                /* yellow text */
-  border-radius:12px;
+  background:#243763;              /* main mid-blue */
+  color:var(--card-bg);
 }
 
-/* header row */
+/* header slightly lighter than body */
 thead th{
   position:sticky;
   top:0;
-  background:var(--ink-soft);          /* lighter navy */
+  background:#314672;
   color:var(--card-bg);
   text-align:left;
   padding:10px 14px;
@@ -265,23 +265,19 @@ thead th{
   z-index:1;
 }
 
-/* standard row style */
+/* rows */
 tbody td{
   padding:10px 14px;
-  border-bottom:1px solid rgba(253,242,199,0.2);
+  border-bottom:1px solid rgba(253,242,199,0.15);
   vertical-align:middle;
-  background:var(--ink-band);
+  background:#243763;
   color:var(--card-bg);
 }
-
-/* alternate rows */
 tbody tr:nth-child(even) td{
-  background:#152347; /* slightly lighter navy stripe */
+  background:#2A3F6E;              /* slightly lighter stripe */
 }
-
-/* hover effect */
 tbody tr:hover td{
-  background:#213869;
+  background:#324A7A;
   cursor:pointer;
 }
 
