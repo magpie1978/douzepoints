@@ -41,7 +41,7 @@ header {
   padding: 22px 34px;
 
   /* 🌌 NEW: banner background image */
-  background: url("banner_victoria.png") center center / cover no-repeat;
+  background: url("banner.png") center center / cover no-repeat;
   background-color: rgba(8, 12, 30, 0.65); /* darken for text contrast */
   background-blend-mode: multiply;
   /* optional for subtle parallax: */
