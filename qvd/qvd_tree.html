@@ -941,6 +941,14 @@ function init(){
   loadFromSupabase().catch(err=>{ console.error(err); alert('Load failed: ' + err.message); });
 }
 
+//* cd test */
+document.addEventListener("DOMContentLoaded", () => {
+  const world = document.getElementById("world");
+  world.style.transform = "scale(0.8)";
+  world.style.transformOrigin = "top left";
+});
+
+  
 window.addEventListener('resize', function(){ updateWorldSize(); updateAllEdges(); });
 document.getElementById('scroll').addEventListener('scroll', function(){ updateAllEdges(); });
 branchSelect.addEventListener('change', (e)=>{
