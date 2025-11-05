@@ -112,10 +112,11 @@
     box-shadow:0 10px 30px rgba(0,0,0,.55), 0 0 0 1px rgba(234,223,175,.12) inset;
     display:flex; align-items:center;
   }
-  #branchSelect{
-    width:100%; border:0; outline:none; background:transparent;
-    color:var(--text); font-size:14px; line-height:22px;
-  }
+  
+  #branchSelect {
+  width:100%; border:0; outline:none; background:transparent;
+  color: var(--accent); font-size:14px; line-height:22px;
+}
 
   /* Search */
   #searchwrap{
@@ -128,11 +129,16 @@
     backdrop-filter: blur(4px);
     flex:1;
   }
+  
   #search{
     width:100%; border:0; outline:none; background:transparent;
     color:var(--text); font-size:16px; line-height:22px;
   }
-  #search::placeholder{ color:#8c93b4; }
+  
+  #search::placeholder {
+  color: var(--accent);   /* the yellow tone used sitewide */
+  opacity: 1;             /* ensure browsers don’t fade it */
+}
 
   /* Suggestions dropdown */
   #suggest{
