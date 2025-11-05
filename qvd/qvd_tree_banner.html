@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" /> <!--Says the page uses UTF-8 encoding (so accents, emoji, etc. work correctly).-->
+    <meta name="viewport" content="width=device-width, initial-scale=1" /> <!-- Makes the page scale properly on phones/tablets (responsive design).-->
+    <title>Queen Victoria's Descendants</title>
+
+    <!-- IBM Plex Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+      :root {
+        --header-h: 200px; /* slightly taller banner */
+      }
+
+      body {
+        margin: 0;
+        background: #0c1634;
+        font-family: "IBM Plex Mono", monospace;
+        color: #fdf2c7;
+        overflow: hidden;
+      }
+
+      header {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 24px 36px;
+
+        /* ✨ Panoramic banner background image */
+        background: url('banner.png') center center / cover no-repeat;
+        background-attachment: fixed; /* optional subtle parallax */
+        background-color: rgba(8, 12, 30, 0.55);
+        background-blend-mode: multiply;
+
+        height: var(--header-h);
+        border-bottom: 1px solid rgba(234,223,175,0.45);
+        box-shadow: 0 6px 18px rgba(0,0,0,.75);
+        z-index: 300;
+      }
+
+      .header-left { max-width: 70%; }
+
+      .header-title {
+        margin: 0 0 8px 0;
+        font-size: 2.3rem;
+        font-weight: 800;
+        letter-spacing: .2px;
+        color: #fdf2c7;
+        text-transform: uppercase;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.7);
+      }
+
+      .header-desc {
+        margin: 0;
+        color: #d8cfa0;
+        font-size: 1rem;
+        line-height: 1.45;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+      }
+
+      .header-controls {
+        display:flex;
+        gap:10px;
+        margin-top:20px;
+        flex-wrap:wrap;
+        max-width:100%;
+      }
+
+      #branchwrap {
+        min-width: 240px;
+        background: rgba(12,24,60,.85);
+        border:1px solid rgba(234,223,175,.35);
+        border-radius:12px;
+        padding:6px 10px;
+        box-shadow:0 10px 30px rgba(0,0,0,.55),
+                   0 0 0 1px rgba(234,223,175,.12) inset;
+        display:flex; align-items:center;
+      }
+
+      #branchSelect {
+        width:100%;
+        border:0; outline:none; background:transparent;
+        color:#eadfaf;
+        font-size:14px; line-height:22px;
+      }
+
+      #searchwrap {
+        position:relative;
+        background: rgba(12,24,60,.85);
+        border:1px solid rgba(234,223,175,.35);
+        border-radius:12px;
+        padding:8px 12px;
+        width:200px;
+        box-shadow:0 10px 30px rgba(0,0,0,.55),
+                   0 0 0 1px rgba(234,223,175,.12) inset;
+        backdrop-filter: blur(4px);
+      }
+
+      #search {
+        width:100%;
+        border:0;
+        outline:none;
+        background:transparent;
+        color:#fdf2c7;
+        font-size:16px;
+        line-height:22px;
+      }
+
+      #search::placeholder {
+        color:#eadfaf;
+        opacity:1;
+      }
+
+      #suggest {
+        position:absolute;
+        top:100%; left:0; right:0; margin-top:6px;
+        background:rgba(12,18,40,0.9);
+        border:1px solid rgba(234,223,175,.35);
+        border-radius:12px;
+        overflow:hidden;
+        display:none;
+        z-index:310;
+        box-shadow:0 16px 40px rgba(0,0,0,.65);
+      }
+
+      #suggest.show { display:block; }
+
+      .sug {
+        display:flex;
+        align-items:center;
+        gap:10px;
+        padding:10px 12px;
+        cursor:pointer;
+        color:#fdf2c7;
+      }
+
+      .sug:hover, .sug.active { background:#22305f; }
+
+      .header-buttons {
+        position:absolute;
+        top:16px;
+        right:34px;
+        display:flex;
+        gap:10px;
+      }
+
+      .header-btn {
+        background:transparent;
+        color:#fdf2c7;
+        border:1px solid #eadfaf;
+        padding:8px 14px;
+        border-radius:10px;
+        font-weight:600;
+        cursor:pointer;
+        text-decoration:none;
+        font-size:0.8rem;
+        text-transform:uppercase;
+        letter-spacing:0.13em;
+        transition:background 0.25s ease,
+                   box-shadow 0.25s ease,
+                   color 0.25s ease,
+                   transform 0.15s ease;
+      }
+
+      .header-btn:hover {
+        background:#eadfaf;
+        color:#0c1834;
+        box-shadow:0 0 10px rgba(234,223,175,0.7);
+        transform:translateY(-1px);
+      }
+
+      #scroll {
+        position:absolute;
+        left:0; right:0; bottom:0;
+        top:var(--header-h);
+        overflow:auto;
+      }
+
+      #world {
+        position:relative;
+        width:2400px;
+        height:1600px;
+        transform-origin: top left;
+      }
+
+      #connector {
+        position:absolute; inset:0;
+        width:100%; height:100%;
+        pointer-events:none; z-index:0;
+      }
+
+      #drawer {
+        position: fixed;
+        top: var(--header-h);
+        left: 0;
+        bottom: 0;
+        width: min(520px, 92vw);
+        z-index: 400;
+        transform: translateX(-105%);
+        transition: transform .28s ease;
+        pointer-events: none;
+      }
+
+      #drawer[open] {
+        transform: translateX(0);
+        pointer-events: auto;
+      }
+
+      #backdrop {
+        position: fixed;
+        top: var(--header-h);
+        left: 0; right: 0; bottom: 0;
+        z-index: 350;
+        background: rgba(0,0,0,.55);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .22s ease;
+      }
+
+      #backdrop[data-show="true"] {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    </style>
+
+    <script type="module" src="qvd_tree.js"></script>
+  </head>
+  <body>
+
+    <header>
+      <div class="header-left">
+        <h1 class="header-title">Queen Victoria's Descendants</h1>
+        <p class="header-desc">
+          Explore the network of European royalty descended from Queen Victoria.
+          Use the search to locate individuals and navigate through generations.
+        </p>
+        <br>
+
+        <!-- DROPDOWN + SEARCH BELOW THE TEXT -->
+        <div class="header-controls">
+          <div id="branchwrap" title="Filter by branch (children of Queen Victoria)">
+            <select id="branchSelect" aria-label="Select a branch (children of Queen Victoria)">
+              <option value="">— Select a branch —</option>
+            </select>
+          </div>
+          <div id="searchwrap">
+            <input id="search" type="text" placeholder="Search by name or title…" autocomplete="off" aria-label="Search people by name or title" />
+            <div id="suggest" role="listbox" aria-label="Search suggestions"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top-right nav buttons -->
+      <div class="header-buttons">
+        <a href="qvd_succession.html" class="header-btn">Line of Succession</a>
+        <a href="qvd_tree.html" class="header-btn">Family Tree</a>
+      </div>
+    </header>
+
+    <!-- Scrollable region for the family tree -->
+    <div id="scroll" aria-live="polite">
+      <div id="world">
+        <svg id="connector" viewBox="0 0 2400 1600" preserveAspectRatio="none"></svg>
+        <div id="cards-root"></div>
+      </div>
+    </div>
+
+    <!-- the left-hand side pop-out for biographies -->
+    <div id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
+      <div class="drawer-content">
+        <h2 id="drawerTitle">Details</h2>
+        <div class="drawer-body"></div>
+      </div>
+    </div>
+  
+    <!-- the dim background you click to close the drawer -->
+    <div id="backdrop" aria-hidden="true"></div>
+
+    <script type="module" src="/qvd_tree_scaled.js"></script>
+  </body>
+</html>
