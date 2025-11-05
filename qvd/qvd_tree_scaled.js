@@ -1,18 +1,23 @@
+/* Supapabase setup */
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
+/* loads supabase client library from a CDN */
 const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 window.supabaseClient = supabase;
 
-var CARD_W = 360, CARD_H = 120, PADDING = 200;
+/* constants and constraints */
+var CARD_W = 360, CARD_H = 120, PADDING = 200;  /* defines the size of each person card */
 const WORLD_SCALE = 0.8; // 80% zoom for the tree canvas
 
 const FALLBACK_IMAGE = "https://i.pinimg.com/736x/3f/3c/f8/3f3cf824ceb39fa5dbd00aa986e25f54.jpg";
 
+/* keeps everything in memory - people, parent-child lines, two-parent bus connectors, nextID (used if you ever add nodes) */
 function defaultState(){ return { nodes:{}, edges:[], triEdges:[], nextId:1 }; }
 var state = defaultState();
 
+/*grabs DOM elements - shortcuts to key elements so JS can interact with them */
 var world=document.getElementById('world');
 var svg=document.getElementById('connector');
 var cards=document.getElementById('cards-root');
@@ -26,11 +31,16 @@ const BRANCH_PREF_KEY = 'qv_branch_selected';
 let lastSelectedBranch = localStorage.getItem(BRANCH_PREF_KEY) || '1:1';
 let didApplyDefault = false;
 
+/* drawer (pop-out) references */
 const drawer   = document.getElementById('drawer');
 const backdrop = document.getElementById('backdrop');
 const drawerBody = () => document.querySelector('.drawer-body');
 
+
 /* ===== Drawer helpers ===== */
+
+/* looks for the person in state.nodes[id] and builds HTML for their photo, name, titles, birth, death, biography
+and inserts that HTML into the drawer */
 function openDrawerFor(id) {
   const n = state.nodes[id];
   if (!n) return;
@@ -68,14 +78,19 @@ function openDrawerFor(id) {
   backdrop.setAttribute('data-show', 'true');
   backdrop.setAttribute('aria-hidden', 'false');
 }
+
+/* hides the drawer and the backdrop */
 function closeDrawer() {
   drawer.removeAttribute('open');
   drawer.setAttribute('aria-hidden', 'true');
   backdrop.removeAttribute('data-show');
   backdrop.setAttribute('aria-hidden', 'true');
 }
+
+/* event listeners for drawer close */
 backdrop.addEventListener('click', closeDrawer);
 window.addEventListener('keydown', function(e){ if (e.key === 'Escape' && drawer.hasAttribute('open')) closeDrawer(); });
+
 
 /* ===== World sizing & connectors ===== */
 function updateWorldSize(){
@@ -90,6 +105,7 @@ function updateWorldSize(){
   world.style.height= Math.max(maxY, world.clientHeight) + 'px';
   svg.setAttribute('viewBox','0 0 '+world.clientWidth+' '+world.clientHeight);
 }
+
 function ensureWorldFitsForState(s) {
   var maxX = 1200, maxY = 800;
   Object.keys(s.nodes).forEach(function(id){
@@ -104,6 +120,7 @@ function ensureWorldFitsForState(s) {
   world.style.height = maxY + 'px';
   svg.setAttribute('viewBox', '0 0 ' + maxX + ' ' + maxY);
 }
+
 function clamp0(v){ return Math.max(0, v); }
 
 /* Use world-coordinate data, not DOM geometry */
@@ -131,7 +148,9 @@ function ensureLine(id,cls){
   }
   return l;
 }
+
 function removeById(id){ var el=document.getElementById(id); if(el) el.remove(); }
+
 
 /* ===== Connectors ===== */
 function drawEdge(e){
@@ -141,6 +160,7 @@ function drawEdge(e){
   l.setAttribute('x1',a.cx); l.setAttribute('y1',a.cy);
   l.setAttribute('x2',b.cx); l.setAttribute('y2',b.cy);
 }
+
 function parentsKey(a,b){ var s=[a,b].sort(); return s[0]+'|'+s[1]; }
 function groupTriEdges(){
   var m={};
@@ -155,6 +175,7 @@ function groupTriEdges(){
   });
   return out;
 }
+
 function ensureBusElems(k){ return { stem:ensureLine('stem-'+k,'stem'), bus:ensureLine('bus-'+k,'bus') }; }
 function ensureDropElem(k,cid){ return ensureLine('drop-'+k+'-'+cid,'drop'); }
 function updateBusGroup(key, group){
@@ -207,6 +228,7 @@ function updateBusGroup(key, group){
   svg.querySelectorAll('[id^="drop-'+key+'-"]').forEach(function(d){ if(!keep[d.id]) d.remove(); });
 }
 
+
 /* ===== Partner connectors ===== */
 function partnerKey(a,b){ const s = [a,b].sort(); return 'pt-' + s[0] + '-' + s[1]; }
 function updatePartner(a,b){
@@ -229,6 +251,7 @@ function updateAllPartners(){
     });
   });
 }
+
 function updateAllEdges(){
   svg.querySelectorAll('.edge').forEach(function(e){e.remove();});
   state.edges.forEach(drawEdge);
@@ -236,6 +259,7 @@ function updateAllEdges(){
   const groups=groupTriEdges(); groups.forEach(function(g,k){ updateBusGroup(k,g); });
   updateAllPartners();
 }
+
 
 /* ===== Rendering ===== */
 function renderNode(n){
@@ -304,6 +328,7 @@ function scoreMatch(n, q){
   const posBonus = Math.max(0, 20 - Math.min(idxName<0?99:idxName, idxTitle<0?99:idxTitle));
   return exact || (starts + includes + posBonus);
 }
+
 function search(query){
   const q = norm(query.trim());
   if(!q) return [];
@@ -313,6 +338,7 @@ function search(query){
     .sort((a,b)=>b.score - a.score)
     .slice(0, 10);
 }
+
 function renderSuggestions(items){
   suggestBox.innerHTML = '';
   if(!items.length){ suggestBox.classList.remove('show'); return; }
@@ -330,14 +356,17 @@ function renderSuggestions(items){
   });
   suggestBox.classList.add('show');
 }
+
 function pickFirstSuggestion(){
   const first = suggestBox.querySelector('.sug');
   if(first){ focusPerson(first.dataset.pid); suggestBox.classList.remove('show'); }
 }
+
 searchInput.addEventListener('input', ()=>{
   if(!dataReady) return;
   renderSuggestions( searchInput.value ? search(searchInput.value) : [] );
 });
+
 searchInput.addEventListener('keydown', (e)=>{
   if(e.key==='Enter'){
     e.preventDefault();
@@ -365,6 +394,7 @@ searchInput.addEventListener('keydown', (e)=>{
   }
 });
 
+
 /* ===== Supabase data loading (READ from view) ===== */
 function toNum(v){ const n=Number(v); return isFinite(n)?n:null; }
 function toBool(v){
@@ -372,19 +402,23 @@ function toBool(v){
   const s=String(v||'').trim().toLowerCase();
   return s==='true'||s==='1'||s==='yes'||s==='y';
 }
+
 function normKey(s){
   return (s||'').toString().toLowerCase()
     .normalize('NFKD').replace(/[\u0300-\u036f]/g,'')
     .replace(/\s+/g,' ').trim();
 }
+
 function parsePartnerTokens(val){
   if (Array.isArray(val)) {
     return val.map(v=> (typeof v === 'string') ? v : (v && typeof v === 'object' ? (v.id || v.name || '') : '')).filter(Boolean);
   }
+  
   if (val === null || val === undefined) return [];
   const s = String(val).trim(); if (!s) return [];
   return s.split(/[;,]/).map(t => t.trim()).filter(Boolean);
 }
+
 function buildStateFromRows(rows){
   const nodes={};
   const filtered = rows.filter(r => typeof r.visible === 'boolean'
@@ -466,6 +500,7 @@ function buildStateFromRows(rows){
   return { nodes, edges, triEdges, nextId:maxN+1 };
 }
 
+
 /* Read from VIEW */
 async function fetchRowsFromView({ onlyVisible = true } = {}){
   let query = supabase.from('qvd_website').select('*');
@@ -475,6 +510,7 @@ async function fetchRowsFromView({ onlyVisible = true } = {}){
   if (error) throw error;
   return data ?? [];
 }
+
 
 /* Load + build + render. Populate dropdown from ALL rows (view) */
 async function loadFromSupabase(){
@@ -499,6 +535,7 @@ async function loadFromSupabase(){
   }
 }
 
+
 /* Populate branch dropdown with exactly 1:1 .. 1:9 */
 function populateBranchSelect(allRows, selectedValue = ''){
   const CHILD_REGEX = /^1:[1-9]$/;
@@ -520,6 +557,7 @@ function populateBranchSelect(allRows, selectedValue = ''){
     branchSelect.value = desired;
   }
 }
+
 
 /* ===== Apply branch visibility (WRITE to TABLE qvd_tree_positions) ===== */
 async function applyBranchVisibility(selectedId){
@@ -562,6 +600,7 @@ async function applyBranchVisibility(selectedId){
     branchSelect.value = lastSelectedBranch;
   }
 }
+
 
 /* ===== Init ===== */
 function init(){
