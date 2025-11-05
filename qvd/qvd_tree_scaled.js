@@ -303,20 +303,27 @@ function focusPerson(id){
   const el = document.getElementById(id);
   if (!n || !el) return;
 
+  // Centre of the card in "world" coordinates
   const xCenterWorld = n.x + CARD_W / 2;
   const yCenterWorld = n.y + CARD_H / 2;
 
-  const visibleWorldWidth  = scrollEl.clientWidth  / WORLD_SCALE;
-  const visibleWorldHeight = scrollEl.clientHeight / WORLD_SCALE;
+  // The scroll viewport size is already in the same coordinate system
+  // that scrollLeft/scrollTop use, so we DO NOT adjust for WORLD_SCALE here.
+  const visibleWidth  = scrollEl.clientWidth;
+  const visibleHeight = scrollEl.clientHeight;
 
-  const targetLeft = clamp0(xCenterWorld - visibleWorldWidth  / 2);
-  const targetTop  = clamp0(yCenterWorld - visibleWorldHeight / 2);
+  const targetLeft = clamp0(xCenterWorld - visibleWidth  / 2);
+  const targetTop  = clamp0(yCenterWorld - visibleHeight / 2);
 
   scrollEl.scrollTo({ left: targetLeft, top: targetTop, behavior: 'smooth' });
 
-  el.classList.remove('focus-flash'); void el.offsetWidth; el.classList.add('focus-flash');
-  el.focus({preventScroll:true});
+  // Little highlight flash + keyboard focus
+  el.classList.remove('focus-flash');
+  void el.offsetWidth; // forces reflow so the animation can restart
+  el.classList.add('focus-flash');
+  el.focus({ preventScroll: true });
 }
+
 
 function scoreMatch(n, q){
   const name = norm(n.name), title = norm(n.title);
