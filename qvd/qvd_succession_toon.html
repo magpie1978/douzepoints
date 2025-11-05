@@ -12,9 +12,7 @@
       --paper-soft: #F5E7BA;
       --ink:        #102B52;   /* deep navy */
       --ink-soft:   #1A2744;   /* lighter navy */
-      --ink-band:   #0B1631;   /* darkest band */
       --muted:      #5B656C;   /* grey-blue text */
-      --hatch:      #B7B19A;   /* hatch / divider */
       --card-bg:    #FFF8D9;
       --border-soft:#D1C7A3;
       --header-h:   130px;
@@ -33,7 +31,7 @@
       flex-direction:column;
     }
 
-    /* ---- Fixed header (TOON-style) ---- */
+    /* ---- Header ---- */
     header {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -49,12 +47,14 @@
       height: var(--header-h);
       border-bottom: 2px solid var(--ink);
     }
+
     .header-left {
       max-width: 70%;
       display:flex;
       flex-direction:column;
       gap:8px;
     }
+
     .header-title {
       margin: 0;
       font-size: 1.9rem;
@@ -62,6 +62,7 @@
       letter-spacing: .09em;
       text-transform: uppercase;
     }
+
     .header-desc {
       margin: 0;
       color: var(--muted);
@@ -99,12 +100,12 @@
       transform:translateY(-1px);
     }
 
-    /* ---- Main layout: sidebar + content ---- */
+    /* ---- Layout ---- */
     .page-shell{
       display:flex;
       flex:1;
       margin-top:var(--header-h);
-      min-height:0; /* for flex scrolling */
+      min-height:0;
     }
 
     .sidebar{
@@ -144,7 +145,7 @@
       border:2px solid var(--ink);
     }
 
-    /* Toggle block in sidebar */
+    /* Toggle */
     .toggle-container{
       display:flex;
       align-items:center;
@@ -170,7 +171,6 @@
       display:inline-block;
       width:52px;
       height:26px;
-      flex-shrink:0;
     }
     .switch input{opacity:0;width:0;height:0;}
     .slider{
@@ -180,7 +180,6 @@
       background-color:#C6BE9C;
       transition:.3s;
       border-radius:34px;
-      box-shadow:0 0 0 1px rgba(0,0,0,0.25);
     }
     .slider:before{
       position:absolute;
@@ -192,203 +191,130 @@
       background-color:var(--paper-bg);
       transition:.3s;
       border-radius:50%;
-      box-shadow:0 1px 3px rgba(0,0,0,0.4);
     }
     input:checked + .slider{
       background:linear-gradient(120deg, #F7E29C, #F2CF5C);
-      box-shadow:0 0 0 1px rgba(0,0,0,0.3);
     }
     input:checked + .slider:before{transform:translateX(24px);}
 
-    /* main content area: dark band like the mockup bottom */
+    /* ---- Main Content ---- */
     .main-content{
-  flex:1;
-  min-width:0;
-  padding:22px 26px 32px;
-  background:var(--paper-bg);       /* yellow paper background */
-  overflow:auto;
-  color:var(--ink);                 /* dark text for description */
-}
+      flex:1;
+      min-width:0;
+      padding:22px 26px 32px;
+      background:var(--paper-bg);
+      overflow:auto;
+      color:var(--ink);
+    }
 
     .main-heading-row{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
       margin-bottom:12px;
-      gap:10px;
-      color:var(--card-bg);
+      color:var(--ink);
     }
+
     .main-heading{
       font-size:1.05rem;
       font-weight:600;
-      margin:0;
       text-transform:uppercase;
       letter-spacing:0.12em;
     }
+
     .main-subheading{
       font-size:0.8rem;
-      color:#D9D0AC;
-      margin:0;
+      color:var(--muted);
     }
 
-/* --- Table and list appearance --- */
-.table-wrapper{
-  background:transparent;             /* no dark block */
-  border:1px solid var(--ink);
-  border-radius:14px;
-  overflow:auto;
-  box-shadow:0 8px 18px rgba(0,0,0,0.25);
-}
-
-/* paper table, blue text */
-table{
-  width:100%;
-  border-collapse:separate;
-  border-spacing:0;
-  min-width:880px;
-  font-size:0.9rem;
-  background:var(--card-bg);
-  color:var(--ink);
-}
-
-/* header: blue band */
-thead th{
-  position:sticky;
-  top:0;
-  background:var(--ink);
-  color:var(--card-bg);
-  text-align:left;
-  padding:10px 14px;
-  border-bottom:2px solid var(--ink);
-  font-weight:700;
-  z-index:1;
-}
-
-/* rows: light yellow stripes */
-tbody td{
-  padding:10px 14px;
-  border-bottom:1px solid var(--border-soft);
-  vertical-align:middle;
-  background:var(--card-bg);
-}
-tbody tr:nth-child(even) td{
-  background:var(--paper-soft);
-}
-tbody tr:hover td{
-  background:#F0E4A4;
-  cursor:pointer;
-}
-/* Table text styling (now blue) */
-.name {
-  font-weight:600;
-  font-size:0.95rem;
-  line-height:1.3;
-  color:var(--ink);               /* deep navy */
-}
-.titles-stack {
-  color:var(--muted);             /* grey-blue secondary */
-  font-size:0.82rem;
-  line-height:1.2;
-  margin-top:3px;
-}
-.relationship-text {
-  color:var(--muted);
-  font-size:0.82rem;
-  line-height:1.2;
-  margin-top:4px;
-}
-.exclusion-text {
-  color:var(--ink-soft);          /* lighter navy accent */
-  font-size:0.82rem;
-  font-weight:500;
-  margin-top:8px;
-  font-style:italic;
-}
-.muted {
-  color:var(--ink-soft);
-  font-size:0.82rem;
-  line-height:1.2;
-}
-
-.exclusion-text{
-  color:var(--ink-soft);
-  font-style:italic;
-}
-
-
-/* text details inside */
-.name{
-  font-weight:600;
-  font-size:0.95rem;
-  line-height:1.3;
-  color:var(--card-bg);
-}
-.titles-stack{
-  color:#F6EFAE;
-  font-size:0.82rem;
-  line-height:1.2;
-  margin-top:3px;
-}
-.relationship-text{
-  color:#E8E0A8;
-  font-size:0.82rem;
-  line-height:1.2;
-  margin-top:4px;
-}
-.exclusion-text{
-  color:#FAD955;
-  font-size:0.82rem;
-  font-weight:500;
-  margin-top:8px;
-  font-style:italic;
-}
-.muted{
-  color:#E3DBB1;
-  font-size:0.82rem;
-  line-height:1.2;
-}
-
-/* details panel inside yellow wrapper */
-.details-row td{
-  padding:0;
-  background:var(--paper-bg);
-  color:var(--ink);
-}
-.details-panel{
-  background:var(--paper-bg);
-  border-top:2px solid var(--ink);
-}
-.details-heading{
-  color:var(--ink);
-}
-.details-text{
-  color:var(--muted);
-}
-
-    .details-text::-webkit-scrollbar {
-      width:6px;
-    }
-    .details-text::-webkit-scrollbar-thumb {
-      background-color:#3c4263;
-      border-radius:4px;
-    }
-    .details-text::-webkit-scrollbar-thumb:hover {
-      background-color:#4f5780;
+    /* ---- Table ---- */
+    .table-wrapper{
+      background:transparent;
+      border:1px solid var(--ink);
+      border-radius:14px;
+      overflow:auto;
+      box-shadow:0 8px 18px rgba(0,0,0,0.25);
     }
 
-    /* Pager buttons centered */
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      min-width:880px;
+      font-size:0.9rem;
+      background:var(--card-bg);
+      color:var(--ink);
+    }
+
+    thead th{
+      position:sticky;
+      top:0;
+      background:var(--ink);
+      color:var(--card-bg);
+      text-align:left;
+      padding:10px 14px;
+      border-bottom:2px solid var(--ink);
+      font-weight:700;
+    }
+
+    tbody td{
+      padding:10px 14px;
+      border-bottom:1px solid var(--border-soft);
+      vertical-align:middle;
+      background:var(--card-bg);
+      color:var(--ink);
+    }
+    tbody tr:nth-child(even) td{
+      background:var(--paper-soft);
+    }
+    tbody tr:hover td{
+      background:#F0E4A4;
+      cursor:pointer;
+    }
+
+    /* ---- Table Text ---- */
+    .name {
+      font-weight:600;
+      font-size:0.95rem;
+      line-height:1.3;
+      color:var(--ink);
+    }
+    .titles-stack,
+    .relationship-text,
+    .muted {
+      color:var(--muted);
+      font-size:0.82rem;
+      line-height:1.2;
+    }
+    .exclusion-text {
+      color:var(--ink-soft);
+      font-size:0.82rem;
+      font-style:italic;
+      margin-top:6px;
+    }
+
+    /* ---- Details Panel ---- */
+    .details-row td{
+      padding:0;
+      background:var(--paper-bg);
+      color:var(--ink);
+    }
+    .details-panel{
+      background:var(--paper-bg);
+      border-top:2px solid var(--ink);
+    }
+    .details-heading{color:var(--ink);}
+    .details-text{color:var(--muted);}
+
+    /* Pager */
     .pager-container{
       display:flex;
       justify-content:center;
-      align-items:center;
       gap:20px;
       margin-top:18px;
     }
 
     .pager-btn{
-      background:var(--ink-soft);
+      background:var(--ink);
       color:var(--card-bg);
-      border:1px solid var(--card-bg);
+      border:1px solid var(--ink);
       padding:9px 14px;
       border-radius:999px;
       font-weight:600;
@@ -397,129 +323,103 @@ tbody tr:hover td{
       font-size:0.85rem;
       text-transform:uppercase;
       letter-spacing:0.12em;
-      transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.1s ease;
+      transition:all 0.2s ease;
     }
     .pager-btn:hover:not(:disabled){
       background:var(--card-bg);
-      color:var(--ink-soft);
-      border-color:var(--card-bg);
-      box-shadow:0 0 0 1px var(--card-bg);
-      transform:translateY(-1px);
+      color:var(--ink);
+      box-shadow:0 0 0 1px var(--ink);
     }
     .pager-btn:disabled{
       opacity:0.45;
       cursor:default;
-      box-shadow:none;
-      transform:none;
     }
   </style>
 </head>
 <body>
 
-  <!-- HEADER (TOON-style) -->
-  <header>
-    <div class="header-left">
-      <h1 class="header-title">Line of Succession</h1>
-      <p class="header-desc">
-        Explore the current and historical positions in the line of succession from Queen Victoria to the present day.
+<header>
+  <div class="header-left">
+    <h1 class="header-title">Line of Succession</h1>
+    <p class="header-desc">
+      Explore the current and historical positions in the line of succession from Queen Victoria to the present day.
+    </p>
+  </div>
+  <div class="header-buttons">
+    <a href="qvd_succession.html" class="header-btn">Line of Succession</a>
+    <a href="qvd_tree.html" class="header-btn">Family Tree</a>
+  </div>
+</header>
+
+<div class="page-shell">
+  <aside class="sidebar">
+    <div>
+      <div class="sidebar-title">View</div>
+      <h2 class="sidebar-heading">Succession Explorer</h2>
+      <p class="sidebar-text">
+        Use the toggle below to include or hide historically excluded individuals in the order of succession.
       </p>
     </div>
 
-    <div class="header-buttons">
-      <a href="qvd_succession.html" class="header-btn">Line of Succession</a>
-      <a href="qvd_tree.html" class="header-btn">Family Tree</a>
+    <div class="sidebar-section">
+      <div class="toggle-container">
+        <div class="toggle-label-text">
+          <span class="toggle-label-main" id="toggleLabel">Exclusions Hidden</span>
+          <span class="toggle-label-sub">
+            Show only those currently counted in the formal line.
+          </span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="toggleSwitch" />
+          <span class="slider"></span>
+        </label>
+      </div>
     </div>
-  </header>
+  </aside>
 
-  <!-- PAGE SHELL: sidebar + main content -->
-  <div class="page-shell">
-    <!-- Sidebar with controls -->
-    <aside class="sidebar">
+  <main class="main-content">
+    <div class="main-heading-row">
       <div>
-        <div class="sidebar-title">View</div>
-        <h2 class="sidebar-heading">Succession Explorer</h2>
-        <p class="sidebar-text">
-          Use the toggle below to include or hide historically excluded individuals in the order of succession.
+        <h2 class="main-heading">Order of Succession</h2>
+        <p class="main-subheading">
+          Results are shown 100 at a time. Click a row to see a short biography and portrait.
         </p>
       </div>
+    </div>
 
-      <div class="sidebar-section">
-        <div class="toggle-container">
-          <div class="toggle-label-text">
-            <span class="toggle-label-main" id="toggleLabel">Exclusions Hidden</span>
-            <span class="toggle-label-sub">
-              Show only those currently counted in the formal line.
-            </span>
-          </div>
-          <label class="switch">
-            <input type="checkbox" id="toggleSwitch" />
-            <span class="slider"></span>
-          </label>
-        </div>
-      </div>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr id="thead-row"></tr></thead>
+        <tbody id="succession-body"></tbody>
+      </table>
+    </div>
 
-      <!-- Extra space for future filters if needed -->
-      <div class="sidebar-section">
-        <div class="sidebar-title">Filter Ideas</div>
-        <p class="sidebar-text">
-          Later, you could add filters here (e.g. “Direct descendants only”, “Born after 1950”, or “Currently living”).
-        </p>
-      </div>
-    </aside>
-
-    <!-- Main content: table + pager -->
-    <main class="main-content">
-      <div class="main-heading-row">
-        <div>
-          <h2 class="main-heading">Order of Succession</h2>
-          <p class="main-subheading">
-            Results are shown 100 at a time. Click a row to see a short biography and portrait.
-          </p>
-        </div>
-      </div>
-
-      <div class="table-wrapper">
-        <table>
-          <thead><tr id="thead-row"></tr></thead>
-          <tbody id="succession-body"></tbody>
-        </table>
-      </div>
-
-      <div class="pager-container">
-        <button id="prevPageBtn" class="pager-btn" style="display:none;">Previous 100</button>
-        <button id="nextPageBtn" class="pager-btn">Next 100</button>
-      </div>
-    </main>
-  </div>
+    <div class="pager-container">
+      <button id="prevPageBtn" class="pager-btn" style="display:none;">Previous 100</button>
+      <button id="nextPageBtn" class="pager-btn">Next 100</button>
+    </div>
+  </main>
+</div>
 
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
   const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
   const SUPABASE_ANON_KEY =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
   const tbody = document.getElementById('succession-body');
   const theadRow = document.getElementById('thead-row');
   const toggleSwitch = document.getElementById('toggleSwitch');
   const toggleLabel = document.getElementById('toggleLabel');
   const prevPageBtn = document.getElementById('prevPageBtn');
   const nextPageBtn = document.getElementById('nextPageBtn');
-
   const FALLBACK_IMAGE = "https://i.pinimg.com/736x/3f/3c/f8/3f3cf824ceb39fa5dbd00aa986e25f54.jpg";
   const safe = v => (v == null || v === '') ? '' : String(v);
-
   const PAGE_SIZE = 100;
   let includeExcluded = false;
   let currentPage = 0;
   let loading = false;
   let lastPage = false;
-
   let openDetailsRow = null;
   let openPersonRow = null;
 
@@ -529,8 +429,7 @@ tbody tr:hover td{
       <th></th>
       <th>Name</th>
       <th>Relationship</th>
-      <th>DOB</th>
-    `;
+      <th>DOB</th>`;
   }
 
   function formatExclusion(flag){
@@ -546,13 +445,11 @@ tbody tr:hover td{
     const { name, title1, title2, dob, img, exclusion_flag, relationship_to_charles, biography } = row;
     const imgSrc = img || FALLBACK_IMAGE;
     const exclusionText = includeExcluded ? formatExclusion(exclusion_flag) : '';
-
     const tr = document.createElement('tr');
     tr.classList.add('person-row');
     tr.dataset.name = safe(name);
     tr.dataset.img = imgSrc;
     tr.dataset.bio = safe(biography);
-
     tr.innerHTML = `
       <td class="pos">${safe(row.order_excl)}</td>
       <td></td>
@@ -563,8 +460,7 @@ tbody tr:hover td{
         ${exclusionText ? `<div class="exclusion-text">${exclusionText}</div>` : ''}
       </td>
       <td><div class="relationship-text">${safe(relationship_to_charles)} of King Charles III</div></td>
-      <td class="muted">${safe(dob)}</td>
-    `;
+      <td class="muted">${safe(dob)}</td>`;
     return tr;
   }
 
@@ -581,111 +477,29 @@ tbody tr:hover td{
     tbody.innerHTML = '';
     openDetailsRow = null;
     openPersonRow = null;
-
     try {
       const from = pageIndex * PAGE_SIZE;
       const to   = from + PAGE_SIZE - 1;
-
       let query = supabase
         .from('qvd_website')
         .select('order_excl,order_incl,name,title1,title2,dob,img,exclusion_flag,relationship_to_charles,biography');
-
       if (!includeExcluded){
         query = query.gt('order_excl', 0).order('order_excl', { ascending: true });
       } else {
         query = query.or('order_incl.gt.0,exclusion_flag.not.is.null').order('order_incl', { ascending: true });
       }
-
       query = query.range(from, to);
-
       const { data, error } = await query;
       if (error){ console.error(error); return; }
-
       const rows = data || [];
       appendRows(rows);
       currentPage = pageIndex;
       lastPage = rows.length < PAGE_SIZE;
-
       prevPageBtn.style.display = (currentPage === 0) ? 'none' : 'inline-block';
       prevPageBtn.disabled = currentPage === 0;
       nextPageBtn.disabled = lastPage;
-    } catch (e){
-      console.error(e);
-    } finally { loading = false; }
+    } catch (e){ console.error(e); } finally { loading = false; }
   }
-
-  function closeDetails(){
-    if (!openDetailsRow) return;
-    const rowToRemove = openDetailsRow;
-    rowToRemove.classList.remove('open');
-    openDetailsRow = null;
-    openPersonRow = null;
-
-    const panel = rowToRemove.querySelector('.details-panel');
-    if (!panel){
-      rowToRemove.remove();
-      return;
-    }
-
-    const onEnd = e => {
-      if (e.propertyName === 'max-height'){
-        rowToRemove.removeEventListener('transitionend', onEnd);
-        rowToRemove.remove();
-      }
-    };
-    rowToRemove.addEventListener('transitionend', onEnd);
-  }
-
-  function openDetailsForRow(personRow){
-    const name = personRow.dataset.name || 'Unknown';
-    const imgSrc = personRow.dataset.img || FALLBACK_IMAGE;
-    const bio = personRow.dataset.bio || 'No biography available.';
-
-    if (openPersonRow === personRow){
-      closeDetails();
-      return;
-    }
-    if (openDetailsRow){
-      closeDetails();
-    }
-
-    const detailsRow = document.createElement('tr');
-    detailsRow.classList.add('details-row');
-    detailsRow.innerHTML = `
-      <td colspan="5">
-        <div class="details-panel">
-          <div class="details-inner">
-            <div class="details-photo-wrap">
-              <img class="details-photo" alt="${safe(name)}" src="${imgSrc}" onerror="this.src='${FALLBACK_IMAGE}'" />
-            </div>
-            <div class="details-content">
-              <div class="details-heading">${safe(name)}</div>
-              <div class="details-text">${safe(bio)}</div>
-            </div>
-          </div>
-        </div>
-      </td>
-    `;
-    personRow.parentNode.insertBefore(detailsRow, personRow.nextSibling);
-    requestAnimationFrame(() => detailsRow.classList.add('open'));
-    openDetailsRow = detailsRow;
-    openPersonRow = personRow;
-  }
-
-  tbody.addEventListener('click', e => {
-    const personRow = e.target.closest('tr.person-row');
-    if (!personRow) return;
-    e.stopPropagation();
-    openDetailsForRow(personRow);
-  });
-
-  document.addEventListener('click', e => {
-    if (!openDetailsRow) return;
-    const clickedInDetails = e.target.closest('tr.details-row');
-    const clickedPersonRow = e.target.closest('tr.person-row');
-    if (clickedInDetails || clickedPersonRow) return;
-    closeDetails();
-  });
 
   toggleSwitch.addEventListener('change', () => {
     includeExcluded = toggleSwitch.checked;
@@ -693,14 +507,8 @@ tbody tr:hover td{
     currentPage = 0;
     fetchPage(0);
   });
-
-  prevPageBtn.addEventListener('click', () => {
-    if (currentPage > 0 && !loading){ fetchPage(currentPage - 1); }
-  });
-  nextPageBtn.addEventListener('click', () => {
-    if (!lastPage && !loading){ fetchPage(currentPage + 1); }
-  });
-
+  prevPageBtn.addEventListener('click', () => { if (currentPage > 0 && !loading) fetchPage(currentPage - 1); });
+  nextPageBtn.addEventListener('click', () => { if (!lastPage && !loading) fetchPage(currentPage + 1); });
   toggleSwitch.checked = false;
   toggleLabel.textContent = 'Exclusions Hidden';
   renderHeader();
