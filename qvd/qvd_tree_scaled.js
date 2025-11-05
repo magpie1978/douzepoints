@@ -299,27 +299,20 @@ var dataReady = false;
 function norm(s){ return (s||'').toString().toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,''); }
 
 function focusPerson(id){
-  const n  = state.nodes[id];
   const el = document.getElementById(id);
-  if (!n || !el) return;
+  if (!el) return;
 
-  // Centre of the card in "world" coordinates
-  const xCenterWorld = n.x + CARD_W / 2;
-  const yCenterWorld = n.y + CARD_H / 2;
+  // Let the browser handle all the transforms & scaling:
+  // this scrolls the #scroll container so the card is centred in view.
+  el.scrollIntoView({
+    behavior: 'smooth',
+    block: 'center',
+    inline: 'center'
+  });
 
-  // The scroll viewport size is already in the same coordinate system
-  // that scrollLeft/scrollTop use, so we DO NOT adjust for WORLD_SCALE here.
-  const visibleWidth  = scrollEl.clientWidth;
-  const visibleHeight = scrollEl.clientHeight;
-
-  const targetLeft = clamp0(xCenterWorld - visibleWidth  / 2);
-  const targetTop  = clamp0(yCenterWorld - visibleHeight / 2);
-
-  scrollEl.scrollTo({ left: targetLeft, top: targetTop, behavior: 'smooth' });
-
-  // Little highlight flash + keyboard focus
+  // Highlight flash + keyboard focus
   el.classList.remove('focus-flash');
-  void el.offsetWidth; // forces reflow so the animation can restart
+  void el.offsetWidth;           // restart CSS animation
   el.classList.add('focus-flash');
   el.focus({ preventScroll: true });
 }
