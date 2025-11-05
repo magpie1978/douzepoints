@@ -200,7 +200,7 @@
   /* Common styles for all connector lines */
   .edge,.bus,.stem,.drop,.partner {
     stroke:var(--accent);
-    stroke-width:3;
+    stroke-width:2;
     fill:none;
     vector-effect:non-scaling-stroke;
   }
