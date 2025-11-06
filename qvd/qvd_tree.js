@@ -559,14 +559,14 @@ function populateBranchSelect(allRows, selectedValue = ''){
 }
 
 
-/* ===== Apply branch visibility (WRITE to TABLE qvd_tree_positions) ===== 
+/* ===== Apply branch visibility (WRITE to TABLE tree4) ===== */
 async function applyBranchVisibility(selectedId){
   if (!selectedId) return;
 
   lastSelectedBranch = selectedId;
   localStorage.setItem(BRANCH_PREF_KEY, lastSelectedBranch);
 
-  const tablePositions = supabase.from('qvd_tree_positions');
+  const tablePositions = supabase.from('tree4');
 
   branchSelect.disabled = true;
   try {
@@ -600,8 +600,8 @@ async function applyBranchVisibility(selectedId){
     branchSelect.value = lastSelectedBranch;
   }
 }
-*/
 
+/*
 async function applyBranchVisibility(selectedId){
   if (!selectedId) return;
 
@@ -665,7 +665,7 @@ async function applyBranchVisibility(selectedId){
     branchSelect.value = lastSelectedBranch;
   }
 }
-
+*/
 
 
 /* ===== Init ===== */
