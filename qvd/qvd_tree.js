@@ -559,7 +559,7 @@ function populateBranchSelect(allRows, selectedValue = ''){
 }
 
 
-/* ===== Apply branch visibility (WRITE to TABLE qvd_tree_positions) ===== */
+/* ===== Apply branch visibility (WRITE to TABLE qvd_tree_positions) ===== 
 async function applyBranchVisibility(selectedId){
   if (!selectedId) return;
 
@@ -600,6 +600,72 @@ async function applyBranchVisibility(selectedId){
     branchSelect.value = lastSelectedBranch;
   }
 }
+*/
+
+async function applyBranchVisibility(selectedId){
+  if (!selectedId) return;
+
+  lastSelectedBranch = selectedId;
+  localStorage.setItem(BRANCH_PREF_KEY, lastSelectedBranch);
+
+  const tablePositions = supabase.from('qvd_tree_positions');
+
+  branchSelect.disabled = true;
+  try {
+    // 1) Clear visibility for everyone except 1 and 1a
+    {
+      const { error } = await tablePositions
+        .update({ visible: null })
+        .neq('id', '1')
+        .neq('id', '1a');
+
+      if (error) {
+        console.error('Supabase error while clearing visibility:', error);
+        const detail =
+          (typeof error === 'string')
+            ? error
+            : (error.message || error.details || JSON.stringify(error));
+        throw new Error('Failed to clear (NULL) visibility: ' + detail);
+      }
+    }
+
+    // 2) Mark the selected branch as visible
+    {
+      const { error } = await tablePositions
+        .update({ visible: 'visible' })
+        .like('id', `${selectedId}%`);
+
+      if (error) {
+        console.error('Supabase error while setting branch visible:', error);
+        const detail =
+          (typeof error === 'string')
+            ? error
+            : (error.message || error.details || JSON.stringify(error));
+        throw new Error('Failed to set branch visible: ' + detail);
+      }
+    }
+
+    // 3) Always keep 1 and 1a visible (best-effort only)
+    {
+      const { error } = await tablePositions
+        .update({ visible: 'visible' })
+        .in('id', ['1','1a']);
+
+      if (error) {
+        console.warn('Could not force 1/1a visible:', error);
+      }
+    }
+
+    await loadFromSupabase();
+  } catch (err) {
+    console.error('applyBranchVisibility failed:', err);
+    alert(err.message || String(err));
+  } finally {
+    branchSelect.disabled = false;
+    branchSelect.value = lastSelectedBranch;
+  }
+}
+
 
 
 /* ===== Init ===== */
