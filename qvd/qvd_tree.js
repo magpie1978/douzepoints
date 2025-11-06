@@ -11,7 +11,8 @@ window.supabaseClient = supabase;
 var CARD_W = 360, CARD_H = 120, PADDING = 200;  /* defines the size of each person card */
 const WORLD_SCALE = 0.8; // 80% zoom for the tree canvas
 
-const FALLBACK_IMAGE = "https://i.pinimg.com/736x/3f/3c/f8/3f3cf824ceb39fa5dbd00aa986e25f54.jpg";
+/*const FALLBACK_IMAGE = "https://i.pinimg.com/736x/3f/3c/f8/3f3cf824ceb39fa5dbd00aa986e25f54.jpg";*/
+const FALLBACK_IMAGE = "https://st4.depositphotos.com/9998432/22670/v/450/depositphotos_226700318-stock-illustration-person-gray-photo-placeholder-man.jpg";
 
 /* keeps everything in memory - people, parent-child lines, two-parent bus connectors, nextID (used if you ever add nodes) */
 function defaultState(){ return { nodes:{}, edges:[], triEdges:[], nextId:1 }; }
