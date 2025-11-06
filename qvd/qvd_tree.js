@@ -179,6 +179,8 @@ function groupTriEdges(){
 
 function ensureBusElems(k){ return { stem:ensureLine('stem-'+k,'stem'), bus:ensureLine('bus-'+k,'bus') }; }
 function ensureDropElem(k,cid){ return ensureLine('drop-'+k+'-'+cid,'drop'); }
+
+/*
 function updateBusGroup(key, group){
   var p1=group.parents[0], p2=group.parents[1];
   var R1=cardRect(p1), R2=cardRect(p2); if(!R1||!R2) return;
@@ -227,6 +229,102 @@ function updateBusGroup(key, group){
     keep[drop.id]=true;
   });
   svg.querySelectorAll('[id^="drop-'+key+'-"]').forEach(function(d){ if(!keep[d.id]) d.remove(); });
+}
+*/
+
+function updateBusGroup(key, group){
+  var p1 = group.parents[0], p2 = group.parents[1];
+  var R1 = cardRect(p1), R2 = cardRect(p2);
+  if (!R1 || !R2) return;
+
+  var mid = { x:(R1.cx + R2.cx)/2, y:(R1.cy + R2.cy)/2 };
+
+  // Find all children that currently have cards
+  var children = group.children
+    .map(id => ({ id:id, r:cardRect(id) }))
+    .filter(o => !!o.r);
+  if (children.length === 0) return;
+
+  // X positions of children (top centre)
+  var xs = children.map(c => c.r.topx);
+
+  // Make sure the bus spans across the midpoint between the parents
+  xs.push(mid.x);
+
+  var topYs = children.map(c => c.r.topy);
+  var botYs = children.map(c => c.r.bottomy);
+
+  var GAP_ABOVE = 24, GAP_BELOW = 24, MIN_STEM = 24;
+  var minTop = Math.min.apply(Math, topYs);
+  var maxBot = Math.max.apply(Math, botYs);
+
+  var allBelow = minTop > mid.y;
+  var allAbove = maxBot < mid.y;
+  var busY;
+
+  if (allBelow) {
+    busY = minTop - GAP_ABOVE;
+    if (busY < mid.y + MIN_STEM) busY = mid.y + MIN_STEM;
+  } else if (allAbove) {
+    busY = maxBot + GAP_BELOW;
+    if (busY > mid.y - MIN_STEM) busY = mid.y - MIN_STEM;
+  } else {
+    // children are on both sides or overlapping – just drop below parents
+    busY = mid.y + MIN_STEM;
+  }
+
+  var minX = Math.min.apply(Math, xs);
+  var maxX = Math.max.apply(Math, xs);
+
+  var elems = ensureBusElems(key),
+      stem  = elems.stem,
+      bus   = elems.bus;
+
+  // Vertical stem from parents' midpoint to the bus
+  stem.classList.remove('dotted');
+  stem.setAttribute('x1', mid.x);
+  stem.setAttribute('y1', mid.y);
+  stem.setAttribute('x2', mid.x);
+  stem.setAttribute('y2', busY);
+
+  // Horizontal bus (now guaranteed to pass across the midpoint)
+  bus.setAttribute('x1', minX);
+  bus.setAttribute('y1', busY);
+  bus.setAttribute('x2', maxX);
+  bus.setAttribute('y2', busY);
+
+  var busAbove = busY <= minTop;
+  var busBelow = busY >= maxBot;
+  var keep = {};
+
+  children.forEach(function(c){
+    var r = c.r;
+    var drop = ensureDropElem(key, c.id);
+
+    // Attach to the nearer edge of the child card
+    var anchorY;
+    if (busAbove) {
+      anchorY = r.topy;
+    } else if (busBelow) {
+      anchorY = r.bottomy;
+    } else {
+      anchorY = (Math.abs(busY - r.topy) <= Math.abs(busY - r.bottomy))
+        ? r.topy
+        : r.bottomy;
+    }
+
+    drop.setAttribute('x1', r.topx);
+    drop.setAttribute('y1', busY);
+    drop.setAttribute('x2', r.topx);
+    drop.setAttribute('y2', anchorY);
+
+    keep[drop.id] = true;
+  });
+
+  // Clean up any old drop lines that no longer belong to this group
+  svg.querySelectorAll('[id^="drop-'+key+'-"]').forEach(function(d){
+    if (!keep[d.id]) d.remove();
+  });
 }
 
 
