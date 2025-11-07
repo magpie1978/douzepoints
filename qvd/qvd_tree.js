@@ -779,14 +779,14 @@ function populateBranchSelect(allRows, selectedValue = ''){
 }
 
 
-/* ===== Apply branch visibility (WRITE to TABLE tree4) ===== */
+/* ===== Apply branch visibility (WRITE to TABLE qvd_tree_positions) ===== */
 async function applyBranchVisibility(selectedId){
   if (!selectedId) return;
 
   lastSelectedBranch = selectedId;
   localStorage.setItem(BRANCH_PREF_KEY, lastSelectedBranch);
 
-  const tablePositions = supabase.from('tree4');
+  const tablePositions = supabase.from('qvd_tree_positions');
 
   branchSelect.disabled = true;
   try {
