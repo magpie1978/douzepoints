@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- ===============================================-->
+<!--    HEADER-->
+<!-- ===============================================-->
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- mobile optimistion -->
+    <title>Tax Free Cash</title>
+    <link rel="stylesheet" type="text/css" href="styles.css"> <!-- Link to stylesheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">  <!-- stylesheet for info icon -->
+  </head>
+
+
+
+
+<!-- ===============================================-->
+<!--    BODY-->
+<!-- ===============================================-->
+
+  <body>
+    <div class="form-style-8">
+      <div class="tooltip">
+        <i class="fas fa-info-circle info-icon"></i>
+        <span class="tooltiptext">More information about taking 25% of your pension pot tax-free.</span>
+      </div>
+      <h4><center>Do you want to take 25% of your pension pot, tax free, upon retirement?</center></h4>
+      <select id="taxFreeCashOption">
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+      <br>
+      <center>
+        <button type="button" class="back-btn" onclick="redirectBack()">Back</button>
+        <button type="button" class="add-pot-btn" onclick="saveAndRedirect()">Next</button>
+      </center>
+    </div>
+
+
+<!-- ===============================================-->
+<!--    SCRIPTING-->
+<!-- ===============================================-->
+
+  <script>
+
+  // Retrieve and set the tax-free cash option from localStorage
+  window.onload = function() {
+    const savedTaxFreeCashOption = sessionStorage.getItem('taxFreeCashOption');
+    if (savedTaxFreeCashOption) {
+      document.getElementById("taxFreeCashOption").value = savedTaxFreeCashOption;
+    }
+  };
+
+  // FUNCTION TO SAVE TAX FREE CASH SELECTION AND REDIRECT TO NEXT PAGE
+  function saveAndRedirect() {
+    const taxFreeCashOption = document.getElementById("taxFreeCashOption").value;
+    sessionStorage.setItem('taxFreeCashOption', taxFreeCashOption);
+    window.location.href = "enter-inflation.html";
+  }
+
+
+  // FUNCTION TO SAVE TAX FREE CASH OPTION AND REDIRECT TO PREVIOUS PAGE
+  function redirectBack() {
+    window.location.href = "enter-health.html";
+  }
+
+  </script>
+  </body>
+</html>

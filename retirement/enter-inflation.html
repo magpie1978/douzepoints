@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- ===============================================-->
+<!--    HEADER-->
+<!-- ===============================================-->
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- mobile optimistion -->
+    <title>Inflation Selection</title>
+    <link rel="stylesheet" type="text/css" href="styles.css"> <!-- Link to stylesheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">  <!-- stylesheet for info icon -->
+  </head>
+
+
+
+
+
+<!-- ===============================================-->
+<!--    BODY-->
+<!-- ===============================================-->
+
+  <body>
+    <div class="form-style-8">
+      <div class="tooltip">
+        <i class="fas fa-info-circle info-icon"></i>
+        <span class="tooltiptext">More details about inflation proofing your income.</span>
+      </div>
+
+      <h4><center>Do you want your income to increase in line with inflation once you retire?</center></h4>
+
+      <select id="inflation">
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+      <br>
+      <center>
+        <button type="button" class="back-btn" onclick="redirectBack()">Back</button>
+        <button type="button" class="add-pot-btn" onclick="saveAndRedirect()">Next</button>
+      </center>
+    </div>
+
+
+<!-- ===============================================-->
+<!--    SCRIPTING-->
+<!-- ===============================================-->
+
+  <script>
+
+  // FUNCTION TO SHOW PRVIOUSLY ENTERED INFLATION VALUE IF THE USER RETURNS TO THIS PAGE
+  window.onload = function() {
+    const savedInflation = sessionStorage.getItem('inflation');
+    if (savedInflation) {
+      document.getElementById("inflation").value = savedInflation;
+    }
+  };
+
+
+  // FUNCTION TO SAVE INFLATION VALUE INTO SESSION STORAGE AND REDIRECT TO NEW PAGE
+  function saveAndRedirect() {
+    const inflation = document.getElementById("inflation").value;
+    sessionStorage.setItem('inflation', inflation);
+
+    // REDIRECT TO THE NEXT PAGE
+    if (inflation === "yes") {
+      window.location.href = "enter-inflation-duration.html";
+    } else if (inflation === "no") {
+      window.location.href = "enter-region.html";
+    }
+  }
+
+
+  // FUNCTION TO REDIRECT TO PREVIOUS PAGE
+  function redirectBack() {
+    window.location.href = "enter-tax-free-cash.html";
+  }
+
+  </script>
+</body>
+</html>

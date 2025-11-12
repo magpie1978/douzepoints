@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- ===============================================-->
+<!--    HEADER-->
+<!-- ===============================================-->
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- mobile optimisation -->
+    <title>London Uplift</title>
+    <link rel="stylesheet" type="text/css" href="styles.css"> <!-- link to stylesheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">  <!-- stylesheet for info icon -->
+  </head>
+
+
+
+<!-- ===============================================-->
+<!--    BODY-->
+<!-- ===============================================-->
+
+  <body>
+
+    <div class="form-style-8">
+      <div class="tooltip">
+        <i class="fas fa-info-circle info-icon"></i>
+        <span class="tooltiptext">You'll need more income in retirement if you live in London.</span>
+      </div>
+      <h4>Do you live in Greater London?</h4>
+      <select id="london">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+      <br>
+      <center>
+        <button type="button" class="back-btn" onclick="redirectBack()">Back</button>
+        <button type="button" class="add-pot-btn" onclick="saveAndRedirect()">Next</button>
+      </center>
+    </div>
+
+
+<!-- ===============================================-->
+<!--    SCRIPTING-->
+<!-- ===============================================-->
+
+  <script>
+
+
+  // FUNVTION TO SAVE LONDON SELECTION AND REDIRECT TO NEXT PAGE
+  function saveAndRedirect() {
+    const london = document.getElementById("london").value;
+    sessionStorage.setItem('london', london);
+    window.location.href = "enter-income-required.html";
+  }
+
+
+  // FUNCTION TO REDIRECT TO PREVIOUS PAGE
+  function redirectBack() {
+    window.location.href = "enter-inflation.html";
+  }
+
+
+  // FUNCTION TO SHOW PRVIOUSLY ENTERED LONDON VALUE IF THE USER RETURNS TO THIS PAGE
+  window.onload = function() {
+    const storedLondon = sessionStorage.getItem('london');
+    if (storedLondon) {
+        document.getElementById('london').value = storedLondon;
+    }
+  };
+
+  </script>
+  </body>
+</html>

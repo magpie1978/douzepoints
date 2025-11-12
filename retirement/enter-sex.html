@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- ===============================================-->
+<!--    HEADER-->
+<!-- ===============================================-->
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- mobile optimisation -->
+    <title>Sex</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">  <!-- Link to stylesheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">  <!-- stylesheet for info icon -->
+  </head>
+
+
+
+<!-- ===============================================-->
+<!--    BODY-->
+<!-- ===============================================-->
+  <body>
+    <div class="form-style-8">
+      <div class="tooltip">
+        <i class="fas fa-info-circle info-icon"></i>
+        <span class="tooltiptext">Your sex at birth helps determine how long you'll have in retirement.</span>
+      </div>
+      <h4>Select your sex at birth</h4>
+      <select id="gender">
+        <option value="" disabled selected>Select sex at birth</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+      <br>
+      <center>
+        <button type="button" class="back-btn" onclick="redirectBack()">Back</button>
+        <button type="button" class="add-pot-btn" onclick="saveAndRedirect()">Next</button>
+      </center>
+    </div>
+
+
+<!-- ===============================================-->
+<!--    SCRIPTING-->
+<!-- ===============================================-->
+
+    <script>
+
+    // FUNCTION TO SAVE SELECTED GENDER, THEN REDIRECT TO NEXT PAGE
+    function saveAndRedirect() {
+      const gender = document.getElementById("gender").value;  // save selected gender as a constant
+
+      if (gender) {
+        sessionStorage.setItem('gender', gender);  // if gender is selected, save to session storage
+        window.location.href = "enter-retirement-year.html";  // re-direct to next page
+      } else {
+        alert('Please select a sex at birth.');  // if no gender selected show an alert
+      }
+    }
+
+
+    //  FUNCTION TO REDIRECT TO PREVIOUS PAGE
+    function redirectBack() {
+      window.location.href = "enter-dob.html";
+    }
+
+
+    // FUNCTION TO DISPLAY PREVIOUSLY SELECTED GENDER IF USER COMES BACK TO THIS PAGE
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedGender = sessionStorage.getItem('gender');
+      if (savedGender) {
+        document.getElementById("gender").value = savedGender;
+      }
+    });
+
+
+    </script>
+  </body>
+</html>

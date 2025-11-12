@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- ===============================================-->
+<!--    HEADER-->
+<!-- ===============================================-->
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- mobile optimisation -->
+    <title>Retirement Income</title>
+    <link rel="stylesheet" type="text/css" href="styles.css"> <!-- link to stylesheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">  <!-- stylesheet for info icon -->
+  </head>
+
+
+
+
+
+<!-- ===============================================-->
+<!--    BODY-->
+<!-- ===============================================-->
+
+  <body>
+    <div class="form-style-8">
+	     <div class="tooltip">
+         <i class="fas fa-info-circle info-icon"></i>
+         <span class="tooltiptext">This is how much pre-tax income you want in retirement.</span>
+       </div>
+       <h4>How much income will you need in retirement?</h4>
+       <select id="comfort">
+         <option value="" disabled selected>Select Annual Income</option>
+         <option value="20k">£20,000 / year</option>
+         <option value="30k">£30,000 / year</option>
+         <option value="40k">£40,000 / year</option>
+         <option value="50k">£50,000 / year</option>
+       </select>
+       <br>
+       <center>
+	       <button type="button" class="back-btn" onclick="redirectBack()">Back</button>
+	       <button type="button" class="add-pot-btn" onclick="saveAndRedirect()">Next</button>
+       </center>
+    </div>
+
+
+<!-- ===============================================-->
+<!--    SCRIPTING -->
+<!-- ===============================================-->
+
+  <script>
+
+  // FUNCTION TO SHOW PREVIOUSLY ENTERED COMFORT LEVEL IF THE USER RETURNS TO THIS PAGE
+  document.addEventListener('DOMContentLoaded', function () {
+    const comfortLevel = sessionStorage.getItem('comfortLevel');
+    if (comfortLevel) {
+      document.getElementById('comfort').value = comfortLevel;
+    }
+  });
+
+
+
+  // FUNCTION TO SAVE SELECTED COMFORT LEVEL AND REDIRECT TO NEXT PAGE
+  function saveAndRedirect() {
+    const comfortLevel = document.getElementById("comfort").value;
+    if (comfortLevel === "") {
+      alert("Please select an annual income before proceeding.");
+      return;
+    }
+    sessionStorage.setItem('comfortLevel', comfortLevel);
+    window.location.href = "enter-extra-income.html";
+  }
+
+
+
+  // FUNCTION TO REDIRECT TO PREVIOUS PAGE
+  function redirectBack() {
+    window.location.href = "enter-region.html";
+  }
+
+  </script>
+  </body>
+</html>

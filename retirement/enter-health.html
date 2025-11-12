@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- ===============================================-->
+<!--    HEADER-->
+<!-- ===============================================-->
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- mobile optimization -->
+    <title>Health Status</title>
+    <link rel="stylesheet" type="text/css" href="styles.css"> <!-- Link to stylesheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">  <!-- stylesheet for info icon -->
+  </head>
+
+
+
+<!-- ===============================================-->
+<!--    BODY-->
+<!-- ===============================================-->
+
+  <body>
+
+    <div class="form-style-8">
+      <div class="tooltip">
+        <i class="fas fa-info-circle info-icon"></i>
+        <span class="tooltiptext">We need this to help work out how long you will be retired for.</span>
+      </div>
+      <h4>How would you describe your current health?</h4>
+
+      <form id="optionsForm">
+        <label><input type="radio" name="option" value="0"> I'd rather not say</label>
+        <label><input type="radio" name="option" value="2"> I am in perfect health</label>
+        <label><input type="radio" name="option" value="-2"> I have some minor health issues</label>
+        <label><input type="radio" name="option" value="-4"> I have some moderate health issues</label>
+        <label><input type="radio" name="option" value="-6"> I have some major health issues</label>
+        <br>
+        <br>
+	     </form>
+
+       <center><p id="lifeExpectancyText" style="display: none;"></p></center>
+       <br>
+
+       <center>
+         <button type="button" class="back-btn" onclick="redirectBack()">Back</button>
+         <button type="button" class="add-pot-btn" onclick="saveAndRedirect()">Next</button>
+       </center>
+     </div>
+
+     <br>
+
+
+<!-- ===============================================-->
+<!--    SCRIPTING-->
+<!-- ===============================================-->
+
+    <script>
+
+    // RETRIEVE VALUES FROM SESSION STORAGE
+    const yearOfBirth = sessionStorage.getItem('yearOfBirth');
+    const selectedRetirementYear = sessionStorage.getItem('selectedRetirementYear');
+
+
+    // SET CONSTANTS FOR MALE AND FEMALE LIFE EXPECTANCY
+    const MaleLifeExpectancy = 89;
+    const FemaleLifeExpectancy = 90;
+
+
+    // FUNCTION TO ADJUST LIFE EXPECTANCY BASED ON PREVIOUSLY ENTERED HEALTH STATUS
+    function calculateAdjustedLifeExpectancy() {
+      const selectedOption = parseInt(document.querySelector('input[name="option"]:checked').value);
+      const gender = sessionStorage.getItem('gender');
+      let lifeExpectancy;
+
+      if (gender === 'male') {
+        lifeExpectancy = MaleLifeExpectancy + selectedOption;
+      } else if (gender === 'female') {
+        lifeExpectancy = FemaleLifeExpectancy + selectedOption;
+      }
+
+      return lifeExpectancy;
+    }
+
+
+    // FUNCTION TO DISPLAY LIFE EXPECTANCY AND AMOUNT OF TIME IN RETIREMENT TO USER
+    function displayLifeExpectancyAndRetirementYears() {
+      const adjustedLifeExpectancy = calculateAdjustedLifeExpectancy();
+      const retirementYear = parseInt(sessionStorage.getItem('retirementAge')); // Retrieve year of retirement from local storage
+      const retirementYears = adjustedLifeExpectancy - retirementYear;
+      const deathYear = parseInt(yearOfBirth) + parseInt(adjustedLifeExpectancy)
+      const dateOfBirth = sessionStorage.getItem('dateOfBirth');
+
+      sessionStorage.setItem('retirementYears', retirementYears);
+      sessionStorage.setItem('deathYear', deathYear);
+      sessionStorage.setItem('adjustedLifeExpectancy', adjustedLifeExpectancy);
+
+      const lifeExpectancyText = document.getElementById("lifeExpectancyText");
+
+      const combinedText = "You are expected to live to around " + adjustedLifeExpectancy + " years old,\ntherefore you will be retired for " + retirementYears + " years.";
+      lifeExpectancyText.textContent = combinedText;
+      lifeExpectancyText.style.display = "block";
+    }
+
+
+    // FUNCTION TO SAVE SELECTED HEALTH STATUS AND REDIRECT TO NEXT PAGE
+    function saveAndRedirect() {
+      const selectedOption = document.querySelector('input[name="option"]:checked');
+
+      if (selectedOption) {
+        sessionStorage.setItem('selectedOption', selectedOption.value);
+
+        // CALCULATE AND STORE HEALTH ADJUSTED LIFE EXPECTANCY INTO SESSION STORAGE
+        const adjustedLifeExpectancy = calculateAdjustedLifeExpectancy();
+        sessionStorage.setItem('adjustedLifeExpectancy', adjustedLifeExpectancy);
+
+        // REDIRECT TO NEXT PAGE
+        window.location.href = "enter-tax-free-cash.html";
+
+      } else {
+        alert("Please select an option.");
+      }
+    }
+
+
+    // FUNCTION TO REDIRECT TO PREVIOUS PAGE
+    function redirectBack() {
+      window.location.href = "enter-retirement-year.html";
+    }
+
+
+    // FUNCTION TO SHOW PREVIOUS HEALTH SELECTION IF USER RETURNS TO THIS PAGE
+    function preselectOption() {
+      const selectedOption = sessionStorage.getItem('selectedOption');
+      if (selectedOption) {
+        const radioButton = document.querySelector(`input[name="option"][value="${selectedOption}"]`);
+        if (radioButton) {
+          radioButton.checked = true;
+          displayLifeExpectancyAndRetirementYears(); // IF CHANGE IS MADE - UPADTE THE MESSAGE DISPLAYED TO USER
+        }
+      }
+    }
+
+
+    // CODE TO TRIGGER PRESELECT FUNCTION
+    window.onload = preselectOption;
+
+
+    // EVENT LISTEED ON RADIO BUTTONS TO COPE WITH ANY CHANGES BY USER
+    document.querySelectorAll('input[name="option"]').forEach(function(radio) {
+      radio.addEventListener("change", displayLifeExpectancyAndRetirementYears);
+    });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- ===============================================-->
+<!--    HEADER-->
+<!-- ===============================================-->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- mobile optimization -->
+  <title>Retirement Year</title>
+  <link rel="stylesheet" type="text/css" href="styles.css"> <!-- Link to stylesheet -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">  <!-- stylesheet for info icon -->
+</head>
+
+
+<!-- ===============================================-->
+<!--    BODY-->
+<!-- ===============================================-->
+
+<body>
+  <div class="form-style-8">
+    <div class="tooltip">
+      <i class="fas fa-info-circle info-icon"></i>
+      <span class="tooltiptext">Remember, many sources of income such as State Pension and Private Pension funds might not be available if you retire before 57 years old.</span>
+    </div>
+    <h4>When would you like to retire?</h4>
+    <div class="dropdown-container">
+      <div>
+        <select id="year">
+          <option value="" disabled selected>Select Year</option>
+          <!-- JavaScript will populate the year options -->
+        </select>
+      </div>
+    </div>
+    <br>
+    <p id="retirementAgeText"></p>
+    <br>
+    <center>
+      <button type="button" class="back-btn" onclick="redirectBack()">Back</button>
+      <button type="button" class="add-pot-btn" onclick="saveAndRedirect()">Next</button>
+    </center>
+  </div>
+
+
+  <!-- ===============================================-->
+  <!--    SCRIPTING-->
+  <!-- ===============================================-->
+
+  <script src="script.js"></script>  <!-- Link to JavaScript function repository -->
+
+  <script>
+    // Retrieve constant values from session storage
+    const dateOfBirth = sessionStorage.getItem('dateOfBirth');
+    const yearOfBirth = sessionStorage.getItem('yearOfBirth');
+    const monthOfBirth = sessionStorage.getItem('monthOfBirth');
+    const monthOfBirthName = sessionStorage.getItem('monthOfBirthName');
+    const yearWhen75 = sessionStorage.getItem('yearWhen75');
+    const statePensionAge = sessionStorage.getItem('statePensionAge');
+    const gender = sessionStorage.getItem('gender');
+    const minYear = sessionStorage.getItem('minYear');
+    const maxYear = sessionStorage.getItem('maxYear');
+
+
+    // Populate the retirement year dropdown with options
+    const yearDropdown = document.getElementById("year");
+    for (let year = minYear; year <= maxYear; year++) {
+      const option = document.createElement("option");
+      option.value = year;
+      option.textContent = year;
+      yearDropdown.appendChild(option);
+    }
+
+    // FUNCTION TO DISPLAY PREVIOUSLY SELECTED RETIREMENT YEAR IF USER COMES BACK TO THIS PAGE
+    window.onload = function() {
+      const selectedYear = sessionStorage.getItem('year');
+      if (selectedYear) {
+        yearDropdown.value = selectedYear;
+        displayRetirementAge();
+      }
+    };
+
+    // FUNCTION TO DISPLAY RETIREMENT AGE MESSAGE ON PAGE
+    function displayRetirementAge() {
+      const retirementAge = calculateRetirementAge();  //runs function from /script.js
+      const retirementAgeText = document.getElementById("retirementAgeText");
+      if (retirementAge) {
+        retirementAgeText.textContent = "You will retire at age " + retirementAge;
+      } else {
+        retirementAgeText.textContent = "";
+      }
+    }
+
+    // CALL THE FUNCTION TO DISPLAY RETIREMENT AGE
+    displayRetirementAge();
+
+
+
+    // FUNCTION TO SAVE RETIRMENT YEAR AND NAVIGATE TO NEXT PAGE
+    // TRIGGERED BY HITTING THE "NEXT" BUTTON
+    function saveAndRedirect() {
+      const year = document.getElementById("year").value;
+      if (!year) {
+        alert("Please select a year.");
+        return;
+      }
+      const retirementAge = calculateRetirementAge(); //Call function from scrips.js
+
+      //SET SESSION STORAGE ITEMS
+      sessionStorage.setItem('year', year);  //save selected retirement year into session storage
+      sessionStorage.setItem('retirementAge', retirementAge);  //save calculated retirement age into session storage
+      sessionStorage.setItem('selectedRetirementYear', year); //save selected retirement year into session storage
+
+      // REDIRECT TO NEXT PAGE
+      window.location.href = "enter-health.html";
+    }
+
+    // FUNCTION TO REDIRECT TO PREVIOUS PAGE
+    // TRIGGERED BY HITTING THE "BACK" BUTTON
+    function redirectBack() {
+      window.location.href = "enter-sex.html";
+    }
+
+
+    // EVENT LISTENER THAT COPES WITH A CHANGE IN SELETED RETIREMENT YEAR
+    document.getElementById("year").addEventListener("change", displayRetirementAge);
+  </script>
+</body>
+</html>

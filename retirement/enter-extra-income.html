@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- ===============================================-->
+<!--    HEADER-->
+<!-- ===============================================-->
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- mobile optimisation -->
+    <title>Income Required</title>
+    <link rel="stylesheet" type="text/css" href="styles.css"> <!-- link to stylesheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">  <!-- stylesheet for info icon -->
+
+
+
+
+<!-- ===============================================-->
+<!--    STYLE-->
+<!-- ===============================================-->
+
+    <style>
+      /* CSS to hide <p> tags */
+      p {
+          display: none;
+        }
+    </style>
+  </head>
+
+
+
+<!-- ===============================================-->
+<!--    BODY-->
+<!-- ===============================================-->
+
+  <body>
+
+    <div class="form-style-8">
+      <div class="tooltip">
+        <i class="fas fa-info-circle info-icon"></i>
+          <span class="tooltiptext">You may have some larger purchases in your early retirement.</span>
+      </div>
+
+      <h4>Do you want some extra income in the first few years?</h4>
+
+      <br><br>
+
+      <label for="extraIncome"><h4>Amount</h4></label>
+      <input type="number" id="extraIncome" name="extraIncome" min="0">
+      <br>
+      <label for="extraIncomeYears"><h4>Years</h4></label>
+      <input type="number" id="extraIncomeYears" name="extraIncomeYears" min="0">
+      <br>
+      <br>
+
+      <center>
+        <button type="button" class="back-btn" onclick="redirectBack()">Back</button>
+        <button type="button" class="add-pot-btn" onclick="saveAndRedirect()">Next</button>
+      </center>
+    </div>
+
+
+    <p><b>from new_start.html</b></p>
+    <p>Date of Birth: <span id="dateOfBirth"></span></p>
+    <p>Year of Birth: <span id="yearOfBirth"></span></p>
+    <p>Month of Birth: <span id="monthOfBirth"></span></p>
+    <p>Month of Birth Name: <span id="monthOfBirthName"></span></p>
+    <p>Year When 75: <span id="yearWhen75"></span></p>
+    <p>State Pension Age: <span id="statePensionAge"></span></p>
+    <br>
+    <p><b>from gender_selection.html</b></p>
+    <p>Sex: <span id="gender"></span></p>
+    <br>
+    <p><b>from retirement_month</b></p>
+    <p>Min Retirement Age: <span id="minYear"></span></p>
+    <p>Max Retirement Age: <span id="maxYear"></span></p>
+    <p>RetirementMonth: <span id="month"></span></p>
+    <p>RetirementYear: <span id="year"></span></p>
+    <p>RetirementAge: <span id="retirementAge"></span></p>
+    <p>Chosen Retirement Year: <span id="selectedRetirementYear"></span></p>
+    <br>
+    <p><b>from health_selection.html</b></p>
+    <p>Health: <span id="selectedOption"></span></p>
+    <p>Life Expectancy: <span id="adjustedLifeExpectancy"></span></p>
+    <p>Retirement Length: <span id="retirementYears"></span></p>
+    <p>Death Year: <span id="deathYear"></span></p>
+    <br>
+    <p><b>from tax_free_cash_selection.html</b></p>
+    <p>Tax Free Cash Option: <span id="taxFreeCashOption"></span></p>
+    <br>
+    <p><b>from inflation_selection.html</b></p>
+    <p>Inflation: <span id="inflation"></span></p>
+    <br>
+    <p><b>from inflation_duration.html</b></p>
+    <p>Inflation Duration: <span id="inflationDuration"></span></p>
+    <br>
+    <p><b>from london_selection.html</b></p>
+    <p>London: <span id="london"></span></p>
+    <br>
+    <p><b>from comfort_selection.html</b></p>
+    <p>Comfort: <span id="comfortLevel"></span></p>
+
+
+
+<!-- ===============================================-->
+<!--    SCRIPTING-->
+<!-- ===============================================-->
+
+    <script src="script.js"></script>  <!-- Link to JavaScript function repository -->
+
+    <script>
+
+    // Retrieve selected date of birth from local storage
+    const dateOfBirth = sessionStorage.getItem('dateOfBirth');
+    const yearOfBirth = sessionStorage.getItem('yearOfBirth');
+    const monthOfBirth = sessionStorage.getItem('monthOfBirth');
+    const monthOfBirthName = sessionStorage.getItem('monthOfBirthName');
+    const yearWhen75 = sessionStorage.getItem('yearWhen75');
+    const statePensionAge = sessionStorage.getItem('statePensionAge');
+    const gender = sessionStorage.getItem('gender');
+    const minYear = sessionStorage.getItem('minYear');
+    const maxYear = sessionStorage.getItem('maxYear');
+    const month = sessionStorage.getItem('month');
+    const year = sessionStorage.getItem('year');
+    const retirementAge = sessionStorage.getItem('retirementAge');
+    const selectedRetirementYear = sessionStorage.getItem('selectedRetirementYear');
+    const selectedOption = sessionStorage.getItem('selectedOption');
+    const adjustedLifeExpectancy = sessionStorage.getItem('adjustedLifeExpectancy');
+    const retirementYears = sessionStorage.getItem('retirementYears');
+    const deathYear = sessionStorage.getItem('deathYear');
+    const taxFreeCashOption = sessionStorage.getItem('taxFreeCashOption');
+    const inflation = sessionStorage.getItem('inflation');
+    const inflationDuration = sessionStorage.getItem('inflationDuration');
+    const london = sessionStorage.getItem('london');
+    const comfortLevel = sessionStorage.getItem('comfortLevel');
+
+    // Display constant values on page load
+    document.addEventListener('DOMContentLoaded', function () {
+      displayStoredValues();
+      displayComfortLevelAndIncomeRequired();
+      restoreFormValues();
+    });
+
+
+
+    function displayStoredValues() {
+      document.getElementById("dateOfBirth").textContent = dateOfBirth || "Not set";
+      document.getElementById("yearOfBirth").textContent = yearOfBirth || "Not set";
+      document.getElementById("monthOfBirth").textContent = monthOfBirth || "Not set";
+      document.getElementById("monthOfBirthName").textContent = monthOfBirthName || "Not set";
+      document.getElementById("yearWhen75").textContent = yearWhen75 || "Not set";
+      document.getElementById("statePensionAge").textContent = statePensionAge || "Not set";
+      document.getElementById("gender").textContent = gender || "Not set";
+      document.getElementById("minYear").textContent = minYear || "Not set";
+      document.getElementById("maxYear").textContent = maxYear || "Not set";
+      document.getElementById("month").textContent = month || "Not set";
+      document.getElementById("year").textContent = year || "Not set";
+      document.getElementById("retirementAge").textContent = retirementAge || "Not set";
+      document.getElementById("selectedRetirementYear").textContent = selectedRetirementYear || "Not set";
+      document.getElementById("selectedOption").textContent = selectedOption || "Not set";
+      document.getElementById("adjustedLifeExpectancy").textContent = adjustedLifeExpectancy || "Not set";
+      document.getElementById("retirementYears").textContent = retirementYears || "Not set";
+      document.getElementById("deathYear").textContent = deathYear || "Not set";
+      document.getElementById("taxFreeCashOption").textContent = taxFreeCashOption || "Not set";
+      document.getElementById("inflation").textContent = inflation || "Not set";
+      document.getElementById("inflationDuration").textContent = inflationDuration || "Not set";
+      document.getElementById("london").textContent = london || "Not set";
+      document.getElementById("comfortLevel").textContent = comfortLevel || "Not set";
+    }
+
+
+    const incomeRequired = calculateIncomeRequired();  //runs function from /script.js
+    const adjustedincomeRequired = calculateAdjustedIncomeRequired();  //runs function from /script.js
+
+
+    function calculateAdjustedStatePension() {
+      const StatePensionValue = 11502; // Base state pension value
+      const currentYear = new Date().getFullYear();
+      const yearsToRetirement = statePensionAge - currentYear;
+      let adjustedStatePension = StatePensionValue;
+
+      for (let i = 0; i < yearsToRetirement; i++) {
+        adjustedStatePension *= 1.025; // Apply 2.5% inflation uplift per year
+      }
+
+      return adjustedStatePension;
+    }
+
+
+
+    function displayComfortLevelAndIncomeRequired() {
+      const incomeRequired = calculateIncomeRequired();
+      const adjustedIncomeRequired = calculateAdjustedIncomeRequired();
+      const adjustedStatePension = calculateAdjustedStatePension(); // Calculate adjusted state pension
+
+      sessionStorage.setItem('incomeRequired', incomeRequired.toString());
+      sessionStorage.setItem('adjustedIncomeRequired', adjustedIncomeRequired.toString());
+      sessionStorage.setItem('adjustedStatePension', adjustedStatePension.toString()); // Store adjusted state pension
+    }
+
+
+
+
+    // Function to save extra income and extra income years values and redirect
+    function saveAndRedirect() {
+      const extraIncome = parseInt(document.getElementById("extraIncome").value);
+      const extraIncomeYears = parseInt(document.getElementById("extraIncomeYears").value);
+      let upliftedExtraIncome = extraIncome;
+
+      for (let i = 0; i < extraIncomeYears; i++) {
+        upliftedExtraIncome *= 1.025; // Apply 2.5% uplift per year
+      }
+
+      sessionStorage.setItem('extraIncome', extraIncome.toString());
+      sessionStorage.setItem('upliftedExtraIncome', upliftedExtraIncome.toString());
+      sessionStorage.setItem('extraIncomeYears', extraIncomeYears.toString());
+
+      window.location.href = "income-chart.html";
+    }
+
+
+
+    // Function to restore form values from local storage
+    function restoreFormValues() {
+      let extraIncome = sessionStorage.getItem('extraIncome');
+      let extraIncomeYears = sessionStorage.getItem('extraIncomeYears');
+
+      // If extraIncome is blank or not provided, set it to 0
+      if (!extraIncome || extraIncome.trim() === "") {
+        extraIncome = "0";
+      }
+
+      // If extraIncomeYears is blank or not provided, set it to 0
+      if (!extraIncomeYears || extraIncomeYears.trim() === "") {
+        extraIncomeYears = "0";
+      }
+
+      document.getElementById("extraIncome").value = extraIncome;
+      document.getElementById("extraIncomeYears").value = extraIncomeYears;
+    }
+
+
+
+    function redirectBack() {
+      // Redirect to the output page
+      window.location.href = "enter-income-required.html";
+    }
+
+
+  </script>
+  </body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- ===============================================-->
+<!--    HEADER-->
+<!-- ===============================================-->
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Mobile Optimisation -->
+    <title>Other Regular Income</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">  <!-- Link to Stylesheet -->
+  </head>
+
+
+
+<!-- ===============================================-->
+<!--    BODY-->
+<!-- ===============================================-->
+
+  <body>
+    <br><br>
+
+    <!-- DIVISION TO HOLD PAGE-->
+    <div class="form-style-8">
+
+      <!-- DIVISION TO HOLD TITLE AND 'ADD' BUTTON-->
+      <div class="section">
+        <br><br>
+        <h2>Other Income</h2>
+        <button id="addIncomePotButton" class="add-pot-btn top-right-btn" onclick="openAddIncomePotDialog()">+</button>
+      </div>
+      <!-- END OF DIVISION TO HOLD TITLE AND 'ADD' BUTTON -->
+
+      <br>
+
+      <!-- DIVISION TO HOLD POP-UP DIALOGUE BOX -->
+      <div id="addIncomePotDialog" class="popup">
+        <div class="popup-content">
+          <span class="popup-close" onclick="closeAddIncomePotDialog()">&times;</span>
+          <h3>Add Other Regular Income</h3>
+          <h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit</h4>
+
+          <!-- TABLE TO FORMAT DATA ENTRY FIELDS -->
+          <table>
+            <tr>
+              <td><label for="otherIncomeSource">Source:</label></td>
+              <td>
+                <select id="otherIncomeSource">
+                  <option value="Employment Income">Employment Income</option>
+                  <option value="Rental Income">Rental Income</option>
+                  <option value="Other Income">Other Income</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td><label for="otherIncomeAmount">Amount:</label></td>
+              <td><input type="number" id="otherIncomeAmount" required></td>
+            </tr>
+            <tr>
+              <td><label for="otherIncomeStartYear">Start Year:</label></td>
+              <td>
+                <select id="otherIncomeStartYear" required>
+                  <!-- JavaScript will populate the options dynamically -->
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td><label for="otherIncomeEndYear">End Year:</label></td>
+              <td>
+                <select id="otherIncomeEndYear" required>
+                  <!-- JavaScript will populate the options dynamically -->
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <div class="dialog-buttons">
+                  <button type="button" class="add-pot-btn" onclick="addIncomePot()">Add</button>
+                </div>
+                <br>
+              </td>
+            </tr>
+          </table>
+          <!-- END OF TABLE TO HOLD DATA ENTRY FIELDS -->
+
+        </div>
+        <!-- END OF DIVISION TO HOLD > -->
+
+      </div>
+      <!-- END OF DIVISION TO HOLD ? -->
+
+      <!-- TABLE TO HOLD TEXTUAL DETAILS OF DATA ENTERED IN DIALOGUE BOXES -->
+      <table class="pension-table" style="margin-top: 20px; width: 100%; display: none;">
+        <tbody id="addedPotsTableBody"></tbody>
+      </table>
+
+    </div>
+    <!-- END OF DIVISION TO HOLD PAGE -->
+
+    <center>
+      <button type="button" class="back-btn" onclick="location.href='enter-cash.html'">Back</button>
+      <button type="button" class="add-pot-btn" onclick="location.href='retirement-chart.html'">Next</button>
+    </center>
+
+    <br><br>
+
+
+
+<!-- ===============================================-->
+<!--    SCRIPTNG-->
+<!-- ===============================================-->
+
+  <script src="script.js"></script>  <!-- Link to JavaScript function repository -->
+
+    <script>
+
+      // LISTENER
+      document.addEventListener('DOMContentLoaded', function() {
+        loadInitialIncomeData();
+        calculateAndStoreYearsUntilRetirement(); // Calculate and store years until retirement on load
+        displayIncomePots();
+        checkMaxEntries(); // Check if max entries are reached on page load
+      });
+
+
+      let IncomePots = [];
+
+
+      // FUNCTION TO DISPLAY INCOME POTS IN TEXTUAL WAY
+      function displayIncomePots() {
+        const storedIncomePots = JSON.parse(sessionStorage.getItem('IncomePots')) || [];
+        IncomePots = storedIncomePots;
+
+        const tbody = document.getElementById('addedPotsTableBody');
+        tbody.innerHTML = '';
+        let otherIncomeTotalAmount = 0;
+
+        IncomePots.forEach((pot) => {
+          const otherIncomeSource = pot.otherIncomeSource;
+          const otherIncomeAmount = pot.otherIncomeAmount;
+          const otherIncomeStartYear = pot.otherIncomeStartYear;
+          const otherIncomeEndYear = pot.otherIncomeEndYear;
+          const otherIncomeEstimatedValueAtRetirement = pot.otherIncomeEstimatedValueAtRetirement;
+
+          otherIncomeTotalAmount += otherIncomeAmount;
+
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="pot-details"><br><b>${otherIncomeSource}</b><br><br>
+            Your income is ${otherIncomeAmount.toLocaleString('en-UK', { style: 'currency', currency: 'GBP', minimumFractionDigits: 0, maximumFractionDigits: 0 })} and is expected to be received from ${otherIncomeStartYear} to ${otherIncomeEndYear}. Your estimated income at retirement is ${otherIncomeEstimatedValueAtRetirement.toLocaleString('en-UK', { style: 'currency', currency: 'GBP', minimumFractionDigits: 0, maximumFractionDigits: 0 })}.</td>
+            <td><button class="delete-pot-btn" onclick="deleteIncomePot('${pot.id}')">Delete</button></td>
+            `;
+            tbody.appendChild(row);
+          });
+
+        sessionStorage.setItem('otherIncomeTotalAmount', otherIncomeTotalAmount);
+
+        if (IncomePots.length > 0) {
+          document.querySelector('.pension-table').style.display = "table";
+        } else {
+          document.querySelector('.pension-table').style.display = "none";
+        }
+
+
+        checkMaxEntries(); // Check if max entries are reached after displaying pots
+      }
+
+
+
+      // FUNCTION TO ADD AN INCOME POT IN DIALOGUE BOX
+      function addIncomePot() {
+        const otherIncomeSource = document.getElementById("otherIncomeSource").value;
+        const otherIncomeAmount = parseFloat(document.getElementById("otherIncomeAmount").value);
+        const otherIncomeStartYear = parseInt(document.getElementById("otherIncomeStartYear").value);
+        const otherIncomeEndYear = parseInt(document.getElementById("otherIncomeEndYear").value);
+
+        if (!otherIncomeSource || isNaN(otherIncomeAmount) || isNaN(otherIncomeStartYear) || isNaN(otherIncomeEndYear)) {
+          alert("Please fill in all fields correctly.");
+          return;
+        }
+
+        const id = Date.now().toString();
+        const currentYear = new Date().getFullYear();
+        const yearOfBirth = parseInt(sessionStorage.getItem('yearOfBirth'));
+        const retirementAge = parseInt(sessionStorage.getItem('retirementAge'));
+        const yearsUntilRetirement = retirementAge - (currentYear - yearOfBirth);
+
+        let otherIncomeEstimatedValueAtRetirement = otherIncomeAmount;
+        for (let i = 0; i < yearsUntilRetirement; i++) {
+          otherIncomeEstimatedValueAtRetirement *= 1.025;  // Assuming 2.5% annual growth
+        }
+
+        IncomePots.push({
+          id,
+          otherIncomeSource,
+          otherIncomeAmount,
+          otherIncomeStartYear,
+          otherIncomeEndYear,
+          otherIncomeEstimatedValueAtRetirement,
+        });
+
+
+        sessionStorage.setItem('IncomePots', JSON.stringify(IncomePots));
+
+        displayIncomePots();
+        closeAddIncomePotDialog();
+        checkMaxEntries(); // Check if max entries are reached after adding a new pot
+      }
+
+
+
+      // FUNCTION TO OPEN POP-UP DIALOGIE BOX
+      function openAddIncomePotDialog() {
+        if (IncomePots.length >= 5) {
+          alert("You can only add up to 5 entries.");
+          return;
+      }
+
+
+
+      document.getElementById("addIncomePotDialog").style.display = "block";
+
+      resetDialogFields();  // Reset the dialog fields every time the dialog is opened
+
+      const yearOfBirth = parseInt(sessionStorage.getItem('yearOfBirth'));
+      const startYearSelect = document.getElementById("otherIncomeStartYear");
+      startYearSelect.innerHTML = "";
+
+
+      for (let i = 55; i <= 70; i++) {
+        const option = document.createElement("option");
+        option.value = yearOfBirth + i;
+        option.textContent = yearOfBirth + i;
+        startYearSelect.appendChild(option);
+      }
+
+
+      const endYearSelect = document.getElementById("otherIncomeEndYear");
+      endYearSelect.innerHTML = "";
+
+      for (let i = 55; i <= 95; i++) {
+        const option = document.createElement("option");
+        option.value = yearOfBirth + i;
+        option.textContent = yearOfBirth + i;
+        endYearSelect.appendChild(option);
+      }
+    }
+
+
+
+    // FUNCTION TO RESET VALUES IN POP-UP DIAOGUE ON RE-ENTRY
+    function resetDialogFields() {
+      document.getElementById("otherIncomeSource").value = "Employment Income";
+      document.getElementById("otherIncomeAmount").value = "";
+      document.getElementById("otherIncomeStartYear").selectedIndex = 0;
+      document.getElementById("otherIncomeEndYear").selectedIndex = 0;
+    }
+
+
+
+    // FUNCTION TO CLOSE POP-UP DIALOGUE BOX
+    function closeAddIncomePotDialog() {
+      document.getElementById("addIncomePotDialog").style.display = "none";
+    }
+
+
+
+    // FUNCTION TO DELETE ENTRY
+    function deleteIncomePot(id) {
+      const index = IncomePots.findIndex(pot => pot.id === id);
+      if (index !== -1) {
+        IncomePots.splice(index, 1);
+        sessionStorage.setItem('IncomePots', JSON.stringify(IncomePots));
+        displayIncomePots();
+        checkMaxEntries(); // Check if max entries are reached after deleting a pot
+      }
+    }
+
+
+
+    // FUNCTION TO CALCULATE YEARS UNTIL RETIREMENT
+    calculateAndStoreYearsUntilRetirement()
+
+    //function calculateAndStoreYearsUntilRetirement() {
+    //  const currentYear = new Date().getFullYear();
+    //  const yearOfBirth = parseInt(sessionStorage.getItem('yearOfBirth'));
+    //  const retirementAge = parseInt(sessionStorage.getItem('retirementAge'));
+    //  const yearsUntilRetirement = retirementAge - (currentYear - yearOfBirth);
+
+    //  sessionStorage.setItem('yearsUntilRetirement', yearsUntilRetirement);
+    //}
+
+
+
+    // FUNCTION TO LOAD VALUES ALREADY ENTERED WHEN RETURNING TO PAGE
+    function loadInitialIncomeData() {
+      displayIncomePots();
+
+      const otherIncomeSource = sessionStorage.getItem('otherIncomeSource');
+      const otherIncomeAmount = sessionStorage.getItem('otherIncomeAmount');
+      const otherIncomeStartYearValue = sessionStorage.getItem('otherIncomeStartYear');
+      const otherIncomeEndYearValue = sessionStorage.getItem('otherIncomeEndYear');
+
+      if (otherIncomeSource) document.getElementById("otherIncomeSource").value = otherIncomeSource;
+      if (otherIncomeAmount) document.getElementById("otherIncomeAmount").value = otherIncomeAmount;
+      if (otherIncomeStartYearValue) document.getElementById("otherIncomeStartYear").value = otherIncomeStartYearValue;
+      if (otherIncomeEndYearValue) document.getElementById("otherIncomeEndYear").value = otherIncomeEndYearValue;
+    }
+
+
+
+    // FUNCTION TO CHECK MAXIMUM NUMBER OF ENTRIES
+    function checkMaxEntries() {
+      const addButton = document.getElementById('addIncomePotButton');
+      if (IncomePots.length >= 5) {
+        addButton.classList.add('disabled-btn');
+        addButton.disabled = true;
+      } else {
+        addButton.classList.remove('disabled-btn');
+        addButton.disabled = false;
+      }
+    }
+
+    </script>
+  </body>
+</html>

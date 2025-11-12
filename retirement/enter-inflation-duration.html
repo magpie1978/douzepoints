@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- ===============================================-->
+<!--    HEADER-->
+<!-- ===============================================-->
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- mobile opimisation -->
+    <title>Inflation Duration</title>
+    <link rel="stylesheet" type="text/css" href="styles.css"> <!-- link to stylesheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">  <!-- stylesheet for info icon -->
+  </head>
+
+
+
+
+<!-- ===============================================-->
+<!--    BODY-->
+<!-- ===============================================-->
+
+  <body>
+    <div class="form-style-8">
+      <h4>How long do you want it to increase for?</h4>
+      <div class="tooltip">
+        <i class="fas fa-info-circle info-icon"></i>
+        <span class="tooltiptext">After age 75 many people reduce their spending.</span>
+      </div>
+
+      <select id="inflationDuration">
+        <option value="life">Life</option>
+        <option value="75">Until Age 75</option>
+      </select>
+      <br>
+      <center>
+        <button type="button" class="back-btn" onclick="redirectBack()">Back</button>
+        <button type="button" class="add-pot-btn" onclick="saveAndRedirect()">Next</button>
+      </center>
+    </div>
+
+
+<!-- ===============================================-->
+<!--    SCRIPTING -->
+<!-- ===============================================-->
+
+  <script>
+
+  //FUNCTION TO SAVE SELECTED INFLATION DURATION AND REDIRECT TO NEXT PAGE
+  function saveAndRedirect() {
+    const inflationDuration = document.getElementById("inflationDuration").value;
+    sessionStorage.setItem('inflationDuration', inflationDuration);
+    window.location.href = "enter-region.html";
+  }
+
+
+  //FUNCTION TO REDIRECT TO PREVIOUS PAGE
+  function redirectBack() {
+    window.location.href = "enter-inflation.html";
+  }
+
+
+  // FUNCTION TO SHOW PRVIOUSLY ENTERED INFLATION DURATION VALUE IF THE USER RETURNS TO THIS PAGE
+  window.onload = function() {
+    const storedInflationDuration = sessionStorage.getItem('inflationDuration');
+    if (storedInflationDuration) {
+      document.getElementById('inflationDuration').value = storedInflationDuration;
+    }
+  };
+
+  </script>
+  </body>
+</html>
