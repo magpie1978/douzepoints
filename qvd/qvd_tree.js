@@ -56,6 +56,7 @@ function openDrawerFor(id) {
         <div class="drawer-name">${safe(n.name)}</div>
         <div class="drawer-title1">${safe(n.title1)}</div>
         <div class="drawer-title2">${safe(n.title2)}</div>
+        <div class="drawer-id">ID: ${safe(n.id)}</div>        
       </div>
     </div>
 
