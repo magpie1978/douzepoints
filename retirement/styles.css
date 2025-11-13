@@ -63,11 +63,15 @@ hide {display: none; /* This will hide the <em> tags from view but keep them in 
 
 
 /* SECTIONS */
-.section {margin-bottom: 20px; position: relative;}
+/*.section {margin-bottom: 20px; position: relative;}*/
+.section {margin-bottom: 20px; position: relative; width: 100%; /* ✅ stretch to full width of card */
+}
+
 
 
 /* FORMS */
-.form-style-8 {position: relative; padding: 20px; background: #FFFFFF; margin: 50px auto; border-radius: 8px; max-width: 600px; box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1); font-family: 'Roboto', sans-serif; display: flex; flex-direction: column; align-items: center;}
+/*.form-style-8 {position: relative; padding: 20px; background: #FFFFFF; margin: 50px auto; border-radius: 8px; max-width: 600px; box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1); font-family: 'Roboto', sans-serif; display: flex; flex-direction: column; align-items: center;}*/
+.form-style-8 {position: relative; padding: 20px; background: #FFFFFF; margin: 50px auto; border-radius: 8px; max-width: 600px; box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1); font-family: 'Roboto', sans-serif; display: flex; flex-direction: column; align-items: stretch;  /* ✅ make children full width */}
 .form-style-8 h2 {background: '#ffffff'; text-transform: none; color: #000000; font-size: 20px; font-weight: 400; padding: 15px 30px; margin: -40px -40px 30px -40px; width: 100%; border-top-left-radius: 10px; border-top-right-radius: 10px;}
 .form-style-8 input[type="text"],
 .form-style-8 input[type="date"],
@@ -114,6 +118,8 @@ hide {display: none; /* This will hide the <em> tags from view but keep them in 
 .back-btn {background-color: lightgray; border: 1px solid #C3C3C3; color: black; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin-top: 10px; cursor: pointer; border-radius: 5px;}
 .cancel-pot-btn {background-color: #E12827; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin-top: 10px; cursor: pointer; border-radius: 5px; }
 .top-right-btn { position: absolute; top: 10px; right: 10px;   /* 50px border buffer as requested */ margin: 0; }
+}
+
 /*.top-right-btn {position: absolute; top: 10px; right: 60px; }*/
 .disabled-btn { background-color: lightgray !important; cursor: not-allowed !important; }
 .make-changes-btn {background-color: #4CAF50; border: 1px solid #C3C3C3; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin-top: 10px; cursor: pointer; border-radius: 5px;}
@@ -197,5 +203,6 @@ input[type="date"]:focus::-webkit-datetime-edit-placeholder {color: black !impor
     text-decoration: none;
     cursor: pointer;
   }
+
 
 
