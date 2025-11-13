@@ -292,7 +292,7 @@
       (supa) => supa
         .from('douzepoints')
         .select('*')
-        .eq('Fan_Favourite', 'Y')
+        .eq('FanFave', 'Y')
         .order('Year', { ascending: false }),
       'Error loading fan favourites',
       'No fan favourites found.'
