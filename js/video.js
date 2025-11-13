@@ -51,7 +51,7 @@
   // ------------------------------------------------------------
   // RENDER ONE CARD (grid or carousel)
   // ------------------------------------------------------------
-  function renderEntry(entry, variant) {
+  function renderEntry(entry, variant = 'grid') {
     const wrapper = document.createElement('div');
     wrapper.className = (variant === 'carousel') ? 'carousel-video-item' : 'video-item';
     wrapper.setAttribute('role', 'button');
@@ -72,7 +72,7 @@
       String(entry.QualifiedFinal || '').toUpperCase() === 'N'
     );
 
-    // Sorting data attributes (used only on grid pages)
+    // Sorting data attributes (used only on grid pages, but harmless on carousels)
     wrapper.dataset.total        = String(totalPoints);
     wrapper.dataset.jury         = String(juryPoints);
     wrapper.dataset.televote     = String(televotePoints);
@@ -121,15 +121,21 @@
           <div class="video-title-text">${titleHTML}</div>
         </div>
 
-        <div class="score-wrapper">
-          <table class="score-table">
-            <tr><th>Pos</th><th>Pts</th></tr>
-            <tr>
-              <td><div class="${rankClass}">${escapeHTML(String(rankDisplay))}</div></td>
-              <td><div class="${pointsClass}">${escapeHTML(String(pointsDisplay))}</div></td>
-            </tr>
-          </table>
-        </div>
+        ${
+          variant === 'carousel'
+            ? '' // ⛔ no Pos/Pts or circles in carousels
+            : `
+              <div class="score-wrapper">
+                <table class="score-table">
+                  <tr><th>Pos</th><th>Pts</th></tr>
+                  <tr>
+                    <td><div class="${rankClass}">${escapeHTML(String(rankDisplay))}</div></td>
+                    <td><div class="${pointsClass}">${escapeHTML(String(pointsDisplay))}</div></td>
+                  </tr>
+                </table>
+              </div>
+            `
+        }
       </div>
     `;
 
@@ -155,7 +161,7 @@
   }
 
   // ------------------------------------------------------------
-  // RENDERING (GRID)
+  // RENDERING (GRID PAGES)
   // ------------------------------------------------------------
   function renderVideos(entries) {
     const container = document.getElementById('video-container');
@@ -269,14 +275,14 @@
     );
   }
 
-  // Fan-favorites.html  (***corrected to FanFave***)
+  // Fan-favorites.html  (FanFave = 'Y')
   function loadFanFavorites() {
     return fetchAndRender(
       (supa) =>
         supa
           .from('douzepoints')
           .select('*')
-          .eq('FanFave', 'Y')   // <--- FIXED
+          .eq('FanFave', 'Y')
           .order('Year', { ascending: false }),
       'Error loading fan favourites',
       'No fan favourites found.'
@@ -338,12 +344,12 @@
         );
       }
 
-      // Fan Favourites (***corrected column***)
+      // Fan Favourites
       if (track3) {
         tasks.push(
           supa.from('douzepoints')
             .select('*')
-            .eq('FanFave', 'Y')   // <--- FIXED HERE TOO
+            .eq('FanFave', 'Y')
             .order('Year', { ascending: false })
             .then(({ data, error }) => {
               if (!error) renderIntoCarousel('carouselTrack3', data || []);
@@ -397,5 +403,4 @@
 
   // Expose manual renderer
   window.renderVideos = renderVideos;
-
 })();
