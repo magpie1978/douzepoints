@@ -260,6 +260,33 @@
     );
   }
 
+  // ---------- Winners loader ----------
+  function loadWinners() {
+    return fetchAndRender(
+      (supa) => supa
+        .from('douzepoints')
+        .select('*')
+        .eq('Final_Rank', 1)
+        .order('Year', { ascending: false }),
+      'Error loading winners',
+      'No winners found.'
+    );
+  }
+
+  // ---------- Fan Favourites loader ----------
+  function loadFanFavorites() {
+    // NOTE: Adjust 'Fan_Favourite' + 'Y' to match your actual fan-favourites flag
+    return fetchAndRender(
+      (supa) => supa
+        .from('douzepoints')
+        .select('*')
+        .eq('Fan_Favourite', 'Y')
+        .order('Year', { ascending: false }),
+      'Error loading fan favourites',
+      'No fan favourites found.'
+    );
+  }
+
   // ---------- Page routing ----------
   document.addEventListener('DOMContentLoaded', () => {
     const path = window.location.pathname;
@@ -268,6 +295,10 @@
       loadCountry();
     } else if (path.includes('edition.html')) {
       loadEdition();
+    } else if (path.includes('winners.html')) {
+      loadWinners();
+    } else if (path.includes('fan-favorites.html')) {
+      loadFanFavorites();
     }
     // Other pages that include video.js can call window.renderVideos manually if needed
   });
