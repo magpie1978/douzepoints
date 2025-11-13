@@ -1,9 +1,8 @@
 /**
- * video.js — modal-only, robust trigger
- * - Uses inline URL vars (countryCode, imageUrl, flagUrl, path)
- * - Clicks (card, thumbnail, preview-container) trigger modal ONLY
- * - Tries multiple modal function signatures for compatibility
- * - No new-tab fallback
+ * video.js — modal-only, robust trigger + homepage carousels
+ * - Card click (and thumbnail click) opens modal ONLY
+ * - Shared rendering for grid pages + home carousels
+ * - Page routing based on window.location.pathname
  */
 
 (function () {
@@ -52,10 +51,10 @@
     console.error('[video.js] No modal function found. Expected window.openVideoModal / showVideoModal / openModal.');
   }
 
-  // ---------- Rendering ----------
-  function renderEntry(entry) {
+  // ---------- Card rendering ----------
+  function renderEntry(entry, variant) {
     const wrapper = document.createElement('div');
-    wrapper.className = 'video-item';
+    wrapper.className = (variant === 'carousel') ? 'carousel-video-item' : 'video-item';
     wrapper.setAttribute('role', 'button');
     wrapper.tabIndex = 0;
 
@@ -75,7 +74,7 @@
       String(entry.QualifiedFinal || '').toUpperCase() === 'N'
     );
 
-    // Data attributes for sorting
+    // Data attributes for sorting (used on grid pages)
     wrapper.dataset.total        = String(totalPoints);
     wrapper.dataset.jury         = String(juryPoints);
     wrapper.dataset.televote     = String(televotePoints);
@@ -89,7 +88,7 @@
     if (entry.Song)    wrapper.dataset.song = String(entry.Song).toLowerCase();
     if (entry.Country) wrapper.dataset.country = String(entry.Country).toLowerCase();
 
-    // --- Requested URL logic ---
+    // --- Visuals / URLs ---
     const countryCode = entry.Country_Code?.toLowerCase();
     const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
     const flagUrl = `/flags/${countryCode}.png`;
@@ -148,14 +147,14 @@
     // Whole card
     wrapper.addEventListener('click', handleOpen);
 
-    // Thumbnail (in case something else stops propagation)
+    // Thumbnail
     const thumb = wrapper.querySelector('.thumbnail');
     if (thumb) {
       thumb.style.cursor = 'pointer';
       thumb.addEventListener('click', handleOpen);
     }
 
-    // Preview container (extra safety)
+    // Preview container
     const preview = wrapper.querySelector('.preview-container');
     if (preview) {
       preview.addEventListener('click', handleOpen);
@@ -172,19 +171,31 @@
     return wrapper;
   }
 
+  // Grid pages (country / edition / winners / fan favourites)
   function renderVideos(entries) {
     const container = document.getElementById('video-container');
     if (!container) return;
     container.innerHTML = '';
 
     const frag = document.createDocumentFragment();
-    (entries || []).forEach(entry => frag.appendChild(renderEntry(entry)));
+    (entries || []).forEach(entry => frag.appendChild(renderEntry(entry, 'grid')));
     container.appendChild(frag);
 
     if (window.triggerInitialSort) window.triggerInitialSort();
   }
 
-  // ---------- Data loading ----------
+  // Home-page carousels
+  function renderIntoCarousel(trackId, entries) {
+    const track = document.getElementById(trackId);
+    if (!track) return;
+
+    track.innerHTML = '';
+    const frag = document.createDocumentFragment();
+    (entries || []).forEach(entry => frag.appendChild(renderEntry(entry, 'carousel')));
+    track.appendChild(frag);
+  }
+
+  // ---------- Data loading helper ----------
   async function fetchAndRender(queryFn, errorMsg, emptyMsg) {
     const supa = window.supabaseClient;
     const container = document.getElementById('video-container');
@@ -193,6 +204,7 @@
       if (container) {
         container.innerHTML = `<p style="padding:16px">Supabase client not available. Initialize window.supabaseClient before loading video.js.</p>`;
       }
+      console.error('[video.js] Supabase client missing.');
       return;
     }
 
@@ -210,7 +222,7 @@
     renderVideos(data);
   }
 
-  // ---------- Country loader ----------
+  // ---------- Country page loader ----------
   function loadCountry() {
     const country = getQueryParam('country');
     const container = document.getElementById('video-container');
@@ -235,7 +247,7 @@
     );
   }
 
-  // ---------- Edition loader ----------
+  // ---------- Edition page loader ----------
   function loadEdition() {
     const edition = getQueryParam('edition');
     const container = document.getElementById('video-container');
@@ -243,7 +255,7 @@
     if (!edition) {
       if (container) {
         container.innerHTML = `<p style="padding:16px">
-          No edition specified. Add <code>?edition=2021</code> (example) to the URL.
+          No edition specified. Add <code>?edition=2024</code> (example) to the URL.
         </p>`;
       }
       return;
@@ -260,7 +272,7 @@
     );
   }
 
-  // ---------- Winners loader ----------
+  // ---------- Winners page loader ----------
   function loadWinners() {
     return fetchAndRender(
       (supa) => supa
@@ -273,9 +285,9 @@
     );
   }
 
-  // ---------- Fan Favourites loader ----------
+  // ---------- Fan Favourites page loader ----------
   function loadFanFavorites() {
-    // NOTE: Adjust 'Fan_Favourite' + 'Y' to match your actual fan-favourites flag
+    // Adjust 'Fan_Favourite'/'Y' if your schema uses a different flag
     return fetchAndRender(
       (supa) => supa
         .from('douzepoints')
@@ -287,11 +299,122 @@
     );
   }
 
+  // ---------- Home page (index.html) carousels ----------
+  async function loadHome() {
+    const supa = window.supabaseClient;
+    if (!supa) {
+      console.error('[video.js] Supabase client missing; cannot load home carousels.');
+      return;
+    }
+
+    const track1 = document.getElementById('carouselTrack1'); // Eurovision Winners
+    const track2 = document.getElementById('carouselTrack2'); // Malmö 2024
+    const track3 = document.getElementById('carouselTrack3'); // Fan Favourites
+    const track4 = document.getElementById('carouselTrack4'); // Basel 2025
+
+    try {
+      const promises = [];
+
+      // Winners (all years where Final_Rank = 1)
+      if (track1) {
+        promises.push(
+          supa.from('douzepoints')
+            .select('*')
+            .eq('Final_Rank', 1)
+            .order('Year', { ascending: false })
+            .limit(40)
+            .then(({ data, error }) => {
+              if (error) {
+                console.error('Error loading winners carousel:', error);
+                return;
+              }
+              renderIntoCarousel('carouselTrack1', data || []);
+            })
+        );
+      }
+
+      // Basel 2025
+      if (track4) {
+        promises.push(
+          supa.from('douzepoints')
+            .select('*')
+            .eq('Year', 2025)
+            .order('Final_Rank', { ascending: true })
+            .then(({ data, error }) => {
+              if (error) {
+                console.error('Error loading Basel 2025 carousel:', error);
+                return;
+              }
+              renderIntoCarousel('carouselTrack4', data || []);
+            })
+        );
+      }
+
+      // Malmö 2024
+      if (track2) {
+        promises.push(
+          supa.from('douzepoints')
+            .select('*')
+            .eq('Year', 2024)
+            .order('Final_Rank', { ascending: true })
+            .then(({ data, error }) => {
+              if (error) {
+                console.error('Error loading Malmö 2024 carousel:', error);
+                return;
+              }
+              renderIntoCarousel('carouselTrack2', data || []);
+            })
+        );
+      }
+
+      // Fan Favourites
+      if (track3) {
+        promises.push(
+          supa.from('douzepoints')
+            .select('*')
+            .eq('Fan_Favourite', 'Y') // tweak if needed
+            .order('Year', { ascending: false })
+            .then(({ data, error }) => {
+              if (error) {
+                console.error('Error loading Fan Favourites carousel:', error);
+                return;
+              }
+              renderIntoCarousel('carouselTrack3', data || []);
+            })
+        );
+      }
+
+      await Promise.all(promises);
+    } catch (err) {
+      console.error('Unexpected error loading home carousels:', err);
+    }
+  }
+
+  // ---------- Carousel scrolling helper (used by index.html) ----------
+  window.scrollCarousel = function (direction, trackId) {
+    const track = document.getElementById(trackId);
+    if (!track) return;
+
+    const container = track.parentElement; // .carousel-container
+    if (!container || !container.scrollBy) return;
+
+    const card = track.querySelector('.carousel-video-item') || track.querySelector('.video-item');
+    const cardWidth = card ? card.getBoundingClientRect().width + 30 : 250; // fallback
+
+    container.scrollBy({
+      left: direction * cardWidth * 4, // roughly 4 cards per "page"
+      behavior: 'smooth'
+    });
+  };
+
   // ---------- Page routing ----------
   document.addEventListener('DOMContentLoaded', () => {
-    const path = window.location.pathname;
+    const path = window.location.pathname || '';
 
-    if (path.includes('country.html')) {
+    if (path === '/' || path.endsWith('/index.html') || path.includes('index.html')) {
+      // Home page with carousels
+      loadHome();
+    } else if (path.includes('country.html')) {
       loadCountry();
     } else if (path.includes('edition.html')) {
       loadEdition();
@@ -300,9 +423,9 @@
     } else if (path.includes('fan-favorites.html')) {
       loadFanFavorites();
     }
-    // Other pages that include video.js can call window.renderVideos manually if needed
+    // Other pages can manually call window.renderVideos(entries) if needed
   });
 
-  // Expose manual renderer if another page wants to inject its own data
+  // Expose manual renderer so other pages can inject their own data if desired
   window.renderVideos = renderVideos;
 })();
