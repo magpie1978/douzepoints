@@ -113,7 +113,7 @@ hide {display: none; /* This will hide the <em> tags from view but keep them in 
 .add-pot-btn {background-color: #4CAF50;border: 1px solid #C3C3C3;color: white;padding: 10px 20px;text-align: center; text-decoration: none;display: inline-block;font-size: 16px;margin-top: 10px;cursor: pointer;border-radius: 5px;}
 .back-btn {background-color: lightgray; border: 1px solid #C3C3C3; color: black; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin-top: 10px; cursor: pointer; border-radius: 5px;}
 .cancel-pot-btn {background-color: #E12827; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin-top: 10px; cursor: pointer; border-radius: 5px; }
-.top-right-btn { position: absolute; top: 10px; right: 50px;   /* 50px border buffer as requested */ margin: 0; }
+.top-right-btn { position: absolute; top: 10px; right: 10px;   /* 50px border buffer as requested */ margin: 0; }
 /*.top-right-btn {position: absolute; top: 10px; right: 60px; }*/
 .disabled-btn { background-color: lightgray !important; cursor: not-allowed !important; }
 .make-changes-btn {background-color: #4CAF50; border: 1px solid #C3C3C3; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin-top: 10px; cursor: pointer; border-radius: 5px;}
@@ -197,4 +197,5 @@ input[type="date"]:focus::-webkit-datetime-edit-placeholder {color: black !impor
     text-decoration: none;
     cursor: pointer;
   }
+
 
