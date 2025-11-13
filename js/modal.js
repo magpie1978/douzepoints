@@ -20,6 +20,43 @@ window.GDriveOpenModalWithVideo = function(videoUrl, titleText) {
   }
 };
 
+
+//  new 13/11/2025 //
+// Bridge for video.js -> use our existing GDriveOpenModalWithVideo
+window.openVideoModal = function (arg1, arg2) {
+  let videoUrl = null;
+  let entry = null;
+
+  // Support object signature: openVideoModal({ url, entry })
+  if (arg1 && typeof arg1 === 'object' && arg1.url) {
+    videoUrl = arg1.url;
+    entry = arg1.entry || null;
+  } else {
+    // Support openVideoModal(videoUrl, entry)
+    videoUrl = arg1;
+    entry = arg2 || null;
+  }
+
+  // Optional: build a title from the entry (if present)
+  let titleText = '';
+  if (entry) {
+    const artist = entry.Artist || '';
+    const song   = entry.Song   || '';
+    titleText = [artist, song].filter(Boolean).join(' — ');
+  }
+
+  if (!videoUrl) {
+    console.error('[modal.js] openVideoModal called without a video URL');
+    return;
+  }
+
+  // Reuse the existing modal logic
+  window.GDriveOpenModalWithVideo(videoUrl, titleText);
+};
+
+
+
+
 window.GDriveCloseModal = function(event) {
   event.stopPropagation();
   const modal = document.getElementById("videoModal");
