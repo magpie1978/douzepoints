@@ -1,406 +1,93 @@
-/**
- * video.js — modal-only trigger + home carousels + multi-page routing
- */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Douze Points</title>
+  <link rel="stylesheet" type="text/css" href="style/combined.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/footer.js"></script>
+</head>
 
-(function () {
-  // ------------------------------------------------------------
-  // UTILITIES
-  // ------------------------------------------------------------
-  function escapeHTML(str) {
-    if (str == null) return '';
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-  }
+<body oncontextmenu="return false">
 
-  function getQueryParam(name) {
-    const params = new URLSearchParams(window.location.search);
-    return params.get(name);
-  }
+  <!-- HEADER -->
+  <div id="header-container"></div>
+  <script type="module" src="js/header.js"></script>
 
-  // ------------------------------------------------------------
-  // MODAL WRAPPER (strict)
-  // ------------------------------------------------------------
-  function openModalStrict(videoUrl, entry) {
-    if (!videoUrl) {
-      console.error('[video.js] No Video_URL found:', entry);
-      return;
-    }
+  <br><br>
 
-    if (typeof window.openVideoModal === 'function') {
-      try {
-        window.openVideoModal({ url: videoUrl, entry });
-        return;
-      } catch (_) {
-        try { window.openVideoModal(videoUrl, entry); return; } catch (_) {}
-        try { window.openVideoModal(videoUrl); return; } catch (_) {}
-      }
-    }
+  <!-- CAROUSEL 1: Winners -->
+  <div class="carousel-section">
+    <div class="section-header">
+      <h4>Eurovision Winners</h4>
+      <a class="view-more" href="winners.html">VIEW MORE</a>
+    </div>
+    <div class="carousel-wrapper">
+      <button class="carousel-button" onclick="scrollCarousel(-1,'carouselTrack1')">&#10094;</button>
+      <div class="carousel-container"><div class="carousel-track" id="carouselTrack1"></div></div>
+      <button class="carousel-button" onclick="scrollCarousel(1,'carouselTrack1')">&#10095;</button>
+    </div>
+  </div>
 
-    if (typeof window.showVideoModal === 'function') {
-      try { window.showVideoModal(videoUrl, entry); return; } catch (_) {}
-    }
-    if (typeof window.openModal === 'function') {
-      try { window.openModal(videoUrl, entry); return; } catch (_) {}
-    }
+  <br>
 
-    console.error('[video.js] No modal function found.');
-  }
+  <!-- CAROUSEL 2: Basel 2025 -->
+  <div class="carousel-section">
+    <div class="section-header">
+      <h4>Basel 2025</h4>
+      <a class="view-more" href="edition.html?edition=2025">VIEW ALL</a>
+    </div>
+    <div class="carousel-wrapper">
+      <button class="carousel-button" onclick="scrollCarousel(-1, 'carouselTrack4')">&#10094;</button>
+      <div class="carousel-container"><div class="carousel-track" id="carouselTrack4"></div></div>
+      <button class="carousel-button" onclick="scrollCarousel(1, 'carouselTrack4')">&#10095;</button>
+    </div>
+  </div>
 
-  // ------------------------------------------------------------
-  // RENDER ONE CARD (grid or carousel)
-  // ------------------------------------------------------------
-  function renderEntry(entry, variant = 'grid') {
-    const wrapper = document.createElement('div');
-    wrapper.className = (variant === 'carousel') ? 'carousel-video-item' : 'video-item';
-    wrapper.setAttribute('role', 'button');
-    wrapper.tabIndex = 0;
+  <br>
 
-    // Points & ranks
-    const totalPoints    = Number(entry.Final_TotalPoints)     || 0;
-    const juryPoints     = Number(entry.Final_JuryPoints)      || 0;
-    const televotePoints = Number(entry.Final_TelevotePoints)  || 0;
-    const totalRank      = Number(entry.Final_Rank)            || 0;
-    const juryRank       = Number(entry.Final_JuryRank)        || 0;
-    const televoteRank   = Number(entry.Final_TelevoteRank)    || 0;
+  <!-- CAROUSEL 3: Malmö 2024 -->
+  <div class="carousel-section">
+    <div class="section-header">
+      <h4>Malmö 2024</h4>
+      <a class="view-more" href="edition.html?edition=2024">VIEW ALL</a>
+    </div>
+    <div class="carousel-wrapper">
+      <button class="carousel-button" onclick="scrollCarousel(-1, 'carouselTrack2')">&#10094;</button>
+      <div class="carousel-container"><div class="carousel-track" id="carouselTrack2"></div></div>
+      <button class="carousel-button" onclick="scrollCarousel(1, 'carouselTrack2')">&#10095;</button>
+    </div>
+  </div>
 
-    // DNQ
-    const dnq = (
-      !entry.Final_Rank ||
-      Number(entry.Final_Rank) === 0 ||
-      String(entry.QualifiedFinal || '').toUpperCase() === 'N'
-    );
+  <br>
 
-    // Sorting data attributes (used only on grid pages, but harmless on carousels)
-    wrapper.dataset.total        = String(totalPoints);
-    wrapper.dataset.jury         = String(juryPoints);
-    wrapper.dataset.televote     = String(televotePoints);
-    wrapper.dataset.totalrank    = String(totalRank);
-    wrapper.dataset.juryrank     = String(juryRank);
-    wrapper.dataset.televoterank = String(televoteRank);
-    wrapper.dataset.dnq          = dnq ? '1' : '0';
+  <!-- CAROUSEL 4: Fan Favorites -->
+  <div class="carousel-section">
+    <div class="section-header">
+      <h4>Fan Favorites</h4>
+      <a class="view-more" href="fan-favorites.html">VIEW MORE</a>
+    </div>
+    <div class="carousel-wrapper">
+      <button class="carousel-button" onclick="scrollCarousel(-1,'carouselTrack3')">&#10094;</button>
+      <div class="carousel-container"><div class="carousel-track" id="carouselTrack3"></div></div>
+      <button class="carousel-button" onclick="scrollCarousel(1,'carouselTrack3')">&#10095;</button>
+    </div>
+  </div>
 
-    if (entry.Year)    wrapper.dataset.year = entry.Year;
-    if (entry.Artist)  wrapper.dataset.artist = entry.Artist.toLowerCase();
-    if (entry.Song)    wrapper.dataset.song = entry.Song.toLowerCase();
-    if (entry.Country) wrapper.dataset.country = entry.Country.toLowerCase();
+  <!-- MODAL -->
+  <script src="js/modal.js"></script>
+  <div id="modal-container"></div>
 
-    // Visuals
-    const countryCode = entry.Country_Code?.toLowerCase();
-    const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
-    const flagUrl = `/flags/${countryCode}.png`;
-    const videoUrl = entry.Video_URL;
+  <!-- ⭐ SUPABASE (REQUIRED FOR CAROUSELS) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module" src="js/supabaseClient.js"></script>
 
-    const titleHTML = `
-      <div class="title-line">
-        <div class="title-artist">${escapeHTML(entry.Artist || '')}</div>
-        <div class="title-song">— ${escapeHTML(entry.Song || '')}</div>
-      </div>
-      <div class="title-meta">
-        <span class="title-country">${escapeHTML(entry.Country || '')}</span>
-        ${entry.Year ? `<span class="title-year">${escapeHTML(entry.Year)}</span>` : ''}
-      </div>
-    `;
+  <!-- VIDEO LOADER -->
+  <script type="module" src="js/video.js"></script>
 
-    const rankDisplay   = dnq ? 'NQ' : totalRank;
-    const pointsDisplay = dnq ? 'NQ' : totalPoints;
-    const rankClass     = dnq ? 'score-circle dnq score-pos' : 'score-circle score-pos';
-    const pointsClass   = dnq ? 'score-circle dnq score-pts' : 'score-circle score-pts';
+  <!-- FOOTER -->
+  <div id="footer"></div>
+  <script src="js/footer.js" type="text/javascript"></script>
 
-    wrapper.innerHTML = `
-      <div class="preview-container" data-video-url="${escapeHTML(videoUrl || '')}">
-        <img class="thumbnail" src="${escapeHTML(imageUrl)}" alt="${escapeHTML(entry.Artist || '')}" />
-      </div>
-
-      <div class="video-title-with-icon" style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <a href="country.html?country=${encodeURIComponent(entry.Country || '')}" onclick="event.stopPropagation()">
-            <img class="flag-icon" src="${escapeHTML(flagUrl)}" alt="Flag" />
-          </a>
-          <div class="video-title-text">${titleHTML}</div>
-        </div>
-
-        ${
-          variant === 'carousel'
-            ? '' // ⛔ no Pos/Pts or circles in carousels
-            : `
-              <div class="score-wrapper">
-                <table class="score-table">
-                  <tr><th>Pos</th><th>Pts</th></tr>
-                  <tr>
-                    <td><div class="${rankClass}">${escapeHTML(String(rankDisplay))}</div></td>
-                    <td><div class="${pointsClass}">${escapeHTML(String(pointsDisplay))}</div></td>
-                  </tr>
-                </table>
-              </div>
-            `
-        }
-      </div>
-    `;
-
-    // Modal triggers
-    const open = (e) => {
-      e?.preventDefault?.();
-      e?.stopPropagation?.();
-      openModalStrict(videoUrl, entry);
-    };
-
-    wrapper.addEventListener('click', open);
-    wrapper.querySelector('.thumbnail')?.addEventListener('click', open);
-    wrapper.querySelector('.preview-container')?.addEventListener('click', open);
-
-    wrapper.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        open(e);
-      }
-    });
-
-    return wrapper;
-  }
-
-  // ------------------------------------------------------------
-  // RENDERING (GRID PAGES)
-  // ------------------------------------------------------------
-  function renderVideos(entries) {
-    const container = document.getElementById('video-container');
-    if (!container) return;
-    container.innerHTML = '';
-
-    const frag = document.createDocumentFragment();
-    entries.forEach(entry => frag.appendChild(renderEntry(entry, 'grid')));
-    container.appendChild(frag);
-
-    if (window.triggerInitialSort) window.triggerInitialSort();
-  }
-
-  // ------------------------------------------------------------
-  // RENDERING (CAROUSELS)
-  // ------------------------------------------------------------
-  function renderIntoCarousel(trackId, entries) {
-    const track = document.getElementById(trackId);
-    if (!track) return;
-
-    track.innerHTML = '';
-    const frag = document.createDocumentFragment();
-    entries.forEach(entry => frag.appendChild(renderEntry(entry, 'carousel')));
-    track.appendChild(frag);
-  }
-
-  // ------------------------------------------------------------
-  // FETCH WRAPPER
-  // ------------------------------------------------------------
-  async function fetchAndRender(queryFn, errorMsg, emptyMsg) {
-    const supa = window.supabaseClient;
-    const container = document.getElementById('video-container');
-
-    if (!supa) {
-      console.error('[video.js] Supabase missing.');
-      return;
-    }
-
-    const { data, error } = await queryFn(supa);
-    if (error) {
-      console.error(errorMsg, error);
-      if (container) container.innerHTML = `<p style="padding:16px">${escapeHTML(errorMsg)}</p>`;
-      return;
-    }
-    if (!data || data.length === 0) {
-      if (container) container.innerHTML = `<p style="padding:16px">${escapeHTML(emptyMsg)}</p>`;
-      return;
-    }
-
-    renderVideos(data);
-  }
-
-  // ------------------------------------------------------------
-  // PAGE LOADERS
-  // ------------------------------------------------------------
-
-  // Country.html
-  function loadCountry() {
-    const country = getQueryParam('country');
-    const container = document.getElementById('video-container');
-
-    if (!country) {
-      if (container) {
-        container.innerHTML = `<p style="padding:16px">No country specified. Add <code>?country=Sweden</code>.</p>`;
-      }
-      return;
-    }
-
-    return fetchAndRender(
-      (supa) => supa
-        .from('douzepoints')
-        .select('*')
-        .ilike('Country', country)
-        .order('Year', { ascending: false }),
-      `Error loading ${country}`,
-      `No entries for ${country}.`
-    );
-  }
-
-  // Edition.html
-  function loadEdition() {
-    const edition = getQueryParam('edition');
-    const container = document.getElementById('video-container');
-
-    if (!edition) {
-      if (container) container.innerHTML = `<p style="padding:16px">Add <code>?edition=2024</code>.</p>`;
-      return;
-    }
-
-    return fetchAndRender(
-      (supa) => supa
-        .from('douzepoints')
-        .select('*')
-        .eq('Year', edition)
-        .order('Final_Rank', { ascending: true }),
-      `Error loading edition ${edition}`,
-      `No entries for ${edition}.`
-    );
-  }
-
-  // Winners.html
-  function loadWinners() {
-    return fetchAndRender(
-      (supa) => supa
-        .from('douzepoints')
-        .select('*')
-        .eq('Final_Rank', 1)
-        .order('Year', { ascending: false }),
-      'Error loading winners',
-      'No winners found.'
-    );
-  }
-
-  // Fan-favorites.html  (FanFave = 'Y')
-  function loadFanFavorites() {
-    return fetchAndRender(
-      (supa) =>
-        supa
-          .from('douzepoints')
-          .select('*')
-          .eq('FanFave', 'Y')
-          .order('Year', { ascending: false }),
-      'Error loading fan favourites',
-      'No fan favourites found.'
-    );
-  }
-
-  // ------------------------------------------------------------
-  // HOME PAGE (index.html) — FOUR CAROUSELS
-  // ------------------------------------------------------------
-  async function loadHome() {
-    const supa = window.supabaseClient;
-    if (!supa) return;
-
-    const track1 = document.getElementById('carouselTrack1'); // Winners
-    const track2 = document.getElementById('carouselTrack2'); // 2024 Malmö
-    const track3 = document.getElementById('carouselTrack3'); // Fan Favourites
-    const track4 = document.getElementById('carouselTrack4'); // 2025 Basel
-
-    try {
-      const tasks = [];
-
-      // Winners carousel
-      if (track1) {
-        tasks.push(
-          supa.from('douzepoints')
-            .select('*')
-            .eq('Final_Rank', 1)
-            .order('Year', { ascending: false })
-            .limit(40)
-            .then(({ data, error }) => {
-              if (!error) renderIntoCarousel('carouselTrack1', data || []);
-            })
-        );
-      }
-
-      // Basel 2025
-      if (track4) {
-        tasks.push(
-          supa.from('douzepoints')
-            .select('*')
-            .eq('Year', 2025)
-            .order('Final_Rank', { ascending: true })
-            .then(({ data, error }) => {
-              if (!error) renderIntoCarousel('carouselTrack4', data || []);
-            })
-        );
-      }
-
-      // Malmö 2024
-      if (track2) {
-        tasks.push(
-          supa.from('douzepoints')
-            .select('*')
-            .eq('Year', 2024)
-            .order('Final_Rank', { ascending: true })
-            .then(({ data, error }) => {
-              if (!error) renderIntoCarousel('carouselTrack2', data || []);
-            })
-        );
-      }
-
-      // Fan Favourites
-      if (track3) {
-        tasks.push(
-          supa.from('douzepoints')
-            .select('*')
-            .eq('FanFave', 'Y')
-            .order('Year', { ascending: false })
-            .then(({ data, error }) => {
-              if (!error) renderIntoCarousel('carouselTrack3', data || []);
-            })
-        );
-      }
-
-      await Promise.all(tasks);
-    } catch (e) {
-      console.error('Home carousel load error:', e);
-    }
-  }
-
-  // ------------------------------------------------------------
-  // CAROUSEL SCROLLING
-  // ------------------------------------------------------------
-  window.scrollCarousel = function (direction, trackId) {
-    const track = document.getElementById(trackId);
-    if (!track) return;
-
-    const container = track.parentElement;
-    const card = track.querySelector('.carousel-video-item') || track.querySelector('.video-item');
-
-    const cardWidth = card ? card.getBoundingClientRect().width + 30 : 260;
-    const scrollAmount = direction * cardWidth * 4;
-
-    container.scrollBy({
-      left: scrollAmount,
-      behavior: 'smooth'
-    });
-  };
-
-  // ------------------------------------------------------------
-  // PAGE ROUTING
-  // ------------------------------------------------------------
-  document.addEventListener('DOMContentLoaded', () => {
-    const path = window.location.pathname;
-
-    if (path.endsWith('/') || path.endsWith('index.html') || path.includes('index.html')) {
-      loadHome();
-    } else if (path.includes('country.html')) {
-      loadCountry();
-    } else if (path.includes('edition.html')) {
-      loadEdition();
-    } else if (path.includes('winners.html')) {
-      loadWinners();
-    } else if (path.includes('fan-favorites.html')) {
-      loadFanFavorites();
-    }
-  });
-
-  // Expose manual renderer
-  window.renderVideos = renderVideos;
-})();
+</body>
+</html>
