@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <link rel="stylesheet" href="style/combined.css" />
-  <link rel="stylesheet" href="style/sidebar.css" />
 
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -41,138 +40,102 @@
     }
 
     .login-container h2 {
-      margin-top: 0;
-      margin-bottom: 24px;
-      font-size: 28px;
       text-align: center;
-      font-weight: 700;
+      margin-bottom: 25px;
     }
 
-    .login-container input {
+    input {
       width: 100%;
       padding: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 15px;
       border-radius: 6px;
       border: none;
       background: #1f212d;
-      color: #fff;
-      font-size: 15px;
+      color: white;
     }
 
-    .login-container button {
+    button {
       width: 100%;
       padding: 14px;
       background: #e50914;
       border: none;
       border-radius: 6px;
       color: white;
-      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 8px;
+      margin-top: 5px;
     }
 
-    .login-container button:hover {
+    button:hover {
       background: #f6121d;
     }
 
-    .subscription-section {
-      max-width: 900px;
-      margin: 40px auto;
-    }
-
-    .subscription-row {
-      display: flex;
-      justify-content: space-between;
-      background: #181a24;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      align-items: center;
-      box-shadow: 0 0 12px rgba(0,0,0,0.35);
-    }
-
-    .subscription-row h3 {
-      margin: 0 0 6px 0;
-      font-size: 22px;
-      color: #fff;
-    }
-
-    .subscription-row p {
-      margin: 0;
-      color: #bbb;
-      font-size: 14px;
-    }
-
-    .sub-button {
-      background: #e50914;
-      padding: 10px 20px;
-      border-radius: 5px;
-      color: white;
+    .toggle-link {
+      text-align: center;
+      margin-top: 18px;
       font-size: 14px;
       cursor: pointer;
-      text-decoration: none;
-    }
-
-    .sub-button:hover {
-      background: #f6121d;
+      color: #e50914;
     }
   </style>
-
 </head>
+
 <body>
 
-  <!-- HEADER IMAGE -->
   <div class="header-image">
-    <img src="banners/douzepoints.png" alt="Douze Points Header" />
+    <img src="images/header-banner.jpg" alt="Douze Points Header" />
   </div>
 
-  <!-- LOGIN FORM -->
   <div class="login-container">
-    <h2>Sign in to DouzePoints</h2>
 
-    <input type="email" id="email" placeholder="Email address" />
-    <input type="password" id="password" placeholder="Password" />
+    <!-- LOGIN -->
+    <div id="loginBox">
+      <h2>Sign in to DouzePoints</h2>
 
-    <button id="loginButton">Sign In</button>
-  </div>
+      <input type="email" id="loginEmail" placeholder="Email address">
+      <input type="password" id="loginPassword" placeholder="Password">
 
-  <!-- NETFLIX-STYLE SUBSCRIPTION OPTIONS -->
-  <div class="subscription-section">
+      <button id="loginBtn">Sign In</button>
 
-    <div class="subscription-row">
-      <div>
-        <h3>Basic Plan</h3>
-        <p>Watch Eurovision videos at standard resolution. One device at a time.</p>
-      </div>
-      <a class="sub-button">Choose Plan</a>
+      <div class="toggle-link" onclick="showSignUp()">New user? Create an account</div>
     </div>
 
-    <div class="subscription-row">
-      <div>
-        <h3>Standard Plan</h3>
-        <p>HD quality. Watch on two devices at the same time. Access fan-favourites.</p>
-      </div>
-      <a class="sub-button">Choose Plan</a>
-    </div>
+    <!-- SIGN-UP -->
+    <div id="signupBox" style="display:none;">
+      <h2>Create Account</h2>
 
-    <div class="subscription-row">
-      <div>
-        <h3>Premium Plan</h3>
-        <p>4K UHD. Unlimited devices. Exclusive douzepoints analytics & scoreboard tools.</p>
-      </div>
-      <a class="sub-button">Choose Plan</a>
+      <input type="email" id="signupEmail" placeholder="Email address">
+      <input type="password" id="signupPassword" placeholder="Password">
+      <input type="text" id="signupName" placeholder="Display name (optional)">
+
+      <button id="signupBtn">Sign Up</button>
+
+      <div class="toggle-link" onclick="showLogin()">Already have an account? Sign in</div>
     </div>
 
   </div>
 
-  <!-- LOGIN LOGIC -->
+
   <script type="module">
     import { supabase } from './js/supabaseClient.js';
 
-    document.getElementById('loginButton').addEventListener('click', async () => {
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
+    // SHOW SIGN-UP / LOGIN
+    window.showSignUp = () => {
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("signupBox").style.display = "block";
+    };
+
+    window.showLogin = () => {
+      document.getElementById("signupBox").style.display = "none";
+      document.getElementById("loginBox").style.display = "block";
+    };
+
+    /* ----------------------------------------
+       LOGIN LOGIC
+    ----------------------------------------- */
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
 
       const { error } = await supabase.auth.signInWithPassword({ email, password });
 
@@ -181,9 +144,53 @@
         return;
       }
 
-      // Redirect to home
       window.location.href = "index.html";
     });
+
+    /* ----------------------------------------
+       SIGN-UP LOGIC
+       Uses Supabase Auth + Inserts user in "users" table
+    ----------------------------------------- */
+    document.getElementById("signupBtn").addEventListener("click", async () => {
+      const email = document.getElementById("signupEmail").value.trim();
+      const password = document.getElementById("signupPassword").value.trim();
+      const displayName = document.getElementById("signupName").value.trim();
+
+      // 1. Create Supabase Auth user
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password
+      });
+
+      if (error) {
+        alert("Sign-up failed: " + error.message);
+        return;
+      }
+
+      const user = data.user;
+      if (!user) {
+        alert("Unexpected error: user not created.");
+        return;
+      }
+
+      // 2. Insert into PUBLIC.users table
+      const { error: insertError } = await supabase
+        .from("users")
+        .insert({
+          id: user.id,
+          email: user.email,
+          display_name: displayName || null,
+          subscription_level: "basic"
+        });
+
+      if (insertError) {
+        alert("Account created but failed to save profile.");
+      }
+
+      alert("Account created. Please check your email to confirm your account.");
+      showLogin();
+    });
+
   </script>
 
 </body>
