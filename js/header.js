@@ -2,38 +2,58 @@ import { supabase } from './supabaseClient.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     loadHeader();
-    protectPage();   // 🔒 Protect all pages except login.html
 });
 
 // -------------------------------------------------------------
-// 🔒 Redirect users to login.html if they are not logged in
+// 🔒 AUTH STATE PROTECTION (BEST PRACTICE)
 // -------------------------------------------------------------
-async function protectPage() {
-    const { data: { session } } = await supabase.auth.getSession();
-
+supabase.auth.onAuthStateChange((event, session) => {
     const isLoginPage = window.location.pathname.includes("login.html");
 
+    // If no active session and not on login page → redirect
     if (!session && !isLoginPage) {
-        console.warn("⛔ No active session — redirecting to login.");
+        console.warn("⛔ Session missing – redirecting to login.");
         window.location.href = "login.html";
     }
-}
+});
 
 // -------------------------------------------------------------
-// 🚀 Load header.html and apply banner + logout logic
+// 🚀 Load header + bind logout button
 // -------------------------------------------------------------
 async function loadHeader() {
     const path = window.location.pathname;
     const headerHtml = await fetch("header.html").then(res => res.text());
     const headerContainer = document.getElementById("header-container");
 
-    if (!headerContainer) {
-        console.error("header-container element not found");
-        return;
-    }
+    if (!headerContainer) return;
 
     headerContainer.innerHTML = headerHtml;
 
+    // -----------------------
+    // 🔴 LOGOUT BUTTON
+    // -----------------------
+    const logoutBtn = document.getElementById("logout-btn");
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            console.log("Logging out…");
+
+            const { error } = await supabase.auth.signOut({ scope: "local" });
+
+            if (error) {
+                console.error("Logout error:", error);
+            } else {
+                console.log("Logout successful.");
+                window.location.href = "login.html";
+            }
+        });
+    }
+
+    // ---------------------------------------------------------
+    // 🎨 Banner logic (unchanged)
+    // ---------------------------------------------------------
     const banner = document.getElementById("country-banner");
 
     const isIndexPage      = path === "/" || path.endsWith("index.html");
@@ -49,9 +69,6 @@ async function loadHeader() {
 
     const country = new URLSearchParams(window.location.search).get("country");
 
-    // ---------------------------------------------------------
-    // 🎨 Set the banner
-    // ---------------------------------------------------------
     if (!banner) return;
 
     if (isWinnersPage) {
@@ -68,16 +85,7 @@ async function loadHeader() {
 
     } else if (isEditionPage) {
         const editionYear = new URLSearchParams(window.location.search).get("edition");
-
         if (editionYear) {
-            const { data } = await supabase
-                .from("douzepoints")
-                .select("LocationCountry")
-                .eq("Year", editionYear)
-                .limit(1);
-
-            const locationCode = data?.[0]?.LocationCountry?.toLowerCase();
-
             banner.src = `/banners/${editionYear}.png`;
             banner.alt = editionYear;
         }
@@ -115,26 +123,5 @@ async function loadHeader() {
     } else if (isPrivacyPage) {
         banner.src = "/banners/privacy.png";
         banner.alt = "Privacy";
-    }
-
-    // ---------------------------------------------------------
-    // 🔴 Logout Button Logic
-    // ---------------------------------------------------------
-    const logoutBtn = document.getElementById("logout-btn");
-
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", async (e) => {
-            e.preventDefault();
-            console.log("Logout clicked");
-
-            const { error } = await supabase.auth.signOut();
-
-            if (error) {
-                console.error("Logout error:", error);
-            } else {
-                console.log("Logged out successfully");
-                window.location.href = "login.html";
-            }
-        });
     }
 }
