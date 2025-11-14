@@ -238,6 +238,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     loadTableData(e.target.value);
   });
 
+  document.addEventListener("click", e => {
+    if (e.target.classList.contains("video-trigger")) {
+        const url = e.target.getAttribute("data-url");
+        if (window.openVideoModal) {
+            window.openVideoModal(url);
+        }
+    }
+});
+
+
   document.getElementById("stageSelect").addEventListener("change", () => {
     loadTableData(currentYear);
   });
