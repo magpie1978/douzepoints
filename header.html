@@ -15,4 +15,12 @@
     </div>
 </header>
 
+<script>
+window.logout = async function () {
+  const { supabase } = await import('./supabaseClient.js');
+  await supabase.auth.signOut();
+  window.location.href = "login.html";
+};
+</script.
+
 <div class="banner-divider"></div>
