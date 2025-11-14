@@ -51,9 +51,14 @@ function renderTableHead() {
   const thead = document.getElementById("tableHead");
   thead.innerHTML = "";
 
+  const stage = document.getElementById("stageSelect").value;
+  const isFinal = stage === "Final";
+
   const tr = document.createElement("tr");
 
   columnDefinitions.forEach(col => {
+    if (isFinal && col.label === "Status") return; // HIDE STATUS IN FINAL
+
     const th = document.createElement("th");
     th.textContent = col.label;
     th.dataset.key = col.label;
@@ -62,6 +67,7 @@ function renderTableHead() {
 
   thead.appendChild(tr);
 }
+
 
 /* ------------------------- TABLE BODY ------------------------- */
 function renderTable() {
@@ -78,8 +84,9 @@ function renderTable() {
     const flag = `<img class="flag" src="flags/${countryCode}.png">`;
 
     columnDefinitions.forEach(col => {
-      const td = document.createElement("td");
+      if (isFinal && col.label === "Status") return; // HIDE STATUS IN FINAL
 
+      const td = document.createElement("td");
       const field = col.key || (isFinal ? col.final : col.semi);
 
       if (col.label === "Country") {
