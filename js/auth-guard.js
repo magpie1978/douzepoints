@@ -1,8 +1,14 @@
+// auth-guard.js
 import { supabase } from './supabaseClient.js';
 
+/* ------------------------------------------------------
+   1. Redirect unauthenticated users to login.html
+------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", async () => {
-  // Skip guard on login page
-  if (window.location.pathname.includes("login.html")) return;
+  const current = window.location.pathname;
+
+  // Do NOT redirect on login page
+  if (current.endsWith("login.html")) return;
 
   const {
     data: { session }
@@ -14,26 +20,33 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 
+/* ------------------------------------------------------
+   2. Create user profile AFTER they verify email + sign in
+      This fires EXACTLY when:
+      - They click their Supabase confirmation e-mail
+      - Or they sign in normally after confirming
+------------------------------------------------------- */
 supabase.auth.onAuthStateChange(async (event, session) => {
-  if (event === "SIGNED_IN") {
-    const user = session.user;
+  if (event !== "SIGNED_IN" || !session) return;
 
-    // Check if profile already exists
-    const { data: existing } = await supabase
-      .from("users")
-      .select("id")
-      .eq("id", user.id)
-      .single();
+  const user = session.user;
+  if (!user) return;
 
-    if (!existing) {
-      await supabase.from("users").insert({
-        id: user.id,
-        email: user.email,
-        display_name: user.user_metadata.full_name || null,
-        subscription_level: "basic"
-      });
+  // Check if this user already has a profile row
+  const { data: existing } = await supabase
+    .from("users")
+    .select("id")
+    .eq("id", user.id)
+    .single();
 
-      console.log("Profile created:", user.email);
-    }
+  if (!existing) {
+    console.log("Creating user profile row for:", user.email);
+
+    await supabase.from("users").insert({
+      id: user.id,
+      email: user.email,
+      display_name: user.user_metadata.full_name || null,
+      subscription_level: "basic"
+    });
   }
 });
