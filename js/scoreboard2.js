@@ -71,14 +71,22 @@ function renderTableHead() {
 async function loadTableData(year) {
   currentYear = year;
   const stage = document.getElementById("stageSelect").value;
+
   eurovisionData = await loadSupabaseDataForStageAndYear(stage, year);
+
+  // NEW: Remove DNQs when "Final" is selected
+  if (stage === "Final") {
+    eurovisionData = eurovisionData.filter(r =>
+      r.Final_Rank !== null &&
+      r.Final_Rank !== "" &&
+      r.Final_Rank !== undefined
+    );
+  }
 
   const header = document.getElementById("tableHeader");
   header.textContent = `Eurovision ${stage} - ${year}`;
 
-  // Build header row (and respect hiding "Status" for Final)
   renderTableHead();
-
   renderTable();
   sortBy("Total Points", "desc");
 }
