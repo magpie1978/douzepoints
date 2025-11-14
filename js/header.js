@@ -1,154 +1,171 @@
-import { supabase } from './supabaseClient.js';
+// header.js
+import { supabase } from "./supabaseClient.js";
 
 /* ------------------------------------------------------
    INITIAL HEADER LOAD
 ------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
-    loadHeader();
+  loadHeader();
 });
 
 /* ------------------------------------------------------
-   LOAD HEADER + SET BANNERS (for pages that have one)
+   LOAD HEADER + SAFE BANNER LOGIC
 ------------------------------------------------------- */
 async function loadHeader() {
+  try {
     const path = window.location.pathname;
 
-    // Insert header
-    const headerHtml = await fetch("header.html").then(res => res.text());
+    // Load header.html
+    const headerHtml = await fetch("header.html").then((res) => res.text());
     const headerContainer = document.getElementById("header-container");
 
     if (!headerContainer) {
-        console.error("header-container element not found");
-        return;
+      console.error("header-container not found");
+      return;
     }
 
     headerContainer.innerHTML = headerHtml;
 
-    // Render Lucide icons
     if (window.lucide) window.lucide.createIcons();
 
-    // Banner element ONLY exists on country.html
+    // Banner may not exist on most pages
     const banner = document.getElementById("country-banner");
-
-    // If no banner on this page → do nothing else (safe!)
     if (!banner) {
-        console.info("No banner detected on this page — skipping banner logic.");
-        return;
+      console.info("No #country-banner on this page (this is normal).");
+      return;
     }
 
-    /* -------------------------
-       BANNER LOGIC (unchanged)
-       ------------------------- */
+    /* ------------------------------------------
+       ALL BANNER LOGIC WRAPPED IN TRY/CATCH
+       SO THAT ERRORS CANNOT BREAK THE PAGE
+    ------------------------------------------- */
+    try {
+      const country = new URLSearchParams(window.location.search).get("country");
+      const editionYear = new URLSearchParams(window.location.search).get("edition");
 
-    const isIndexPage = path === "/" || path.endsWith("index.html");
-    const country = new URLSearchParams(window.location.search).get("country");
-    const editionYear = new URLSearchParams(window.location.search).get("edition");
+      const isIndexPage = path === "/" || path.endsWith("index.html");
+      const isCountryPage = path.includes("country.html");
+      const isEditionPage = path.includes("edition.html");
+      const isWinnersPage = path.includes("winners.html");
+      const isFavouritesPage = path.includes("fan-favorites.html");
+      const isScoreboardPage = path.includes("scoreboard.html");
+      const isAboutPage = path.includes("about.html");
+      const isContactPage = path.includes("contact.html");
+      const isFAQPage = path.includes("faq.html");
+      const isPrivacyPage = path.includes("privacy.html");
 
-    const isCountryPage = path.includes("country.html");
-    const isEditionPage = path.includes("edition.html");
-    const isWinnersPage = path.includes("winners.html");
-    const isFavouritesPage = path.includes("fan-favorites.html");
-    const isAboutPage = path.includes("about.html");
-    const isContactPage = path.includes("contact.html");
-    const isFAQPage = path.includes("faq.html");
-    const isPrivacyPage = path.includes("privacy.html");
-    const isScoreboardPage = path.includes("scoreboard.html");
-
-    if (isWinnersPage) {
+      if (isWinnersPage) {
         banner.src = "/banners/winners.png";
         banner.alt = "Winners";
 
-    } else if (isIndexPage) {
+      } else if (isIndexPage) {
         banner.src = "/banners/douzepoints.png";
         banner.alt = "Home";
 
-    } else if (isFavouritesPage) {
+      } else if (isFavouritesPage) {
         banner.src = "/banners/fanfavorites.png";
         banner.alt = "Fan Favourites";
 
-    } else if (isEditionPage && editionYear) {
-        const { data } = await supabase
-            .from("douzepoints")
-            .select("LocationCountry")
-            .eq("Year", editionYear)
-            .limit(1);
+      } else if (isEditionPage && editionYear) {
+        const { data, error } = await supabase
+          .from("douzepoints")
+          .select("LocationCountry")
+          .eq("Year", editionYear)
+          .limit(1);
 
-        const locationCode = data?.[0]?.LocationCountry?.toLowerCase();
-        if (locationCode) {
-            banner.src = `/banners/${editionYear}.png`;
-            banner.alt = editionYear;
+        if (error) throw error;
+
+        const code = data?.[0]?.LocationCountry?.toLowerCase();
+        if (code) {
+          banner.src = `/banners/${editionYear}.png`;
+          banner.alt = editionYear;
         }
 
-    } else if (isCountryPage && country) {
-        const { data } = await supabase
-            .from("douzepoints")
-            .select("Country_Code")
-            .ilike("Country", country)
-            .limit(1);
+      } else if (isCountryPage && country) {
+        const { data, error } = await supabase
+          .from("douzepoints")
+          .select("Country_Code")
+          .ilike("Country", country)
+          .limit(1);
+
+        if (error) throw error;
 
         const code = data?.[0]?.Country_Code?.toLowerCase();
         if (code) {
-            const bannerPath = `/banners/${code}.png`;
-            banner.src = bannerPath;
-            banner.alt = country;
-            console.log("✅ Country banner set:", bannerPath);
+          banner.src = `/banners/${code}.png`;
+          banner.alt = country;
         }
 
-    } else if (isAboutPage) {
-        banner.src = "/banners/about.png";
-        banner.alt = "About";
-
-    } else if (isScoreboardPage) {
+      } else if (isScoreboardPage) {
         banner.src = "/banners/douzepoints.png";
         banner.alt = "Scoreboard";
 
-    } else if (isContactPage) {
+      } else if (isAboutPage) {
+        banner.src = "/banners/about.png";
+        banner.alt = "About";
+
+      } else if (isContactPage) {
         banner.src = "/banners/contact.png";
         banner.alt = "Contact";
 
-    } else if (isFAQPage) {
+      } else if (isFAQPage) {
         banner.src = "/banners/faq.png";
         banner.alt = "FAQ";
 
-    } else if (isPrivacyPage) {
+      } else if (isPrivacyPage) {
         banner.src = "/banners/privacy.png";
         banner.alt = "Privacy";
+      }
+    } catch (innerErr) {
+      console.error("⚠ Banner logic error (but page continues safely):", innerErr);
     }
+  } catch (outerErr) {
+    console.error("❌ header.js failed (critical):", outerErr);
+  }
 }
 
-
 /* ------------------------------------------------------
-   GLOBAL LOGOUT FUNCTION (available everywhere)
+   GLOBAL LOGOUT FUNCTION
 ------------------------------------------------------- */
 window.logout = async function () {
-    await supabase.auth.signOut();
-    window.location.href = "login.html";
+  await supabase.auth.signOut();
+  window.location.href = "login.html";
 };
 
-
 /* ------------------------------------------------------
-   USER PROFILE CREATION (Triggered AFTER sign-in)
+   PROFILE CREATION AFTER SIGN-IN
 ------------------------------------------------------- */
 supabase.auth.onAuthStateChange(async (event, session) => {
-    if (event !== "SIGNED_IN" || !session) return;
+  if (event !== "SIGNED_IN" || !session) return;
 
-    const user = session.user;
+  const user = session.user;
 
-    // Does profile exist?
-    const { data: existing } = await supabase
-        .from("users")
-        .select("id")
-        .eq("id", user.id)
-        .single();
+  try {
+    const { data: existing, error } = await supabase
+      .from("users")
+      .select("id")
+      .eq("id", user.id)
+      .single();
+
+    if (error) {
+      console.warn("Profile check error:", error.message);
+    }
 
     if (!existing) {
-        console.log("🆕 Creating user profile for:", user.email);
+      console.log("🆕 Creating profile for:", user.email);
 
-        await supabase.from("users").insert({
-            id: user.id,
-            email: user.email,
-            display_name: user.user_metadata.full_name || null,
-            subscription_level: "basic"
-        });
+      const { error: insertErr } = await supabase.from("users").insert({
+        id: user.id,
+        email: user.email,
+        display_name: user.user_metadata.full_name || null,
+        subscription_level: "basic",
+      });
+
+      if (insertErr) {
+        console.error("Failed to insert profile:", insertErr.message);
+      }
     }
+  } catch (err) {
+    console.error("Profile creation error:", err);
+  }
 });
