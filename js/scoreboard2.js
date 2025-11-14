@@ -1,9 +1,11 @@
 import { supabase } from './supabaseClient.js';
 
+// --- Global State ---
+let allRawData = [];
 let eurovisionData = [];
-let currentYear = "2025";
+let currentYear = '2025';
 let currentSortKey = null;
-let currentSortDir = "desc";
+let currentSortDir = 'desc';
 
 const columnDefinitions = [
   { label: "Result", final: "Final_Rank", semi: "SemiFinal_Rank" },
@@ -20,141 +22,211 @@ const columnDefinitions = [
   { label: "Status", key: "Status" }
 ];
 
-/* ------------------------- LOAD DATA ------------------------- */
-async function loadSupabaseData(stage, year) {
-  let q = supabase.from("douzepoints").select("*").eq("Year", parseInt(year));
+// --- Load Supabase Data ---
+async function loadSupabaseDataForStageAndYear(stage, year) {
+  let query = supabase.from('douzepoints').select('*').eq('Year', parseInt(year));
 
-  if (stage === "Final") q = q.not("FinalRunningOrder", "is", null);
-  if (stage === "Semi Final 1") q = q.eq("SemiFinal", "1");
-  if (stage === "Semi Final 2") q = q.eq("SemiFinal", "2");
+  if (stage === 'Final') {
+    query = query.not('FinalRunningOrder', 'is', null);
+  } else if (stage === 'Semi Final 1') {
+    query = query.eq('SemiFinal', '1');
+  } else if (stage === 'Semi Final 2') {
+    query = query.eq('SemiFinal', '2');
+  }
 
-  const { data, error } = await q;
-  if (error) return [];
+  const { data, error } = await query;
+  if (error) {
+    console.error('Error loading data:', error.message);
+    return [];
+  }
   return data;
 }
 
-async function loadTableData(year) {
-  currentYear = year;
-  const stage = document.getElementById("stageSelect").value;
-  eurovisionData = await loadSupabaseData(stage, year);
-
-  document.getElementById("tableHeader").textContent =
-    `Eurovision ${stage} - ${year}`;
-
-  renderTableHead();
-  renderTable();
-  sortBy("Total Points", "desc");
-}
-
-/* ------------------------- TABLE HEAD ------------------------- */
+// --- Render Table Head (TITLE ROW) ---
 function renderTableHead() {
-  const thead = document.getElementById("tableHead");
-  thead.innerHTML = "";
+  const thead = document.getElementById('tableHead');
+  thead.innerHTML = '';
 
   const stage = document.getElementById("stageSelect").value;
   const isFinal = stage === "Final";
 
-  const tr = document.createElement("tr");
+  const tr = document.createElement('tr');
 
   columnDefinitions.forEach(col => {
-    if (isFinal && col.label === "Status") return; // HIDE STATUS IN FINAL
+    const label = col.label;
 
-    const th = document.createElement("th");
-    th.textContent = col.label;
-    th.dataset.key = col.label;
+    // HIDE Status column completely when Final is selected
+    if (isFinal && label === "Status") return;
+
+    const th = document.createElement('th');
+    th.textContent = label;
+    th.dataset.key = label;
     tr.appendChild(th);
   });
 
   thead.appendChild(tr);
 }
 
+// --- Load and Render Table Data ---
+async function loadTableData(year) {
+  currentYear = year;
+  const stage = document.getElementById("stageSelect").value;
+  eurovisionData = await loadSupabaseDataForStageAndYear(stage, year);
 
-/* ------------------------- TABLE BODY ------------------------- */
+  const header = document.getElementById("tableHeader");
+  header.textContent = `Eurovision ${stage} - ${year}`;
+
+  // Build header row (and respect hiding "Status" for Final)
+  renderTableHead();
+
+  renderTable();
+  sortBy("Total Points", "desc");
+}
+
+// --- Render Table Rows ---
 function renderTable() {
-  const tbody = document.getElementById("eurovision-table-body");
-  tbody.innerHTML = "";
-
+  const tbody = document.getElementById('eurovision-table-body');
+  tbody.innerHTML = '';
   const stage = document.getElementById("stageSelect").value;
   const isFinal = stage === "Final";
 
   eurovisionData.forEach(row => {
-    const tr = document.createElement("tr");
+    const tr = document.createElement('tr');
+    const countryCode = (row.Country_Code || '').toLowerCase();
+    const flag = `<img class="flag" src="flags/${countryCode}.png" alt="${row.Country} flag"/>`;
 
-    const countryCode = row.Country_Code?.toLowerCase() || "";
-    const flag = `<img class="flag" src="flags/${countryCode}.png">`;
+    const cells = columnDefinitions.map(col => {
+      const label = col.label;
 
-    columnDefinitions.forEach(col => {
-      if (isFinal && col.label === "Status") return; // HIDE STATUS IN FINAL
+      // HIDE Status column completely when Final is selected
+      if (isFinal && label === "Status") return null;
 
-      const td = document.createElement("td");
       const field = col.key || (isFinal ? col.final : col.semi);
+      const hasField = field && row[field] != null && row[field] !== '';
 
-      if (col.label === "Country") {
-        td.innerHTML = `${flag}${row.Country}`;
+      const dividerClass =
+        (label === "R/O" || label === "Televote Rank" || label === "Jury Rank")
+          ? "divider-right"
+          : "";
+
+      const alignClass =
+        label === "Televote Pts" ? "televote-pts" :
+        label === "Televote Rank" ? "televote-rank" :
+        label === "Jury Pts" ? "jury-pts" :
+        label === "Jury Rank" ? "jury-rank" :
+        label === "Total Points" ? "total-pts" : "";
+
+      // Country (flag + name)
+      if (label === "Country") {
+        return `<td><span class="country-name">${flag}${row.Country}</span></td>`;
       }
-      else if (col.label === "") {
-        td.innerHTML = `<i data-url="${row.Video_URL}" class="video-trigger" data-feather="play-circle"></i>`;
+
+      // Result / Rank columns
+      if (label === "Result" || label.includes("Rank")) {
+        const val = row[field] || '';
+        return `<td class="${alignClass} ${dividerClass}">${val}</td>`;
       }
-      else if (col.label === "Status") {
-        const q = row["SemiFinal_Rank"] && row["Final_Rank"];
-        td.innerHTML = q
-          ? `<span class="badge qualified">Qual</span>`
+
+      // Status (only for semis; Final is skipped above)
+      if (label === "Status") {
+        const qualified = row["SemiFinal_Rank"] && row["Final_Rank"];
+        const badge = qualified
+          ? `<span class="badge qualified" title="Qualified for Final">Qual</span>`
           : `<span class="badge dnq">DNQ</span>`;
-      }
-      else {
-        td.textContent = row[field] ?? "";
+        return `<td>${badge}</td>`;
       }
 
-      tr.appendChild(td);
+      // Play icon column
+      if (label === "") {
+        const videoUrl = row.Video_URL || "";
+        return `<td class="play-icon"><i data-url="${videoUrl}" class="video-trigger" data-feather="play-circle"></i></td>`;
+      }
+
+      // Default cells (Artist, Song, R/O, points, etc.)
+      return `<td class="${alignClass} ${dividerClass}">${hasField ? row[field] : ''}</td>`;
     });
 
+    // Remove nulls (i.e. removed Status cells in Final) before joining
+    tr.innerHTML = cells.filter(cell => cell !== null).join('');
     tbody.appendChild(tr);
   });
 
   if (window.feather) feather.replace();
 }
 
-/* ------------------------- SORTING ------------------------- */
-function sortBy(label, direction = null) {
+// --- Sorting Logic ---
+function sortBy(displayLabel, direction = null) {
   const stage = document.getElementById("stageSelect").value;
   const isFinal = stage === "Final";
-
-  const col = columnDefinitions.find(c => c.label === label);
-  const field = col.key || (isFinal ? col.final : col.semi);
+  const colDef = columnDefinitions.find(col => col.label === displayLabel);
+  const field = colDef?.key || (isFinal ? colDef?.final : colDef?.semi);
   if (!field) return;
 
-  const numeric = !isNaN(parseFloat(eurovisionData[0]?.[field]));
+  const isNumeric = !isNaN(parseFloat(eurovisionData[0]?.[field]));
 
   if (currentSortKey === field && !direction) {
-    currentSortDir = currentSortDir === "asc" ? "desc" : "asc";
+    currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
   } else {
     currentSortKey = field;
-    currentSortDir = direction || (numeric ? "desc" : "asc");
+    const ascendingByDefault = [
+      "FinalRunningOrder", "Final_TelevoteRank", "Final_JuryRank",
+      "SemiFinalRunningOrder", "SemiFinal_TelevoteRank", "SemiFinal_JuryRank"
+    ];
+    currentSortDir = direction || (ascendingByDefault.includes(field) ? 'asc' : isNumeric ? 'desc' : 'asc');
   }
 
   eurovisionData.sort((a, b) => {
-    const av = numeric ? +a[field] || 0 : (a[field] || "").toLowerCase();
-    const bv = numeric ? +b[field] || 0 : (b[field] || "").toLowerCase();
-    return currentSortDir === "asc" ? av - bv : bv - av;
+    const aVal = isNumeric ? parseFloat(a[field] || 0) : (a[field] || '').toLowerCase();
+    const bVal = isNumeric ? parseFloat(b[field] || 0) : (b[field] || '').toLowerCase();
+    if (aVal < bVal) return currentSortDir === 'asc' ? -1 : 1;
+    if (aVal > bVal) return currentSortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  // Update sort classes on visible headers only
+  document.querySelectorAll("th").forEach(th => {
+    th.classList.remove("sort-asc", "sort-desc");
+    if (th.dataset.key === displayLabel) {
+      th.classList.add(currentSortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+    }
   });
 
   renderTable();
 }
 
-/* ------------------------- INIT ------------------------- */
+// --- Initial Page Load ---
 document.addEventListener("DOMContentLoaded", async () => {
-  const { data } = await supabase.from("douzepoints").select("Year");
-  const years = [...new Set(data.map(r => r.Year))].sort((a, b) => b - a);
+  // Load distinct years
+  const { data, error } = await supabase.from('douzepoints').select('Year');
+  if (error) {
+    console.error('Error loading years:', error.message);
+    return;
+  }
 
-  const select = document.getElementById("yearSelect");
-  select.innerHTML = years.map(y => `<option value="${y}">${y}</option>`).join("");
+  const years = [...new Set(data.map(row => row.Year).filter(Boolean))].sort((a, b) => b - a);
+  const select = document.getElementById('yearSelect');
+  select.innerHTML = '';
+  years.forEach(year => {
+    const option = document.createElement('option');
+    option.value = year;
+    option.textContent = year;
+    if (year == currentYear) option.selected = true;
+    select.appendChild(option);
+  });
 
   await loadTableData(currentYear);
 
-  select.addEventListener("change", e => loadTableData(e.target.value));
-  document.getElementById("stageSelect").addEventListener("change", () => loadTableData(currentYear));
+  document.getElementById("yearSelect").addEventListener("change", e => {
+    loadTableData(e.target.value);
+  });
+
+  document.getElementById("stageSelect").addEventListener("change", () => {
+    loadTableData(currentYear);
+  });
 
   document.addEventListener("click", e => {
-    if (e.target.tagName === "TH") sortBy(e.target.dataset.key);
+    if (e.target.tagName === "TH" && e.target.dataset.key) {
+      sortBy(e.target.dataset.key);
+    }
   });
 });
