@@ -57,8 +57,16 @@ Closes the .modal-content and .modal containers.
 <div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
   <div class="modal-content">
     <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
-    <video autoplay controls controlslist="nodownload" id="modalVideo" controls disablepictureinpicture controlsList="nodownload noremoteplayback" style="display: none;" oncontextmenu="return false"></video>
-    <!--<video autoplay controls controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>-->
+    <video
+    id="modalVideo"
+    autoplay
+    controls
+    disablepictureinpicture
+    controlslist="nodownload noplaybackrate noremoteplayback"
+    style="display: none;"
+    oncontextmenu="return false">
+    </video>
+
     <iframe allow="autoplay; encrypted-media" allowfullscreen frameborder="0" id="modalIframe" style="display: none;"></iframe>
   </div>
 </div>
