@@ -150,11 +150,10 @@ function renderTable() {
     const videoUrl = row.Video_URL || "";
     return `
       <td class="play-icon">
-        <i class="video-trigger" 
-           data-url="${videoUrl}" 
-           data-lucide="play-circle"
-           style="cursor:pointer; color:#e50914; width:22px; height:22px;">
-        </i>
+        <i data-lucide="play-circle"
+   class="video-trigger"
+   data-url="${videoUrl}">
+</i>
       </td>
     `;
 }
@@ -170,6 +169,9 @@ function renderTable() {
   });
 
   if (window.feather) feather.replace();
+  if (window.lucide) lucide.createIcons();
+
+
 }
 
 // --- Sorting Logic ---
