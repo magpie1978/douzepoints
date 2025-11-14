@@ -1,4 +1,4 @@
-<header class="main-header">
+<!-- <header class="main-header">
     <div class="header-overlay">
         <div class="header-links">
             <a class="home-link" href="index.html">Home</a>
@@ -13,3 +13,54 @@
 </header>
 
 <div class="banner-divider"></div>
+-->
+
+<header class="main-header">
+    <div class="header-overlay">
+        <div class="header-links">
+            <a class="home-link" href="index.html">Home</a>
+            <a class="home-link" href="country.html?country=Albania">Countries</a>
+            <a class="home-link" href="edition.html?edition=2025">Editions</a>
+            <a class="home-link" href="scoreboard.html">Scoreboard</a>
+
+            <!-- 🔴 NEW LOGOUT BUTTON -->
+            <a class="home-link logout-link" href="#" id="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <div class="banner-static">
+        <img alt="Banner" id="country-banner" src="" />
+    </div>
+</header>
+
+<div class="banner-divider"></div>
+
+<!-- 🔴 Supabase logout logic -->
+<script type="module">
+    import { supabase } from './supabaseClient.js';
+
+    document.getElementById("logout-btn").addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        const { error } = await supabase.auth.signOut();
+
+        if (error) {
+            console.error("Logout error:", error);
+            alert("Failed to log out.");
+        } else {
+            window.location.href = "login.html";  // redirect after logout
+        }
+    });
+</script>
+
+<!-- 🔴 Optional: Add basic styling (you can move this to your CSS file) -->
+<style>
+    .logout-link {
+        margin-left: 20px;
+        color: #e50914 !important;    /* Netflix red */
+        font-weight: bold;
+    }
+    .logout-link:hover {
+        text-decoration: underline;
+    }
+</style>
