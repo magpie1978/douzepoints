@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <title>DouzePoints | Edition</title>
+  <title>Eurovision Scoreboard</title>
 
   <!-- Styles -->
   <link rel="stylesheet" href="style/combined.css" />
-  <link rel="stylesheet" href="style/sidebar.css" />
   <link rel="stylesheet" href="style/scoreboard.css" />
+  <link rel="stylesheet" href="style/footer.css" />
 
-  <!-- Icons + Supabase -->
+  <!-- Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
@@ -23,12 +23,13 @@
   <div id="header-container"></div>
   <script type="module" src="js/header.js"></script>
 
+  <!-- MAIN CONTENT -->
   <div class="main-content">
 
     <div class="table-aligned-container">
       <h1 id="tableHeader">Eurovision Grand Final - 2025</h1>
 
-      <!-- Controls -->
+      <!-- FILTER CONTROLS -->
       <div class="table-controls">
         <label for="yearSelect">Year:</label>
         <select id="yearSelect"></select>
@@ -41,7 +42,7 @@
         </select>
       </div>
 
-      <!-- Table -->
+      <!-- TABLE -->
       <div class="table-wrapper">
         <table>
           <thead id="tableHead"></thead>
@@ -52,38 +53,16 @@
 
   </div>
 
-  <!-- MODAL -->
-  <div id="video-modal" class="video-modal" style="display:none;">
-    <video id="modal-video" width="640" height="360" controls autoplay></video>
-  </div>
+  <!-- UNIVERSAL MODAL SYSTEM (shared with all pages) -->
+  <script src="js/modal.js"></script>
+  <div id="modal-container"></div>
+
+  <!-- SCOREBOARD LOGIC -->
+  <script type="module" src="js/scoreboard.js"></script>
 
   <!-- FOOTER -->
   <div id="footer"></div>
   <script src="js/footer.js"></script>
-  <script src="js/modal.js"></script>
-
-  <div id="modal-container"></div>
-
-
-  <!-- Scoreboard JS -->
-  <script type="module" src="js/scoreboard.js"></script>
-
-  <!-- Modal Logic -->
-  <script>
-    document.addEventListener('click', function (e) {
-      const modal = document.getElementById('video-modal');
-      const video = document.getElementById('modal-video');
-
-      if (e.target.classList.contains('video-trigger')) {
-        video.src = e.target.getAttribute('data-url');
-        modal.style.display = 'block';
-      } 
-      else if (!e.target.closest('#video-modal')) {
-        video.pause();
-        modal.style.display = 'none';
-      }
-    });
-  </script>
 
 </body>
 </html>
