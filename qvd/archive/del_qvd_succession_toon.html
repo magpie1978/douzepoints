@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Line of Succession</title>
+
+  <style>
+    :root{
+      /* TOON-style palette */
+      --paper-bg:   #FDF2C7;   /* warm paper */
+      --paper-soft: #F5E7BA;
+      --ink:        #102B52;   /* deep navy */
+      --ink-soft:   #1A2744;   /* lighter navy */
+      --muted:      #5B656C;   /* grey-blue text */
+      --card-bg:    #FFF8D9;
+      --border-soft:#D1C7A3;
+      --header-h:   130px;
+    }
+
+    html,body{
+      margin:0;
+      height:100%;
+      background:var(--paper-bg);
+      color:var(--ink);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"SF Mono","Fira Code",monospace;
+    }
+
+    body{
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* ---- Header ---- */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 24px 40px 16px;
+      background: var(--paper-bg);
+      color: var(--ink);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+      z-index: 300;
+      height: var(--header-h);
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .header-left {
+      max-width: 70%;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .header-title {
+      margin: 0;
+      font-size: 1.9rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    .header-desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: .96rem;
+      line-height: 1.5;
+    }
+
+    .header-buttons{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .header-btn{
+      background: var(--ink);
+      color: var(--paper-bg);
+      border:2px solid var(--ink);
+      padding:7px 16px;
+      border-radius:999px;
+      font-weight:600;
+      cursor:pointer;
+      text-decoration:none;
+      font-size:0.8rem;
+      text-transform:uppercase;
+      letter-spacing:0.12em;
+      transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.12s ease;
+    }
+    .header-btn:hover{
+      background:var(--paper-bg);
+      color:var(--ink);
+      box-shadow:0 0 0 1px var(--ink);
+      transform:translateY(-1px);
+    }
+
+    /* ---- Layout ---- */
+    .page-shell{
+      display:flex;
+      flex:1;
+      margin-top:var(--header-h);
+      min-height:0;
+    }
+
+    .sidebar{
+      width:280px;
+      background:var(--paper-bg);
+      border-right:2px solid var(--ink);
+      padding:20px 24px 26px;
+      box-shadow: 4px 0 12px rgba(0,0,0,0.12);
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .sidebar-title{
+      font-size:0.78rem;
+      text-transform:uppercase;
+      letter-spacing:0.14em;
+      color:var(--muted);
+      margin-bottom:4px;
+    }
+    .sidebar-heading{
+      font-size:1rem;
+      font-weight:600;
+      margin:0;
+    }
+    .sidebar-text{
+      font-size:0.84rem;
+      color:var(--muted);
+      line-height:1.5;
+      margin:4px 0 0;
+    }
+
+    .sidebar-section{
+      padding:12px 12px 10px;
+      border-radius:10px;
+      background: var(--paper-soft);
+      border:2px solid var(--ink);
+    }
+
+    /* Toggle */
+    .toggle-container{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .toggle-label-text{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .toggle-label-main{
+      font-size:0.9rem;
+      font-weight:600;
+    }
+    .toggle-label-sub{
+      font-size:0.78rem;
+      color:var(--muted);
+    }
+
+    .switch{
+      position:relative;
+      display:inline-block;
+      width:52px;
+      height:26px;
+    }
+    .switch input{opacity:0;width:0;height:0;}
+    .slider{
+      position:absolute;
+      cursor:pointer;
+      top:0;left:0;right:0;bottom:0;
+      background-color:#C6BE9C;
+      transition:.3s;
+      border-radius:34px;
+    }
+    .slider:before{
+      position:absolute;
+      content:"";
+      height:18px;
+      width:18px;
+      left:4px;
+      bottom:4px;
+      background-color:var(--paper-bg);
+      transition:.3s;
+      border-radius:50%;
+    }
+    input:checked + .slider{
+      background:linear-gradient(120deg, #F7E29C, #F2CF5C);
+    }
+    input:checked + .slider:before{transform:translateX(24px);}
+
+    /* ---- Main Content ---- */
+    .main-content{
+      flex:1;
+      min-width:0;
+      padding:22px 26px 32px;
+      background:var(--paper-bg);
+      overflow:auto;
+      color:var(--ink);
+    }
+
+    .main-heading-row{
+      margin-bottom:12px;
+      color:var(--ink);
+    }
+
+    .main-heading{
+      font-size:1.05rem;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:0.12em;
+    }
+
+    .main-subheading{
+      font-size:0.8rem;
+      color:var(--muted);
+    }
+
+    /* ---- Table ---- */
+    .table-wrapper{
+      background:transparent;
+      border:1px solid var(--ink);
+      border-radius:14px;
+      overflow:auto;
+      box-shadow:0 8px 18px rgba(0,0,0,0.25);
+    }
+
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      min-width:880px;
+      font-size:0.9rem;
+      background:var(--card-bg);
+      color:var(--ink);
+    }
+
+    thead th{
+      position:sticky;
+      top:0;
+      background:var(--ink);
+      color:var(--card-bg);
+      text-align:left;
+      padding:10px 14px;
+      border-bottom:2px solid var(--ink);
+      font-weight:700;
+    }
+
+    tbody td{
+      padding:10px 14px;
+      border-bottom:1px solid var(--border-soft);
+      vertical-align:middle;
+      background:var(--card-bg);
+      color:var(--ink);
+    }
+    tbody tr:nth-child(even) td{
+      background:var(--paper-soft);
+    }
+    tbody tr:hover td{
+      background:#F0E4A4;
+      cursor:pointer;
+    }
+
+    /* ---- Table Text ---- */
+    .name {
+      font-weight:600;
+      font-size:0.95rem;
+      line-height:1.3;
+      color:var(--ink);
+    }
+    .titles-stack,
+    .relationship-text,
+    .muted {
+      color:var(--muted);
+      font-size:0.82rem;
+      line-height:1.2;
+    }
+    .exclusion-text {
+      color:var(--ink-soft);
+      font-size:0.82rem;
+      font-style:italic;
+      margin-top:6px;
+    }
+
+    /* ---- Details Panel ---- */
+    .details-row td{
+      padding:0;
+      background:var(--paper-bg);
+      color:var(--ink);
+    }
+    .details-panel{
+      background:var(--paper-bg);
+      border-top:2px solid var(--ink);
+    }
+    .details-heading{color:var(--ink);}
+    .details-text{color:var(--muted);}
+
+    /* Pager */
+    .pager-container{
+      display:flex;
+      justify-content:center;
+      gap:20px;
+      margin-top:18px;
+    }
+
+    .pager-btn{
+      background:var(--ink);
+      color:var(--card-bg);
+      border:1px solid var(--ink);
+      padding:9px 14px;
+      border-radius:999px;
+      font-weight:600;
+      cursor:pointer;
+      min-width:130px;
+      font-size:0.85rem;
+      text-transform:uppercase;
+      letter-spacing:0.12em;
+      transition:all 0.2s ease;
+    }
+    .pager-btn:hover:not(:disabled){
+      background:var(--card-bg);
+      color:var(--ink);
+      box-shadow:0 0 0 1px var(--ink);
+    }
+    .pager-btn:disabled{
+      opacity:0.45;
+      cursor:default;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1 class="header-title">Line of Succession</h1>
+    <p class="header-desc">
+      Explore the current and historical positions in the line of succession from Queen Victoria to the present day.
+    </p>
+  </div>
+  <div class="header-buttons">
+    <a href="qvd_succession.html" class="header-btn">Line of Succession</a>
+    <a href="qvd_tree.html" class="header-btn">Family Tree</a>
+  </div>
+</header>
+
+<div class="page-shell">
+  <aside class="sidebar">
+    <div>
+      <div class="sidebar-title">View</div>
+      <h2 class="sidebar-heading">Succession Explorer</h2>
+      <p class="sidebar-text">
+        Use the toggle below to include or hide historically excluded individuals in the order of succession.
+      </p>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="toggle-container">
+        <div class="toggle-label-text">
+          <span class="toggle-label-main" id="toggleLabel">Exclusions Hidden</span>
+          <span class="toggle-label-sub">
+            Show only those currently counted in the formal line.
+          </span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="toggleSwitch" />
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="main-heading-row">
+      <div>
+        <h2 class="main-heading">Order of Succession</h2>
+        <p class="main-subheading">
+          Results are shown 100 at a time. Click a row to see a short biography and portrait.
+        </p>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead><tr id="thead-row"></tr></thead>
+        <tbody id="succession-body"></tbody>
+      </table>
+    </div>
+
+    <div class="pager-container">
+      <button id="prevPageBtn" class="pager-btn" style="display:none;">Previous 100</button>
+      <button id="nextPageBtn" class="pager-btn">Next 100</button>
+    </div>
+  </main>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
+  const SUPABASE_ANON_KEY =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const tbody = document.getElementById('succession-body');
+  const theadRow = document.getElementById('thead-row');
+  const toggleSwitch = document.getElementById('toggleSwitch');
+  const toggleLabel = document.getElementById('toggleLabel');
+  const prevPageBtn = document.getElementById('prevPageBtn');
+  const nextPageBtn = document.getElementById('nextPageBtn');
+  const FALLBACK_IMAGE = "https://i.pinimg.com/736x/3f/3c/f8/3f3cf824ceb39fa5dbd00aa986e25f54.jpg";
+  const safe = v => (v == null || v === '') ? '' : String(v);
+  const PAGE_SIZE = 100;
+  let includeExcluded = false;
+  let currentPage = 0;
+  let loading = false;
+  let lastPage = false;
+  let openDetailsRow = null;
+  let openPersonRow = null;
+
+  function renderHeader(){
+    theadRow.innerHTML = `
+      <th class="pos">#</th>
+      <th></th>
+      <th>Name</th>
+      <th>Relationship</th>
+      <th>DOB</th>`;
+  }
+
+  function formatExclusion(flag){
+    if(!flag) return '';
+    const f = String(flag).toLowerCase();
+    if (f.includes('rc')) return 'Excluded for being a Roman Catholic';
+    if (f.includes('illeg')) return 'Illegitimate';
+    if (f.includes('duplicate')) return 'Duplicate';
+    return flag;
+  }
+
+  function makeRow(row){
+    const { name, title1, title2, dob, img, exclusion_flag, relationship_to_charles, biography } = row;
+    const imgSrc = img || FALLBACK_IMAGE;
+    const exclusionText = includeExcluded ? formatExclusion(exclusion_flag) : '';
+    const tr = document.createElement('tr');
+    tr.classList.add('person-row');
+    tr.dataset.name = safe(name);
+    tr.dataset.img = imgSrc;
+    tr.dataset.bio = safe(biography);
+    tr.innerHTML = `
+      <td class="pos">${safe(row.order_excl)}</td>
+      <td></td>
+      <td>
+        <div class="name">${safe(name)}</div>
+        <div class="titles-stack">${safe(title1)}</div>
+        <div class="titles-stack">${safe(title2)}</div>
+        ${exclusionText ? `<div class="exclusion-text">${exclusionText}</div>` : ''}
+      </td>
+      <td><div class="relationship-text">${safe(relationship_to_charles)} of King Charles III</div></td>
+      <td class="muted">${safe(dob)}</td>`;
+    return tr;
+  }
+
+  function appendRows(rows){
+    const frag = document.createDocumentFragment();
+    rows.forEach(r => frag.appendChild(makeRow(r)));
+    tbody.appendChild(frag);
+  }
+
+  async function fetchPage(pageIndex = 0){
+    if (loading) return;
+    loading = true;
+    lastPage = false;
+    tbody.innerHTML = '';
+    openDetailsRow = null;
+    openPersonRow = null;
+    try {
+      const from = pageIndex * PAGE_SIZE;
+      const to   = from + PAGE_SIZE - 1;
+      let query = supabase
+        .from('qvd_website')
+        .select('order_excl,order_incl,name,title1,title2,dob,img,exclusion_flag,relationship_to_charles,biography');
+      if (!includeExcluded){
+        query = query.gt('order_excl', 0).order('order_excl', { ascending: true });
+      } else {
+        query = query.or('order_incl.gt.0,exclusion_flag.not.is.null').order('order_incl', { ascending: true });
+      }
+      query = query.range(from, to);
+      const { data, error } = await query;
+      if (error){ console.error(error); return; }
+      const rows = data || [];
+      appendRows(rows);
+      currentPage = pageIndex;
+      lastPage = rows.length < PAGE_SIZE;
+      prevPageBtn.style.display = (currentPage === 0) ? 'none' : 'inline-block';
+      prevPageBtn.disabled = currentPage === 0;
+      nextPageBtn.disabled = lastPage;
+    } catch (e){ console.error(e); } finally { loading = false; }
+  }
+
+  toggleSwitch.addEventListener('change', () => {
+    includeExcluded = toggleSwitch.checked;
+    toggleLabel.textContent = includeExcluded ? 'Exclusions Displayed' : 'Exclusions Hidden';
+    currentPage = 0;
+    fetchPage(0);
+  });
+  prevPageBtn.addEventListener('click', () => { if (currentPage > 0 && !loading) fetchPage(currentPage - 1); });
+  nextPageBtn.addEventListener('click', () => { if (!lastPage && !loading) fetchPage(currentPage + 1); });
+  toggleSwitch.checked = false;
+  toggleLabel.textContent = 'Exclusions Hidden';
+  renderHeader();
+  fetchPage(0);
+</script>
+</body>
+</html>
