@@ -79,6 +79,25 @@ body {
 
 /* END GLASS EFFECT */
 
+/* NEON OUTLINE */
+.login-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 2px;
+  background: linear-gradient(135deg, #e50914, #ff66c4, #009dff);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+
+
 /* Input Fields */
 .input-group {
   margin-bottom: 20px;
