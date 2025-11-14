@@ -8,6 +8,7 @@ let currentSortKey = null;
 let currentSortDir = 'desc';
 
 const columnDefinitions = [
+  { label: "Play", key: "PlayIcon" },
   { label: "Result", final: "Final_Rank", semi: "SemiFinal_Rank" },
   { label: "Country", key: "Country" },
   { label: "Artist", key: "Artist" },
@@ -145,10 +146,19 @@ function renderTable() {
       }
 
       // Play icon column
-      if (label === "") {
-        const videoUrl = row.Video_URL || "";
-        return `<td class="play-icon"><i data-url="${videoUrl}" class="video-trigger" data-feather="play-circle"></i></td>`;
-      }
+      if (label === "Play") {
+    const videoUrl = row.Video_URL || "";
+    return `
+      <td class="play-icon">
+        <i class="video-trigger" 
+           data-url="${videoUrl}" 
+           data-lucide="play-circle"
+           style="cursor:pointer; color:#e50914; width:22px; height:22px;">
+        </i>
+      </td>
+    `;
+}
+
 
       // Default cells (Artist, Song, R/O, points, etc.)
       return `<td class="${alignClass} ${dividerClass}">${hasField ? row[field] : ''}</td>`;
