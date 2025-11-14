@@ -1,22 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>DouzePoints Login</title>
-  <link rel="stylesheet" type="text/css" href="style/login.css">
+  <meta charset="UTF-8">
+  <title>Login | DouzePoints</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="style/combined.css" />
+  <link rel="stylesheet" href="style/sidebar.css" />
+
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/login.js"></script>
+
+  <style>
+    body {
+      background: #0f111a;
+      color: #fff;
+      margin: 0;
+      font-family: 'Raleway', sans-serif;
+    }
+
+    .header-image {
+      width: 100%;
+      height: 260px;
+      overflow: hidden;
+    }
+    .header-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .login-container {
+      max-width: 420px;
+      margin: -80px auto 30px auto;
+      background: rgba(0,0,0,0.65);
+      padding: 40px 35px;
+      border-radius: 10px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 0 26px rgba(0,0,0,0.4);
+    }
+
+    .login-container h2 {
+      margin-top: 0;
+      margin-bottom: 24px;
+      font-size: 28px;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .login-container input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: 6px;
+      border: none;
+      background: #1f212d;
+      color: #fff;
+      font-size: 15px;
+    }
+
+    .login-container button {
+      width: 100%;
+      padding: 14px;
+      background: #e50914;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .login-container button:hover {
+      background: #f6121d;
+    }
+
+    .subscription-section {
+      max-width: 900px;
+      margin: 40px auto;
+    }
+
+    .subscription-row {
+      display: flex;
+      justify-content: space-between;
+      background: #181a24;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      align-items: center;
+      box-shadow: 0 0 12px rgba(0,0,0,0.35);
+    }
+
+    .subscription-row h3 {
+      margin: 0 0 6px 0;
+      font-size: 22px;
+      color: #fff;
+    }
+
+    .subscription-row p {
+      margin: 0;
+      color: #bbb;
+      font-size: 14px;
+    }
+
+    .sub-button {
+      background: #e50914;
+      padding: 10px 20px;
+      border-radius: 5px;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .sub-button:hover {
+      background: #f6121d;
+    }
+  </style>
+
 </head>
 <body>
-  <div class="login-container">
-    <h2>Login or Sign Up</h2>
-    <form id="auth-form">
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="password" id="password" placeholder="Password" required />
-      <button type="submit">Continue</button>
-    </form>
-    <p id="auth-status"></p>
+
+  <!-- HEADER IMAGE -->
+  <div class="header-image">
+    <img src="images/header-banner.jpg" alt="Douze Points Header" />
   </div>
+
+  <!-- LOGIN FORM -->
+  <div class="login-container">
+    <h2>Sign in to DouzePoints</h2>
+
+    <input type="email" id="email" placeholder="Email address" />
+    <input type="password" id="password" placeholder="Password" />
+
+    <button id="loginButton">Sign In</button>
+  </div>
+
+  <!-- NETFLIX-STYLE SUBSCRIPTION OPTIONS -->
+  <div class="subscription-section">
+
+    <div class="subscription-row">
+      <div>
+        <h3>Basic Plan</h3>
+        <p>Watch Eurovision videos at standard resolution. One device at a time.</p>
+      </div>
+      <a class="sub-button">Choose Plan</a>
+    </div>
+
+    <div class="subscription-row">
+      <div>
+        <h3>Standard Plan</h3>
+        <p>HD quality. Watch on two devices at the same time. Access fan-favourites.</p>
+      </div>
+      <a class="sub-button">Choose Plan</a>
+    </div>
+
+    <div class="subscription-row">
+      <div>
+        <h3>Premium Plan</h3>
+        <p>4K UHD. Unlimited devices. Exclusive douzepoints analytics & scoreboard tools.</p>
+      </div>
+      <a class="sub-button">Choose Plan</a>
+    </div>
+
+  </div>
+
+  <!-- LOGIN LOGIC -->
+  <script type="module">
+    import { supabase } from './js/supabaseClient.js';
+
+    document.getElementById('loginButton').addEventListener('click', async () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        alert("Login failed: " + error.message);
+        return;
+      }
+
+      // Redirect to home
+      window.location.href = "index.html";
+    });
+  </script>
 
 </body>
 </html>
