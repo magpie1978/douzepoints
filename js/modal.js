@@ -1,4 +1,4 @@
-window.GDriveOpenModalWithVideo = function(videoUrl, titleText) {
+/* window.GDriveOpenModalWithVideo = function(videoUrl, titleText) {
   const modal = document.getElementById("videoModal");
   const video = document.getElementById("modalVideo");
   const iframe = document.getElementById("modalIframe");
@@ -102,3 +102,168 @@ const container = document.getElementById('modal-container');     // Get the tar
     console.warn('modal-container not found. Modal HTML was not loaded.');
   }
 });
+/*
+
+/**
+ * modal.js — Universal video modal system
+ * Fully patched to ensure the modal loads BEFORE any play button is clicked.
+ * Fixes the issue where the first click does nothing.
+ */
+
+/* -------------------------------------------------------------
+   1. PRELOAD MODAL.HTML BEFORE ANY VIDEO IS CLICKED
+   ------------------------------------------------------------- */
+
+window.modalReady = new Promise((resolve) => {
+  document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById("modal-container");
+    if (!container) {
+      console.warn("modal-container not found. Modal HTML not loaded.");
+      resolve(); // resolve anyway so play doesn't hang
+      return;
+    }
+
+    fetch("modal.html")
+      .then(response => response.text())
+      .then(html => {
+        container.innerHTML = html;
+        resolve(); // modal is now fully ready for use
+      })
+      .catch(err => {
+        console.error("Failed to load modal.html:", err);
+        resolve(); // still resolve to prevent blocking
+      });
+  });
+});
+
+
+/* -------------------------------------------------------------
+   2. GOOGLE DRIVE + DIRECT VIDEO HANDLER
+   ------------------------------------------------------------- */
+
+window.GDriveOpenModalWithVideo = function(videoUrl, titleText) {
+  const modal = document.getElementById("videoModal");
+  const video = document.getElementById("modalVideo");
+  const iframe = document.getElementById("modalIframe");
+
+  if (!modal) {
+    console.error("[modal.js] videoModal element missing.");
+    return;
+  }
+
+  modal.style.display = "flex";
+
+  // Reset both elements
+  video.pause();
+  video.style.display = "none";
+  iframe.style.display = "none";
+  video.src = "";
+  iframe.src = "";
+
+  // Google Drive video
+  if (videoUrl.includes("drive.google.com")) {
+    const match = videoUrl.match(/\/d\/(.*?)\//);
+    if (match && match[1]) {
+      iframe.src = `https://drive.google.com/file/d/${match[1]}/preview`;
+      iframe.style.display = "block";
+    }
+  }
+
+  // Standard MP4 or other direct video file
+  else {
+    video.src = videoUrl;
+    video.style.display = "block";
+    video.play();
+  }
+};
+
+
+/* -------------------------------------------------------------
+   3. UNIVERSAL OPEN FUNCTION (CALLED FROM ANY PAGE)
+   ------------------------------------------------------------- */
+
+window.openVideoModal = async function(arg1, arg2) {
+  // Wait for modal.html to be fully loaded before opening
+  await window.modalReady;
+
+  let videoUrl = null;
+  let entry = null;
+
+  // Signature: openVideoModal({ url, entry })
+  if (arg1 && typeof arg1 === "object" && arg1.url) {
+    videoUrl = arg1.url;
+    entry = arg1.entry || null;
+  }
+  // Signature: openVideoModal(videoUrl, entry)
+  else {
+    videoUrl = arg1;
+    entry = arg2 || null;
+  }
+
+  if (!videoUrl) {
+    console.error("[modal.js] openVideoModal called without a video URL");
+    return;
+  }
+
+  // Optional title text
+  let titleText = "";
+  if (entry) {
+    const artist = entry.Artist || "";
+    const song = entry.Song || "";
+    titleText = [artist, song].filter(Boolean).join(" — ");
+  }
+
+  window.GDriveOpenModalWithVideo(videoUrl, titleText);
+};
+
+
+/* -------------------------------------------------------------
+   4. CLOSE MODAL
+   ------------------------------------------------------------- */
+
+window.GDriveCloseModal = function(event) {
+  if (event) event.stopPropagation();
+
+  const modal = document.getElementById("videoModal");
+  const video = document.getElementById("modalVideo");
+  const iframe = document.getElementById("modalIframe");
+
+  if (!modal) return;
+
+  // Stop playback & reset
+  if (video) {
+    video.pause();
+    video.src = "";
+  }
+  if (iframe) {
+    iframe.src = "";
+  }
+
+  modal.style.display = "none";
+};
+
+
+/* -------------------------------------------------------------
+   5. OPTIONAL PREVIEW HOVER HELPERS (USED ON GRID PAGES)
+   ------------------------------------------------------------- */
+
+window.showPreview = function(container) {
+  const video = container.querySelector("video");
+  const img = container.querySelector("img");
+  if (!video || !img) return;
+
+  img.style.display = "none";
+  video.style.display = "block";
+  video.play();
+};
+
+window.hidePreview = function(container) {
+  const video = container.querySelector("video");
+  const img = container.querySelector("img");
+  if (!video || !img) return;
+
+  video.pause();
+  video.style.display = "none";
+  img.style.display = "block";
+};
+
