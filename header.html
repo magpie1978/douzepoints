@@ -5,25 +5,12 @@
             <a class="home-link" href="country.html?country=Albania">Countries</a>
             <a class="home-link" href="edition.html?edition=2025">Editions</a>
             <a class="home-link" href="scoreboard.html">Scoreboard</a>
-            <a onclick="logout()" class="logout-link">Logout</a>
-
-            <!-- <a class="home-link" href="login.html">Admin</a> -->
+            <a class="home-link" href="login.html">Admin</a>
         </div>
     </div>
-    <div id="banner-wrapper" style="text-align:center; margin-top:10px;">
-  <img id="country-banner"
-       src=""
-       alt="Banner"
-       style="width:100%; max-height:180px; object-fit:cover; border-radius:8px;" />
-</div>
+    <div class="banner-static">
+        <img alt="Banner" id="country-banner" src="" />
+    </div>
 </header>
-
-<script>
-window.logout = async function () {
-  const { supabase } = await import('./supabaseClient.js');
-  await supabase.auth.signOut();
-  window.location.href = "login.html";
-};
-</script>
 
 <div class="banner-divider"></div>
