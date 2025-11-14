@@ -165,7 +165,13 @@
     document.getElementById("signupBtn").addEventListener("click", async () => {
       const email = document.getElementById("signupEmail").value.trim();
       const password = document.getElementById("signupPassword").value.trim();
-      const displayName = document.getElementById("signupName").value.trim();
+      const promoCode = document.getElementById("promoCode").value.trim();
+
+      // PROMO CODE VALIDATION
+      if (promoCode.toUpperCase() !== "EUPHORIA") {
+        alert("Sorry, we're not able to offer you an account at this stage.");
+      return;
+      }
 
       const { data, error } = await supabase.auth.signUp({ email, password });
 
