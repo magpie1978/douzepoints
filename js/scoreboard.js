@@ -42,15 +42,51 @@ async function loadSupabaseDataForStageAndYear(stage, year) {
   return data;
 }
 
+// --- Render Table Head (TITLE ROW) ---
+function renderTableHead() {
+  const thead = document.getElementById('tableHead');
+  thead.innerHTML = '';
+
+  const stage = document.getElementById("stageSelect").value;
+  const isFinal = stage === "Final";
+
+  const tr = document.createElement('tr');
+
+  columnDefinitions.forEach(col => {
+    const label = col.label;
+
+    // HIDE Status column completely when Final is selected
+    if (isFinal && label === "Status") return;
+
+    const th = document.createElement('th');
+    th.textContent = label;
+    th.dataset.key = label;
+    tr.appendChild(th);
+  });
+
+  thead.appendChild(tr);
+}
+
 // --- Load and Render Table Data ---
 async function loadTableData(year) {
   currentYear = year;
   const stage = document.getElementById("stageSelect").value;
+
   eurovisionData = await loadSupabaseDataForStageAndYear(stage, year);
+
+  // NEW: Remove DNQs when "Final" is selected
+  if (stage === "Final") {
+    eurovisionData = eurovisionData.filter(r =>
+      r.Final_Rank !== null &&
+      r.Final_Rank !== "" &&
+      r.Final_Rank !== undefined
+    );
+  }
 
   const header = document.getElementById("tableHeader");
   header.textContent = `Eurovision ${stage} - ${year}`;
 
+  renderTableHead();
   renderTable();
   sortBy("Total Points", "desc");
 }
@@ -69,11 +105,18 @@ function renderTable() {
 
     const cells = columnDefinitions.map(col => {
       const label = col.label;
-      if (label === "Status" && isFinal) return '';
+
+      // HIDE Status column completely when Final is selected
+      if (isFinal && label === "Status") return null;
 
       const field = col.key || (isFinal ? col.final : col.semi);
       const hasField = field && row[field] != null && row[field] !== '';
-      const dividerClass = (label === "R/O" || label === "Televote Rank" || label === "Jury Rank") ? "divider-right" : "";
+
+      const dividerClass =
+        (label === "R/O" || label === "Televote Rank" || label === "Jury Rank")
+          ? "divider-right"
+          : "";
+
       const alignClass =
         label === "Televote Pts" ? "televote-pts" :
         label === "Televote Rank" ? "televote-rank" :
@@ -81,15 +124,18 @@ function renderTable() {
         label === "Jury Rank" ? "jury-rank" :
         label === "Total Points" ? "total-pts" : "";
 
+      // Country (flag + name)
       if (label === "Country") {
         return `<td><span class="country-name">${flag}${row.Country}</span></td>`;
       }
 
+      // Result / Rank columns
       if (label === "Result" || label.includes("Rank")) {
         const val = row[field] || '';
         return `<td class="${alignClass} ${dividerClass}">${val}</td>`;
       }
 
+      // Status (only for semis; Final is skipped above)
       if (label === "Status") {
         const qualified = row["SemiFinal_Rank"] && row["Final_Rank"];
         const badge = qualified
@@ -98,15 +144,18 @@ function renderTable() {
         return `<td>${badge}</td>`;
       }
 
+      // Play icon column
       if (label === "") {
         const videoUrl = row.Video_URL || "";
         return `<td class="play-icon"><i data-url="${videoUrl}" class="video-trigger" data-feather="play-circle"></i></td>`;
       }
 
+      // Default cells (Artist, Song, R/O, points, etc.)
       return `<td class="${alignClass} ${dividerClass}">${hasField ? row[field] : ''}</td>`;
     });
 
-    tr.innerHTML = cells.join('');
+    // Remove nulls (i.e. removed Status cells in Final) before joining
+    tr.innerHTML = cells.filter(cell => cell !== null).join('');
     tbody.appendChild(tr);
   });
 
@@ -142,6 +191,7 @@ function sortBy(displayLabel, direction = null) {
     return 0;
   });
 
+  // Update sort classes on visible headers only
   document.querySelectorAll("th").forEach(th => {
     th.classList.remove("sort-asc", "sort-desc");
     if (th.dataset.key === displayLabel) {
