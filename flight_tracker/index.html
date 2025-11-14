@@ -1,1 +1,220 @@
-test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel Tracker</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+    }
+
+    header {
+      background-color: #2c3e50;
+      padding: 20px;
+      color: white;
+      text-align: center;
+    }
+
+    .upload-container {
+      text-align: center;
+      margin: 20px;
+    }
+
+    #map {
+      height: 80vh;
+      width: 100%;
+    }
+
+    input[type="file"] {
+      padding: 10px 20px;
+      background-color: #3498db;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .leaflet-control-layers {
+      background: white;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    footer {
+      background-color: #2c3e50;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      font-size: 14px;
+      position: relative;
+      width: 100%;
+      bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Travel Tracker</h1>
+    <div class="upload-container">
+      <label for="csvUpload">Upload Flight CSV:</label>
+      <input type="file" id="csvUpload" accept=".csv" />
+    </div>
+    <div style="text-align: center; margin: 20px;">
+      <button id="login-btn">Sign in with Google</button>
+      <button id="logout-btn" style="display: none;">Log Out</button>
+      <p id="auth-status">Not logged in</p>
+    </div>
+  </header>
+
+  <div id="map"></div>
+
+  <footer>
+    <p>&copy; 2025 Travel Tracker</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    import * as L from 'https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js';
+
+    const SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1a2dvZHRoZ3Vzb25nc2JoZHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI1NjAsImV4cCI6MjA2NzEzODU2MH0.e8Gm9utDCQWDjSOJgh-VBioCQFX_aAWXz8rzigFgh4s';
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    document.getElementById("login-btn").addEventListener("click", async () => {
+      const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
+      if (error) alert("Google login failed: " + error.message);
+    });
+
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      location.reload();
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      const status = document.getElementById("auth-status");
+      const logoutBtn = document.getElementById("logout-btn");
+
+      if (session?.user) {
+        status.textContent = `Logged in as ${session.user.email}`;
+        logoutBtn.style.display = "inline-block";
+      } else {
+        status.textContent = "Not logged in";
+        logoutBtn.style.display = "none";
+      }
+    });
+
+    const positronNoLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19
+    });
+
+    const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    });
+
+    const map = L.map('map', {
+      center: [20, 0],
+      zoom: 2,
+      layers: [positronNoLabels]
+    });
+
+    const baseMaps = {
+      "CartoDB Positron (No Labels)": positronNoLabels,
+      "OpenStreetMap": osm
+    };
+
+    L.control.layers(baseMaps).addTo(map);
+
+    fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
+      .then(res => res.json())
+      .then(geojson => {
+        L.geoJSON(geojson, {
+          style: {
+            color: '#999',
+            weight: 1,
+            fillOpacity: 0
+          }
+        }).addTo(map);
+      });
+
+    async function loadFlightsFromDatabase() {
+      const user = (await supabase.auth.getUser()).data.user;
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('flight_tracks')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('timestamp', { ascending: true });
+
+      if (error) {
+        console.error('Error loading flights:', error);
+        return;
+      }
+
+      const latLngs = data
+        .map(row => {
+          const [lat, lng] = row.position.split(',').map(Number);
+          return (!isNaN(lat) && !isNaN(lng)) ? [lat, lng] : null;
+        })
+        .filter(Boolean);
+
+      if (latLngs.length > 0) {
+        const polyline = L.polyline(latLngs, { color: 'red' }).addTo(map);
+        map.fitBounds(polyline.getBounds());
+      }
+    }
+
+    document.getElementById('csvUpload').addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: function (results) {
+          (async () => {
+            const user = (await supabase.auth.getUser()).data.user;
+            if (!user) {
+              alert("You must be logged in to upload flight data.");
+              return;
+            }
+
+            const parsedRows = results.data;
+
+            const inserts = parsedRows.map(row => ({
+              user_id: user.id,
+              callsign: row.Callsign,
+              timestamp: row.Timestamp,
+              utc: row.UTC,
+              position: row.Position,
+              altitude: parseInt(row.Altitude),
+              speed: parseInt(row.Speed),
+              direction: parseInt(row.Direction)
+            }));
+
+            const { error } = await supabase.from('flight_tracks').insert(inserts);
+            if (error) {
+              console.error('Error inserting flight data:', error);
+              alert('Upload failed. See console for details.');
+              return;
+            }
+
+            alert('Flight data uploaded successfully!');
+            loadFlightsFromDatabase();
+          })();
+        }
+      });
+    });
+
+    loadFlightsFromDatabase();
+  </script>
+</body>
+</html>
