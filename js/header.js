@@ -16,7 +16,6 @@ async function loadHeader() {
 
     const banner = document.getElementById("country-banner");
 
-    //const isIndexPage = path.endsWith("/") || path.includes("index.html");
     const isIndexPage = path === "/" || path.endsWith("index.html");
     const country = new URLSearchParams(window.location.search).get("country");
     const isCountryPage = path.includes("country.html");
@@ -31,15 +30,19 @@ async function loadHeader() {
 
     if (!banner) return;
 
+    // ----- Banner logic -----
     if (isWinnersPage) {
         banner.src = "/banners/winners.png";
         banner.alt = "Winners";
+
     } else if (isIndexPage) {
         banner.src = "/banners/douzepoints.png";
         banner.alt = "Home";
+
     } else if (isFavouritesPage) {
         banner.src = "/banners/fanfavorites.png";
         banner.alt = "Fan Favourites";
+
     } else if (isEditionPage) {
         const editionYear = new URLSearchParams(window.location.search).get("edition");
         if (editionYear) {
@@ -55,6 +58,7 @@ async function loadHeader() {
                 banner.alt = editionYear;
             }
         }
+
     } else if (isCountryPage && country) {
         const { data, error } = await supabase
             .from("douzepoints")
@@ -71,21 +75,42 @@ async function loadHeader() {
         } else {
             console.warn("⚠️ No country code found for:", country);
         }
+
     } else if (isAboutPage) {
         banner.src = "/banners/about.png";
         banner.alt = "About";
+
     } else if (isScoreboardPage) {
         banner.src = "/banners/douzepoints.png";
-        banner.alt = "Scoreboard";        
+        banner.alt = "Scoreboard";
+
     } else if (isContactPage) {
         banner.src = "/banners/contact.png";
         banner.alt = "Contact";
+
     } else if (isFAQPage) {
         banner.src = "/banners/faq.png";
         banner.alt = "FAQ";
+
     } else if (isPrivacyPage) {
         banner.src = "/banners/privacy.png";
         banner.alt = "Privacy";
-        
+    }
+
+    // ----- Logout button logic -----
+    const logoutBtn = document.getElementById("logout-btn");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            console.log("Logout clicked");
+
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error("Logout error:", error);
+            } else {
+                console.log("Logged out successfully");
+                window.location.href = "login.html";
+            }
+        });
     }
 }
