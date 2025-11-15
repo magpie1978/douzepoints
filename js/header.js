@@ -131,7 +131,7 @@ async function loadHeader() {
         banner.alt = "About";
 
     } else if (isScoreboardPage) {
-        banner.src = "/banners/douzepoints.png";
+        banner.src = "/banners/scoreboard.png";
         banner.alt = "Scoreboard";
 
     } else if (isContactPage) {
