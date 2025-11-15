@@ -411,6 +411,13 @@
  * video.js — modal-only trigger + home carousels + multi-page routing
  */
 
+
+import { supabase } from './supabaseClient.js';
+
+/**
+ * video.js — modal-only trigger + home carousels + multi-page routing
+ */
+
 (function () {
   // ------------------------------------------------------------
   // UTILITIES
@@ -437,7 +444,7 @@
 
   /**
    * Derive a stable key for a video.
-   * Adjust this if you introduce an explicit primary key in douzepoints.
+   * Adjust this if/when you add an explicit PK to douzepoints.
    */
   function getVideoKey(entry) {
     return (
@@ -451,17 +458,15 @@
   async function ensureFavoritesLoaded() {
     if (favoritesLoaded) return;
 
-    const supa = window.supabaseClient;
-    if (!supa) {
+    if (!supabase) {
       console.warn('[video.js] Supabase client missing – favourites disabled.');
       favoritesLoaded = true;
       return;
     }
 
     try {
-      const { data: { user } = {} } = await supa.auth.getUser();
+      const { data: { user } = {} } = await supabase.auth.getUser();
       if (!user) {
-        // Not logged in → just mark as loaded (no favourites)
         currentUser = null;
         favoriteIds = new Set();
         favoritesLoaded = true;
@@ -470,7 +475,7 @@
 
       currentUser = user;
 
-      const { data, error } = await supa
+      const { data, error } = await supabase
         .from('user_favorites')
         .select('video_id')
         .eq('user_id', user.id);
@@ -490,8 +495,7 @@
   }
 
   async function toggleFavorite(button, videoKey) {
-    const supa = window.supabaseClient;
-    if (!supa) {
+    if (!supabase) {
       console.warn('[video.js] Supabase client missing – cannot toggle favourite.');
       return;
     }
@@ -505,9 +509,9 @@
 
     const keyStr = String(videoKey);
 
-    // Already a favourite → remove
+    // Already a favourite → remove it
     if (favoriteIds.has(keyStr)) {
-      const { error } = await supa
+      const { error } = await supabase
         .from('user_favorites')
         .delete()
         .eq('user_id', currentUser.id)
@@ -523,8 +527,8 @@
       return;
     }
 
-    // Not a favourite → add
-    const { error } = await supa
+    // Not yet a favourite → add it
+    const { error } = await supabase
       .from('user_favorites')
       .insert({
         user_id: currentUser.id,
@@ -714,7 +718,7 @@
     entries.forEach(entry => frag.appendChild(renderEntry(entry, 'grid')));
     container.appendChild(frag);
 
-    // Render Lucide icons (hearts etc.)
+    // Refresh Lucide icons (for the heart)
     if (window.lucide && typeof window.lucide.createIcons === 'function') {
       window.lucide.createIcons();
     }
@@ -743,18 +747,17 @@
   // FETCH WRAPPER
   // ------------------------------------------------------------
   async function fetchAndRender(queryFn, errorMsg, emptyMsg) {
-    const supa = window.supabaseClient;
     const container = document.getElementById('video-container');
 
-    if (!supa) {
+    if (!supabase) {
       console.error('[video.js] Supabase missing.');
       return;
     }
 
-    // Ensure favourites (and user) are known before we render
+    // Make sure we know favourites & user before rendering
     await ensureFavoritesLoaded();
 
-    const { data, error } = await queryFn(supa);
+    const { data, error } = await queryFn(supabase);
     if (error) {
       console.error(errorMsg, error);
       if (container) container.innerHTML = `<p style="padding:16px">${escapeHTML(errorMsg)}</p>`;
@@ -847,10 +850,9 @@
   // HOME PAGE (index.html) — FOUR CAROUSELS
   // ------------------------------------------------------------
   async function loadHome() {
-    const supa = window.supabaseClient;
-    if (!supa) return;
+    if (!supabase) return;
 
-    // Load favourites once for the homepage too
+    // So hearts in carousels also reflect current favourites
     await ensureFavoritesLoaded();
 
     const track1 = document.getElementById('carouselTrack1'); // Winners
@@ -864,7 +866,7 @@
       // Winners carousel
       if (track1) {
         tasks.push(
-          supa.from('douzepoints')
+          supabase.from('douzepoints')
             .select('*')
             .eq('Final_Rank', 1)
             .order('Year', { ascending: false })
@@ -878,7 +880,7 @@
       // Basel 2025
       if (track4) {
         tasks.push(
-          supa.from('douzepoints')
+          supabase.from('douzepoints')
             .select('*')
             .eq('Year', 2025)
             .order('Final_Rank', { ascending: true })
@@ -891,7 +893,7 @@
       // Malmö 2024
       if (track2) {
         tasks.push(
-          supa.from('douzepoints')
+          supabase.from('douzepoints')
             .select('*')
             .eq('Year', 2024)
             .order('Final_Rank', { ascending: true })
@@ -904,7 +906,7 @@
       // Fan Favourites
       if (track3) {
         tasks.push(
-          supa.from('douzepoints')
+          supabase.from('douzepoints')
             .select('*')
             .eq('FanFave', 'Y')
             .order('Year', { ascending: false })
@@ -961,4 +963,3 @@
   // Expose manual renderer
   window.renderVideos = renderVideos;
 })();
-
