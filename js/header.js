@@ -82,7 +82,7 @@ async function loadHeader() {
     const isCountryPage    = path.includes("country.html");
     const isEditionPage    = path.includes("edition.html");
     const isWinnersPage    = path.includes("winners.html");
-    const isFavoritesPage  = path.includes("favorites.html");  // NEW PAGE
+    const isFavoritesPage  = path.includes("my-favorites.html");  // NEW PAGE
     const isFanFavesPage   = path.includes("fan-favorites.html");
     const isAboutPage      = path.includes("about.html");
     const isContactPage    = path.includes("contact.html");
@@ -110,7 +110,7 @@ async function loadHeader() {
     } else if (isFavoritesPage) {
         // ⭐ NEW: Favorites page (user-saved favourites)
         banner.src = "/banners/fan-favorites.png";
-        banner.alt = "Your Favorites";
+        banner.alt = "My Favorites";
 
     
     } else if (isEditionPage) {
