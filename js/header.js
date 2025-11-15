@@ -108,8 +108,7 @@ async function loadHeader() {
         banner.alt = "Fan Favourites";
 
     } else if (isFavoritesPage) {
-        // ⭐ NEW: Favorites page (user-saved favourites)
-        banner.src = "/banners/fan-favorites.png";
+        banner.src = "/banners/my-faves.png";
         banner.alt = "My Favorites";
 
     
