@@ -41,9 +41,9 @@ async function fetchFavoriteVideoIds() {
 
 async function fetchVideosByIds(ids) {
   const { data, error } = await supabase
-    .from('douzepoints') // or whatever the main videos table is
+    .from('douzepoints')
     .select('*')
-    .in('id', ids);
+    .in('Video_Lookup', ids);  // ⭐ THIS IS THE FIX
 
   if (error) {
     console.error('Error fetching videos:', error);
@@ -51,6 +51,7 @@ async function fetchVideosByIds(ids) {
   }
   return data;
 }
+
 
 function renderFavoriteVideos(videos) {
   const container = document.getElementById('favorites-video-container');
