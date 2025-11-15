@@ -1,104 +1,159 @@
-body {
-  font-family: 'Raleway', sans-serif;
-  background: #0f111a;
-  color: #ccc;
-  margin: 0;
-}
+/* ----------------------------------------------
+   SCOREBOARD PAGE LAYOUT
+---------------------------------------------- */
 
 .main-content {
-  padding: 20px;
+  padding: 40px;
+  color: var(--text, #ffffff);
 }
 
-/* NEW: Align title + controls to same width as table */
+/* Container around header + controls + table */
 .table-aligned-container {
-  max-width: 1280px;
+  width: 100%;
   margin: 0 auto;
 }
 
-/* TITLE */
-#tableHeader {
-  margin: 0 0 15px 0;
-  padding-left: 2px;
-  font-size: 28px;
-  font-weight: 700;
+/* ----------------------------------------------
+   HEADER + FILTER CONTROLS ROW
+---------------------------------------------- */
+
+.table-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;       /* Ensures both sets align on the same line */
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-/* DROP-DOWNS */
+#tableHeader {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text, #fff);
+}
+
+/* ----------------------------------------------
+   FILTER CONTROLS
+---------------------------------------------- */
+
 .table-controls {
   display: flex;
-  justify-content: flex-end;  /* align right */
-  gap: 20px;
-  padding: 10px 0 20px 0;
+  flex-direction: row;
+  gap: 30px;
 }
 
-.table-controls label {
-  font-size: 12px;
-  margin-right: 4px;
+.control-block {
+  display: flex;
+  flex-direction: column;   /* Places label ABOVE the dropdown */
+}
+
+.control-block label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text, #fff);
 }
 
 .table-controls select {
-  background: #1f212d;
-  color: #ccc;
-  border: none;
-  border-radius: 6px;
-  padding: 5px 10px;
+  padding: 8px 12px;
   font-size: 14px;
+  background: #222;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 5px;
+  outline: none;
 }
 
-/* TABLE WRAPPER */
+.table-controls select:hover {
+  border-color: #888;
+}
+
+/* ----------------------------------------------
+   TABLE WRAPPER
+---------------------------------------------- */
+
 .table-wrapper {
-  background: #181a24;
-  border-radius: 12px;
+  width: 100%;
   overflow-x: auto;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  border-radius: 8px;
+  border: 1px solid #333;
+  background: rgba(255, 255, 255, 0.03);
 }
 
-/* TABLE */
+/* ----------------------------------------------
+   SCOREBOARD TABLE
+---------------------------------------------- */
+
 table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 15px;
 }
 
-th, td {
-  padding: 12px 16px;
-  font-size: 13px;
-  border-bottom: 1px solid #2a2d3a;
+/* Table head */
+table thead th {
+  background: #111;
+  color: #fff;
+  padding: 12px 10px;
+  font-weight: 700;
+  border-bottom: 2px solid #333;
+  text-align: center;
+}
+
+/* Table body cells */
+table tbody td {
+  padding: 10px 8px;
+  text-align: center;
+  border-bottom: 1px solid #222;
+  color: #ddd;
+}
+
+/* Country names left-aligned */
+table tbody td.country-cell {
   text-align: left;
-}
-
-thead {
-  background: #1f212d;
-  cursor: pointer;
-}
-
-th {
-  color: #aaa;
-  user-select: none;
   font-weight: 600;
+  color: #fff;
 }
 
-/* sorting arrows */
-th.sort-asc::after { content: "▲"; margin-left: 6px; }
-th.sort-desc::after { content: "▼"; margin-left: 6px; }
+/* Hover effect on rows */
+table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
 
-.flag {
-  width: 20px;
-  height: 20px;
+/* ----------------------------------------------
+   SCORE CIRCLE (Jury / Tele / Total)
+---------------------------------------------- */
+
+.score-circle {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  object-fit: cover;
-  margin-right: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  margin: 0 auto;
+  border: 2px solid #fff;
 }
 
-.badge {
-  padding: 4px 10px;
-  font-size: 11px;
-  border-radius: 6px;
+/* Hide score circles inside index carousels if needed */
+.no-circles .score-circle {
+  display: none !important;
 }
 
-.qualified { background: #007bff30; color: #339af0; }
-.dnq { background: #dc354530; color: #dc3545; }
+/* ----------------------------------------------
+   RESPONSIVE BEHAVIOUR
+---------------------------------------------- */
 
-.play-icon i {
-  color: #e50914;
-  cursor: pointer;
+@media (max-width: 800px) {
+  .table-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .table-controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
 }
