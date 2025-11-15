@@ -27,12 +27,14 @@
 <div class="banner-divider"></div>
 
 
-<!-- Logout Logic -->
+<!-- Lucide Icons (correct script that actually works) -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- Logout & Icon Logic -->
 <script type="module">
     import { supabase } from './supabaseClient.js';
-    import lucide from "https://unpkg.com/lucide@latest/dist/esm/lucide.js";
 
-    // Activate icons
+    // Render Lucide icons AFTER script loads
     lucide.createIcons();
 
     document.getElementById("logout-btn").addEventListener("click", async (e) => {
@@ -50,7 +52,7 @@
 </script>
 
 <style>
-    /* Layout: left links + right logout icon */
+    /* Layout */
     .header-overlay {
         display: flex;
         justify-content: space-between;
@@ -62,12 +64,10 @@
         margin-right: 20px;
     }
 
-    /* Logout container */
     .header-right {
-        margin-left: auto; /* Push logout fully right */
+        margin-left: auto;
     }
 
-    /* Logout link styling */
     .logout-link {
         display: flex;
         align-items: center;
@@ -82,7 +82,6 @@
         opacity: 0.8;
     }
 
-    /* Icon styling */
     .logout-icon {
         width: 22px;
         height: 22px;
