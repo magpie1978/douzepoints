@@ -5,8 +5,6 @@
   <title>Login | DouzePoints</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="stylesheet" href="style/combined.css" />
-
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -16,11 +14,10 @@
       font-family: 'Raleway', sans-serif;
       color: #fff;
 
-      /* NEW: Full-page background image */
+      /* Full-page background */
       background: url("banners/login.png") no-repeat center center fixed;
       background-size: cover;
 
-      /* Dark overlay for readability */
       position: relative;
     }
 
@@ -34,12 +31,7 @@
       z-index: 0;
     }
 
-    /* Remove old header image area */
-    .header-image {
-      display: none;
-    }
-
-    /* LOGIN BOX */
+    /* LOGIN CONTAINER – GLASS STYLE */
     .login-container {
       position: relative;
       z-index: 2;
@@ -47,12 +39,26 @@
       max-width: 420px;
       margin: 120px auto 30px auto;
 
-      background: rgba(0,0,0,0.55);
+      background: rgba(255,255,255,0.10);
+      border-radius: 16px;
       padding: 40px 35px;
-      border-radius: 12px;
 
-      backdrop-filter: blur(6px);
-      box-shadow: 0 0 26px rgba(0,0,0,0.4);
+      backdrop-filter: blur(18px) saturate(160%);
+      -webkit-backdrop-filter: blur(18px) saturate(160%);
+
+      border: 1px solid rgba(255,255,255,0.25);
+
+      box-shadow:
+        inset 0 0 60px rgba(255,255,255,0.05),
+        0 0 24px rgba(0,0,0,0.5),
+        0 0 40px rgba(229,9,20,0.35);
+
+      animation: glassFade 0.7s ease;
+    }
+
+    @keyframes glassFade {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     .login-container h2 {
@@ -68,6 +74,7 @@
       border: none;
       background: #1f212d;
       color: white;
+      font-size: 15px;
     }
 
     button {
@@ -80,6 +87,7 @@
       font-weight: bold;
       cursor: pointer;
       margin-top: 5px;
+      font-size: 15px;
     }
 
     button:hover {
@@ -92,6 +100,19 @@
       font-size: 14px;
       cursor: pointer;
       color: #e50914;
+    }
+
+    /* Inline messaging styling */
+    #signupMessage, #loginMessage {
+      color: #fff;
+      background: rgba(0,0,0,0.55);
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-top: 16px;
+      line-height: 1.4;
+      font-size: 15px;
+      border-left: 4px solid #e50914;
+      display: none;
     }
   </style>
 </head>
@@ -109,6 +130,8 @@
 
       <button id="loginBtn">Sign In</button>
 
+      <div id="loginMessage"></div>
+
       <div class="toggle-link" onclick="showSignUp()">New user? Create an account</div>
     </div>
 
@@ -118,41 +141,51 @@
 
       <input type="email" id="signupEmail" placeholder="Email address">
       <input type="password" id="signupPassword" placeholder="Password">
-      <input type="text" id="promoCode" placeholder="Enter Promo Code">
+      <input type="text" id="promoCode" placeholder="Promo Code">
 
       <button id="signupBtn">Sign Up</button>
+
+      <!-- INLINE MESSAGE -->
+      <div id="signupMessage"></div>
 
       <div class="toggle-link" onclick="showLogin()">Already have an account? Sign in</div>
     </div>
 
   </div>
 
-
+  <!-- ====================================== -->
+  <!--           SECURE SIGNUP LOGIC          -->
+  <!-- ====================================== -->
   <script type="module">
     import { supabase } from './js/supabaseClient.js';
 
-    // SHOW SIGN-UP / LOGIN
     window.showSignUp = () => {
       document.getElementById("loginBox").style.display = "none";
       document.getElementById("signupBox").style.display = "block";
+      document.getElementById("signupMessage").style.display = "none";
     };
 
     window.showLogin = () => {
       document.getElementById("signupBox").style.display = "none";
       document.getElementById("loginBox").style.display = "block";
+      document.getElementById("loginMessage").style.display = "none";
     };
 
     /* ----------------------------------------
        LOGIN LOGIC
     ----------------------------------------- */
     document.getElementById("loginBtn").addEventListener("click", async () => {
+      const messageBox = document.getElementById("loginMessage");
+      messageBox.style.display = "none";
+
       const email = document.getElementById("loginEmail").value.trim();
       const password = document.getElementById("loginPassword").value.trim();
 
       const { error } = await supabase.auth.signInWithPassword({ email, password });
 
       if (error) {
-        alert("Login failed: " + error.message);
+        messageBox.style.display = "block";
+        messageBox.innerHTML = "Login failed: " + error.message;
         return;
       }
 
@@ -160,43 +193,69 @@
     });
 
     /* ----------------------------------------
-       SIGN-UP LOGIC
+       SIGN-UP LOGIC WITH SECURE PROMO CHECK
     ----------------------------------------- */
     document.getElementById("signupBtn").addEventListener("click", async () => {
       const email = document.getElementById("signupEmail").value.trim();
       const password = document.getElementById("signupPassword").value.trim();
       const promoCode = document.getElementById("promoCode").value.trim();
 
-      // PROMO CODE VALIDATION
-      if (promoCode.toUpperCase() !== "EUPHORIA") {
-        alert("Sorry, we're not able to offer you an account at this stage.");
-      return;
+      const messageBox = document.getElementById("signupMessage");
+      messageBox.style.display = "none";
+      messageBox.innerHTML = "";
+
+      // 1. Validate promo code securely in Supabase (RPC)
+      const { data: promoValid, error: promoError } = await supabase.rpc(
+        'validate_promo',
+        { promo: promoCode }
+      );
+
+      if (promoError || promoValid !== true) {
+        messageBox.style.display = "block";
+        messageBox.style.borderLeftColor = "#e50914";
+        messageBox.innerHTML = "Sorry, we're not able to offer you an account at this stage.";
+        return;
       }
 
+      // 2. Create Supabase Auth user
       const { data, error } = await supabase.auth.signUp({ email, password });
 
       if (error) {
-        alert("Sign-up failed: " + error.message);
+        messageBox.style.display = "block";
+        messageBox.style.borderLeftColor = "#e50914";
+        messageBox.innerHTML = "Sign-up failed: " + error.message;
         return;
       }
 
       const user = data.user;
 
+      // 3. Insert into database users table
       const { error: insertError } = await supabase
         .from("users")
         .insert({
           id: user.id,
           email: user.email,
-          display_name: displayName || null,
+          display_name: null,
           subscription_level: "basic"
         });
 
       if (insertError) {
-        alert("Account created but failed to save profile.");
+        messageBox.style.display = "block";
+        messageBox.style.borderLeftColor = "#e50914";
+        messageBox.innerHTML = "Your account was created but we couldn't save your profile.";
       }
 
-      alert("Account created! Please verify your email.");
-      showLogin();
+      // SUCCESS MESSAGE
+      messageBox.style.display = "block";
+      messageBox.style.borderLeftColor = "#28a745";
+      messageBox.innerHTML =
+        "We're looking forward to having you on board.<br>Check your e-mail to confirm your subscription!";
+
+      // After 2 seconds, return to login form
+      setTimeout(() => {
+        messageBox.style.display = "none";
+        showLogin();
+      }, 2000);
     });
 
   </script>
