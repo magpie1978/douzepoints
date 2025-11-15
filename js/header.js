@@ -18,7 +18,7 @@ supabase.auth.onAuthStateChange((event, session) => {
 });
 
 // -------------------------------------------------------------
-// 🚀 Load header + bind logout button
+// 🚀 Load header + bind logout button + lucide icon render
 // -------------------------------------------------------------
 async function loadHeader() {
     const path = window.location.pathname;
@@ -27,6 +27,7 @@ async function loadHeader() {
 
     if (!headerContainer) return;
 
+    // Insert header HTML into the page
     headerContainer.innerHTML = headerHtml;
 
     // -----------------------
@@ -49,6 +50,27 @@ async function loadHeader() {
                 window.location.href = "login.html";
             }
         });
+    }
+
+    // ---------------------------------------------------------
+    // ⭐ LUCIDE ICON FIX — Render icons AFTER header is injected
+    // ---------------------------------------------------------
+    function renderIconsWhenReady() {
+        if (window.lucide) {
+            window.lucide.createIcons();
+            return true;
+        }
+        return false;
+    }
+
+    // Try immediately
+    if (!renderIconsWhenReady()) {
+        // Retry until lucide loads (usually instant)
+        const interval = setInterval(() => {
+            if (renderIconsWhenReady()) {
+                clearInterval(interval);
+            }
+        }, 50);
     }
 
     // ---------------------------------------------------------
