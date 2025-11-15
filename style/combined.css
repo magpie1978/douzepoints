@@ -487,32 +487,20 @@ h4 {
   left: 8px;
   width: 28px;
   height: 28px;
+  background: rgba(0,0,0,0.6);
   border-radius: 50%;
-  border: none;
-  background: rgba(0, 0, 0, 0.55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0;
-  z-index: 5;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  z-index: 10;
 }
-
-.favorite-btn i,
-.favorite-btn svg {
-  width: 16px;
-  height: 16px;
-  stroke: #ffffff;
-  fill: transparent;
-}
-
-/* When marked as favourite */
 .favorite-btn.is-favorite {
-  background: rgba(229, 9, 20, 0.9); /* Netflix red */
+  background: #e50914;
 }
-
-.favorite-btn.is-favorite i,
+.favorite-btn svg {
+  stroke:#fff;
+}
 .favorite-btn.is-favorite svg {
-  stroke: #ffffff;
-  fill: #ffffff;
+  fill:#fff;
 }
