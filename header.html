@@ -9,9 +9,12 @@
             <a class="home-link" href="scoreboard.html">Scoreboard</a>
         </div>
 
-        <!-- RIGHT: Logout button -->
+        <!-- RIGHT: Logout button with icon -->
         <div class="header-right">
-            <a class="home-link logout-link" href="#" id="logout-btn">Logout</a>
+            <a class="logout-link" href="#" id="logout-btn">
+                <i data-lucide="log-out" class="logout-icon"></i>
+                <span class="logout-text">Logout</span>
+            </a>
         </div>
 
     </div>
@@ -23,9 +26,14 @@
 
 <div class="banner-divider"></div>
 
-<!-- Supabase logout logic -->
+
+<!-- Logout Logic -->
 <script type="module">
     import { supabase } from './supabaseClient.js';
+    import lucide from "https://unpkg.com/lucide@latest/dist/esm/lucide.js";
+
+    // Activate icons
+    lucide.createIcons();
 
     document.getElementById("logout-btn").addEventListener("click", async (e) => {
         e.preventDefault();
@@ -42,25 +50,43 @@
 </script>
 
 <style>
-    /* Make left links + right logout align horizontally */
+    /* Layout: left links + right logout icon */
     .header-overlay {
         display: flex;
-        justify-content: space-between; /* Push logout to the right */
+        justify-content: space-between;
         align-items: center;
-        padding: 20px;
+        padding: 20px 30px;
     }
 
     .header-links a {
         margin-right: 20px;
     }
 
+    /* Logout container */
+    .header-right {
+        margin-left: auto; /* Push logout fully right */
+    }
+
+    /* Logout link styling */
     .logout-link {
+        display: flex;
+        align-items: center;
+        gap: 8px;
         color: #e50914 !important;
         font-weight: bold;
-        margin-left: 20px;
+        text-decoration: none;
+        cursor: pointer;
     }
 
     .logout-link:hover {
-        text-decoration: underline;
+        opacity: 0.8;
+    }
+
+    /* Icon styling */
+    .logout-icon {
+        width: 22px;
+        height: 22px;
+        stroke-width: 2.5;
+        color: #e50914;
     }
 </style>
