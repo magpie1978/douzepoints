@@ -1,99 +1,73 @@
-import { supabase } from './supabaseClient.js';
+// my-favorites.js — FINAL VERSION
+// - Loads favourited videos using Video_Lookup
+// - Uses the SAME card renderer from video.js
+// - No duplicated HTML
+// - Fully uses modal and favourite system
 
-let currentUser = null;
+(function () {
 
-document.addEventListener('DOMContentLoaded', initFavoritesPage);
+  const supabase = window.supabaseClient;
 
-async function initFavoritesPage() {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    // you may want to redirect to login
-    window.location.href = 'login.html';
-    return;
+  document.addEventListener("DOMContentLoaded", initFavoritesPage);
+
+  async function initFavoritesPage() {
+
+    // 1. Get logged in user
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    // 2. Load favourite IDs
+    const { data: favRows, error: favError } = await supabase
+      .from("user_favorites")
+      .select("video_id")
+      .eq("user_id", user.id);
+
+    if (favError) {
+      console.error("Favourite fetch error:", favError);
+      return showMessage("Error loading favourites.");
+    }
+
+    if (!favRows || favRows.length === 0) {
+      return showMessage("You haven’t favourited any videos yet.");
+    }
+
+    const ids = favRows.map(r => r.video_id);
+
+    // 3. Load matching videos from douzepoints
+    const { data: videos, error: videoError } = await supabase
+      .from("douzepoints")
+      .select("*")
+      .in("Video_Lookup", ids);   // ⭐ THIS IS THE FIX
+
+    if (videoError) {
+      console.error("Video lookup error:", videoError);
+      return showMessage("Error loading videos.");
+    }
+
+    if (!videos || videos.length === 0) {
+      return showMessage("No videos found for your favourites.");
+    }
+
+    // 4. Ensure favourite state is loaded for video.js
+    await window.ensureFavoritesLoaded?.();
+
+    // 5. Render using the exact same renderer used everywhere else
+    window.renderVideos(videos);
+
+    // 6. Reload icons
+    if (window.lucide?.createIcons) {
+      window.lucide.createIcons();
+    }
   }
 
-  currentUser = user;
-
-  const favoriteVideoIds = await fetchFavoriteVideoIds();
-  if (!favoriteVideoIds.length) {
-    document.getElementById('favorites-video-container').innerHTML =
-      '<p>You haven’t added any favorites yet.</p>';
-    return;
+  function showMessage(msg) {
+    const container = document.getElementById("favorites-video-container") ||
+                      document.getElementById("video-container");
+    container.innerHTML = `<p style="padding:20px;">${msg}</p>`;
   }
 
-  const videos = await fetchVideosByIds(favoriteVideoIds);
-  renderFavoriteVideos(videos);
-  lucide.createIcons();
-}
-
-async function fetchFavoriteVideoIds() {
-  const { data, error } = await supabase
-    .from('user_favorites')
-    .select('video_id')
-    .eq('user_id', currentUser.id);
-
-  if (error) {
-    console.error('Error fetching user favorites:', error);
-    return [];
-  }
-  return data.map(row => row.video_id);
-}
-
-async function fetchVideosByIds(ids) {
-  const { data, error } = await supabase
-    .from('douzepoints')
-    .select('*')
-    .in('Video_Lookup', ids);  // ⭐ THIS IS THE FIX
-
-  if (error) {
-    console.error('Error fetching videos:', error);
-    return [];
-  }
-  return data;
-}
-
-
-function renderFavoriteVideos(videos) {
-  const container = document.getElementById('favorites-video-container');
-  container.innerHTML = '';
-
-  videos.forEach(row => {
-    const card = document.createElement('div');
-    card.className = 'video-item';
-
-    const previewHtml = `
-      <img src="${row.thumbnail_url}" alt="${row.song}" />
-    `; // adapt to your actual fields
-
-    card.innerHTML = `
-      <div class="preview-container">
-        <button
-          class="favorite-btn is-favorite"
-          data-video-id="${row.id}"
-          aria-label="Toggle favorite"
-        >
-          <i data-lucide="heart"></i>
-        </button>
-
-        ${previewHtml}
-      </div>
-
-      <div class="video-title-with-icon">
-        <!-- replicate edition.html layout here: flag, country, artist, song, scores, etc -->
-        <div class="video-title-text">
-          ${row.country} – ${row.artist} – "${row.song}"
-        </div>
-      </div>
-    `;
-
-    // You probably already have click-to-open-modal logic; mirror it here
-    card.addEventListener('click', () => {
-      openVideoModal(row); // whatever you use in video.js
-    });
-
-    container.appendChild(card);
-  });
-
-  // Attach handlers to allow un-favoriting from this page if you want:
-  attachFavoriteHandlers();
-}
+})();
