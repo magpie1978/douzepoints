@@ -1,5 +1,5 @@
 // my-favorites.js
-// Loads only the videos the user has marked as favourite
+// Loads the favourited videos from Supabase
 
 const supabase = window.supabaseClient;
 
@@ -7,60 +7,60 @@ document.addEventListener("DOMContentLoaded", initFavoritesPage);
 
 async function initFavoritesPage() {
 
-    // 1. Ensure user is logged in
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-        // If somehow user is not logged in → send to login
+    // 1. Get logged in user
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+    if (userError || !user) {
         window.location.href = "login.html";
         return;
     }
 
-    // 2. Load favourite video IDs from user_favorites
-    const { data: favRows, error: favError } = await supabase
+    const userId = user.id;
+
+    // 2. Retrieve favourite video IDs from user_favorites
+    const { data: favData, error: favError } = await supabase
         .from("user_favorites")
         .select("video_id")
-        .eq("user_id", user.id);
+        .eq("user_id", userId);
 
     if (favError) {
         console.error("Error loading favourites:", favError);
-        document.getElementById("video-container").innerHTML =
-            "<p style='padding:20px;'>Error loading favourites.</p>";
-        return;
+        return showMessage("Error loading favorites.");
     }
 
-    if (!favRows || favRows.length === 0) {
-        document.getElementById("video-container").innerHTML =
-            "<p style='padding:20px;'>You haven’t favourited any videos yet.</p>";
-        return;
+    if (!favData || favData.length === 0) {
+        return showMessage("You haven't favourited any videos yet.");
     }
 
     // Extract IDs
-    const favIds = favRows.map(r => r.video_id);
+    const favIds = favData.map(row => row.video_id);
 
-    // 3. Fetch matching videos from douzepoints
-    const { data: videos, error: vidError } = await supabase
+    // 3. Fetch matching videos from douzepoints (using Video_Lookup)
+    const { data: videos, error: videoError } = await supabase
         .from("douzepoints")
         .select("*")
-        .in("ID", favIds);   // Update column name if needed!
+        .in("Video_Lookup", favIds);
 
-    if (vidError) {
-        console.error("Error fetching video data:", vidError);
-        document.getElementById("video-container").innerHTML =
-            "<p style='padding:20px;'>Error fetching video details.</p>";
-        return;
+    if (videoError) {
+        console.error("Error loading video details:", videoError);
+        return showMessage("Error loading video data.");
     }
 
     if (!videos || videos.length === 0) {
-        document.getElementById("video-container").innerHTML =
-            "<p style='padding:20px;'>No videos found for your favourites.</p>";
-        return;
+        return showMessage("No videos found for your favourites.");
     }
 
-    // 4. Render using the SAME renderer used everywhere else
+    // 4. Render using the SAME renderer from video.js
     window.renderVideos(videos);
 
-    // 5. Refresh Lucide icons
+    // Re-render Lucide icons
     if (window.lucide?.createIcons) {
         window.lucide.createIcons();
     }
+}
+
+// Display a nice message
+function showMessage(msg) {
+    document.getElementById("video-container").innerHTML =
+        `<p style="padding:20px;">${msg}</p>`;
 }
