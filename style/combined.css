@@ -479,6 +479,7 @@ h4 {
   margin: 0 auto;
 }
 
+
 /* FAVORITE ICON ON VIDEO CARDS */
 .favorite-btn {
   position: absolute;
@@ -497,6 +498,7 @@ h4 {
   z-index: 5;
 }
 
+.favorite-btn i,
 .favorite-btn svg {
   width: 16px;
   height: 16px;
@@ -504,16 +506,13 @@ h4 {
   fill: transparent;
 }
 
-/* When marked as favorite */
+/* When marked as favourite */
 .favorite-btn.is-favorite {
-  background: rgba(229, 9, 20, 0.9); /* Netflix red glow */
+  background: rgba(229, 9, 20, 0.9); /* Netflix red */
 }
 
+.favorite-btn.is-favorite i,
 .favorite-btn.is-favorite svg {
   stroke: #ffffff;
   fill: #ffffff;
-}
-
-.favorite-btn:hover {
-  transform: scale(1.05);
 }
