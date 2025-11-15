@@ -82,7 +82,6 @@ async function loadHeader() {
     const isCountryPage    = path.includes("country.html");
     const isEditionPage    = path.includes("edition.html");
     const isWinnersPage    = path.includes("winners.html");
-    const isMyFavoritesPage = path.incluudes("favorites.html");
     const isFavouritesPage = path.includes("fan-favorites.html");
     const isAboutPage      = path.includes("about.html");
     const isContactPage    = path.includes("contact.html");
@@ -106,10 +105,7 @@ async function loadHeader() {
         banner.src = "/banners/fanfavorites.png";
         banner.alt = "Fan Favourites";
 
-    } else if (isMyFavouritesPage) {
-    banner.src = "/banners/fanfavorites.png";
-    banner.alt = "My Favourites";
-
+    
     } else if (isEditionPage) {
         const editionYear = new URLSearchParams(window.location.search).get("edition");
         if (editionYear) {
