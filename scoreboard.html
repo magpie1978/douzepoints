@@ -27,20 +27,29 @@
   <div class="main-content">
 
     <div class="table-aligned-container">
-      <!-- <h1 id="tableHeader">Eurovision Grand Final - 2025</h1> -->
-      <h1 id="tableHeader"></h1>
 
-      <!-- FILTER CONTROLS -->
-      <div class="table-controls">
-        <label for="yearSelect">Year:</label>
-        <select id="yearSelect"></select>
+      <!-- HEADER TEXT + DROPDOWNS ROW -->
+      <div class="table-header-row">
+        <h1 id="tableHeader"></h1>
 
-        <label for="stageSelect">Stage:</label>
-        <select id="stageSelect">
-          <option>Final</option>
-          <option>Semi Final 1</option>
-          <option>Semi Final 2</option>
-        </select>
+        <!-- FILTER CONTROLS -->
+        <div class="table-controls">
+
+          <div class="control-block">
+            <label for="yearSelect">Year</label>
+            <select id="yearSelect"></select>
+          </div>
+
+          <div class="control-block">
+            <label for="stageSelect">Stage</label>
+            <select id="stageSelect">
+              <option>Final</option>
+              <option>Semi Final 1</option>
+              <option>Semi Final 2</option>
+            </select>
+          </div>
+
+        </div>
       </div>
 
       <!-- TABLE -->
@@ -50,11 +59,12 @@
           <tbody id="eurovision-table-body"></tbody>
         </table>
       </div>
+
     </div>
 
   </div>
 
-  <!-- UNIVERSAL MODAL SYSTEM (shared with all pages) -->
+  <!-- UNIVERSAL MODAL SYSTEM -->
   <script src="js/modal.js"></script>
   <div id="modal-container"></div>
 
