@@ -82,7 +82,8 @@ async function loadHeader() {
     const isCountryPage    = path.includes("country.html");
     const isEditionPage    = path.includes("edition.html");
     const isWinnersPage    = path.includes("winners.html");
-    const isFavouritesPage = path.includes("fan-favorites.html");
+    const isFanFavesPage   = path.includes("fan-favorites.html");
+    const isFavoritesPage  = path.includes("favorites.html");  // NEW PAGE
     const isAboutPage      = path.includes("about.html");
     const isContactPage    = path.includes("contact.html");
     const isFAQPage        = path.includes("faq.html");
@@ -101,9 +102,15 @@ async function loadHeader() {
         banner.src = "/banners/douzepoints.png";
         banner.alt = "Home";
 
-    } else if (isFavouritesPage) {
-        banner.src = "/banners/fanfavorites.png";
+    } else if (isFanFavesPage) {
+    // Existing Fan Favourites page
+        banner.src = "/banners/fan-favorites.png";
         banner.alt = "Fan Favourites";
+
+    } else if (isFavoritesPage) {
+        // ⭐ NEW: Favorites page (user-saved favourites)
+        banner.src = "/banners/fan-favorites.png";
+        banner.alt = "Your Favorites";
 
     
     } else if (isEditionPage) {
