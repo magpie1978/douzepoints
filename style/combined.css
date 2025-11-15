@@ -481,6 +481,7 @@ h4 {
 
 
 /* FAVORITE ICON ON VIDEO CARDS */
+/* Base appearance of the favourite button */
 .favorite-btn {
   position: absolute;
   top: 8px;
@@ -495,12 +496,26 @@ h4 {
   cursor:pointer;
   z-index: 10;
 }
+
+/* Icon inside the button – default (not favourited) */
+.favorite-btn i,
+.favorite-btn svg,
+.favorite-btn svg path {
+  width: 16px;
+  height: 16px;
+  stroke: #fff;
+  fill: transparent;
+}
+
+/* When marked as favourite */
 .favorite-btn.is-favorite {
   background: #e50914;
 }
-.favorite-btn svg {
-  stroke:#fff;
-}
-.favorite-btn.is-favorite svg {
-  fill:#fff;
+
+/* Make the heart solid when favourited */
+.favorite-btn.is-favorite i,
+.favorite-btn.is-favorite svg,
+.favorite-btn.is-favorite svg path {
+  stroke: #fff;
+  fill: #fff;
 }
