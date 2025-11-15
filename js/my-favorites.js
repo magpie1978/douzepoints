@@ -15,34 +15,32 @@ async function initFavoritesPage() {
         return;
     }
 
-    const userId = user.id;
-
-    // 2. Retrieve favourite video IDs from user_favorites
-    const { data: favData, error: favError } = await supabase
+    // 2. Retrieve favourite video IDs
+    const { data: favRows, error: favError } = await supabase
         .from("user_favorites")
         .select("video_id")
-        .eq("user_id", userId);
+        .eq("user_id", user.id);
 
     if (favError) {
         console.error("Error loading favourites:", favError);
-        return showMessage("Error loading favorites.");
+        return showMessage("Error loading favourites.");
     }
 
-    if (!favData || favData.length === 0) {
+    if (!favRows || favRows.length === 0) {
         return showMessage("You haven't favourited any videos yet.");
     }
 
-    // Extract IDs
-    const favIds = favData.map(row => row.video_id);
+    const favIds = favRows.map(row => row.video_id);
+    console.log("FAV IDS:", favIds);
 
-    // 3. Fetch matching videos from douzepoints (using Video_Lookup)
+    // 3. Fetch matching videos from douzepoints
     const { data: videos, error: videoError } = await supabase
         .from("douzepoints")
         .select("*")
         .in("Video_Lookup", favIds);
 
     if (videoError) {
-        console.error("Error loading video details:", videoError);
+        console.error("Error loading video data:", videoError);
         return showMessage("Error loading video data.");
     }
 
@@ -50,10 +48,11 @@ async function initFavoritesPage() {
         return showMessage("No videos found for your favourites.");
     }
 
-    // 4. Render using the SAME renderer from video.js
+    // 4. Render using video.js
+    await window.ensureFavoritesLoaded?.(); // allows hearts to be correct
+
     window.renderVideos(videos);
 
-    // Re-render Lucide icons
     if (window.lucide?.createIcons) {
         window.lucide.createIcons();
     }
