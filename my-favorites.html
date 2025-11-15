@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Favorite Videos</title>
 
-    <link rel="stylesheet" type="text/css" href="style/combined.css">
-    <link rel="stylesheet" type="text/css" href="style/sidebar.css">
+    <link rel="stylesheet" href="style/combined.css">
+    <link rel="stylesheet" href="style/sidebar.css">
 
+    <!-- Lucide icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
-<body oncontextmenu="return false">
+<body>
 
     <!-- HEADER -->
     <div id="header-container"></div>
@@ -26,26 +29,24 @@
 
         <div class="main-content">
 
-            <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 30px;">
-                <h2 style="margin-left:10px;">My Favorite Videos</h2>
-            </div>
+            <h2 style="margin: 20px 0;">My Favorite Videos</h2>
 
             <div id="video-container" class="grid-container"></div>
 
         </div>
     </div>
 
-    <!-- MODAL -->
+    <!-- Modal System -->
     <script src="js/modal.js"></script>
     <div id="modal-container"></div>
 
-    <!-- VIDEO LOADER -->
+    <!-- Global video renderer -->
     <script src="js/video.js"></script>
 
-    <!-- FAVORITES LOADER -->
+    <!-- ⭐ Favourite Loader -->
     <script src="js/my-favorites.js"></script>
 
-    <!-- FOOTER -->
+    <!-- Footer -->
     <div id="footer"></div>
     <script src="js/footer.js"></script>
 
