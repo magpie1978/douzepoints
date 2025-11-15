@@ -1,14 +1,19 @@
 <header class="main-header">
     <div class="header-overlay">
+
+        <!-- LEFT: Navigation links -->
         <div class="header-links">
             <a class="home-link" href="index.html">Home</a>
             <a class="home-link" href="country.html?country=Albania">Countries</a>
             <a class="home-link" href="edition.html?edition=2025">Editions</a>
             <a class="home-link" href="scoreboard.html">Scoreboard</a>
+        </div>
 
-            <!-- 🔴 NEW LOGOUT BUTTON -->
+        <!-- RIGHT: Logout button -->
+        <div class="header-right">
             <a class="home-link logout-link" href="#" id="logout-btn">Logout</a>
         </div>
+
     </div>
 
     <div class="banner-static">
@@ -18,7 +23,7 @@
 
 <div class="banner-divider"></div>
 
-<!-- 🔴 Supabase logout logic -->
+<!-- Supabase logout logic -->
 <script type="module">
     import { supabase } from './supabaseClient.js';
 
@@ -31,18 +36,30 @@
             console.error("Logout error:", error);
             alert("Failed to log out.");
         } else {
-            window.location.href = "login.html";  // redirect after logout
+            window.location.href = "login.html";
         }
     });
 </script>
 
-<!-- 🔴 Optional: Add basic styling (you can move this to your CSS file) -->
 <style>
-    .logout-link {
-        margin-left: 20px;
-        color: #e50914 !important;    /* Netflix red */
-        font-weight: bold;
+    /* Make left links + right logout align horizontally */
+    .header-overlay {
+        display: flex;
+        justify-content: space-between; /* Push logout to the right */
+        align-items: center;
+        padding: 20px;
     }
+
+    .header-links a {
+        margin-right: 20px;
+    }
+
+    .logout-link {
+        color: #e50914 !important;
+        font-weight: bold;
+        margin-left: 20px;
+    }
+
     .logout-link:hover {
         text-decoration: underline;
     }
