@@ -222,7 +222,7 @@ body.favorites-page .favorite-btn {
 body.favorites-page #playlist-sidebar .playlist-actions {
   display: flex !important;
   gap: 4px !important;       /* space BETWEEN icons */
-  margin-left: 8px !important;
+  margin-left: 2px !important;
 }
 
 body.favorites-page #playlist-sidebar .playlist-actions svg {
