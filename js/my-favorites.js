@@ -44,38 +44,28 @@ async function initFavoritesPage() {
     return;
   }
 
-  // 3. Load full video rows from douzepoints
+  // 3. Load full video rows
   allFavoriteVideos = await fetchVideosByIds(favoriteVideoIds);
   if (!allFavoriteVideos.length) {
     showMessage('No videos found for your favourites.');
     return;
   }
 
-  // 4. Load playlists + playlist_videos for this user
+  // 4. Load playlists + mappings
   await loadPlaylistsAndMappings();
 
-  // 5. Render playlist sidebar
+  // 5. Render sidebar
   renderPlaylistSidebar();
 
-  // 6. Render all favourite videos initially
+  // 6. Render videos
   if (window.ensureFavoritesLoaded) {
-    try {
-      await window.ensureFavoritesLoaded();
-    } catch (e) {
-      console.warn('[my-favorites] ensureFavoritesLoaded threw:', e);
-    }
-  }
-
-  if (!window.renderVideos) {
-    console.error('[my-favorites] window.renderVideos is not defined (is video.js loaded?)');
-    showMessage('Video renderer is missing.');
-    return;
+    await window.ensureFavoritesLoaded();
   }
 
   window.renderVideos(allFavoriteVideos);
   decorateFavoriteCards(allFavoriteVideos);
 
-  // 7. Attach event handlers (once)
+  // 7. Attach handlers
   attachPlaylistButtonHandlers();
   attachPlaylistSidebarHandlers();
   attachPlaylistModalHandlers();
@@ -85,9 +75,9 @@ async function initFavoritesPage() {
   }
 }
 
-// ----------------------
-// Data fetch helpers
-// ----------------------
+/* --------------------------------------------------------
+   DATA HELPERS
+---------------------------------------------------------*/
 
 async function fetchFavoriteVideoIds() {
   const { data, error } = await supabase
@@ -109,52 +99,39 @@ async function fetchVideosByIds(ids) {
     .in('Video_Lookup', ids);
 
   if (error) {
-    console.error('[my-favorites] Error fetching videos by ids:', error);
+    console.error('[my-favorites] Error fetching videos:', error);
     return [];
   }
   return data || [];
 }
 
 async function loadPlaylistsAndMappings() {
-  // Load playlists
   const { data: plData, error: plError } = await supabase
     .from('playlists')
     .select('*')
     .eq('user_id', currentUser.id)
     .order('created_at', { ascending: true });
 
-  if (plError) {
-    console.error('[my-favorites] Error fetching playlists:', plError);
-    playlists = [];
-  } else {
-    playlists = plData || [];
-  }
+  playlists = plError ? [] : (plData || []);
 
-  // Load playlist_videos mappings
   const { data: pvData, error: pvError } = await supabase
     .from('playlist_videos')
     .select('playlist_id, video_id')
     .eq('user_id', currentUser.id);
 
-  if (pvError) {
-    console.error('[my-favorites] Error fetching playlist_videos:', pvError);
-    playlistVideosMap = new Map();
-  } else {
-    playlistVideosMap = new Map();
-    (pvData || []).forEach(row => {
-      const pid = row.playlist_id;
-      const vid = row.video_id;
-      if (!playlistVideosMap.has(pid)) {
-        playlistVideosMap.set(pid, new Set());
-      }
-      playlistVideosMap.get(pid).add(vid);
+  playlistVideosMap = new Map();
+  if (!pvError && pvData) {
+    pvData.forEach(row => {
+      if (!playlistVideosMap.has(row.playlist_id))
+        playlistVideosMap.set(row.playlist_id, new Set());
+      playlistVideosMap.get(row.playlist_id).add(row.video_id);
     });
   }
 }
 
-// ----------------------
-// UI helpers
-// ----------------------
+/* --------------------------------------------------------
+   UI HELPERS
+---------------------------------------------------------*/
 
 function showMessage(msg) {
   const container = document.getElementById('video-container');
@@ -168,14 +145,12 @@ function renderPlaylistSidebar() {
 
   listEl.innerHTML = '';
 
-  // "All Videos" entry
   const allLi = document.createElement('li');
   allLi.className = 'playlist-item active';
   allLi.dataset.playlistId = 'all';
   allLi.innerHTML = `<span>All Videos</span>`;
   listEl.appendChild(allLi);
 
-  // User playlists
   playlists.forEach(pl => {
     const li = document.createElement('li');
     li.className = 'playlist-item';
@@ -192,12 +167,13 @@ function renderPlaylistSidebar() {
   });
 }
 
-// Called after renderVideos() to decorate cards with playlist buttons + data attributes
+/* Add playlist buttons to cards */
 function decorateFavoriteCards(videoList) {
   const container = document.getElementById('video-container');
   if (!container) return;
 
   const cards = Array.from(container.querySelectorAll('.video-item, .carousel-video-item'));
+
   cards.forEach((card, idx) => {
     const video = videoList[idx];
     if (!video) return;
@@ -208,13 +184,12 @@ function decorateFavoriteCards(videoList) {
     const preview = card.querySelector('.preview-container');
     if (!preview) return;
 
-    // Remove an existing playlist button if any (to avoid duplicates)
     const oldBtn = preview.querySelector('.playlist-btn');
     if (oldBtn) oldBtn.remove();
 
     const btn = document.createElement('button');
     btn.className = 'playlist-btn';
-    btn.setAttribute('type', 'button');
+    btn.type = 'button';
     btn.dataset.videoId = videoId;
     btn.innerHTML = `<i data-lucide="plus"></i>`;
 
@@ -226,9 +201,9 @@ function decorateFavoriteCards(videoList) {
   }
 }
 
-// ----------------------
-// Event handlers
-// ----------------------
+/* --------------------------------------------------------
+   EVENT HANDLERS
+---------------------------------------------------------*/
 
 function attachPlaylistButtonHandlers() {
   if (playlistHandlersAttached) return;
@@ -241,20 +216,19 @@ function attachPlaylistButtonHandlers() {
     const btn = e.target.closest('.playlist-btn');
     if (!btn) return;
 
-    e.preventDefault();
+    // IMPORTANT: Prevent clicking card, image, preview from opening video modal
+    e.stopImmediatePropagation();
     e.stopPropagation();
+    e.preventDefault();
 
     const videoId = btn.dataset.videoId;
-    if (!videoId || !currentUser) return;
 
-    // If a specific playlist is selected => toggle membership in that playlist
     if (currentPlaylistId !== 'all') {
       await toggleVideoInCurrentPlaylist(videoId, btn);
     } else {
-      // "All Videos" selected => open modal to choose / create playlist
       openPlaylistModal(videoId);
     }
-  });
+  }, true); // capture phase improves isolation
 }
 
 function attachPlaylistSidebarHandlers() {
@@ -271,18 +245,15 @@ function attachPlaylistSidebarHandlers() {
     const playlistId = item.dataset.playlistId;
 
     if (editIcon && playlistId !== 'all') {
-      // Rename playlist
       await renamePlaylist(playlistId);
       return;
     }
 
     if (deleteIcon && playlistId !== 'all') {
-      // Delete playlist
       await deletePlaylist(playlistId);
       return;
     }
 
-    // Otherwise, it's a normal click to filter
     await applyPlaylistFilter(playlistId);
   });
 }
@@ -293,16 +264,11 @@ function attachPlaylistModalHandlers() {
   const cancelBtn = document.getElementById('playlist-cancel-btn');
   const input = document.getElementById('playlist-input');
 
-  if (!overlay || !saveBtn || !cancelBtn || !input) return;
+  if (!overlay) return;
 
-  cancelBtn.addEventListener('click', () => {
-    closePlaylistModal();
-  });
-
+  cancelBtn.addEventListener('click', () => closePlaylistModal());
   overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) {
-      closePlaylistModal();
-    }
+    if (e.target === overlay) closePlaylistModal();
   });
 
   saveBtn.addEventListener('click', async () => {
@@ -312,27 +278,27 @@ function attachPlaylistModalHandlers() {
       return;
     }
     if (!selectedVideoForPlaylist) {
-      console.warn('[my-favorites] No video selected for playlist assignment.');
+      console.warn('[my-favorites] No video selected for playlist.');
       closePlaylistModal();
       return;
     }
+
     await saveVideoToNamedPlaylist(selectedVideoForPlaylist, name);
     closePlaylistModal();
   });
 }
 
-// ----------------------
-// Playlist operations
-// ----------------------
+/* --------------------------------------------------------
+   PLAYLIST OPERATIONS
+---------------------------------------------------------*/
 
 async function applyPlaylistFilter(playlistId) {
   currentPlaylistId = playlistId;
 
   const listEl = document.getElementById('playlist-list');
   if (listEl) {
-    listEl.querySelectorAll('.playlist-item').forEach(li => {
-      li.classList.toggle('active', li.dataset.playlistId === playlistId);
-    });
+    listEl.querySelectorAll('.playlist-item')
+      .forEach(li => li.classList.toggle('active', li.dataset.playlistId === playlistId));
   }
 
   let filteredVideos = [];
@@ -344,23 +310,22 @@ async function applyPlaylistFilter(playlistId) {
     filteredVideos = allFavoriteVideos.filter(v => idsSet.has(v.Video_Lookup));
   }
 
-  if (window.renderVideos) {
-    window.renderVideos(filteredVideos);
-    decorateFavoriteCards(filteredVideos);
-    if (window.lucide?.createIcons) {
-      window.lucide.createIcons();
-    }
+  window.renderVideos(filteredVideos);
+  decorateFavoriteCards(filteredVideos);
+
+  if (window.lucide?.createIcons) {
+    window.lucide.createIcons();
   }
 }
 
 async function toggleVideoInCurrentPlaylist(videoId, btn) {
   const playlistId = currentPlaylistId;
-  if (!playlistId || playlistId === 'all') return;
+  if (playlistId === 'all') return;
 
-  const set = playlistVideosMap.get(playlistId) || new Set();
+  const vidSet = playlistVideosMap.get(playlistId) || new Set();
 
-  if (set.has(videoId)) {
-    // Remove from playlist
+  // Remove from playlist
+  if (vidSet.has(videoId)) {
     const { error } = await supabase
       .from('playlist_videos')
       .delete()
@@ -368,45 +333,35 @@ async function toggleVideoInCurrentPlaylist(videoId, btn) {
       .eq('playlist_id', playlistId)
       .eq('video_id', videoId);
 
-    if (error) {
-      console.error('[my-favorites] Error removing video from playlist:', error);
-      return;
-    }
+    if (!error) {
+      vidSet.delete(videoId);
+      playlistVideosMap.set(playlistId, vidSet);
 
-    set.delete(videoId);
-    playlistVideosMap.set(playlistId, set);
-
-    // If we're viewing this playlist, fade out the card
-    const card = btn.closest('.video-item, .carousel-video-item');
-    if (card && currentPlaylistId === playlistId) {
-      card.classList.add('fade-out');
-      setTimeout(() => {
-        card.remove();
-        const container = document.getElementById('video-container');
-        if (container) {
-          const remaining = container.querySelectorAll('.video-item, .carousel-video-item').length;
-          if (remaining === 0) {
-            showMessage("This playlist has no videos yet.");
-          }
-        }
-      }, 300);
+      const card = btn.closest('.video-item, .carousel-video-item');
+      if (card) {
+        card.classList.add('fade-out');
+        setTimeout(() => {
+          card.remove();
+          const remaining = document.querySelectorAll('.video-item').length;
+          if (remaining === 0) showMessage('This playlist has no videos yet.');
+        }, 300);
+      }
     }
-  } else {
-    // Add to current playlist
-    const { error } = await supabase
-      .from('playlist_videos')
-      .insert({
-        user_id: currentUser.id,
-        playlist_id: playlistId,
-        video_id: videoId
-      });
+    return;
+  }
 
-    if (error) {
-      console.error('[my-favorites] Error adding video to playlist:', error);
-      return;
-    }
-    set.add(videoId);
-    playlistVideosMap.set(playlistId, set);
+  // Add to playlist
+  const { error } = await supabase
+    .from('playlist_videos')
+    .insert({
+      user_id: currentUser.id,
+      playlist_id: playlistId,
+      video_id: videoId
+    });
+
+  if (!error) {
+    vidSet.add(videoId);
+    playlistVideosMap.set(playlistId, vidSet);
   }
 }
 
@@ -414,8 +369,6 @@ function openPlaylistModal(videoId) {
   selectedVideoForPlaylist = videoId;
   const overlay = document.getElementById('playlist-modal-overlay');
   const input = document.getElementById('playlist-input');
-  if (!overlay || !input) return;
-
   input.value = '';
   overlay.style.display = 'flex';
   input.focus();
@@ -423,19 +376,16 @@ function openPlaylistModal(videoId) {
 
 function closePlaylistModal() {
   const overlay = document.getElementById('playlist-modal-overlay');
-  const input = document.getElementById('playlist-input');
-  if (overlay) overlay.style.display = 'none';
-  if (input) input.value = '';
+  overlay.style.display = 'none';
   selectedVideoForPlaylist = null;
 }
 
 async function saveVideoToNamedPlaylist(videoId, playlistName) {
-  // Find existing playlist with same name (case-insensitive)
   const nameLower = playlistName.toLowerCase();
   let playlist = playlists.find(pl => (pl.name || '').toLowerCase() === nameLower);
 
   if (!playlist) {
-    // Create new playlist
+    // Create playlist
     const { data, error } = await supabase
       .from('playlists')
       .insert({
@@ -452,16 +402,11 @@ async function saveVideoToNamedPlaylist(videoId, playlistName) {
 
     playlist = data;
     playlists.push(playlist);
-
-    // Update sidebar
     renderPlaylistSidebar();
-    if (window.lucide?.createIcons) {
-      window.lucide.createIcons();
-    }
   }
 
-  // Insert video into playlist_videos
-  const { error: pvError } = await supabase
+  // Add video to playlist
+  const { error: pvErr } = await supabase
     .from('playlist_videos')
     .insert({
       user_id: currentUser.id,
@@ -469,27 +414,19 @@ async function saveVideoToNamedPlaylist(videoId, playlistName) {
       video_id: videoId
     });
 
-  if (pvError) {
-    if (pvError.code === '23505') {
-      // unique constraint (already in playlist) – safe to ignore
-      return;
+  if (!pvErr) {
+    if (!playlistVideosMap.has(playlist.id)) {
+      playlistVideosMap.set(playlist.id, new Set());
     }
-    console.error('[my-favorites] Error adding video to playlist_videos:', pvError);
-    return;
+    playlistVideosMap.get(playlist.id).add(videoId);
   }
-
-  // Update local mapping
-  if (!playlistVideosMap.has(playlist.id)) {
-    playlistVideosMap.set(playlist.id, new Set());
-  }
-  playlistVideosMap.get(playlist.id).add(videoId);
 }
 
 async function renamePlaylist(playlistId) {
   const pl = playlists.find(p => p.id === playlistId);
   if (!pl) return;
 
-  const newName = window.prompt('Rename playlist:', pl.name);
+  const newName = prompt('Rename playlist:', pl.name);
   if (!newName) return;
 
   const trimmed = newName.trim();
@@ -500,15 +437,9 @@ async function renamePlaylist(playlistId) {
     .update({ name: trimmed })
     .eq('id', playlistId);
 
-  if (error) {
-    console.error('[my-favorites] Error renaming playlist:', error);
-    return;
-  }
-
-  pl.name = trimmed;
-  renderPlaylistSidebar();
-  if (window.lucide?.createIcons) {
-    window.lucide.createIcons();
+  if (!error) {
+    pl.name = trimmed;
+    renderPlaylistSidebar();
   }
 }
 
@@ -516,41 +447,31 @@ async function deletePlaylist(playlistId) {
   const pl = playlists.find(p => p.id === playlistId);
   if (!pl) return;
 
-  const confirmDelete = window.confirm(`Delete playlist "${pl.name}"? This will not delete the videos themselves.`);
-  if (!confirmDelete) return;
+  if (!confirm(`Delete playlist "${pl.name}"?`)) return;
 
   const { error } = await supabase
     .from('playlists')
     .delete()
     .eq('id', playlistId);
 
-  if (error) {
-    console.error('[my-favorites] Error deleting playlist:', error);
-    return;
-  }
+  if (!error) {
+    playlists = playlists.filter(p => p.id !== playlistId);
+    playlistVideosMap.delete(playlistId);
 
-  // Remove from local state
-  playlists = playlists.filter(p => p.id !== playlistId);
-  playlistVideosMap.delete(playlistId);
-
-  // If we were viewing this playlist, revert to "All Videos"
-  if (currentPlaylistId === playlistId) {
-    currentPlaylistId = 'all';
-    if (window.renderVideos) {
+    if (currentPlaylistId === playlistId) {
+      currentPlaylistId = 'all';
       window.renderVideos(allFavoriteVideos);
       decorateFavoriteCards(allFavoriteVideos);
     }
-  }
 
-  renderPlaylistSidebar();
-  if (window.lucide?.createIcons) {
-    window.lucide.createIcons();
+    renderPlaylistSidebar();
   }
 }
 
-// ----------------------
-// Small helper
-// ----------------------
+/* --------------------------------------------------------
+   UTILS
+---------------------------------------------------------*/
+
 function escapeHtml(str) {
   if (str == null) return '';
   return String(str)
