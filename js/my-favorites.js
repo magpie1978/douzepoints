@@ -45,21 +45,20 @@ async function initFavoritesPage() {
     return;
   }
 
-  // 4. Let video.js set up favourite-state + render the proper cards
-  if (window.ensureFavoritesLoaded) {
+ // 4. Let video.js set up favourite-state
+if (window.ensureFavoritesLoaded) {
     await window.ensureFavoritesLoaded();
-  }
+}
 
-  if (window.renderVideos) {
-    // video.js will render into #video-container
-    window.renderVideos(videos);
-  } else {
-    console.error('window.renderVideos is not defined (is video.js loaded on this page?)');
-  }
+// 5. Render using video.js
+window.renderVideos(videos);
 
-  if (window.lucide?.createIcons) {
+// 6. Enable removing favourites directly from this page
+enableRemoveFromFavorites();
+
+// 7. Refresh icons
+if (window.lucide?.createIcons) {
     window.lucide.createIcons();
-  }
 }
 
 async function fetchFavoriteVideoIds() {
@@ -89,3 +88,31 @@ async function fetchVideosByIds(ids) {
 
   return data || [];
 }
+
+function enableRemoveFromFavorites() {
+  const container = document.getElementById("video-container");
+
+  container.addEventListener("click", (e) => {
+    const favBtn = e.target.closest(".favorite-btn");
+    if (!favBtn) return;
+
+    // After video.js toggleFavorite runs, check if the item is un-favourited
+    setTimeout(() => {
+      const isStillFavorite = favBtn.classList.contains("is-favorite");
+
+      // If no longer favourite → remove card from the DOM
+      if (!isStillFavorite) {
+        const card = favBtn.closest(".video-item");
+        if (card) card.remove();
+      }
+
+      // Optional: if the user unfavourited everything, show a nice message:
+      const remaining = document.querySelectorAll(".video-item").length;
+      if (remaining === 0) {
+        container.innerHTML = `<p style="padding:20px;">You haven’t favourited any videos yet.</p>`;
+      }
+
+    }, 100); // slight delay so toggleFavorite can update
+  });
+}
+
