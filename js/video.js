@@ -147,6 +147,18 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
   // ------------------------------------------------------------
   function renderEntry(entry, variant = "grid") {
     const wrapper = document.createElement("div");
+    // ⭐ Add dataset attributes so sorting.js can work
+    wrapper.dataset.year          = entry.Year || "";
+    wrapper.dataset.artist        = entry.Artist || "";
+    wrapper.dataset.song          = entry.Song || "";
+    wrapper.dataset.country       = entry.Country || "";
+    wrapper.dataset.total         = entry.Final_TotalPoints || 0;
+    wrapper.dataset.totalrank     = entry.Final_Rank || "";
+    wrapper.dataset.jury          = entry.Final_JuryPoints || 0;
+    wrapper.dataset.juryrank      = entry.Final_JuryRank || "";
+    wrapper.dataset.televote      = entry.Final_TelevotePoints || 0;
+    wrapper.dataset.televoterank  = entry.Final_TelevoteRank || "";
+    wrapper.dataset.dnq           = (!entry.Final_Rank || entry.Final_Rank === 0) ? "1" : "0";
     wrapper.className = variant === "carousel" ? "carousel-video-item" : "video-item";
     wrapper.setAttribute("role", "button");
     wrapper.tabIndex = 0;
