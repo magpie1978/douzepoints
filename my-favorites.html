@@ -5,14 +5,10 @@
   <title>My Favorites</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Existing site styles -->
   <link rel="stylesheet" href="style/combined.css">
   <link rel="stylesheet" href="style/sidebar.css">
-
-  <!-- NEW: Playlist styles -->
   <link rel="stylesheet" href="style/playlist.css">
 
-  <!-- Lucide icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
@@ -28,7 +24,6 @@
     <aside id="playlist-sidebar">
       <h3>My Playlists</h3>
       <ul class="playlist-list" id="playlist-list">
-        <!-- Filled dynamically by JS -->
         <li class="playlist-item active" data-playlist-id="all">
           <span>All Favorites</span>
         </li>
@@ -37,25 +32,23 @@
 
     <!-- MAIN CONTENT -->
     <main class="main-content">
-      <div class="edition-header" 
-           style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h2 id="playlist-title" style="margin-left:5px;">All My Favorites</h2>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h2 id="playlist-title">All My Favorites</h2>
       </div>
 
-      <!-- Video grid -->
       <div id="video-container" class="grid-container"></div>
     </main>
 
   </div>
 
-  <!-- PLAYLIST MODAL (create/add) -->
-  <div id="playlist-modal-overlay">
-    <div id="playlist-modal">
+  <!-- CREATE PLAYLIST MODAL -->
+  <div id="playlist-create-overlay" class="glass-overlay">
+    <div class="glass-modal">
       <h4>Create or Add to Playlist</h4>
       <input id="playlist-input" type="text" placeholder="Enter playlist name...">
-      <div class="modal-buttons">
-        <button class="playlist-modal-btn cancel" id="playlist-cancel-btn">Cancel</button>
-        <button class="playlist-modal-btn" id="playlist-save-btn">Save</button>
+      <div class="glass-modal-buttons">
+        <button class="glass-btn cancel" id="playlist-cancel-btn">Cancel</button>
+        <button class="glass-btn" id="playlist-save-btn">Save</button>
       </div>
     </div>
   </div>
@@ -86,17 +79,9 @@
     </div>
   </div>
 
-  <!-- MODAL & FOOTER -->
-  <div id="modal-container"></div>
   <script src="js/modal.js"></script>
-
-  <div id="footer"></div>
   <script src="js/footer.js"></script>
-
-  <!-- Global video renderer -->
   <script type="module" src="js/video.js"></script>
-
-  <!-- Playlist logic -->
   <script type="module" src="js/my-favorites.js"></script>
 
 </body>
