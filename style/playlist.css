@@ -218,9 +218,9 @@ body.favorites-page .favorite-btn {
 }
 
 
-/* Shrink playlist edit/delete icons to 50% */
+/* Force playlist edit/delete icons to be 50% size */
 body.favorites-page #playlist-sidebar .playlist-actions svg {
-  width: 12px !important;
-  height: 12px !important;
-  stroke-width: 2 !important; /* optional: keeps icon visible when small */
+  transform: scale(0.5) !important;
+  transform-origin: center center !important;
+  display: inline-block !important;
 }
