@@ -218,17 +218,28 @@ body.favorites-page .favorite-btn {
 }
 
 
-/* Tighter spacing between playlist edit/delete icons */
+/* Tighten playlist edit/delete icons */
 body.favorites-page #playlist-sidebar .playlist-actions {
   display: flex !important;
-  gap: 2px !important;       /* space BETWEEN icons */
-  margin-left: 4px !important;
-}
-
-body.favorites-page #playlist-sidebar .playlist-actions svg {
-  transform: scale(0.5) !important;        /* keep 50% size */
-  transform-origin: center center !important;
-  margin: 0 !important;                     /* remove leftover spacing */
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 2px !important;
   padding: 0 !important;
+  margin: 0 !important;
+  min-width: 40px !important;
 }
 
+/* Scale icons down */
+body.favorites-page #playlist-sidebar .playlist-actions svg {
+  transform: scale(0.45) !important;
+  transform-origin: center center !important;
+  display: block !important;
+
+  /* Remove internal spacing */
+  margin: 0 !important;
+  padding: 0 !important;
+
+  /* Keep default Lucide view box while letting scale handle real size */
+  width: 24px !important;
+  height: 24px !important;
+}
