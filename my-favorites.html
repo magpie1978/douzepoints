@@ -2,59 +2,59 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>DouzePoints | My Favourites</title>
+  <title>My Favourites</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Your main styles -->
   <link rel="stylesheet" href="combined.css">
   <link rel="stylesheet" href="sidebar.css">
 
-  <!-- Lucide for the heart icon -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Small helper just for fade-out effect on this page -->
   <style>
     .video-item.fade-out {
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.3s ease-out;
     }
   </style>
 </head>
-<body>
+
+<body oncontextmenu="return false">
+
   <!-- HEADER -->
   <div id="header-container"></div>
-  <script type="module" src="header.js"></script>
+  <script type="module" src="js/header.js"></script>
 
   <div class="container">
+
     <!-- SIDEBAR -->
     <aside id="sidebar-container" class="sidebar"></aside>
-    <script type="module" src="sidebar.js"></script>
+    <script type="module" src="js/sidebar.js"></script>
 
-    <!-- MAIN CONTENT -->
     <main class="main-content">
+
       <div class="edition-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <h2 style="margin:0 0 0 10px;">My Favourites</h2>
-        <p style="margin:0 20px 0 0;font-size:0.85rem;color:#aaa;">
+        <h2 style="margin-left:20px;">My Favourites</h2>
+        <p style="margin-right:20px;font-size:0.85rem;color:#aaa;">
           Click the red heart to remove a video from your favourites.
         </p>
       </div>
 
-      <!-- This is where video.js will render the cards -->
       <div id="video-container" class="grid-container"></div>
+
     </main>
+
   </div>
 
-  <!-- MODAL + FOOTER (same pattern as other pages) -->
+  <!-- MODAL + FOOTER -->
   <div id="modal-root"></div>
-  <script src="modal.js"></script>
+  <script src="js/modal.js"></script>
 
   <div id="footer"></div>
-  <script src="footer.js"></script>
+  <script src="js/footer.js"></script>
 
-  <!-- Shared video renderer (already in your project) -->
-  <script src="video.js"></script>
+  <!-- CRITICAL: load video.js BEFORE my-favorites.js -->
+  <script type="module" src="js/video.js"></script>
+  <script type="module" src="js/my-favorites.js"></script>
 
-  <!-- This page’s logic -->
-  <script src="my-favorites.js"></script>
 </body>
 </html>
