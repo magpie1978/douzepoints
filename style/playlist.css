@@ -225,13 +225,13 @@ body.favorites-page #playlist-sidebar .playlist-actions {
   justify-content: flex-end !important;
   gap: 0px !important;
   padding: 0 !important;
-  margin: 0 !important;
+  margin: 2 !important;
   min-width: 40px !important;
 }
 
 /* Scale icons down */
 body.favorites-page #playlist-sidebar .playlist-actions svg {
-  transform: scale(0.4) !important;
+  transform: scale(0.5) !important;
   transform-origin: center center !important;
   display: block !important;
 
