@@ -39,7 +39,7 @@
     <main class="main-content">
       <div class="edition-header" 
            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h2 id="playlist-title" style="margin-left:5px;">All Favorites</h2>
+        <h2 id="playlist-title" style="margin-left:5px;">All My Favorites</h2>
       </div>
 
       <!-- Video grid -->
@@ -48,14 +48,11 @@
 
   </div>
 
-  <!-- PLAYLIST MODAL -->
+  <!-- PLAYLIST MODAL (create/add) -->
   <div id="playlist-modal-overlay">
     <div id="playlist-modal">
       <h4>Create or Add to Playlist</h4>
-
-      <!-- Input -->
       <input id="playlist-input" type="text" placeholder="Enter playlist name...">
-
       <div class="modal-buttons">
         <button class="playlist-modal-btn cancel" id="playlist-cancel-btn">Cancel</button>
         <button class="playlist-modal-btn" id="playlist-save-btn">Save</button>
@@ -64,29 +61,30 @@
   </div>
 
   <!-- RENAME PLAYLIST MODAL -->
-<div id="rename-modal-overlay" class="glass-overlay">
-  <div class="glass-modal">
-    <h4>Rename Playlist</h4>
-    <input id="rename-input" type="text" placeholder="New playlist name...">
-    <div class="glass-modal-buttons">
-      <button class="glass-btn cancel" id="rename-cancel-btn">Cancel</button>
-      <button class="glass-btn" id="rename-save-btn">Save</button>
+  <div id="rename-modal-overlay" class="glass-overlay">
+    <div class="glass-modal">
+      <h4>Rename Playlist</h4>
+      <input id="rename-input" type="text" placeholder="New playlist name...">
+      <div class="glass-modal-buttons">
+        <button class="glass-btn cancel" id="rename-cancel-btn">Cancel</button>
+        <button class="glass-btn" id="rename-save-btn">Save</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- DELETE PLAYLIST MODAL -->
-<div id="delete-modal-overlay" class="glass-overlay">
-  <div class="glass-modal">
-    <h4>Delete Playlist?</h4>
-    <p style="opacity:0.8; margin-bottom:18px;">This action will remove this playlist. Videos will remain in your favorites.</p>
-    <div class="glass-modal-buttons">
-      <button class="glass-btn cancel" id="delete-cancel-btn">Cancel</button>
-      <button class="glass-btn danger" id="delete-confirm-btn">Delete</button>
+  <!-- DELETE PLAYLIST MODAL -->
+  <div id="delete-modal-overlay" class="glass-overlay">
+    <div class="glass-modal">
+      <h4>Delete Playlist?</h4>
+      <p style="opacity:0.8; margin-bottom:18px;">
+        This action will remove this playlist. Videos will remain in your favorites.
+      </p>
+      <div class="glass-modal-buttons">
+        <button class="glass-btn cancel" id="delete-cancel-btn">Cancel</button>
+        <button class="glass-btn danger" id="delete-confirm-btn">Delete</button>
+      </div>
     </div>
   </div>
-</div>
-
 
   <!-- MODAL & FOOTER -->
   <div id="modal-container"></div>
