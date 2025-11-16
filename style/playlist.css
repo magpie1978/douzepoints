@@ -2,12 +2,22 @@
    PLAYLIST LAYOUT 
 ---------------------------- */
 
-/* Turn the main container into a horizontal layout */
+/* FORCE main layout under banner into a horizontal flex layout */
+.container {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  width: 100%;
+}
+
+
+/* Turn the main container into a horizontal layout 
 .container {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
 }
+*/
 
 /* Sidebar stays fixed width */
 #playlist-sidebar {
@@ -16,13 +26,15 @@
   background: #161823;
   border-right: 1px solid #2a2d3a;
   padding: 20px;
-  height: auto;
+  box-sizing: border-box;
+  margin-top: 20px;
 }
 
 /* Main content fills remaining space */
 .main-content {
-  flex: 1;
-  padding: 20px;
+  flex: 1 !important;
+  padding: 20px !important;
+  margin-top: 20px;
 }
 
 /* Ensure playlist + main content don't overlap banner */
@@ -38,4 +50,15 @@
 /* Optional: force videos to never overflow to left */
 .video-item, .carousel-video-item {
   margin-left: auto;
+}
+
+.preview-container {
+  position: relative !important;
+}
+
+.playlist-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 30;
 }
