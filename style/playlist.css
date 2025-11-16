@@ -243,3 +243,77 @@ body.favorites-page #playlist-sidebar .playlist-actions svg {
   width: 24px !important;
   height: 24px !important;
 }
+
+
+/* ===========================================================
+   Glass Modal Styling (Rename / Delete Playlist)
+   =========================================================== */
+
+.glass-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+}
+
+.glass-modal {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  padding: 25px;
+  width: 360px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  animation: fadeInScale 0.25s ease-out;
+}
+
+.glass-modal h4 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+.glass-modal input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  margin-bottom: 20px;
+  font-size: 15px;
+}
+
+.glass-modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.glass-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #e50914;
+  color: #fff;
+}
+
+.glass-btn.cancel {
+  background: #444;
+}
+
+.glass-btn.danger {
+  background: #c92a2a;
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
