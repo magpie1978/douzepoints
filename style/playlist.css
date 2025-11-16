@@ -2,7 +2,6 @@
    PLAYLIST SIDEBAR & GENERAL LAYOUT
    ========================================================================== */
 
-/* Make only My Favorites page use these rules */
 body.favorites-page .container {
   display: flex !important;
   flex-direction: row !important;
@@ -10,7 +9,6 @@ body.favorites-page .container {
   width: 100%;
 }
 
-/* Playlist sidebar (left column) */
 body.favorites-page #playlist-sidebar {
   width: 200px !important;
   min-width: 200px !important;
@@ -63,8 +61,19 @@ body.favorites-page .playlist-actions {
   gap: 2px;
 }
 
+/* Icons inside playlist list */
+body.favorites-page #playlist-sidebar .playlist-actions svg {
+  transform: scale(0.5);
+  transform-origin: center center;
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+}
+
 /* ==========================================================================
-   MAIN CONTENT AREA (right side)
+   MAIN CONTENT AREA
    ========================================================================== */
 
 body.favorites-page .main-content {
@@ -84,7 +93,7 @@ body.favorites-page .main-content h2 {
 }
 
 /* ==========================================================================
-   VIDEO GRID ON MY FAVORITES PAGE
+   VIDEO GRID
    ========================================================================== */
 
 body.favorites-page #video-container.grid-container {
@@ -93,7 +102,6 @@ body.favorites-page #video-container.grid-container {
   margin: 0 auto;
 }
 
-/* Match card sizing to edition/country layout */
 body.favorites-page .video-item,
 body.favorites-page .carousel-video-item {
   width: 100% !important;
@@ -102,14 +110,13 @@ body.favorites-page .carousel-video-item {
   border-radius: 12px !important;
 }
 
-/* Ensure video preview container handles positioned icons */
+/* ==========================================================================
+   PLAYLIST "+" BTN ON VIDEO CARDS
+   ========================================================================== */
+
 body.favorites-page .preview-container {
   position: relative !important;
 }
-
-/* ==========================================================================
-   PLAYLIST BUTTON (“+”) ON VIDEO CARDS
-   ========================================================================== */
 
 body.favorites-page .playlist-btn {
   position: absolute;
@@ -133,84 +140,7 @@ body.favorites-page .playlist-btn svg {
 }
 
 /* ==========================================================================
-   PLAYLIST CREATION MODAL (existing)
-   ========================================================================== */
-
-#playlist-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.65);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-}
-
-#playlist-modal {
-  background: #1b1d29;
-  padding: 25px;
-  border-radius: 12px;
-  width: 350px;
-  box-shadow: 0 0 25px rgba(0,0,0,0.5);
-}
-
-#playlist-modal h4 {
-  margin-top: 0;
-  font-size: 18px;
-  color: #fff;
-}
-
-#playlist-modal input {
-  width: 100%;
-  padding: 10px;
-  background: #0f111a;
-  color: #fff;
-  border: 1px solid #333;
-  border-radius: 6px;
-  margin-top: 10px;
-  margin-bottom: 18px;
-  font-size: 15px;
-}
-
-#playlist-modal .modal-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-.playlist-modal-btn {
-  padding: 8px 16px;
-  background: #e50914;
-  color: #fff;
-  border-radius: 6px;
-  cursor: pointer;
-  border: none;
-  font-size: 14px;
-}
-
-.playlist-modal-btn.cancel {
-  background: #444;
-}
-
-/* ==========================================================================
-   VISUAL HOVER IMPROVEMENTS
-   ========================================================================== */
-
-body.favorites-page .playlist-item:hover {
-  background: #242836;
-  transition: background 0.15s ease-in-out;
-}
-
-body.favorites-page .playlist-btn:hover {
-  background: rgba(255,255,255,0.25);
-  transition: background 0.15s ease-in-out;
-}
-
-/* ==========================================================================
-   FIX FAVOURITE HEART POSITIONING
+   FAVOURITE HEART FIX
    ========================================================================== */
 
 body.favorites-page .favorite-btn {
@@ -219,20 +149,9 @@ body.favorites-page .favorite-btn {
   z-index: 30 !important;
 }
 
-/* Tighten + shrink edit/delete icons */
-body.favorites-page #playlist-sidebar .playlist-actions svg {
-  transform: scale(0.5);
-  transform-origin: center center;
-  display: block;
-  margin: 0;
-  padding: 0;
-  width: 24px;
-  height: 24px;
-}
-
-/* ===========================================================
-   Glass Modals: Rename / Delete Playlist
-   =========================================================== */
+/* ==========================================================================
+   GLASS MODALS (Create, Rename, Delete)
+   ========================================================================== */
 
 .glass-overlay {
   position: fixed;
@@ -252,42 +171,47 @@ body.favorites-page #playlist-sidebar .playlist-actions svg {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 14px;
-  padding: 25px;
+  padding: 25px 30px;
   width: 360px;
+  max-width: 90%;
   box-shadow: 0 8px 30px rgba(0,0,0,0.5);
   animation: fadeInScale 0.25s ease-out;
+  box-sizing: border-box;
 }
 
 .glass-modal h4 {
-  margin-top: 0;
-  margin-bottom: 12px;
+  margin: 0 0 18px 0;
+  font-size: 20px;
   color: #fff;
+  text-align: center;
 }
 
 .glass-modal input {
   width: 100%;
-  padding: 10px;
-  border-radius: 6px;
-  background: rgba(0,0,0,0.4);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: #fff;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(0,0,0,0.35);
+  color: white;
   margin-bottom: 20px;
-  font-size: 15px;
+  box-sizing: border-box;
 }
 
 .glass-modal-buttons {
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+  justify-content: center;
+  gap: 14px;
 }
 
 .glass-btn {
-  padding: 8px 16px;
-  border: none;
+  padding: 8px 18px;
   border-radius: 6px;
+  font-size: 15px;
   cursor: pointer;
-  background: #e50914;
+  border: none;
   color: #fff;
+  background: #e50914;
 }
 
 .glass-btn.cancel {
@@ -298,124 +222,6 @@ body.favorites-page #playlist-sidebar .playlist-actions svg {
   background: #c92a2a;
 }
 
-@keyframes fadeInScale {
-  from { opacity: 0; transform: scale(0.92); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-
-/* Fix Create/Add Playlist modal input overflow */
-#playlist-modal {
-  box-sizing: border-box !important;
-  width: 360px !important;
-  max-width: 90% !important;
-}
-
-#playlist-modal input {
-  width: 100% !important;
-  box-sizing: border-box !important;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  border-radius: 8px !important;
-  border: 1px solid rgba(255,255,255,0.25) !important;
-  background: rgba(0,0,0,0.4) !important;
-  padding: 12px !important;
-  font-size: 16px !important;
-}
-
-/* Make modal body look consistent with glass modal style */
-#playlist-modal h4 {
-  text-align: center;
-  color: #fff !important;
-}
-
-#playlist-modal .modal-buttons {
-  display: flex;
-  justify-content: center !important;
-  gap: 16px;
-  margin-top: 10px;
-}
-
-
-/* ===========================================================
-   Make the CREATE PLAYLIST MODAL match the glass style
-   =========================================================== */
-
-#playlist-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(6px);
-  display: none; 
-  align-items: center;
-  justify-content: center;
-  z-index: 5000;
-}
-
-#playlist-modal {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 14px;
-  padding: 25px 30px;
-  width: 360px;
-  max-width: 90%;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-  animation: fadeInScale 0.25s ease-out;
-  box-sizing: border-box;
-}
-
-#playlist-modal h4 {
-  color: #fff;
-  text-align: center;
-  margin-top: 0;
-  margin-bottom: 18px;
-  font-size: 20px;
-}
-
-#playlist-modal input {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border-radius: 8px;
-  box-sizing: border-box;
-  border: 1px solid rgba(255,255,255,0.25);
-  background: rgba(0,0,0,0.35);
-  color: white;
-  margin-bottom: 22px;
-  outline: none;
-}
-
-#playlist-modal input:focus {
-  border-color: #e50914;
-  box-shadow: 0 0 0 2px rgba(229,9,20,0.4);
-}
-
-/* Center the action buttons */
-#playlist-modal .modal-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-}
-
-#playlist-modal .playlist-modal-btn {
-  padding: 8px 18px;
-  border-radius: 6px;
-  font-size: 15px;
-  cursor: pointer;
-  border: none;
-  color: #fff;
-  background: #e50914;
-}
-
-#playlist-modal .playlist-modal-btn.cancel {
-  background: #444;
-}
-
-/* Glass modal animation */
 @keyframes fadeInScale {
   from { opacity: 0; transform: scale(0.92); }
   to { opacity: 1; transform: scale(1); }
