@@ -218,9 +218,17 @@ body.favorites-page .favorite-btn {
 }
 
 
-/* Force playlist edit/delete icons to be 50% size */
-body.favorites-page #playlist-sidebar .playlist-actions svg {
-  transform: scale(0.5) !important;
-  transform-origin: center center !important;
-  display: inline-block !important;
+/* Tighter spacing between playlist edit/delete icons */
+body.favorites-page #playlist-sidebar .playlist-actions {
+  display: flex !important;
+  gap: 4px !important;       /* space BETWEEN icons */
+  margin-left: 8px !important;
 }
+
+body.favorites-page #playlist-sidebar .playlist-actions svg {
+  transform: scale(0.5) !important;        /* keep 50% size */
+  transform-origin: center center !important;
+  margin: 0 !important;                     /* remove leftover spacing */
+  padding: 0 !important;
+}
+
