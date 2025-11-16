@@ -1,112 +1,153 @@
-// my-favorites.js — use the same supabase client as the rest of the site
-import { supabase } from './supabaseClient.js';
+// my-favorites.js
+// Show the user's favourite videos, and allow removing them with a fade-out.
 
-let currentUser = null;
+const supabase = window.supabaseClient;
 
-document.addEventListener('DOMContentLoaded', initFavoritesPage);
+document.addEventListener("DOMContentLoaded", initFavoritesPage);
 
 async function initFavoritesPage() {
+  if (!supabase) {
+    console.error("[my-favorites] Supabase client missing (window.supabaseClient).");
+    return;
+  }
+
   // 1. Get logged-in user
-  const { data, error } = await supabase.auth.getUser();
-  if (error) {
-    console.error('Error getting user:', error);
-    return;
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+  if (userError) {
+    console.error("[my-favorites] Error getting user:", userError);
+    return showMessage("Error checking your login session.");
   }
 
-  const user = data?.user;
   if (!user) {
-    window.location.href = 'login.html';
+    // Not logged in – send to login page
+    window.location.href = "login.html";
     return;
   }
 
-  currentUser = user;
+  const userId = user.id;
 
-  // 2. Get favourite IDs
-  const favoriteVideoIds = await fetchFavoriteVideoIds();
-  if (!favoriteVideoIds.length) {
-    const container = document.getElementById('video-container');
-    container.innerHTML = '<p style="padding:20px;">You haven’t added any favourites yet.</p>';
-    return;
+  // 2. Get the list of favourite video IDs from user_favorites
+  const { data: favRows, error: favError } = await supabase
+    .from("user_favorites")
+    .select("video_id")
+    .eq("user_id", userId);
+
+  if (favError) {
+    console.error("[my-favorites] Error loading favourites:", favError);
+    return showMessage("Error loading your favourites.");
   }
 
-  // 3. Get the actual videos from douzepoints
-  const videos = await fetchVideosByIds(favoriteVideoIds);
-
-  if (!videos.length) {
-    const container = document.getElementById('video-container');
-    container.innerHTML = '<p style="padding:20px;">No videos found for your favourites.</p>';
-    return;
+  if (!favRows || favRows.length === 0) {
+    return showMessage("You haven’t favourited any videos yet.");
   }
 
-  // 4. Ensure video.js has loaded favourites state
-  if (window.ensureFavoritesLoaded) {
-    await window.ensureFavoritesLoaded();
+  const favouriteIds = favRows.map((row) => row.video_id);
+
+  // 3. Load matching videos from douzepoints using Video_Lookup
+  const { data: videos, error: videoError } = await supabase
+    .from("douzepoints")
+    .select("*")
+    .in("Video_Lookup", favouriteIds);
+
+  if (videoError) {
+    console.error("[my-favorites] Error loading videos:", videoError);
+    return showMessage("Error loading videos for your favourites.");
   }
 
-  // 5. Render using the main renderer from video.js
-  window.renderVideos(videos);
+  if (!videos || videos.length === 0) {
+    return showMessage("No videos found for your favourites.");
+  }
 
-  // 6. Allow unfavouriting directly from this page
-  enableRemoveFromFavorites();
+  // 4. Make sure video.js knows the favourites so toggleFavorite behaves correctly
+  if (typeof window.ensureFavoritesLoaded === "function") {
+    try {
+      await window.ensureFavoritesLoaded();
+    } catch (e) {
+      console.warn("[my-favorites] ensureFavoritesLoaded threw:", e);
+    }
+  }
 
-  // 7. Refresh icons
+  // 5. Use the shared renderer from video.js so cards look exactly like edition.html/country.html
+  if (typeof window.renderVideos === "function") {
+    window.renderVideos(videos);
+  } else {
+    console.error("[my-favorites] window.renderVideos is not available.");
+    return showMessage("Video renderer is missing.");
+  }
+
+  // 6. Force all hearts on this page to be red (favourited state)
+  markAllHeartsAsFavorite();
+
+  // 7. Attach handlers to fade out and remove cards when un-favourited
+  attachHeartRemovalHandlers();
+
+  // 8. Refresh Lucide icons
   if (window.lucide?.createIcons) {
     window.lucide.createIcons();
   }
-} // ← **THIS WAS MISSING**
-
-//
-// --- Helper Functions ---
-//
-
-async function fetchFavoriteVideoIds() {
-  const { data, error } = await supabase
-    .from('user_favorites')
-    .select('video_id')
-    .eq('user_id', currentUser.id);
-
-  if (error) {
-    console.error('Error fetching user favourites:', error);
-    return [];
-  }
-
-  return data.map(row => row.video_id);
 }
 
-async function fetchVideosByIds(ids) {
-  const { data, error } = await supabase
-    .from('douzepoints')
-    .select('*')
-    .in('Video_Lookup', ids);  // ⭐ match on Video_Lookup
-
-  if (error) {
-    console.error('Error fetching videos by ids:', error);
-    return [];
-  }
-
-  return data || [];
-}
-
-function enableRemoveFromFavorites() {
+/**
+ * Show a simple message in the main container.
+ */
+function showMessage(msg) {
   const container = document.getElementById("video-container");
+  if (!container) return;
+  container.innerHTML = `<p style="padding:20px;">${msg}</p>`;
+}
 
-  container.addEventListener("click", (e) => {
-    const favBtn = e.target.closest(".favorite-btn");
-    if (!favBtn) return;
+/**
+ * On the My Favourites page, every video shown *is* a favourite,
+ * so we make sure every heart button starts in the 'is-favorite' state.
+ */
+function markAllHeartsAsFavorite() {
+  const container = document.getElementById("video-container");
+  if (!container) return;
 
-    setTimeout(() => {
-      const isStillFavorite = favBtn.classList.contains("is-favorite");
+  container.querySelectorAll(".favorite-btn").forEach((btn) => {
+    btn.classList.add("is-favorite");
+  });
+}
 
-      if (!isStillFavorite) {
-        const card = favBtn.closest(".video-item");
-        if (card) card.remove();
-      }
+/**
+ * When a heart is clicked on this page:
+ *  - video.js's toggleFavorite() will run first (it updates Supabase + toggles .is-favorite)
+ *  - We then detect that it is no longer a favourite
+ *  - Fade out the card and remove it from the DOM
+ */
+function attachHeartRemovalHandlers() {
+  const container = document.getElementById("video-container");
+  if (!container) return;
 
-      const remaining = document.querySelectorAll(".video-item").length;
-      if (remaining === 0) {
-        container.innerHTML = `<p style="padding:20px;">You haven’t favourited any videos yet.</p>`;
-      }
+  const buttons = container.querySelectorAll(".favorite-btn");
 
-    }, 100);
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      // Give video.js's toggleFavorite() a moment to run and update classes
+      setTimeout(() => {
+        const stillFavorite = btn.classList.contains("is-favorite");
+        if (stillFavorite) return; // user re-clicked or something went odd
+
+        const card =
+          btn.closest(".video-item") ||
+          btn.closest(".carousel-video-item");
+
+        if (!card) return;
+
+        // Add fade-out class, then remove the card after the transition
+        card.classList.add("fade-out");
+
+        setTimeout(() => {
+          card.remove();
+
+          // If that was the last one, show the empty message
+          const remaining = container.querySelectorAll(".video-item, .carousel-video-item").length;
+          if (remaining === 0) {
+            showMessage("You haven’t favourited any videos yet.");
+          }
+        }, 300); // keep in sync with CSS transition duration
+      }, 120); // small delay so toggleFavorite has time to flip the class
+    });
   });
 }
