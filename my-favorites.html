@@ -5,17 +5,12 @@
   <title>My Favourites</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <link rel="stylesheet" href="style/combined.css">
-  <link rel="stylesheet" href="style/sidebar.css">
+  <link rel="stylesheet" href="combined.css">
+  <link rel="stylesheet" href="sidebar.css">
 
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <style>
-    .video-item.fade-out {
-      opacity: 0;
-      transition: opacity 0.3s ease-out;
-    }
-  </style>
+  <!-- Playlist CSS already added into combined.css -->
 </head>
 
 <body oncontextmenu="return false">
@@ -24,35 +19,58 @@
   <div id="header-container"></div>
   <script type="module" src="js/header.js"></script>
 
-  <div class="container">
+  <div class="container" style="display:flex; flex-direction:row;">
 
-    <!-- SIDEBAR -->
-    <aside id="sidebar-container" class="sidebar"></aside>
-    <script type="module" src="js/sidebar.js"></script>
+    <!-- PLAYLIST SIDEBAR -->
+    <aside id="playlist-sidebar">
+      <h3>Your Playlists</h3>
 
-    <main class="main-content">
+      <ul class="playlist-list" id="playlist-list">
+        <!-- JS will inject playlist rows here -->
+        <li class="playlist-item active" data-playlist-id="all">
+          <span>All Videos</span>
+        </li>
+      </ul>
+    </aside>
 
-      <div class="edition-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        
-        <p style="margin-right:20px;font-size:0.85rem;color:#aaa;">
-        </p>
+    <!-- MAIN CONTENT -->
+    <main class="main-content" style="flex:1; padding-left:25px;">
+
+      <div class="edition-header" 
+           style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h2 style="margin-left:5px;">My Favourites</h2>
       </div>
 
       <div id="video-container" class="grid-container"></div>
 
     </main>
-
   </div>
 
-  <!-- MODAL + FOOTER -->
+  <!-- MODAL FOR PLAYLIST CREATION -->
+  <div id="playlist-modal-overlay">
+    <div id="playlist-modal">
+      <h4>Create or Add to Playlist</h4>
+
+      <input id="playlist-input" type="text" placeholder="Enter playlist name...">
+
+      <div class="modal-buttons">
+        <button class="playlist-modal-btn cancel" id="playlist-cancel-btn">Cancel</button>
+        <button class="playlist-modal-btn" id="playlist-save-btn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NORMAL SITE MODAL + FOOTER -->
   <div id="modal-container"></div>
   <script src="js/modal.js"></script>
 
   <div id="footer"></div>
   <script src="js/footer.js"></script>
 
-  <!-- CRITICAL: load video.js BEFORE my-favorites.js -->
+  <!-- Shared render + favourites logic -->
   <script type="module" src="js/video.js"></script>
+
+  <!-- Playlist logic (to be added next) -->
   <script type="module" src="js/my-favorites.js"></script>
 
 </body>
