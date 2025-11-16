@@ -391,50 +391,81 @@ async function renamePlaylist(playlistId) {
   const pl = playlists.find(p => p.id === playlistId);
   if (!pl) return;
 
-  const newName = prompt('Rename playlist:', pl.name);
-  if (!newName) return;
+  const overlay = document.getElementById('rename-modal-overlay');
+  const input = document.getElementById('rename-input');
+  const saveBtn = document.getElementById('rename-save-btn');
+  const cancelBtn = document.getElementById('rename-cancel-btn');
 
-  const trimmed = newName.trim();
-  if (!trimmed) return;
+  input.value = pl.name;
+  overlay.style.display = "flex";
+  input.focus();
 
-  await supabase
-    .from('playlists')
-    .update({ name: trimmed })
-    .eq('id', playlistId);
+  const saveHandler = async () => {
+    const newName = input.value.trim();
+    if (!newName) return;
 
-  pl.name = trimmed;
+    await supabase
+      .from('playlists')
+      .update({ name: newName })
+      .eq('id', playlistId);
 
-  // Update heading if this is the active playlist
-  if (currentPlaylistId === playlistId) {
-    document.getElementById('playlist-title').textContent = trimmed;
-  }
+    pl.name = newName;
 
-  renderPlaylistSidebar();
+    if (currentPlaylistId === playlistId) {
+      document.getElementById('playlist-title').textContent = newName;
+    }
+
+    overlay.style.display = "none";
+    renderPlaylistSidebar();
+  };
+
+  const cancelHandler = () => {
+    overlay.style.display = "none";
+  };
+
+  saveBtn.onclick = saveHandler;
+  cancelBtn.onclick = cancelHandler;
 }
+
+
 
 async function deletePlaylist(playlistId) {
   const pl = playlists.find(p => p.id === playlistId);
   if (!pl) return;
 
-  if (!confirm(`Delete playlist "${pl.name}"?`)) return;
+  const overlay = document.getElementById('delete-modal-overlay');
+  const confirmBtn = document.getElementById('delete-confirm-btn');
+  const cancelBtn = document.getElementById('delete-cancel-btn');
 
-  await supabase
-    .from('playlists')
-    .delete()
-    .eq('id', playlistId);
+  overlay.style.display = "flex";
 
-  playlists = playlists.filter(p => p.id !== playlistId);
-  playlistVideosMap.delete(playlistId);
+  confirmBtn.onclick = async () => {
+    await supabase
+      .from('playlists')
+      .delete()
+      .eq('id', playlistId);
 
-  if (currentPlaylistId === playlistId) {
-    currentPlaylistId = 'all';
-    document.getElementById('playlist-title').textContent = "All My Favorites";
-    window.renderVideos(allFavoriteVideos);
-    decorateFavoriteCards(allFavoriteVideos);
-  }
+    playlists = playlists.filter(p => p.id !== playlistId);
+    playlistVideosMap.delete(playlistId);
 
-  renderPlaylistSidebar();
+    if (currentPlaylistId === playlistId) {
+      currentPlaylistId = 'all';
+      document.getElementById('playlist-title').textContent = "All My Favorites";
+      window.renderVideos(allFavoriteVideos);
+      decorateFavoriteCards(allFavoriteVideos);
+    }
+
+    overlay.style.display = "none";
+    renderPlaylistSidebar();
+  };
+
+  cancelBtn.onclick = () => {
+    overlay.style.display = "none";
+  };
 }
+
+
+
 
 /* --------------------------------------------------------
    UTILITY
