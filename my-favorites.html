@@ -63,6 +63,31 @@
     </div>
   </div>
 
+  <!-- RENAME PLAYLIST MODAL -->
+<div id="rename-modal-overlay" class="glass-overlay">
+  <div class="glass-modal">
+    <h4>Rename Playlist</h4>
+    <input id="rename-input" type="text" placeholder="New playlist name...">
+    <div class="glass-modal-buttons">
+      <button class="glass-btn cancel" id="rename-cancel-btn">Cancel</button>
+      <button class="glass-btn" id="rename-save-btn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE PLAYLIST MODAL -->
+<div id="delete-modal-overlay" class="glass-overlay">
+  <div class="glass-modal">
+    <h4>Delete Playlist?</h4>
+    <p style="opacity:0.8; margin-bottom:18px;">This action will remove this playlist. Videos will remain in your favorites.</p>
+    <div class="glass-modal-buttons">
+      <button class="glass-btn cancel" id="delete-cancel-btn">Cancel</button>
+      <button class="glass-btn danger" id="delete-confirm-btn">Delete</button>
+    </div>
+  </div>
+</div>
+
+
   <!-- MODAL & FOOTER -->
   <div id="modal-container"></div>
   <script src="js/modal.js"></script>
