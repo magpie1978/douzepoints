@@ -216,3 +216,10 @@ body.favorites-page .favorite-btn {
   left: 8px !important;
   z-index: 30 !important;
 }
+
+
+/* Shrink playlist edit/delete icons to 50% size */
+body.favorites-page #playlist-sidebar .playlist-actions i svg {
+  width: 12px !important;   /* originally ~24px */
+  height: 12px !important;
+}
