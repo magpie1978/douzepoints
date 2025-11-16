@@ -104,7 +104,7 @@ async function loadHeader() {
 
     } else if (isFanFavesPage) {
     // Existing Fan Favourites page
-        banner.src = "/banners/fan-favorites.png";
+        banner.src = "/banners/fanfavorites.png";
         banner.alt = "Fan Favourites";
 
     } else if (isFavoritesPage) {
