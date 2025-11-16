@@ -148,7 +148,7 @@ function renderPlaylistSidebar() {
   const allLi = document.createElement('li');
   allLi.className = 'playlist-item active';
   allLi.dataset.playlistId = 'all';
-  allLi.innerHTML = `<span>All Videos</span>`;
+  allLi.innerHTML = `<span>All Favorites</span>`;
   listEl.appendChild(allLi);
 
   playlists.forEach(pl => {
@@ -295,7 +295,17 @@ function attachPlaylistModalHandlers() {
 async function applyPlaylistFilter(playlistId) {
   currentPlaylistId = playlistId;
 
+  // ⭐ Update heading text
+  const titleEl = document.getElementById('playlist-title');
+  if (playlistId === 'all') {
+    titleEl.textContent = "All My Favorites";
+  } else {
+    const pl = playlists.find(p => p.id === playlistId);
+    titleEl.textContent = pl ? pl.name : "Playlist";
+  }
+
   const listEl = document.getElementById('playlist-list');
+  
   if (listEl) {
     listEl.querySelectorAll('.playlist-item')
       .forEach(li => li.classList.toggle('active', li.dataset.playlistId === playlistId));
