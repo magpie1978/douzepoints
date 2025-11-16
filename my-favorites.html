@@ -1,59 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Favorite Videos</title>
+  <meta charset="utf-8" />
+  <title>DouzePoints | My Favourites</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link rel="stylesheet" href="style/combined.css">
-    <link rel="stylesheet" href="style/sidebar.css">
+  <!-- Your main styles -->
+  <link rel="stylesheet" href="combined.css">
+  <link rel="stylesheet" href="sidebar.css">
 
-    <!-- Lucide icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Lucide for the heart icon -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabaseClient.js"></script>   <!-- ⭐ MUST COME FIRST -->
-
-    <!-- Your ES-module files -->
-    <script type="module" src="js/video.js"></script>
-    <script type="module" src="js/my-favorites.js"></script>
+  <!-- Small helper just for fade-out effect on this page -->
+  <style>
+    .video-item.fade-out {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+  </style>
 </head>
+<body>
+  <!-- HEADER -->
+  <div id="header-container"></div>
+  <script type="module" src="header.js"></script>
 
-<body oncontextmenu="return false">
+  <div class="container">
+    <!-- SIDEBAR -->
+    <aside id="sidebar-container" class="sidebar"></aside>
+    <script type="module" src="sidebar.js"></script>
 
-    <!-- HEADER -->
-    <div id="header-container"></div>
-    <script type="module" src="js/header.js"></script>
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <div class="edition-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h2 style="margin:0 0 0 10px;">My Favourites</h2>
+        <p style="margin:0 20px 0 0;font-size:0.85rem;color:#aaa;">
+          Click the red heart to remove a video from your favourites.
+        </p>
+      </div>
 
-    <div class="container">
+      <!-- This is where video.js will render the cards -->
+      <div id="video-container" class="grid-container"></div>
+    </main>
+  </div>
 
-        <!-- SIDEBAR -->
-        <div id="sidebar-container" class="sidebar"></div>
-        <script type="module" src="js/sidebar.js"></script>
+  <!-- MODAL + FOOTER (same pattern as other pages) -->
+  <div id="modal-root"></div>
+  <script src="modal.js"></script>
 
-        <div class="main-content">
+  <div id="footer"></div>
+  <script src="footer.js"></script>
 
-            <!-- <h2 style="margin: 20px 0;">My Favorite Videos</h2> -->
+  <!-- Shared video renderer (already in your project) -->
+  <script src="video.js"></script>
 
-            <div id="video-container" class="grid-container"></div>
-
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <script src="js/modal.js"></script>
-    <div id="modal-container"></div>
-
-    <!-- video.js MUST LOAD BEFORE favourites -->
-    <script src="js/video.js"></script>
-
-    <!-- Favourites loader -->
-    <script src="js/my-favorites.js"></script>
-
-    <!-- Footer -->
-    <div id="footer"></div>
-    <script src="js/footer.js"></script>
-
+  <!-- This page’s logic -->
+  <script src="my-favorites.js"></script>
 </body>
 </html>
