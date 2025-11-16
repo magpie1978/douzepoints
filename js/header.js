@@ -83,7 +83,7 @@ async function loadHeader() {
     const isEditionPage    = path.includes("edition.html");
     const isWinnersPage    = path.includes("winners.html");
     const isFavoritesPage  = path.includes("my-favorites.html");  // NEW PAGE
-    const isFanFavesPage   = path.includes("fan-favorites.html");
+    const isFanFavesPage   = path.includes("fan");
     const isAboutPage      = path.includes("about.html");
     const isContactPage    = path.includes("contact.html");
     const isFAQPage        = path.includes("faq.html");
