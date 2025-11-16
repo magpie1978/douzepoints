@@ -221,8 +221,8 @@ body.favorites-page .favorite-btn {
 /* Tighter spacing between playlist edit/delete icons */
 body.favorites-page #playlist-sidebar .playlist-actions {
   display: flex !important;
-  gap: 4px !important;       /* space BETWEEN icons */
-  margin-left: 2px !important;
+  gap: 2px !important;       /* space BETWEEN icons */
+  margin-left: 4px !important;
 }
 
 body.favorites-page #playlist-sidebar .playlist-actions svg {
