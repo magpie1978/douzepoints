@@ -79,10 +79,21 @@
     </div>
   </div>
 
-  <script src="js/modal.js"></script>
-  <script src="js/footer.js"></script>
-  <script type="module" src="js/video.js"></script>
-  <script type="module" src="js/my-favorites.js"></script>
+  <!-- Supabase Client -->
+<script src="js/supabaseClient.js"></script>
+
+<!-- Modal Loader (must come before video.js) -->
+<script src="js/modal.js"></script>
+
+<!-- Footer & Header (safe anywhere above functional scripts) -->
+<script src="js/footer.js"></script>
+<script type="module" src="js/header.js"></script>
+
+<!-- Video logic (must load BEFORE my-favorites.js) -->
+<script type="module" src="js/video.js"></script>
+
+<!-- MUST BE LAST — playlist logic depends on everything above -->
+<script type="module" src="js/my-favorites.js"></script>
 
 </body>
 </html>
