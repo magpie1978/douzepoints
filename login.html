@@ -247,6 +247,21 @@
     font-weight: 700;            /* optional: bold */
 }
 
+        /* Shake animation for login errors */
+@keyframes shake {
+    0%   { transform: translateX(0); }
+    20%  { transform: translateX(-6px); }
+    40%  { transform: translateX(6px); }
+    60%  { transform: translateX(-4px); }
+    80%  { transform: translateX(4px); }
+    100% { transform: translateX(0); }
+}
+
+.shake-error {
+    animation: shake 0.35s ease;
+}
+
+        
         
     </style>
 </head>
@@ -371,11 +386,17 @@
     });
 
     if (error) {
-        // Show Supabase errors inside login box
-        errorBox.textContent = error.message;
-        return;
-    }
+    // Show Supabase message
+    errorBox.textContent = error.message;
 
+    // Trigger shake animation
+    errorBox.classList.remove("shake-error"); // restart animation
+    void errorBox.offsetWidth;                // force reflow
+    errorBox.classList.add("shake-error");
+
+    return;
+}
+            
     // Success → redirect
     window.location.href = "index.html";
 };
