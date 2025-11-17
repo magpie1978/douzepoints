@@ -33,6 +33,39 @@
             background: rgba(0,0,0,0.55);
         }
 
+
+        /* Clean login row */
+.clean-login {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Moderate-sized inputs */
+.clean-login input {
+    width: 140px; /* perfect size for email/password entry */
+    padding: 8px 10px;
+    font-size: 13px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(0,0,0,0.45);
+    color: #fff;
+}
+
+/* Compact login button */
+.clean-login .login-btn {
+    padding: 8px 14px;
+    font-size: 14px;
+    white-space: nowrap;
+    background: #e50914;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.clean-login .login-btn:hover {
+    background: #f6121d;
+}
+
         /* Horizontal login row */
         .login-row {
             display: flex;
@@ -225,14 +258,13 @@
 
         <!-- Floating LOGIN BOX -->
         <div class="login-box">
-            <h3>Sign In</h3>
-
-            <div class="login-row">
+            <div class="login-row clean-login">
                 <input type="email" id="login-email" placeholder="Email">
                 <input type="password" id="login-password" placeholder="Password">
                 <button id="login-btn" class="login-btn">Log In</button>
             </div>
         </div>
+
 
 
     </div>
