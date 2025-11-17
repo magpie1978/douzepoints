@@ -33,6 +33,33 @@
             background: rgba(0,0,0,0.55);
         }
 
+        /* Horizontal login row */
+        .login-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+    /* Adjust input + button sizes so they look balanced */
+    .login-row input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(0,0,0,0.4);
+    color: #fff;
+    font-size: 14px;
+}
+
+/* Make the login button fit nicely in the row */
+.login-row .login-btn {
+    padding: 10px 18px;
+    height: 100%;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+
         /* Floating LOGIN glass box top-right */
         .login-box {
             position: absolute;
@@ -199,11 +226,13 @@
         <div class="login-box">
             <h3>Sign In</h3>
 
-            <input type="email" id="login-email" placeholder="Email">
-            <input type="password" id="login-password" placeholder="Password">
-
-            <button id="login-btn" class="login-btn">Log In</button>
+            <div class="login-row">
+                <input type="email" id="login-email" placeholder="Email">
+                <input type="password" id="login-password" placeholder="Password">
+                <button id="login-btn" class="login-btn">Log In</button>
+            </div>
         </div>
+
 
     </div>
 
