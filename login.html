@@ -351,18 +351,35 @@
 
         // LOGIN FUNCTIONALITY
         document.getElementById("login-btn").onclick = async () => {
-            let email = document.getElementById("login-email").value;
-            let password = document.getElementById("login-password").value;
+    const email = document.getElementById("login-email").value.trim();
+    const password = document.getElementById("login-password").value.trim();
+    const errorBox = document.getElementById("login-error");
 
-            const { error } = await supabase.auth.signInWithPassword({ email, password });
+    // Clear previous error
+    errorBox.textContent = "";
 
-            if (error) {
-                alert("Login failed: " + error.message);
-                return;
-            }
+    // Basic validation first
+    if (!email || !password) {
+        errorBox.textContent = "Please enter both email and password.";
+        return;
+    }
 
-            window.location.href = "index.html";
-        };
+    // Try logging in
+    const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+    });
+
+    if (error) {
+        // Show Supabase errors inside login box
+        errorBox.textContent = error.message;
+        return;
+    }
+
+    // Success → redirect
+    window.location.href = "index.html";
+};
+
 
         // OPEN SIGNUP MODAL WHEN CHOOSING A PLAN
         document.querySelectorAll(".signup-btn").forEach(btn => {
