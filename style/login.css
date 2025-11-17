@@ -1,4 +1,4 @@
-/* General Styles */
+/* General Styles *
 body {
   background-color: #000;
   font-family: Arial, sans-serif;
@@ -12,14 +12,14 @@ body {
   margin-bottom: 0;
 }
 
-/* Netflix-red divider line under header */
+/* Netflix-red divider line under header *
 .header::after {
   content: "";
   display: block;
   width: 100%;
   height: 1px;
-  background-color: #e50914; /* Netflix red */
-  margin-top: 10px; /* spacing below the image */
+  background-color: #e50914; /* Netflix red *
+  margin-top: 10px; /* spacing below the image *
 }
 
 .header img {
@@ -44,7 +44,7 @@ body {
   color: #fff;
 }
 
-*/
+*
 
 .login-container {
   position: relative;
@@ -53,7 +53,7 @@ body {
   max-width: 420px;
   margin: 120px auto 30px auto;
 
-  /* GLASS EFFECT */
+  /* GLASS EFFECT *
   background: rgba(255, 255, 255, 0.10);
   border-radius: 16px;
   padding: 40px 35px;
@@ -63,7 +63,7 @@ body {
 
   border: 1px solid rgba(255, 255, 255, 0.25);
 
-  /* INNER SHINE */
+  /* INNER SHINE *
   box-shadow:
     inset 0 0 60px rgba(255, 255, 255, 0.05),
     0 0 24px rgba(0, 0, 0, 0.5),
@@ -98,7 +98,7 @@ body {
 
 
 
-/* Input Fields */
+/* Input Fields *
 .input-group {
   margin-bottom: 20px;
 }
@@ -120,15 +120,15 @@ body {
 }
 
 .input-group input:focus {
-  border-color: #e50914; /* Netflix red focus */
+  border-color: #e50914; /* Netflix red focus *
   outline: none;
 }
 
-/* Submit Button */
+/* Submit Button *
 button {
   width: 100%;
   padding: 12px;
-  background-color: #e50914; /* Netflix red */
+  background-color: #e50914; /* Netflix red *
   border: none;
   border-radius: 4px;
   color: white;
@@ -141,7 +141,7 @@ button:hover {
   background-color: #f6121d; /* lighter red */
 }
 
-/* Footer Links */
+/* Footer Links *
 .footer-text {
   text-align: center;
   margin-top: 20px;
@@ -157,7 +157,7 @@ button:hover {
   text-decoration: underline;
 }
 
-/* Small Screens */
+/* Small Screens *
 @media (max-width: 480px) {
   .header img {
     width: 220px;
@@ -166,4 +166,255 @@ button:hover {
   .login-container {
     padding: 30px 25px;
   }
+}
+*/
+
+
+body {
+            margin: 0;
+            font-family: Raleway, sans-serif;
+            background: url("banners/blank.png") center/cover no-repeat fixed;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Banner container (just for positioning the login box) */
+        .banner {
+            position: relative;
+            width: 100%;
+            height: 140px; /* just enough height for the login pill */
+        }
+
+        /* Floating LOGIN glass pill top-right */
+        .login-box {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 20;
+            padding: 10px 14px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255,255,255,0.25);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        /* Single horizontal row for email + password + button */
+        .login-strip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .login-strip input {
+            width: 160px;
+            padding: 6px 10px;
+            font-size: 13px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.35);
+            background: rgba(0,0,0,0.45);
+            color: #fff;
+        }
+
+        .login-strip input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .login-strip .login-btn {
+            padding: 7px 14px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: none;
+            background: #e50914;
+            color: #fff;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .login-strip .login-btn:hover {
+            background: #f6121d;
+        }
+
+        /* MAIN SECTION – package options */
+        .plans-section {
+            padding: 60px 0;
+            margin-top: 80px;
+            text-align: center;
+        }
+
+        .plans-title {
+            font-size: 32px;
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+
+        .plans-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            padding: 0 20px;
+        }
+
+        .plan-card {
+            width: 300px;
+            background: #141414;
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: transform 0.2s ease;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-6px);
+            border-color: #e50914;
+        }
+
+        .plan-title {
+            font-size: 22px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .plan-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 22px 0;
+        }
+
+        .plan-list li {
+            margin: 8px 0;
+            font-size: 14px;
+            /* opacity: 0.85; */
+        }
+
+        .signup-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #e50914;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        .signup-btn:hover {
+            background: #f6121d;
+        }
+
+        /* Glass-effect SIGN-UP modal */
+        #signup-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        #signup-modal {
+            width: 360px;
+            background: rgba(255,255,255,0.08);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        #signup-modal h3 {
+            margin-top: 0;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        #signup-modal input {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.25);
+            background: rgba(0,0,0,0.4);
+            color: #fff;
+        }
+
+        
+
+
+        /* Better styling for buttons inside the Create Account modal */
+#signup-modal .modal-btn {
+    width: 100%;
+    padding: 10px 0;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+/* Red primary button */
+#signup-modal .modal-btn.primary {
+    background: #e50914;
+    color: #fff;
+}
+#signup-modal .modal-btn.primary:hover {
+    background: #f6121d;
+}
+
+/* Grey secondary/close button */
+#signup-modal .modal-btn.secondary {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.25);
+}
+#signup-modal .modal-btn.secondary:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+        
+        /* Big “Douze Points” title */
+.big-title {
+    font-size: 78px;                 /* LARGE headline */
+    font-weight: 800;
+    letter-spacing: -1px;
+    position: relative;
+    margin-top: 2px;                /* pushes it below login box */
+    margin-left: 80px;               /* indent from left */
+    color: rgba(255,255,255,0.92);
+    text-shadow: 0 4px 20px rgba(0,0,0,0.45);
+    z-index: 5;
+}
+
+        /* Subtitle under big “Douze Points” title */
+.big-subtitle {
+    font-size: 38px; /* 25% smaller than 78px title */
+    font-weight: 500;
+    margin-left: 80px; /* aligns nicely under the main title */
+    margin-top: 10px;
+    color: rgba(255,255,255,0.85);
+    text-shadow: 0 3px 14px rgba(0,0,0,0.45);
+    position: relative;
+    z-index: 5;
+}
+
+        .plan-price {
+    color: #e50914;              /* Netflix red */
+    font-size: 0.9em;            /* optional: slightly smaller than title */
+    font-weight: 700;            /* optional: bold */
+}
+
+        /* Shake animation for login errors */
+@keyframes shake {
+    0%   { transform: translateX(0); }
+    20%  { transform: translateX(-6px); }
+    40%  { transform: translateX(6px); }
+    60%  { transform: translateX(-4px); }
+    80%  { transform: translateX(4px); }
+    100% { transform: translateX(0); }
+}
+
+.shake-error {
+    animation: shake 0.35s ease;
 }
