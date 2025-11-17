@@ -182,6 +182,40 @@
             background: #444;
         }
 
+
+
+        /* Better styling for buttons inside the Create Account modal */
+#signup-modal .modal-btn {
+    width: 100%;
+    padding: 10px 0;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+/* Red primary button */
+#signup-modal .modal-btn.primary {
+    background: #e50914;
+    color: #fff;
+}
+#signup-modal .modal-btn.primary:hover {
+    background: #f6121d;
+}
+
+/* Grey secondary/close button */
+#signup-modal .modal-btn.secondary {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.25);
+}
+#signup-modal .modal-btn.secondary:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+        
         /* Big “Douze Points” title */
 .big-title {
     font-size: 78px;                 /* LARGE headline */
@@ -289,8 +323,8 @@
             <input id="signup-password" type="password" placeholder="Password">
             <input id="signup-promo" type="text" placeholder="Promo Code (optional)">
 
-            <button id="signup-submit" class="login-btn">Create Account</button>
-            <button id="signup-close" class="login-btn">Close</button>
+            <button id="signup-submit" class="modal-btn primary">Create Account</button>
+            <button id="signup-close" class="modal-btn secondary">Close</button>
         </div>
     </div>
 
