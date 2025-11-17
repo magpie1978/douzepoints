@@ -425,26 +425,38 @@ function attachPlaylistButtonHandlers() {
   const container = document.getElementById("video-container");
   if (!container) return;
 
+  // Use CAPTURE mode so we intercept BEFORE video.js and header.js
   container.addEventListener("click", (e) => {
-    const btn = e.target.closest(".playlist-btn");
-    if (!btn) return; // normal card click → video modal
 
-    // Stop the click from opening the video modal
+    // Find the + button
+    const btn = e.target.closest(".playlist-btn");
+    if (!btn) return;   // Not the "+" button → allow normal click (video modal)
+
+    console.log("[Playlist] + button clicked");
+
+    // STOP the video modal from opening
     e.preventDefault();
+    e.stopPropagation();
     e.stopImmediatePropagation();
 
     const videoId = btn.dataset.videoId;
-    if (!videoId) return;
-
-    if (currentPlaylistId === "all") {
-      // Prompt for playlist name
-      openCreatePlaylistModal(videoId);
-    } else {
-      // Toggle within existing playlist
-      toggleVideoInPlaylist(videoId, currentPlaylistId, btn);
+    if (!videoId) {
+      console.warn("Playlist button missing videoId");
+      return;
     }
-  });
+
+    // In "All Favorites" → Create/Add modal
+    if (currentPlaylistId === "all") {
+      openCreatePlaylistModal(videoId);
+      return;
+    }
+
+    // In specific playlist → toggle
+    toggleVideoInPlaylist(videoId, currentPlaylistId, btn);
+
+  }, true);  // <-- capture phase is important
 }
+
 
 /* ============================================================
    CREATE PLAYLIST MODAL (GLASS)
