@@ -1,102 +1,143 @@
 // my-favorites.js
-// Fully patched + stable version with working '+' button + working video modal
+// Favourites + Playlists for my-favorites.html
 
 const supabase = window.supabaseClient;
 
 let currentUser = null;
+
+// All favourite videos (rows from douzepoints)
 let allFavoriteVideos = [];
+
+// Playlists + mapping of playlist_id -> Set(video_id)
 let playlists = [];
 let playlistVideosMap = new Map();
-let currentPlaylistId = "all";
+
+// UI / state
+let currentPlaylistId = "all";           // "all" or a real playlist.id
 let selectedVideoForPlaylist = null;
 let playlistHandlersAttached = false;
+let heartHandlersAttached = false;
 
 document.addEventListener("DOMContentLoaded", initFavoritesPage);
 
-/* ============================================================
-   INITIALISATION
-   ============================================================ */
 async function initFavoritesPage() {
   if (!supabase) {
-    console.error("[my-favorites] Supabase missing");
-    showMessage("Internal setup error.");
+    console.error("[my-favorites] window.supabaseClient is missing.");
     return;
   }
 
-  // Load user
-  const { data: userData } = await supabase.auth.getUser();
-  currentUser = userData?.user;
-  if (!currentUser) {
+  // 1. Get logged-in user
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+
+  if (userError) {
+    console.error("[my-favorites] Error getting user:", userError);
+    return showMessage("Error checking your login session.");
+  }
+
+  const user = userData?.user || null;
+
+  if (!user) {
     window.location.href = "login.html";
     return;
   }
 
-  // Load favorites
-  const favoriteIds = await fetchFavoriteVideoIds();
-  if (!favoriteIds.length) {
-    showMessage("You haven't added any favourites yet.");
-    return;
-  }
+  currentUser = user;
 
-  allFavoriteVideos = await fetchVideosByIds(favoriteIds);
+  // 2. Load favourites and playlists
+  await loadFavorites();
+  await loadPlaylistsAndMappings();
 
   if (!allFavoriteVideos.length) {
-    showMessage("No videos found.");
-    return;
+    renderPlaylistSidebar();     // still show sidebar with "All Favorites"
+    return showMessage("You haven’t favourited any videos yet.");
   }
 
-  await loadPlaylistsAndMappings();
+  // 3. Render sidebar + default view
   renderPlaylistSidebar();
+  applyPlaylistFilter("all"); // renders videos + adds "+" buttons + hearts
 
-  if (window.ensureFavoritesLoaded) {
-    await window.ensureFavoritesLoaded();
-  }
+  // 4. Attach handlers
+  attachPlaylistSidebarHandlers();
+  attachPlaylistButtonHandlers();
+  attachHeartHandlers();
+  attachCreatePlaylistModalHandlers();
 
-  window.renderVideos(allFavoriteVideos);
-  decorateFavoriteCards(allFavoriteVideos);
-
-  attachPlaylistButtonHandlers();       // + button on cards
-  attachPlaylistSidebarHandlers();      // sidebar
-  attachCreatePlaylistModalHandlers();  // create playlist modal
-
+  // Icons
   if (window.lucide?.createIcons) window.lucide.createIcons();
 }
 
 /* ============================================================
-   FETCH HELPERS
+   LOAD DATA
    ============================================================ */
 
-async function fetchFavoriteVideoIds() {
-  const { data } = await supabase
+async function loadFavorites() {
+  // Get favourite video_ids for this user
+  const { data: favRows, error: favError } = await supabase
     .from("user_favorites")
     .select("video_id")
     .eq("user_id", currentUser.id);
 
-  return (data || []).map((r) => r.video_id);
-}
+  if (favError) {
+    console.error("[my-favorites] Error loading favourites:", favError);
+    return showMessage("Error loading your favourites.");
+  }
 
-async function fetchVideosByIds(ids) {
-  const { data } = await supabase
+  if (!favRows || favRows.length === 0) {
+    allFavoriteVideos = [];
+    return;
+  }
+
+  const favouriteIds = favRows.map((row) => row.video_id);
+
+  // Get matching rows from douzepoints via Video_Lookup
+  const { data: videos, error: videosError } = await supabase
     .from("douzepoints")
     .select("*")
-    .in("Video_Lookup", ids);
+    .in("Video_Lookup", favouriteIds);
 
-  return data || [];
+  if (videosError) {
+    console.error("[my-favorites] Error loading videos from douzepoints:", videosError);
+    return showMessage("Error loading videos for your favourites.");
+  }
+
+  allFavoriteVideos = videos || [];
+
+  // Make sure video.js has its own favourites cache
+  if (typeof window.ensureFavoritesLoaded === "function") {
+    try {
+      await window.ensureFavoritesLoaded();
+    } catch (e) {
+      console.warn("[my-favorites] ensureFavoritesLoaded threw:", e);
+    }
+  }
 }
 
 async function loadPlaylistsAndMappings() {
-  const { data: plData } = await supabase
+  // User playlists
+  const { data: plData, error: plError } = await supabase
     .from("playlists")
     .select("*")
     .eq("user_id", currentUser.id)
-    .order("created_at");
+    .order("created_at", { ascending: true });
 
-  playlists = plData || [];
+  if (plError) {
+    console.error("[my-favorites] Error loading playlists:", plError);
+    playlists = [];
+  } else {
+    playlists = plData || [];
+  }
 
-  const { data: pvData } = await supabase
+  // Mapping playlist_id -> video_id
+  const { data: pvData, error: pvError } = await supabase
     .from("playlist_videos")
     .select("playlist_id, video_id")
     .eq("user_id", currentUser.id);
+
+  if (pvError) {
+    console.error("[my-favorites] Error loading playlist_videos:", pvError);
+    playlistVideosMap = new Map();
+    return;
+  }
 
   playlistVideosMap = new Map();
   (pvData || []).forEach((row) => {
@@ -108,32 +149,34 @@ async function loadPlaylistsAndMappings() {
 }
 
 /* ============================================================
-   UTILITY
+   BASIC UI HELPERS
    ============================================================ */
 
 function showMessage(msg) {
-  document.getElementById("video-container").innerHTML =
-    `<p style="padding:20px;">${msg}</p>`;
+  const c = document.getElementById("video-container");
+  if (!c) return;
+  c.innerHTML = `<p style="padding:20px;">${msg}</p>`;
 }
 
 function escapeHtml(str) {
-  return (str || "")
+  if (str == null) return "";
+  return String(str)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+    .replace(/>/g, "&gt;");
 }
 
 /* ============================================================
-   SIDEBAR RENDERING
+   PLAYLIST SIDEBAR RENDERING
    ============================================================ */
 
 function renderPlaylistSidebar() {
   const listEl = document.getElementById("playlist-list");
+  if (!listEl) return;
+
   listEl.innerHTML = "";
 
-  // "All Favorites"
+  // Default pseudo-playlist: All Favorites
   const liAll = document.createElement("li");
   liAll.className = "playlist-item active";
   liAll.dataset.playlistId = "all";
@@ -162,40 +205,64 @@ function renderPlaylistSidebar() {
 function applyPlaylistFilter(id) {
   currentPlaylistId = id;
 
+  // Highlight active playlist in sidebar
   document.querySelectorAll(".playlist-item").forEach((li) => {
     li.classList.toggle("active", li.dataset.playlistId === id);
   });
 
-  const title = document.getElementById("playlist-title");
+  const titleEl = document.getElementById("playlist-title");
 
+  // "All Favorites"
   if (id === "all") {
-    title.textContent = "All My Favorites";
-    window.renderVideos(allFavoriteVideos);
+    if (titleEl) titleEl.textContent = "All My Favorites";
+
+    if (typeof window.renderVideos === "function") {
+      window.renderVideos(allFavoriteVideos);
+    } else {
+      console.error("[my-favorites] window.renderVideos is missing.");
+      return;
+    }
+
     decorateFavoriteCards(allFavoriteVideos);
+    markAllHeartsAsFavorite();
     return;
   }
 
+  // Specific playlist
   const pl = playlists.find((p) => p.id === id);
-  title.textContent = pl ? pl.name : "Playlist";
+  if (titleEl) titleEl.textContent = pl ? pl.name : "Playlist";
 
-  const ids = playlistVideosMap.get(id) || new Set();
+  const idsSet = playlistVideosMap.get(id) || new Set();
+  const filtered = allFavoriteVideos.filter((v) => idsSet.has(v.Video_Lookup));
 
-  const filtered = allFavoriteVideos.filter((v) =>
-    ids.has(v.Video_Lookup)
-  );
+  if (!filtered.length) {
+    if (typeof window.renderVideos === "function") {
+      window.renderVideos([]); // clear container
+    }
+    showMessage("This playlist has no videos yet.");
+    return;
+  }
 
-  window.renderVideos(filtered);
+  if (typeof window.renderVideos === "function") {
+    window.renderVideos(filtered);
+  } else {
+    console.error("[my-favorites] window.renderVideos is missing.");
+    return;
+  }
+
   decorateFavoriteCards(filtered);
+  markAllHeartsAsFavorite();
 
   if (window.lucide?.createIcons) window.lucide.createIcons();
 }
 
 /* ============================================================
-   DECORATE VIDEO CARDS WITH +
+   DECORATE VIDEO CARDS WITH "+" BUTTON
    ============================================================ */
 
 function decorateFavoriteCards(videos) {
   const container = document.getElementById("video-container");
+  if (!container) return;
 
   const cards = Array.from(
     container.querySelectorAll(".video-item, .carousel-video-item")
@@ -211,6 +278,7 @@ function decorateFavoriteCards(videos) {
     const preview = card.querySelector(".preview-container");
     if (!preview) return;
 
+    // Remove any existing '+' to avoid duplicates
     const old = preview.querySelector(".playlist-btn");
     if (old) old.remove();
 
@@ -227,11 +295,101 @@ function decorateFavoriteCards(videos) {
 }
 
 /* ============================================================
-   SIDEBAR HANDLERS
+   HEART STATE HELPERS (FAVOURITES)
+   ============================================================ */
+
+function markAllHeartsAsFavorite() {
+  const c = document.getElementById("video-container");
+  if (!c) return;
+
+  c.querySelectorAll(".favorite-btn").forEach((btn) => {
+    btn.classList.add("is-favorite");
+  });
+}
+
+/**
+ * On this page, clicking the heart should:
+ *  - Remove from user_favorites in Supabase
+ *  - Fade out the card and remove from DOM
+ *  - Update in-memory lists and playlist mappings
+ */
+function attachHeartHandlers() {
+  if (heartHandlersAttached) return;
+  heartHandlersAttached = true;
+
+  const container = document.getElementById("video-container");
+  if (!container) return;
+
+  container.addEventListener(
+    "click",
+    async (e) => {
+      const btn = e.target.closest(".favorite-btn");
+      if (!btn) return;
+
+      // Stop video.js toggleFavourite from running
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+
+      const card =
+        btn.closest(".video-item") || btn.closest(".carousel-video-item");
+
+      const videoId =
+        card?.dataset.videoId ||
+        btn.dataset.videoKey ||
+        btn.dataset.videoId;
+
+      if (!videoId || !currentUser) return;
+
+      // Remove from Supabase
+      const { error } = await supabase
+        .from("user_favorites")
+        .delete()
+        .eq("user_id", currentUser.id)
+        .eq("video_id", videoId);
+
+      if (error) {
+        console.error("[my-favorites] Error removing favourite:", error);
+        return;
+      }
+
+      // Update local lists
+      allFavoriteVideos = allFavoriteVideos.filter(
+        (v) => v.Video_Lookup !== videoId
+      );
+
+      playlistVideosMap.forEach((set, pid) => {
+        if (set.has(videoId)) set.delete(videoId);
+      });
+
+      btn.classList.remove("is-favorite");
+
+      if (card) {
+        card.classList.add("fade-out");
+        setTimeout(() => {
+          card.remove();
+
+          const remaining = document.querySelectorAll(
+            ".video-item, .carousel-video-item"
+          ).length;
+
+          if (remaining === 0) {
+            showMessage("You haven’t favourited any videos yet.");
+          }
+        }, 300);
+      }
+    },
+    true // capture phase to intercept before video.js listeners
+  );
+}
+
+/* ============================================================
+   PLAYLIST SIDEBAR HANDLERS
    ============================================================ */
 
 function attachPlaylistSidebarHandlers() {
   const list = document.getElementById("playlist-list");
+  if (!list) return;
 
   list.addEventListener("click", (e) => {
     const item = e.target.closest(".playlist-item");
@@ -251,13 +409,13 @@ function attachPlaylistSidebarHandlers() {
       return;
     }
 
-    // Switch playlist
+    // Just selecting playlist
     applyPlaylistFilter(id);
   });
 }
 
 /* ============================================================
-   FIXED FINAL VERSION — "+" BUTTON HANDLER (does NOT block video modal)
+   "+" BUTTON HANDLER
    ============================================================ */
 
 function attachPlaylistButtonHandlers() {
@@ -265,21 +423,24 @@ function attachPlaylistButtonHandlers() {
   playlistHandlersAttached = true;
 
   const container = document.getElementById("video-container");
+  if (!container) return;
 
   container.addEventListener("click", (e) => {
     const btn = e.target.closest(".playlist-btn");
-    if (!btn) return; // normal click → video modal
+    if (!btn) return; // normal card click → video modal
 
-    // Only the '+' button click is intercepted
+    // Stop the click from opening the video modal
     e.preventDefault();
     e.stopImmediatePropagation();
 
     const videoId = btn.dataset.videoId;
-    console.log("[+] Playlist button clicked:", videoId);
+    if (!videoId) return;
 
     if (currentPlaylistId === "all") {
+      // Prompt for playlist name
       openCreatePlaylistModal(videoId);
     } else {
+      // Toggle within existing playlist
       toggleVideoInPlaylist(videoId, currentPlaylistId, btn);
     }
   });
@@ -293,6 +454,8 @@ function attachCreatePlaylistModalHandlers() {
   const overlay = document.getElementById("playlist-create-overlay");
   const cancel = document.getElementById("playlist-cancel-btn");
   const save = document.getElementById("playlist-save-btn");
+
+  if (!overlay || !cancel || !save) return;
 
   cancel.onclick = () => {
     overlay.style.display = "none";
@@ -315,6 +478,9 @@ function attachCreatePlaylistModalHandlers() {
 
     overlay.style.display = "none";
     selectedVideoForPlaylist = null;
+
+    // Refresh sidebar & stay on current playlist
+    renderPlaylistSidebar();
     applyPlaylistFilter(currentPlaylistId);
   };
 }
@@ -323,6 +489,7 @@ function openCreatePlaylistModal(videoId) {
   selectedVideoForPlaylist = videoId;
   const overlay = document.getElementById("playlist-create-overlay");
   const input = document.getElementById("playlist-input");
+  if (!overlay || !input) return;
 
   overlay.style.display = "flex";
   input.value = "";
@@ -330,15 +497,17 @@ function openCreatePlaylistModal(videoId) {
 }
 
 /* ============================================================
-   SAVE VIDEO TO PLAYLIST
+   SAVE VIDEO TO NAMED PLAYLIST
    ============================================================ */
 
 async function saveVideoToNamedPlaylist(videoId, playlistName) {
   const normalized = playlistName.toLowerCase();
+
   let pl = playlists.find((p) => p.name.toLowerCase() === normalized);
 
+  // If playlist doesn't exist yet, create it
   if (!pl) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("playlists")
       .insert({
         user_id: currentUser.id,
@@ -347,25 +516,33 @@ async function saveVideoToNamedPlaylist(videoId, playlistName) {
       .select()
       .single();
 
+    if (error) {
+      console.error("[my-favorites] Error creating playlist:", error);
+      return;
+    }
+
     pl = data;
     playlists.push(pl);
-    renderPlaylistSidebar();
-
-    currentPlaylistId = pl.id;
-    document.getElementById("playlist-title").textContent = pl.name;
   }
 
-  await supabase.from("playlist_videos").insert({
+  // Add video to playlist_videos
+  const { error: pvError } = await supabase.from("playlist_videos").insert({
     user_id: currentUser.id,
     playlist_id: pl.id,
     video_id: videoId,
   });
 
+  if (pvError) {
+    console.error("[my-favorites] Error adding video to playlist:", pvError);
+    return;
+  }
+
   if (!playlistVideosMap.has(pl.id)) {
     playlistVideosMap.set(pl.id, new Set());
   }
-
   playlistVideosMap.get(pl.id).add(videoId);
+
+  currentPlaylistId = pl.id;
 }
 
 /* ============================================================
@@ -379,10 +556,9 @@ function openRenameModal(playlistId) {
   const overlay = document.getElementById("rename-modal-overlay");
   const input = document.getElementById("rename-input");
   const saveBtn = document.getElementById("rename-save-btn");
-  const cancelBtn = document.getElementById("rename-ccancel-btn");
+  const cancelBtn = document.getElementById("rename-cancel-btn");
 
-  // Correction (cancel button ID):
-  const cancel = document.getElementById("rename-cancel-btn");
+  if (!overlay || !input || !saveBtn || !cancelBtn) return;
 
   input.value = pl.name;
   overlay.style.display = "flex";
@@ -392,22 +568,29 @@ function openRenameModal(playlistId) {
     const newName = input.value.trim();
     if (!newName) return;
 
-    await supabase
+    const { error } = await supabase
       .from("playlists")
       .update({ name: newName })
       .eq("id", playlistId);
 
-    pl.name = newName;
+    if (error) {
+      console.error("[my-favorites] Error renaming playlist:", error);
+      return;
+    }
 
+    pl.name = newName;
     if (currentPlaylistId === playlistId) {
-      document.getElementById("playlist-title").textContent = newName;
+      const title = document.getElementById("playlist-title");
+      if (title) title.textContent = newName;
     }
 
     renderPlaylistSidebar();
     overlay.style.display = "none";
   };
 
-  cancel.onclick = () => overlay.style.display = "none";
+  cancelBtn.onclick = () => {
+    overlay.style.display = "none";
+  };
 }
 
 /* ============================================================
@@ -415,27 +598,43 @@ function openRenameModal(playlistId) {
    ============================================================ */
 
 function openDeleteModal(playlistId) {
+  const pl = playlists.find((p) => p.id === playlistId);
+  if (!pl) return;
+
   const overlay = document.getElementById("delete-modal-overlay");
-  const confirm = document.getElementById("delete-confirm-btn");
-  const cancel = document.getElementById("delete-cancel-btn");
+  const confirmBtn = document.getElementById("delete-confirm-btn");
+  const cancelBtn = document.getElementById("delete-cancel-btn");
+
+  if (!overlay || !confirmBtn || !cancelBtn) return;
 
   overlay.style.display = "flex";
 
-  cancel.onclick = () => overlay.style.display = "none";
+  cancelBtn.onclick = () => {
+    overlay.style.display = "none";
+  };
 
-  confirm.onclick = async () => {
-    await supabase.from("playlists").delete().eq("id", playlistId);
+  confirmBtn.onclick = async () => {
+    const { error } = await supabase.from("playlists").delete().eq("id", playlistId);
+
+    if (error) {
+      console.error("[my-favorites] Error deleting playlist:", error);
+      return;
+    }
 
     playlists = playlists.filter((p) => p.id !== playlistId);
     playlistVideosMap.delete(playlistId);
 
+    // If we deleted the active playlist, revert to "All Favorites"
     if (currentPlaylistId === playlistId) {
       currentPlaylistId = "all";
-      document.getElementById("playlist-title").textContent =
-        "All My Favorites";
+      const title = document.getElementById("playlist-title");
+      if (title) title.textContent = "All My Favorites";
 
-      window.renderVideos(allFavoriteVideos);
+      if (typeof window.renderVideos === "function") {
+        window.renderVideos(allFavoriteVideos);
+      }
       decorateFavoriteCards(allFavoriteVideos);
+      markAllHeartsAsFavorite();
     }
 
     renderPlaylistSidebar();
@@ -444,43 +643,58 @@ function openDeleteModal(playlistId) {
 }
 
 /* ============================================================
-   TOGGLE VIDEO IN PLAYLIST
+   TOGGLE VIDEO IN CURRENT PLAYLIST
    ============================================================ */
 
 async function toggleVideoInPlaylist(videoId, playlistId, btn) {
   let set = playlistVideosMap.get(playlistId) || new Set();
 
+  // Already in playlist → remove it
   if (set.has(videoId)) {
-    await supabase
+    const { error } = await supabase
       .from("playlist_videos")
       .delete()
       .eq("user_id", currentUser.id)
       .eq("playlist_id", playlistId)
       .eq("video_id", videoId);
 
+    if (error) {
+      console.error("[my-favorites] Error removing from playlist:", error);
+      return;
+    }
+
     set.delete(videoId);
     playlistVideosMap.set(playlistId, set);
 
+    // Fade card out of this view
     const card = btn.closest(".video-item, .carousel-video-item");
     if (card) {
       card.classList.add("fade-out");
       setTimeout(() => {
         card.remove();
-
-        if (!document.querySelector(".video-item")) {
+        const remaining = document.querySelectorAll(
+          ".video-item, .carousel-video-item"
+        ).length;
+        if (remaining === 0) {
           showMessage("This playlist has no videos yet.");
         }
       }, 300);
     }
+
     return;
   }
 
-  // Add video to playlist
-  await supabase.from("playlist_videos").insert({
+  // Not in playlist → add it
+  const { error } = await supabase.from("playlist_videos").insert({
     user_id: currentUser.id,
     playlist_id: playlistId,
     video_id: videoId,
   });
+
+  if (error) {
+    console.error("[my-favorites] Error adding to playlist:", error);
+    return;
+  }
 
   set.add(videoId);
   playlistVideosMap.set(playlistId, set);
