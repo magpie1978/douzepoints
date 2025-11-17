@@ -369,24 +369,43 @@
 
         // SIGNUP FUNCTIONALITY
         document.getElementById("signup-submit").onclick = async () => {
-            let email = document.getElementById("signup-email").value;
-            let password = document.getElementById("signup-password").value;
-            let promo = document.getElementById("signup-promo").value;
+    const email = document.getElementById("signup-email").value.trim();
+    const password = document.getElementById("signup-password").value.trim();
+    const promo = document.getElementById("signup-promo").value.trim();
+    const errorBox = document.getElementById("signup-error");
 
-            const { error } = await supabase.auth.signUp({
-                email,
-                password,
-                options: { data: { promo } }
-            });
+    // Clear previous error
+    errorBox.textContent = "";
 
-            if (error) {
-                alert("Signup failed: " + error.message);
-                return;
-            }
+    // Basic validation
+    if (!email || !password) {
+        errorBox.textContent = "Please enter both email and password.";
+        return;
+    }
 
-            alert("Account created! Please check your email.");
-            document.getElementById("signup-modal-overlay").style.display = "none";
-        };
+    // Attempt signup
+    const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { promo } }
+    });
+
+    if (error) {
+        // Display Supabase error nicely in the modal
+        errorBox.textContent = error.message;
+        return;
+    }
+
+    // Success
+    errorBox.style.color = "#4ade80";  // green success
+    errorBox.textContent = "Account created! Check your email.";
+
+    // Auto-close after short delay
+    setTimeout(() => {
+        document.getElementById("signup-modal-overlay").style.display = "none";
+    }, 1500);
+};
+
     </script>
 
 </body>
