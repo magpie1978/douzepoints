@@ -43,6 +43,7 @@
 
       case 'country':
         return (a, b) => txt(a, 'country').localeCompare(txt(b, 'country'));
+        
 
       default:
         return (a, b) => txt(b, 'country').localeCompare(txt(a, 'country'));
@@ -100,18 +101,17 @@
     });
   }
 
-  // Exposed so video.js can call once entries are rendered
   function triggerInitialSort() {
-    const select = document.getElementById('sort-options');
-    if (!select) return;
+  const select = document.getElementById('sort-options');
+  if (!select) return;
 
-    // Respect the default set in the HTML (Country A–Z)
-    const sortType = select.value || 'country';
-    select.value = sortType;
+  // FORCE DEFAULT SORT TO COUNTRY (A–Z)
+  select.value = 'country';
 
-    const evt = new Event('change');
-    select.dispatchEvent(evt);
-  }
+  const evt = new Event('change');
+  select.dispatchEvent(evt);
+}
+
 
   document.addEventListener('DOMContentLoaded', attachSorting);
   window.triggerInitialSort = triggerInitialSort;
