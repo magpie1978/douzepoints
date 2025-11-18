@@ -4,7 +4,7 @@
 body {
     margin: 0;
     font-family: Raleway, sans-serif;
-    background: url("banners/blank.png") center/cover no-repeat fixed;
+    background: url("../banners/blank.png") center/cover no-repeat fixed;  
     color: #fff;
     overflow-x: hidden;
 }
