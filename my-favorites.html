@@ -50,11 +50,33 @@
   <div id="playlist-create-overlay" class="glass-overlay">
     <div class="glass-modal">
       <h4>Create or Add to Playlist</h4>
-      <input id="playlist-input" type="text" placeholder="Enter playlist name..." />
-      <div class="glass-modal-buttons">
-        <button class="glass-btn cancel" id="playlist-cancel-btn">Cancel</button>
-        <button class="glass-btn" id="playlist-save-btn">Save</button>
-      </div>
+      <!-- CREATE / ADD-TO PLAYLIST MODAL (glass) -->
+<div id="playlist-create-overlay" class="glass-overlay">
+  <div class="glass-modal">
+    <h4>Create or Add to Playlist</h4>
+
+    <!-- Dropdown of existing playlists -->
+    <label style="color:white; font-size:14px;">Select playlist:</label>
+    <select id="playlist-select" class="playlist-select">
+      <!-- Populated by JS -->
+      <option value="new">➕ Create new playlist…</option>
+    </select>
+
+    <!-- Hidden textbox for new playlist -->
+    <div id="new-playlist-wrapper" style="display:none; margin-top:14px;">
+      <label for="new-playlist-name" style="color:white; font-size:14px;">
+        New playlist name:
+      </label>
+      <input id="new-playlist-name" type="text" placeholder="Enter playlist name..." />
+    </div>
+
+    <div class="glass-modal-buttons" style="margin-top:20px;">
+      <button class="glass-btn cancel" id="playlist-cancel-btn">Cancel</button>
+      <button class="glass-btn" id="playlist-save-btn">Save</button>
+    </div>
+  </div>
+</div>
+
     </div>
   </div>
 
