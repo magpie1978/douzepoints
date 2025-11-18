@@ -14,29 +14,38 @@
  */
 
 (function () {
+
   function comparatorFactory(sortType) {
     const num = (el, key) => Number(el.dataset[key] || 0);
     const txt = (el, key) => (el.dataset[key] || '').toString();
 
     switch (sortType) {
       case 'jury':
-        return (a, b) => num(b, 'jury') - num(a, 'jury');           // desc
+        return (a, b) => num(b, 'jury') - num(a, 'jury');
+
       case 'televote':
-        return (a, b) => num(b, 'televote') - num(a, 'televote');   // desc
+        return (a, b) => num(b, 'televote') - num(a, 'televote');
+
       case 'total':
-        return (a, b) => num(b, 'total') - num(a, 'total');         // desc
+        return (a, b) => num(b, 'total') - num(a, 'total');
+
       case 'year-asc':
         return (a, b) => num(a, 'year') - num(b, 'year');
+
       case 'year-desc':
         return (a, b) => num(b, 'year') - num(a, 'year');
+
       case 'artist':
         return (a, b) => txt(a, 'artist').localeCompare(txt(b, 'artist'));
+
       case 'song':
         return (a, b) => txt(a, 'song').localeCompare(txt(b, 'song'));
+
       case 'country':
-        return (b, a) => txt(b, 'country').localeCompare(txt(b, 'country'));
+        return (a, b) => txt(a, 'country').localeCompare(txt(b, 'country'));
+
       default:
-        return (a, b) => txt(a, 'country').localeCompare(txt(a, 'country'));
+        return (a, b) => txt(a, 'country').localeCompare(txt(b, 'country'));
     }
   }
 
@@ -102,10 +111,9 @@
 
     const evt = new Event('change');
     select.dispatchEvent(evt);
-}
-
+  }
 
   document.addEventListener('DOMContentLoaded', attachSorting);
   window.triggerInitialSort = triggerInitialSort;
-})();
 
+})();
