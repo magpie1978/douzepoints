@@ -11,8 +11,29 @@
 <body>
 <div id="header-container"></div>
 <main class="main-content">
-  <h2>My Watch History</h2>
-  <table id="watch-table" class="scoreboard-table">
+
+  <h2 class="page-title">My Watch History</h2>
+
+  <!-- SUMMARY PANEL (STATS FROM VIEW) -->
+  <div id="wh-summary" class="wh-summary-panel">
+    <div class="stat-box">
+      <div class="stat-value" id="total-videos-watched">0</div>
+      <div class="stat-label">Videos Watched</div>
+    </div>
+
+    <div class="stat-box">
+      <div class="stat-value" id="total-views">0</div>
+      <div class="stat-label">Total Views</div>
+    </div>
+
+    <div class="stat-box">
+      <div class="stat-value" id="total-watch-time">0m</div>
+      <div class="stat-label">Total Watch Time</div>
+    </div>
+  </div>
+
+  <!-- SCOREBOARD STYLE TABLE -->
+  <table id="watch-table" class="scoreboard-table wh-table">
     <thead>
       <tr>
         <th>Video</th>
@@ -20,12 +41,13 @@
         <th>Song</th>
         <th>Country</th>
         <th>Views</th>
-        <th>Total Watch Time</th>
+        <th>Watch Time</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
 </main>
+
 <script type="module" src="js/watch-history.js"></script>
 <div id="footer"></div>
 </body>
