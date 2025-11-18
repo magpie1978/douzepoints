@@ -45,7 +45,7 @@
         return (a, b) => txt(a, "song").localeCompare(txt(b, "song"));
 
       case "country":
-        return (a, b) => txt(a, "country").localeCompare(txt(b, "country"));
+        return (a, b) => txt(b, "country").localeCompare(txt(a, "country"));
 
       default:
         return (a, b) => txt(a, "country").localeCompare(txt(b, "country"));
