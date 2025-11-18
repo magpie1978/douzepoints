@@ -170,3 +170,17 @@
   border-radius: 50%;
 }
 
+.video-title-text::first-line {
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.flag-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #444;
+  object-fit: cover;
+  margin-left: 8px;
+}
+
