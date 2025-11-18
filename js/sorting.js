@@ -36,7 +36,7 @@
       case 'country':
         return (a, b) => txt(a, 'country').localeCompare(txt(b, 'country'));
       default:
-        return (a, b) => num(b, 'total') - num(a, 'total');         // safe default
+        return (a, b) => txt(a, 'country').localeCompare(txt(b, 'country'));
     }
   }
 
