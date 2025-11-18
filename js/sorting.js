@@ -147,25 +147,32 @@ function applyPageDefaultSort() {
 
     const path = window.location.pathname.toLowerCase();
 
+    let desiredDefault = null;
+
     if (path.includes("edition.html")) {
-        // Edition page → Country (A–Z)
-        select.value = "country";
+        desiredDefault = "country";           // COUNTRY (A–Z)
     }
     else if (path.includes("winners.html")) {
-        // Winners page → Year (Ascending)
-        select.value = "year-asc";
-    }
-    else {
-        // Use whatever default HTML provided
-        if (!select.value) {
-            select.value = select.options[0].value;
-        }
+        desiredDefault = "year-asc";          // YEAR ASCENDING
     }
 
-    // Trigger the sort
-    const evt = new Event("change");
-    select.dispatchEvent(evt);
+    // If there's a page-specific default, apply it AFTER videos load
+    if (desiredDefault) {
+        // Small delay ensures video cards exist first
+        setTimeout(() => {
+            select.value = desiredDefault;
+
+            const evt = new Event("change");
+            select.dispatchEvent(evt);
+        }, 200);  // 200ms = enough for video.js to render
+    }
+    else {
+        // fallback to default in HTML
+        const evt = new Event("change");
+        select.dispatchEvent(evt);
+    }
 }
+
 
 /* ---------------------------------------------------------
    SORT HANDLER
