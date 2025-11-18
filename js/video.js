@@ -27,8 +27,6 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
 
   /**
    * Get stable favourite key for a video.
-   * Uses Video_Lookup directly (e.g. "1958-DK.mp4").
-   * If you ever keep odd legacy formats, add normalization here.
    */
   function getVideoKey(entry) {
     return entry.Video_Lookup || null;
@@ -85,7 +83,6 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
 
     const key = String(videoKey);
 
-    // Remove if already favourited
     if (favoriteIds.has(key)) {
       const { error } = await supabase
         .from("user_favorites")
@@ -103,7 +100,6 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
       return;
     }
 
-    // Add new favourite
     const { error } = await supabase
       .from("user_favorites")
       .insert({
@@ -131,7 +127,6 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
 
     if (typeof window.openVideoModal === "function") {
       try {
-        // Your modal expects an object in many places
         window.openVideoModal({ url: videoUrl, entry });
         return;
       } catch (e) {
@@ -147,7 +142,8 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
   // ------------------------------------------------------------
   function renderEntry(entry, variant = "grid") {
     const wrapper = document.createElement("div");
-    // ⭐ Add dataset attributes so sorting.js can work
+
+    // ⭐ Sorting.js dataset attributes
     wrapper.dataset.year          = entry.Year || "";
     wrapper.dataset.artist        = entry.Artist || "";
     wrapper.dataset.song          = entry.Song || "";
@@ -159,6 +155,7 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
     wrapper.dataset.televote      = entry.Final_TelevotePoints || 0;
     wrapper.dataset.televoterank  = entry.Final_TelevoteRank || "";
     wrapper.dataset.dnq           = (!entry.Final_Rank || entry.Final_Rank === 0) ? "1" : "0";
+
     wrapper.className = variant === "carousel" ? "carousel-video-item" : "video-item";
     wrapper.setAttribute("role", "button");
     wrapper.tabIndex = 0;
@@ -171,7 +168,7 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
     const videoUrl = entry.Video_URL;
     const flagUrl = `/flags/${countryCode}.png`;
 
-    // DNQ logic for scores
+    // DNQ logic
     const finalRank = entry.Final_Rank;
     const finalPoints = entry.Final_TotalPoints;
     const qualifiedFlag = String(entry.QualifiedFinal || "").toUpperCase();
@@ -182,6 +179,7 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
 
     const rankDisplay = isDNQ ? "NQ" : finalRank;
     const pointsDisplay = isDNQ ? "NQ" : finalPoints;
+
     const rankClass = isDNQ ? "score-circle dnq score-pos" : "score-circle score-pos";
     const pointsClass = isDNQ ? "score-circle dnq score-pts" : "score-circle score-pts";
 
@@ -233,7 +231,6 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
       </div>
     `;
 
-    // Open modal on click
     const open = (e) => {
       e.stopPropagation();
       e.preventDefault();
@@ -251,7 +248,6 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
       }
     });
 
-    // Favourite button
     const favBtn = wrapper.querySelector(".favorite-btn");
     if (favBtn && videoKey) {
       favBtn.addEventListener("click", (e) => {
@@ -265,31 +261,30 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
   }
 
   // ------------------------------------------------------------
-  // RENDER GRID
+  // RENDER GRID (⭐ Calls triggerInitialSort)
   // ------------------------------------------------------------
   function renderVideos(entries) {
-  const container = document.getElementById("video-container");
-  if (!container) return;
+    const container = document.getElementById("video-container");
+    if (!container) return;
 
-  container.innerHTML = "";
-  const frag = document.createDocumentFragment();
+    container.innerHTML = "";
+    const frag = document.createDocumentFragment();
 
-  entries.forEach(entry => {
-    frag.appendChild(renderEntry(entry, "grid"));
-  });
+    entries.forEach(entry => {
+      frag.appendChild(renderEntry(entry, "grid"));
+    });
 
-  container.appendChild(frag);
+    container.appendChild(frag);
 
-  if (window.lucide?.createIcons) {
-    window.lucide.createIcons();
+    if (window.lucide?.createIcons) {
+      window.lucide.createIcons();
+    }
+
+    // ⭐ Apply sorting AFTER videos exist
+    if (window.triggerInitialSort) {
+      window.triggerInitialSort();
+    }
   }
-
-  // ⭐ FORCE INITIAL SORT AFTER VIDEO CARDS EXIST
-  if (window.triggerInitialSort) {
-    window.triggerInitialSort();
-  }
-}
-
 
   // ------------------------------------------------------------
   // RENDER CAROUSEL
@@ -313,7 +308,7 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
   }
 
   // ------------------------------------------------------------
-  // FETCH WRAPPER FOR GRID PAGES
+  // FETCH WRAPPER
   // ------------------------------------------------------------
   async function fetchAndRender(queryFn) {
     if (!supabase) {
@@ -465,7 +460,6 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
   document.addEventListener("DOMContentLoaded", () => {
     const path = window.location.pathname || "";
 
-    // ⭐ Do nothing on favourites page; my-favorites.js controls it
     if (path.includes("my-favorites.html")) {
       return;
     } else if (path.includes("edition.html")) {
@@ -488,4 +482,3 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
   window.scrollCarousel = scrollCarousel;
   window.ensureFavoritesLoaded = ensureFavoritesLoaded;
 })();
-
