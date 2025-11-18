@@ -174,14 +174,6 @@ button:hover {
 @import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
 
 
-body {
-            margin: 0;
-            font-family: Raleway, sans-serif;
-            background: url("banners/blank.png") center/cover no-repeat fixed;
-            color: #fff;
-            overflow-x: hidden;
-        }
-
 
         /* Banner container (just for positioning the login box) */
         .banner {
