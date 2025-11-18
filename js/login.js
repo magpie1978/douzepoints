@@ -8,10 +8,12 @@ document.getElementById("login-btn").onclick = async () => {
     const password = document.getElementById("login-password").value.trim();
     const errorBox = document.getElementById("login-error");
 
+    errorBox.style.display = "none";
     errorBox.textContent = "";
 
     if (!email || !password) {
         errorBox.textContent = "Please enter both email and password.";
+        errorBox.style.display = "block";
         return;
     }
 
@@ -22,6 +24,7 @@ document.getElementById("login-btn").onclick = async () => {
 
     if (error) {
         errorBox.textContent = error.message;
+        errorBox.style.display = "block";
 
         // Trigger shake animation
         errorBox.classList.remove("shake-error");
@@ -108,9 +111,15 @@ document.getElementById("signup-submit").onclick = async () => {
     });
 
     if (error) {
-        errorBox.textContent = error.message;
-        return;
-    }
+    errorBox.textContent = error.message;
+    errorBox.style.display = "block";
+
+    errorBox.classList.remove("shake-error");
+    void errorBox.offsetWidth;
+    errorBox.classList.add("shake-error");
+    return;
+}
+
 
     // Success feedback
     errorBox.style.color = "#4ade80"; // green success
