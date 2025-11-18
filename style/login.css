@@ -225,13 +225,16 @@ body {
 
 #signup-modal input {
     width: 100%;
-    margin-bottom: 10px;
-    padding: 10px;
+    box-sizing: border-box;           /* Makes width exactly match buttons */
+    margin-bottom: 12px;
+    padding: 12px;
     border-radius: 6px;
     border: 1px solid rgba(255,255,255,0.25);
     background: rgba(0,0,0,0.4);
     color: #fff;
+    font-size: 15px;
 }
+
 
 /* Modal buttons */
 #signup-modal .modal-btn {
