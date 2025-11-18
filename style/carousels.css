@@ -1,0 +1,40 @@
+/* CAROUSELS */
+.carousel-section {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto 50px auto;
+}
+
+.carousel-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-button {
+  background: transparent;
+  border: none;
+  color: #e5e5e5;
+  font-size: 3rem;
+  cursor: pointer;
+  margin: 0 10px;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.carousel-button:hover {
+  color: #fff;
+  transform: scale(1.2);
+}
+
+.carousel-container {
+  width: 1180px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 20px; /* add breathing room for hover effect */
+}
+
+.carousel-track {
+  display: flex;
+  width: max-content;
+}
