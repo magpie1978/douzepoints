@@ -100,6 +100,93 @@ async function logViewEnd() {
 }
 
 
+
+// DEBUG LOGGING
+function debugLog(...msg) {
+  console.log("[WATCH]", ...msg);
+}
+
+// Replace calls:
+async function logViewStart(entryOrUrl) {
+  debugLog("logViewStart CALLED", entryOrUrl);
+
+  const supabase = window.supabaseClient;
+  if (!supabase) return;
+
+  const { data } = await supabase.auth.getUser();
+  const user = data?.user;
+  if (!user) {
+    debugLog("NO USER FOUND");
+    return;
+  }
+
+  let videoLookup = null;
+  if (entryOrUrl && typeof entryOrUrl === "object" && entryOrUrl.Video_Lookup) {
+    videoLookup = entryOrUrl.Video_Lookup;
+  } else {
+    videoLookup = entryOrUrl;
+  }
+
+  debugLog("INSERTING ROW FOR", videoLookup);
+
+  const { data: inserted, error } = await supabase
+    .from("video_views")
+    .insert({
+      user_id: user.id,
+      video_lookup: videoLookup,
+      start_time: new Date().toISOString()
+    })
+    .select()
+    .single();
+
+  if (error) {
+    debugLog("INSERT ERROR", error);
+  } else {
+    debugLog("INSERTED", inserted);
+    activeViewId = inserted.id;
+    viewStartTime = Date.now();
+    debugLog("activeViewId SET =", activeViewId);
+  }
+}
+
+async function logViewEnd() {
+  debugLog("logViewEnd CALLED");
+
+  const supabase = window.supabaseClient;
+  if (!supabase) return;
+
+  if (!activeViewId || !viewStartTime) {
+    debugLog("Missing activeViewId or viewStartTime", activeViewId, viewStartTime);
+    return;
+  }
+
+  const duration = Math.round((Date.now() - viewStartTime) / 1000);
+  debugLog("CALCULATED DURATION =", duration);
+
+  const { error } = await supabase
+    .from("video_views")
+    .update({
+      end_time: new Date().toISOString(),
+      duration_seconds: duration
+    })
+    .eq("id", activeViewId);
+
+  if (error) {
+    debugLog("UPDATE ERROR", error);
+  } else {
+    debugLog("UPDATE SUCCESS");
+  }
+
+  activeViewId = null;
+  viewStartTime = null;
+}
+
+
+
+
+
+
+
 /* -------------------------------------------------------------
    2. GOOGLE DRIVE + DIRECT VIDEO HANDLER
    ------------------------------------------------------------- */
