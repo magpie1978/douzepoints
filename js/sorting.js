@@ -95,10 +95,15 @@
   function triggerInitialSort() {
     const select = document.getElementById('sort-options');
     if (!select) return;
-    if (!select.value) select.value = 'total';
+
+    // Respect the default set in the HTML (Country A–Z)
+    const sortType = select.value || 'country';
+    select.value = sortType;
+
     const evt = new Event('change');
     select.dispatchEvent(evt);
-  }
+}
+
 
   document.addEventListener('DOMContentLoaded', attachSorting);
   window.triggerInitialSort = triggerInitialSort;
