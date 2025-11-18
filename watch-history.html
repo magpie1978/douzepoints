@@ -1,59 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Watch History</title>
-<link rel="stylesheet" href="style/combined.css">
-<link rel="stylesheet" href="style/footer.css">
-<link rel="stylesheet" href="style/watch-history.css">
+  <meta charset="utf-8" />
+  <title>My Watch History</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Core styles -->
+  <link rel="stylesheet" href="style/watch-history.css">
   
-<script src="js/supabaseClient.js"></script>
-<script src="js/header.js" defer></script>
-<script src="js/footer.js" defer></script>
+
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body>
-<div id="header-container"></div>
-<main class="main-content">
 
-  <h2 class="page-title">My Watch History</h2>
+<body class="favorites-page" oncontextmenu="return false">
 
-  <!-- SUMMARY PANEL (STATS FROM VIEW) -->
-  <div id="wh-summary" class="wh-summary-panel">
-    <div class="stat-box">
-      <div class="stat-value" id="total-videos-watched">0</div>
-      <div class="stat-label">Videos Watched</div>
-    </div>
+  <!-- HEADER -->
+  <div id="header-container"></div>
 
-    <div class="stat-box">
-      <div class="stat-value" id="total-views">0</div>
-      <div class="stat-label">Total Views</div>
-    </div>
+  <div class="container">
 
-    <div class="stat-box">
-      <div class="stat-value" id="total-watch-time">0m</div>
-      <div class="stat-label">Total Watch Time</div>
-    </div>
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <h2 class="page-title">My Watch History</h2>
+
+      <!-- SUMMARY PANEL -->
+      <div id="wh-summary" class="wh-summary-panel">
+        <div class="stat-box">
+          <div class="stat-value" id="total-videos-watched">0</div>
+          <div class="stat-label">Videos Watched</div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-value" id="total-views">0</div>
+          <div class="stat-label">Total Views</div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-value" id="total-watch-time">0m</div>
+          <div class="stat-label">Total Watch Time</div>
+        </div>
+      </div>
+
+      <!-- WATCH HISTORY TABLE (scoreboard-style) -->
+      <table id="watch-table" class="scoreboard-table wh-table">
+        <thead>
+          <tr>
+            <th class="sortable" data-sort="video">Video</th>
+            <th class="sortable" data-sort="artist">Artist</th>
+            <th class="sortable" data-sort="song">Song</th>
+            <th class="sortable" data-sort="country">Country</th>
+            <th class="sortable" data-sort="views">Views</th>
+            <th class="sortable" data-sort="watch">Watch Time</th>
+            <th class="sortable" data-sort="last">Last Watched</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+    </main>
+
   </div>
 
-  <!-- SCOREBOARD STYLE TABLE -->
-  <table id="watch-table" class="scoreboard-table wh-table">
-    <thead>
-  <tr>
-    <th class="sortable" data-sort="video">Video</th>
-    <th class="sortable" data-sort="artist">Artist</th>
-    <th class="sortable" data-sort="song">Song</th>
-    <th class="sortable" data-sort="country">Country</th>
-    <th class="sortable" data-sort="views">Views</th>
-    <th class="sortable" data-sort="watch">Watch Time</th>
-    <th class="sortable" data-sort="last">Last Watched</th>
-  </tr>
-</thead>
+  <!-- VIDEO MODAL CONTAINER -->
+  <div id="modal-container"></div>
 
-    <tbody></tbody>
-  </table>
-</main>
+  <!-- FOOTER -->
+  <div id="footer"></div>
 
-<script type="module" src="js/watch-history.js"></script>
-<div id="footer"></div>
+  <!-- SCRIPTS -->
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/footer.js"></script>
+  <script type="module" src="js/header.js"></script>
+  <script type="module" src="js/watch-history.js"></script>
+
 </body>
 </html>
