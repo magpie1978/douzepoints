@@ -105,12 +105,25 @@
   const select = document.getElementById('sort-options');
   if (!select) return;
 
-  // FORCE DEFAULT SORT TO COUNTRY (A–Z)
-  select.value = 'country';
+  const path = window.location.pathname;
 
-  const evt = new Event('change');
-  select.dispatchEvent(evt);
+  let defaultSort = 'total'; // fallback
+
+  // ⭐ Page-specific defaults
+  if (path.includes("edition.html")) {
+    defaultSort = 'country';              // Country (A–Z)
+  } else if (path.includes("country.html")) {
+    defaultSort = 'year-desc';            // Year (DESC)
+  } else if (path.includes("winners.html")) {
+    defaultSort = 'year-asc';             // Winners pages default to Year (ASC)
+  }
+
+  select.value = defaultSort;
+
+  // Apply the sorting
+  select.dispatchEvent(new Event('change'));
 }
+
 
 
   document.addEventListener('DOMContentLoaded', attachSorting);
