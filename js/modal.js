@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------
    1. PRELOAD MODAL.HTML BEFORE ANY VIDEO IS CLICKED
-   ------------------------------------------------------------- */
+   ------------------------------------------------------------- 
 
 window.modalReady = new Promise((resolve) => {
   document.addEventListener("DOMContentLoaded", () => {
@@ -23,6 +23,24 @@ window.modalReady = new Promise((resolve) => {
       });
   });
 });
+
+
+
+/* --------------------------------------------------------------
+    1a.  NEW MODAL CODE
+   -------------------------------------------------------------- */
+   window.modalReady.then(() => {
+  const modal = document.getElementById("videoModal");
+  const content = document.querySelector("#videoModal .modal-content");
+
+  modal.addEventListener("click", (e) => {
+    // Close ONLY if clicking the backdrop, not the content box
+    if (e.target === modal) {
+      GDriveCloseModal(e);
+    }
+  });
+});
+
 
 
 /* -------------------------------------------------------------
