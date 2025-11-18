@@ -25,6 +25,63 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
   let favoriteIds = new Set();
   let favoritesLoaded = false;
 
+
+
+    // ------------------------------------------------------------
+  // VIDEO VIEW TRACKING (View Logging + Watch Time)
+  // ------------------------------------------------------------
+  let activeViewId = null;
+  let viewStartTime = null;
+
+  async function logViewStart(entry) {
+    if (!supabase) return;
+    const { data } = await supabase.auth.getUser();
+    const user = data?.user;
+    if (!user) return;
+
+    // Insert initial row
+    const { data: insertData, error } = await supabase
+      .from("video_views")
+      .insert({
+        user_id: user.id,
+        video_lookup: entry.Video_Lookup,
+        start_time: new Date().toISOString()
+      })
+      .select()
+      .single();
+
+    if (!error && insertData) {
+      activeViewId = insertData.id;
+      viewStartTime = Date.now();
+    }
+  }
+
+  async function logViewEnd() {
+    if (!supabase) return;
+    if (!activeViewId || !viewStartTime) return;
+
+    const duration = Math.round((Date.now() - viewStartTime) / 1000);
+
+    await supabase
+      .from("video_views")
+      .update({
+        end_time: new Date().toISOString(),
+        duration_seconds: duration
+      })
+      .eq("id", activeViewId);
+
+    activeViewId = null;
+    viewStartTime = null;
+  }
+
+  // Listen for modal close globally
+  window.addEventListener("closeVideoModal", () => {
+    logViewEnd();
+  });
+
+
+
+  
   /**
    * Get stable favourite key for a video.
    */
@@ -119,11 +176,14 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
   // ------------------------------------------------------------
   // MODAL WRAPPER
   // ------------------------------------------------------------
-  function openModalStrict(videoUrl, entry) {
+    function openModalStrict(videoUrl, entry) {
     if (!videoUrl) {
       console.error("[video.js] No Video_URL found:", entry);
       return;
     }
+
+    // ⭐ Start logging when video modal opens
+    logViewStart(entry);
 
     if (typeof window.openVideoModal === "function") {
       try {
@@ -136,6 +196,7 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
 
     console.error("[video.js] No modal function found.");
   }
+
 
   // ------------------------------------------------------------
   // RENDER A SINGLE VIDEO CARD
