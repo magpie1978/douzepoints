@@ -1,7 +1,6 @@
 /* -------------------------------------------------------------
    1. PRELOAD MODAL.HTML BEFORE ANY VIDEO IS CLICKED
-   ------------------------------------------------------------- 
-
+   ------------------------------------------------------------- */
 window.modalReady = new Promise((resolve) => {
   document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("modal-container");
@@ -25,22 +24,20 @@ window.modalReady = new Promise((resolve) => {
 });
 
 
-
-/* --------------------------------------------------------------
-    1a.  NEW MODAL CODE
-   -------------------------------------------------------------- */
-   window.modalReady.then(() => {
+/* -------------------------------------------------------------
+   1a. BACKDROP CLICK HANDLER (ONLY CLOSE ON OUTSIDE CLICK)
+   ------------------------------------------------------------- */
+window.modalReady.then(() => {
   const modal = document.getElementById("videoModal");
-  const content = document.querySelector("#videoModal .modal-content");
+  if (!modal) return;
 
+  // Close ONLY when clicking the dark backdrop, not the content box
   modal.addEventListener("click", (e) => {
-    // Close ONLY if clicking the backdrop, not the content box
     if (e.target === modal) {
       GDriveCloseModal(e);
     }
   });
 });
-
 
 
 /* -------------------------------------------------------------
