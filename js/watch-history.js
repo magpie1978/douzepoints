@@ -1,67 +1,111 @@
 import { supabase } from "./supabaseClient.js";
 
-/* ---------------------------------------------------------
-   Fetch & Render Watch History
---------------------------------------------------------- */
+// Utility: format seconds into "Xm Ys"
+function formatDuration(sec) {
+  sec = Number(sec || 0);
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m}m ${s}s`;
+}
 
-document.addEventListener("DOMContentLoaded", loadWatchHistory);
+// Utility: format timestamp
+function formatDate(ts) {
+  if (!ts) return "";
+  const d = new Date(ts);
+  return d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+let tableData = []; // store raw rows for sorting
 
 async function loadWatchHistory() {
-  const tableBody = document.querySelector("#watch-table tbody");
-  if (!tableBody) return;
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData?.user;
+  if (!user) return;
 
-  // Ensure logged in
-  const { data } = await supabase.auth.getUser();
-  const user = data?.user;
-  if (!user) {
-    tableBody.innerHTML = `<tr><td colspan="6" style="padding:20px;">Please log in.</td></tr>`;
-    return;
-  }
-
-  // 1. Fetch aggregated watch stats
-  const { data: stats, error: statsErr } = await supabase
-    .from("user_video_stats")
+  // 1. Fetch aggregated per-video stats
+  const { data: rows, error } = await supabase
+    .from("view_watch_history")
     .select("*")
     .eq("user_id", user.id);
 
-  if (statsErr || !stats?.length) {
-    tableBody.innerHTML = `<tr><td colspan="6" style="padding:20px;">No watch history yet.</td></tr>`;
+  if (error) {
+    console.error("Failed to load watch stats:", error);
     return;
   }
 
-  // 2. Fetch video metadata so we can show artist/song/country
-  const videoLookupValues = stats.map(r => r.video_lookup);
+  tableData = rows;
+  renderTable(rows);
+  updateSummaryPanel(rows);
+}
 
-  const { data: videos, error: videoErr } = await supabase
-    .from("douzepoints")
-    .select("*")
-    .in("Video_Lookup", videoLookupValues);
+function updateSummaryPanel(rows) {
+  let totalVideos = rows.length;
+  let totalViews = rows.reduce((sum, r) => sum + r.views, 0);
+  let totalWatchSeconds = rows.reduce((sum, r) => sum + r.total_watch_seconds, 0);
 
-  const videoMap = new Map();
-  if (!videoErr && videos) {
-    videos.forEach(v => videoMap.set(v.Video_Lookup, v));
-  }
+  document.getElementById("total-videos-watched").textContent = totalVideos;
+  document.getElementById("total-views").textContent = totalViews;
+  document.getElementById("total-watch-time").textContent = formatDuration(totalWatchSeconds);
+}
 
-  // 3. Render table rows
-  tableBody.innerHTML = "";
+function renderTable(rows) {
+  const tbody = document.querySelector("#watch-table tbody");
+  tbody.innerHTML = "";
 
-  stats.forEach(row => {
-    const meta = videoMap.get(row.video_lookup) || {};
-
-    const minutes = Math.floor(row.total_seconds / 60);
-    const seconds = row.total_seconds % 60;
-
+  rows.forEach(r => {
     const tr = document.createElement("tr");
-
     tr.innerHTML = `
-      <td>${meta.Video_Lookup || row.video_lookup}</td>
-      <td>${meta.Artist || "-"}</td>
-      <td>${meta.Song || "-"}</td>
-      <td>${meta.Country || "-"}</td>
-      <td>${row.view_count}</td>
-      <td>${minutes}m ${seconds}s</td>
+      <td>${r.video_lookup}</td>
+      <td>${r.Artist || ""}</td>
+      <td>${r.Song || ""}</td>
+      <td>${r.Country || ""}</td>
+      <td>${r.views}</td>
+      <td>${formatDuration(r.total_watch_seconds)}</td>
+      <td>${formatDate(r.last_watched_at)}</td>
     `;
-
-    tableBody.appendChild(tr);
+    tbody.appendChild(tr);
   });
 }
+
+// ---- SORTING LOGIC ---- //
+function sortTable(sortKey, rows) {
+  let sorted = [...rows];
+
+  switch (sortKey) {
+    case "video":
+      sorted.sort((a, b) => a.video_lookup.localeCompare(b.video_lookup));
+      break;
+    case "artist":
+      sorted.sort((a, b) => (a.Artist || "").localeCompare(b.Artist || ""));
+      break;
+    case "song":
+      sorted.sort((a, b) => (a.Song || "").localeCompare(b.Song || ""));
+      break;
+    case "country":
+      sorted.sort((a, b) => (a.Country || "").localeCompare(b.Country || ""));
+      break;
+    case "views":
+      sorted.sort((a, b) => b.views - a.views);
+      break;
+    case "watch":
+      sorted.sort((a, b) => b.total_watch_seconds - a.total_watch_seconds);
+      break;
+    case "last":
+      sorted.sort((a, b) => new Date(b.last_watched_at) - new Date(a.last_watched_at));
+      break;
+  }
+
+  renderTable(sorted);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadWatchHistory();
+
+  // Attach sorting events
+  document.querySelectorAll(".sortable").forEach(th => {
+    th.addEventListener("click", () => {
+      const sortKey = th.dataset.sort;
+      sortTable(sortKey, tableData);
+    });
+  });
+});
