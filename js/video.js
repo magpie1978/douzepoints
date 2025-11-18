@@ -268,22 +268,28 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
   // RENDER GRID
   // ------------------------------------------------------------
   function renderVideos(entries) {
-    const container = document.getElementById("video-container");
-    if (!container) return;
+  const container = document.getElementById("video-container");
+  if (!container) return;
 
-    container.innerHTML = "";
-    const frag = document.createDocumentFragment();
+  container.innerHTML = "";
+  const frag = document.createDocumentFragment();
 
-    entries.forEach(entry => {
-      frag.appendChild(renderEntry(entry, "grid"));
-    });
+  entries.forEach(entry => {
+    frag.appendChild(renderEntry(entry, "grid"));
+  });
 
-    container.appendChild(frag);
+  container.appendChild(frag);
 
-    if (window.lucide?.createIcons) {
-      window.lucide.createIcons();
-    }
+  if (window.lucide?.createIcons) {
+    window.lucide.createIcons();
   }
+
+  // ⭐ FORCE INITIAL SORT AFTER VIDEO CARDS EXIST
+  if (window.triggerInitialSort) {
+    window.triggerInitialSort();
+  }
+}
+
 
   // ------------------------------------------------------------
   // RENDER CAROUSEL
