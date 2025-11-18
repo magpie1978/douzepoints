@@ -184,3 +184,36 @@
   margin-left: 8px;
 }
 
+.circle-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: auto;
+  gap: 4px; /* reduced horizontal gap between SF and F */
+}
+
+.circle-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 24px;
+}
+
+.circle-label {
+  font-size: 0.6rem;
+  color: #ccc;
+  margin-bottom: 12px; /* tighter spacing between label and image */
+  line-height: 1;
+  text-align: center;
+}
+
+.circle-icon {
+  width: 24px;       /* 20% smaller than 26px base */
+  height: 24px;
+  border-radius: 50%;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
