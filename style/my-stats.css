@@ -36,33 +36,85 @@
   opacity: 0.85;
 }
 
-/* Table automatically positions itself based on JS measurement */
-.wh-table {
+/* ----------------------------------------------
+   MATCH SCOREBOARD STYLE
+---------------------------------------------- */
+
+.table-aligned-container {
+  max-width: 1280px;
+  margin: 60px auto 0 auto; /* leave space for stat boxes */
+  padding: 0 20px;
+}
+
+.table-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+#tableHeader {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* ----------------- TABLE WRAPPER ------------------ */
+
+.table-wrapper {
+  background: #181a24;
+  border-radius: 12px;
+  overflow-x: auto;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+/* ----------------- TABLE ------------------ */
+
+#wh-table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 8px;
-
-  margin-top: var(--table-offset, 260px);
+  border-collapse: collapse;
+  color: #ccc;
 }
 
-.wh-table thead th {
-  padding: 10px;
+#wh-table th,
+#wh-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #2a2d3a;
   font-size: 14px;
-  opacity: 0.9;
-  cursor: pointer;
+  text-align: left;
 }
 
-.wh-table tbody tr {
+#wh-table thead {
+  background: #1f212d;
+}
+
+#wh-table thead th {
+  cursor: pointer;
+  color: #bbb;
+  font-weight: 600;
+  user-select: none;
+}
+
+/* Sorting arrows */
+#wh-table th.sort-asc::after { content: "▲"; margin-left: 6px; }
+#wh-table th.sort-desc::after { content: "▼"; margin-left: 6px; }
+
+/* Hover effect rows */
+#wh-table tbody tr:hover {
   background: rgba(255,255,255,0.05);
-  border-radius: 8px;
 }
 
-.wh-table tbody tr td {
-  padding: 12px 14px;
-  font-size: 15px;
+/* Responsive adjustments */
+@media (max-width: 800px) {
+  .table-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  #tableHeader {
+    font-size: 22px;
+  }
 }
 
-.wh-table tbody tr:hover {
-  background: rgba(255,255,255,0.1);
-  cursor: pointer;
-}
