@@ -1,58 +1,56 @@
-/* ===== WATCH HISTORY PAGE ===== */
-
+/* PAGE TITLE */
 .page-title {
   font-size: 32px;
-  margin-top: 40px;
+  margin-top: 120px; /* gives room above */
   margin-bottom: 40px;
   text-align: center;
   font-weight: 600;
 }
 
-/* SUMMARY PANEL — enlarged + moved upward */
+/* SUMMARY PANEL (positioned dynamically via JS) */
 .wh-summary-panel {
   display: flex;
   justify-content: center;
   gap: 60px;
-
-  /* Move upward toward the red divider */
-  position: relative;
-  top: -80px;              /* adjust if needed */
+  position: absolute;  /* so we can place it precisely */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
 }
 
-/* EACH BOX — 50% larger */
+/* STAT BOXES — 50% larger */
 .stat-box {
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.14);
   border-radius: 18px;
 
-  padding: 32px 40px;      /* increased from 16px 24px */
-  min-width: 220px;        /* increased from 140px */
+  padding: 32px 40px;
+  min-width: 220px;
   text-align: center;
 
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(10px);
 }
 
-/* Larger numbers */
+/* BIGGER NUMBERS */
 .stat-value {
-  font-size: 40px;         /* increased from 24px */
+  font-size: 40px;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
-/* Larger label text */
+/* LABELS */
 .stat-label {
   opacity: 0.85;
-  font-size: 18px;         /* increased from 14px */
+  font-size: 18px;
 }
 
-/* ===== TABLE (unchanged except spacing) ===== */
-
+/* TABLE */
 .wh-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 8px;
-  margin-top: -40px;       /* pulls table back up to compensate */
+  margin-top: 220px; /* make room for boxes above */
 }
 
 .wh-table thead th {
