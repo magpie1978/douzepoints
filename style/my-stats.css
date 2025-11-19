@@ -1,56 +1,49 @@
-/* PAGE TITLE */
 .page-title {
-  font-size: 32px;
-  margin-top: 120px; /* gives room above */
-  margin-bottom: 40px;
-  text-align: center;
-  font-weight: 600;
+  display: none; /* optional */
 }
 
-/* SUMMARY PANEL (positioned dynamically via JS) */
+/* Stats panel floats above the page, anchored by JS */
 .wh-summary-panel {
   display: flex;
   justify-content: center;
   gap: 60px;
-  position: absolute;  /* so we can place it precisely */
+
+  position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 5;
+  z-index: 10;
 }
 
-/* STAT BOXES — 50% larger */
+/* stat boxes */
 .stat-box {
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.14);
   border-radius: 18px;
-
   padding: 32px 40px;
   min-width: 220px;
   text-align: center;
-
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
 }
 
-/* BIGGER NUMBERS */
 .stat-value {
   font-size: 40px;
   font-weight: 700;
   margin-bottom: 8px;
 }
 
-/* LABELS */
 .stat-label {
   opacity: 0.85;
   font-size: 18px;
 }
 
-/* TABLE */
+/* table positions itself automatically after stat panel */
 .wh-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 8px;
-  /* margin-top: 220px; /* make room for boxes above */
+
+  margin-top: var(--table-offset, 200px);
 }
 
 .wh-table thead th {
