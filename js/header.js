@@ -89,7 +89,7 @@ async function loadHeader() {
     const isFAQPage        = path.includes("faq.html");
     const isPrivacyPage    = path.includes("privacy.html");
     const isScoreboardPage = path.includes("scoreboard.html");
-    const isWatchHistoryPage = path.includes("watch-history.html");
+    const isWatchHistoryPage = path.includes("my-stats.html");
 
     const country = new URLSearchParams(window.location.search).get("country");
 
