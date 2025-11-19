@@ -74,14 +74,11 @@ function renderTable(rows) {
   rows.forEach((r) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${r.video_lookup}</td>
-      <td>${r.Artist || ""}</td>
-      <td>${r.Song || ""}</td>
-      <td>${r.Country || ""}</td>
-      <td>${r.views}</td>
-      <td>${formatDuration(r.total_watch_seconds)}</td>
-      <td>${formatDate(r.last_watched_at)}</td>
-    `;
+    <td>${escapeHTML(row.video_title)}</td>
+    <td>${row.view_count}</td>
+    <td>${formatWatchTime(row.total_watch_time)}</td>
+    <td>${formatDate(row.last_watched)}</td>
+`;
     tbody.appendChild(tr);
   });
 }
