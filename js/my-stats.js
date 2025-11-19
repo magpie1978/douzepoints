@@ -1,6 +1,8 @@
 import { supabase } from "./supabaseClient.js";
 
-// Utility: format seconds into "Xm Ys"
+/* -----------------------------------------------------------
+   Utility — Format duration (seconds → Xm Ys)
+------------------------------------------------------------ */
 function formatDuration(sec) {
   sec = Number(sec || 0);
   const m = Math.floor(sec / 60);
@@ -8,51 +10,68 @@ function formatDuration(sec) {
   return `${m}m ${s}s`;
 }
 
-// Utility: format timestamp
+/* -----------------------------------------------------------
+   Utility — Format timestamp
+------------------------------------------------------------ */
 function formatDate(ts) {
   if (!ts) return "";
   const d = new Date(ts);
-  return d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  return d.toLocaleDateString() + " " + d.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
-let tableData = []; // store raw rows for sorting
+/* -----------------------------------------------------------
+   Load aggregated watch stats from your Supabase view
+------------------------------------------------------------ */
+let tableData = [];
 
-async function loadWatchHistory() {
+async function loadStats() {
   const { data: userData } = await supabase.auth.getUser();
   const user = userData?.user;
   if (!user) return;
 
-  // 1. Fetch aggregated per-video stats
   const { data: rows, error } = await supabase
     .from("view_watch_history")
     .select("*")
     .eq("user_id", user.id);
 
   if (error) {
-    console.error("Failed to load watch stats:", error);
+    console.error("Error loading stats:", error);
     return;
   }
 
   tableData = rows;
+  renderSummary(rows);
   renderTable(rows);
-  updateSummaryPanel(rows);
 }
 
-function updateSummaryPanel(rows) {
-  let totalVideos = rows.length;
-  let totalViews = rows.reduce((sum, r) => sum + r.views, 0);
-  let totalWatchSeconds = rows.reduce((sum, r) => sum + r.total_watch_seconds, 0);
+/* -----------------------------------------------------------
+   Summary panel values
+------------------------------------------------------------ */
+function renderSummary(rows) {
+  const totalVideos = rows.length;
+  const totalViews = rows.reduce((sum, r) => sum + r.views, 0);
+  const totalWatchSeconds = rows.reduce(
+    (sum, r) => sum + r.total_watch_seconds,
+    0
+  );
 
   document.getElementById("total-videos-watched").textContent = totalVideos;
   document.getElementById("total-views").textContent = totalViews;
-  document.getElementById("total-watch-time").textContent = formatDuration(totalWatchSeconds);
+  document.getElementById("total-watch-time").textContent =
+    formatDuration(totalWatchSeconds);
 }
 
+/* -----------------------------------------------------------
+   Render table rows
+------------------------------------------------------------ */
 function renderTable(rows) {
   const tbody = document.querySelector("#watch-table tbody");
   tbody.innerHTML = "";
 
-  rows.forEach(r => {
+  rows.forEach((r) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${r.video_lookup}</td>
@@ -67,22 +86,27 @@ function renderTable(rows) {
   });
 }
 
-// ---- SORTING LOGIC ---- //
-function sortTable(sortKey, rows) {
-  let sorted = [...rows];
+/* -----------------------------------------------------------
+   Sorting functionality
+------------------------------------------------------------ */
+function sortTable(sortKey) {
+  let sorted = [...tableData];
+
+  const compareText = (a, b, field) =>
+    (a[field] || "").localeCompare(b[field] || "");
 
   switch (sortKey) {
     case "video":
-      sorted.sort((a, b) => a.video_lookup.localeCompare(b.video_lookup));
+      sorted.sort((a, b) => compareText(a, b, "video_lookup"));
       break;
     case "artist":
-      sorted.sort((a, b) => (a.Artist || "").localeCompare(b.Artist || ""));
+      sorted.sort((a, b) => compareText(a, b, "Artist"));
       break;
     case "song":
-      sorted.sort((a, b) => (a.Song || "").localeCompare(b.Song || ""));
+      sorted.sort((a, b) => compareText(a, b, "Song"));
       break;
     case "country":
-      sorted.sort((a, b) => (a.Country || "").localeCompare(b.Country || ""));
+      sorted.sort((a, b) => compareText(a, b, "Country"));
       break;
     case "views":
       sorted.sort((a, b) => b.views - a.views);
@@ -91,58 +115,64 @@ function sortTable(sortKey, rows) {
       sorted.sort((a, b) => b.total_watch_seconds - a.total_watch_seconds);
       break;
     case "last":
-      sorted.sort((a, b) => new Date(b.last_watched_at) - new Date(a.last_watched_at));
+      sorted.sort(
+        (a, b) =>
+          new Date(b.last_watched_at) - new Date(a.last_watched_at)
+      );
       break;
   }
 
   renderTable(sorted);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadWatchHistory();
+/* -----------------------------------------------------------
+   Auto-position stats panel exactly on the red divider line
+------------------------------------------------------------ */
+function autoPositionStats() {
+  const divider = document.querySelector(".banner-divider");
+  const panel = document.querySelector(".wh-summary-panel");
 
-  // Attach sorting events
-  document.querySelectorAll(".sortable").forEach(th => {
+  if (!divider || !panel) return;
+
+  const rect = divider.getBoundingClientRect();
+
+  // divider center in document space
+  const dividerCenter =
+    rect.top + window.scrollY + rect.height / 2;
+
+  const panelHeight = panel.offsetHeight;
+  const panelCenterOffset = panelHeight / 2;
+
+  // anchor center of panel to center of divider
+  panel.style.top = dividerCenter - panelCenterOffset + "px";
+
+  // push table down automatically based on the real panel height
+  const table = document.querySelector(".wh-table");
+  const panelBottom =
+    dividerCenter - panelCenterOffset + panelHeight;
+
+  const offset = panelBottom + 40; // padding below boxes
+  document.documentElement.style.setProperty(
+    "--table-offset",
+    offset + "px"
+  );
+}
+
+/* -----------------------------------------------------------
+   Init
+------------------------------------------------------------ */
+document.addEventListener("DOMContentLoaded", () => {
+  loadStats();
+
+  document.querySelectorAll(".sortable").forEach((th) => {
     th.addEventListener("click", () => {
-      const sortKey = th.dataset.sort;
-      sortTable(sortKey, tableData);
+      sortTable(th.dataset.sort);
     });
   });
 });
 
-/* -----------------------------------------------------------
-   AUTO-POSITION STATS PANEL + TABLE (zero hardcoding)
------------------------------------------------------------- */
+/* Reposition when header loads the banner */
+document.addEventListener("header-ready", autoPositionStats);
 
-function autoPositionStats() {
-  const divider = document.querySelector(".banner-divider");
-  const panel = document.querySelector(".wh-summary-panel");
-  const table = document.querySelector(".wh-table");
-
-  if (!divider || !panel || !table) return;
-
-  // Divider center
-  const rect = divider.getBoundingClientRect();
-  const dividerCenterY = rect.top + rect.height / 2 + window.scrollY;
-
-  // Panel height
-  const panelHeight = panel.offsetHeight;
-  const panelCenterOffset = panelHeight / 2;
-
-  // Position panel EXACTLY centered on line
-  const computedTop = dividerCenterY - panelCenterOffset;
-  panel.style.top = computedTop + "px";
-
-  // Now push the table below the panel by reading its true height
-  const panelBottom = computedTop + panelHeight;
-  const headerBottom = divider.getBoundingClientRect().bottom + window.scrollY;
-
-  const finalOffset = Math.max(panelBottom - headerBottom + 40, 40);
-
-  // Give this to CSS via variable
-  document.documentElement.style.setProperty("--table-offset", finalOffset + "px");
-}
-
-// Run when layout is ready
 window.addEventListener("load", autoPositionStats);
 window.addEventListener("resize", autoPositionStats);
