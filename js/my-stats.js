@@ -111,16 +111,17 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* -----------------------------------------------------------
-   ALIGN SUMMARY PANEL EXACTLY TO THE RED DIVIDER LINE
+   AUTO-POSITION STATS PANEL + TABLE (zero hardcoding)
 ------------------------------------------------------------ */
 
-function alignSummaryToDivider() {
+function autoPositionStats() {
   const divider = document.querySelector(".banner-divider");
   const panel = document.querySelector(".wh-summary-panel");
+  const table = document.querySelector(".wh-table");
 
-  if (!divider || !panel) return;
+  if (!divider || !panel || !table) return;
 
-  // Divider position
+  // Divider center
   const rect = divider.getBoundingClientRect();
   const dividerCenterY = rect.top + rect.height / 2 + window.scrollY;
 
@@ -128,11 +129,20 @@ function alignSummaryToDivider() {
   const panelHeight = panel.offsetHeight;
   const panelCenterOffset = panelHeight / 2;
 
-  // FINAL: place the panel so its centre = divider's centre
-  panel.style.top = (dividerCenterY - panelCenterOffset) + "px";
+  // Position panel EXACTLY centered on line
+  const computedTop = dividerCenterY - panelCenterOffset;
+  panel.style.top = computedTop + "px";
+
+  // Now push the table below the panel by reading its true height
+  const panelBottom = computedTop + panelHeight;
+  const headerBottom = divider.getBoundingClientRect().bottom + window.scrollY;
+
+  const finalOffset = Math.max(panelBottom - headerBottom + 40, 40);
+
+  // Give this to CSS via variable
+  document.documentElement.style.setProperty("--table-offset", finalOffset + "px");
 }
 
-// Run after content & header load
-window.addEventListener("load", alignSummaryToDivider);
-window.addEventListener("resize", alignSummaryToDivider);
-
+// Run when layout is ready
+window.addEventListener("load", autoPositionStats);
+window.addEventListener("resize", autoPositionStats);
