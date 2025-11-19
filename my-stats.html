@@ -7,33 +7,25 @@
 
   <!-- Core styles -->
   <link rel="stylesheet" href="style/combined.css">
+  <link rel="stylesheet" href="style/sidebar.css">
   <link rel="stylesheet" href="style/my-stats.css">
-  <link rel="stylesheet" href="style/footer.css">
-  
-  
 
-  <!-- Lucide icons -->
+  <!-- Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  
-  <!-- SCRIPTS -->
-  <script src="js/supabaseClient.js"></script>
-  <script src="js/modal.js"></script>
-  <script src="js/footer.js"></script>
-  <script type="module" src="js/header.js"></script>
-  <script type="module" src="js/my-stats.js"></script>
 </head>
 
-<body class="favorites-page" oncontextmenu="return false">
+<body oncontextmenu="return false">
 
-  <!-- HEADER -->
+  <!-- HEADER (banner + divider is inserted automatically by header.js) -->
   <div id="header-container"></div>
 
-  <div class="container">
+  <!-- The red divider is included INSIDE header.html, so nothing else needed here -->
 
-    <!-- MAIN CONTENT -->
+  <!-- MAIN CONTENT -->
+  <div class="container">
     <main class="main-content">
 
-      <!-- SUMMARY PANEL -->
+      <!-- STATS PANEL -->
       <div id="wh-summary" class="wh-summary-panel">
         <div class="stat-box">
           <div class="stat-value" id="total-videos-watched">0</div>
@@ -51,7 +43,7 @@
         </div>
       </div>
 
-      <!-- WATCH HISTORY TABLE (scoreboard-style) -->
+      <!-- TABLE -->
       <table id="watch-table" class="scoreboard-table wh-table">
         <thead>
           <tr>
@@ -68,14 +60,20 @@
       </table>
 
     </main>
-
   </div>
 
-  <!-- VIDEO MODAL CONTAINER -->
+  <!-- MODAL -->
   <div id="modal-container"></div>
 
   <!-- FOOTER -->
   <div id="footer"></div>
+
+  <!-- JS -->
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/footer.js"></script>
+  <script type="module" src="js/header.js"></script>
+  <script type="module" src="js/my-stats.js"></script>
 
 </body>
 </html>
