@@ -1,16 +1,16 @@
-/* ============================================================
+/* =====================================================================
    0.  SUPABASE CLIENT + WATCH SESSION STATE
-   ============================================================ */
+   ===================================================================== */
 
 const supabase = window.supabaseClient || null;
 
-// Store video watch session until modal closes
+// Stores current video session until modal closes
 let currentWatchSession = null;
 
 
-/* ============================================================
+/* =====================================================================
    1. LOAD modal.html INTO #modal-container
-   ============================================================ */
+   ===================================================================== */
 
 window.modalReady = new Promise((resolve) => {
   document.addEventListener("DOMContentLoaded", () => {
@@ -28,11 +28,11 @@ window.modalReady = new Promise((resolve) => {
 });
 
 
-/* ============================================================
+/* =====================================================================
    2. UNIVERSAL ENTRY POINT
-   Called from video.js as:
+   Called from video.js:
    openVideoModal({ url, entry })
-   ============================================================ */
+   ===================================================================== */
 
 window.openVideoModal = async function (arg1, arg2) {
   await window.modalReady;
@@ -52,9 +52,10 @@ window.openVideoModal = async function (arg1, arg2) {
 };
 
 
-/* ============================================================
-   3. GOOGLE DRIVE → DIRECT DOWNLOAD MP4 URL
-   ============================================================ */
+/* =====================================================================
+   3. GOOGLE DRIVE → DIRECT STREAMABLE URL
+   This version WORKS inside a <video> element.
+   ===================================================================== */
 
 function convertGoogleDriveToDirect(url) {
   if (!url.includes("drive.google.com")) return url;
@@ -64,14 +65,14 @@ function convertGoogleDriveToDirect(url) {
 
   const fileId = match[1];
 
-  // Direct MP4-stream URL (works in <video>)
-  return `https://drive.google.com/uc?export=download&id=${fileId}`;
+  // BEST streaming URL (works for video/mp4)
+  return `https://drive.googleusercontent.com/uc?id=${fileId}&export=download`;
 }
 
 
-/* ============================================================
+/* =====================================================================
    4. OPEN MODAL + PLAY VIDEO
-   ============================================================ */
+   ===================================================================== */
 
 window.openDriveOrDirectVideo = function (rawUrl, entry) {
   const modal = document.getElementById("videoModal");
@@ -80,42 +81,44 @@ window.openDriveOrDirectVideo = function (rawUrl, entry) {
 
   if (!modal || !video) return;
 
-  // Hide iframe completely (Drive forbids iframe preview)
+  // NEVER use iframe for Drive anymore — Google blocks it
   if (iframe) {
     iframe.src = "";
     iframe.style.display = "none";
   }
 
-  // Reset video player
+  // Reset video element
   video.pause();
   video.src = "";
   video.style.display = "block";
 
-  // Turn Drive preview URL → direct MP4-stream URL
+  // Convert Drive → streamable MP4
   const playableUrl = convertGoogleDriveToDirect(rawUrl);
 
-  // Begin watch session
+  // Start watch session
   currentWatchSession = {
     videoLookup: entry?.Video_Lookup || null,
     startTime: new Date()
   };
 
   // Show modal
-  modal.style.display = "flex";
   modal.style.visibility = "visible";
+  modal.style.display = "flex";
   modal.classList.add("show");
 
-  // Load video
+  // Load & play video
   video.src = playableUrl;
   setTimeout(() => {
-    video.play().catch(() => {});
-  }, 100);
+    video.play().catch((err) => {
+      console.warn("Video play error:", err);
+    });
+  }, 120);
 };
 
 
-/* ============================================================
+/* =====================================================================
    5. LOG WATCH SESSION INTO Supabase
-   ============================================================ */
+   ===================================================================== */
 
 async function logWatchSession() {
   if (!currentWatchSession?.videoLookup) return;
@@ -125,25 +128,26 @@ async function logWatchSession() {
   const user = data?.user || null;
   if (!user) return;
 
-  const endTime = new Date();
-  const startTime = currentWatchSession.startTime || endTime;
-  const duration = Math.max(0, Math.round((endTime - startTime) / 1000));
+  const end = new Date();
+  const start = currentWatchSession.startTime || end;
+
+  const durationSeconds = Math.max(0, Math.round((end - start) / 1000));
 
   await supabase.from("video_views").insert({
     user_id: user.id,
     video_lookup: currentWatchSession.videoLookup,
-    start_time: startTime.toISOString(),
-    end_time: endTime.toISOString(),
-    duration_seconds: duration
+    start_time: start.toISOString(),
+    end_time: end.toISOString(),
+    duration_seconds: durationSeconds
   });
 
   currentWatchSession = null;
 }
 
 
-/* ============================================================
+/* =====================================================================
    6. CLOSE MODAL (× button or click outside)
-   ============================================================ */
+   ===================================================================== */
 
 window.GDriveCloseModal = async function (event) {
   if (event) event.stopPropagation();
@@ -159,19 +163,19 @@ window.GDriveCloseModal = async function (event) {
     video.src = "";
   }
 
-  // Log watch session before hiding
+  // Log watch time
   await logWatchSession();
 
-  // Hide modal
+  // Hide modal completely
   modal.classList.remove("show");
   modal.style.display = "none";
   modal.style.visibility = "hidden";
 };
 
 
-/* ============================================================
-   7. CLICK OUTSIDE MODAL TO CLOSE
-   ============================================================ */
+/* =====================================================================
+   7. CLICK OUTSIDE MODAL CONTENT TO CLOSE
+   ===================================================================== */
 
 document.addEventListener("click", (e) => {
   const modal = document.getElementById("videoModal");
