@@ -1,13 +1,13 @@
 // =============================================================
-// DEBUG MODE — my-stats.js
-// This version prints EVERYTHING to console so we see the issue.
+// my-stats.js — Watch History & User Stats Dashboard
 // =============================================================
 
 const supabase = window.supabaseClient;
 
 // -------------------------------------------------------------
-// Helpers
+// HELPER FUNCTIONS
 // -------------------------------------------------------------
+
 function formatWatchTime(seconds) {
   if (!seconds || seconds <= 0) return "0m 0s";
   const m = Math.floor(seconds / 60);
@@ -17,71 +17,74 @@ function formatWatchTime(seconds) {
 
 function formatDate(v) {
   if (!v) return "—";
-  return new Date(v).toLocaleString();
+  return new Date(v).toLocaleString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
 }
 
 // -------------------------------------------------------------
-// LOAD SUMMARY
+// LOAD SUMMARY STATS (TOP BOXES)
 // -------------------------------------------------------------
 async function loadSummary() {
-  console.log("🔵 Loading summary view…");
+  const totalVideosEl = document.getElementById("total-videos-watched");
+  const totalViewsEl = document.getElementById("total-views");
+  const totalWatchEl = document.getElementById("total-watch-time");
 
   const { data, error } = await supabase
-    .from("view_watch_history")
+    .from("view_watch_history_summary")
     .select("*")
     .single();
 
-  console.log("🟣 Summary returned:", { data, error });
-
   if (error || !data) return;
 
-  document.getElementById("total-videos-watched").textContent =
-    data.total_videos || 0;
-
-  document.getElementById("total-views").textContent =
-    data.total_views || 0;
-
-  document.getElementById("total-watch-time").textContent =
-    formatWatchTime(data.total_watch_time || 0);
+  totalVideosEl.textContent = data.total_videos || 0;
+  totalViewsEl.textContent = data.total_views || 0;
+  totalWatchEl.textContent = formatWatchTime(data.total_watch_time || 0);
 }
 
 // -------------------------------------------------------------
 // LOAD WATCH HISTORY TABLE
 // -------------------------------------------------------------
 async function loadWatchHistory() {
-  console.log("🔵 Loading watch history view…");
-
   const tbody = document.getElementById("wh-tbody");
 
   const { data, error } = await supabase
     .from("view_watch_history")
     .select("*")
-    .order("last_watched", { ascending: false });
+    .order("last_watched_at", { ascending: false });
 
-  console.log("🟣 Watch history returned:", { data, error });
-
-  if (error) {
-    tbody.innerHTML = `<tr><td colspan="4">Error loading data</td></tr>`;
+  if (error || !data) {
+    tbody.innerHTML = `
+      <tr><td colspan="7" style="text-align:center;padding:20px;">
+        Error loading data.
+      </td></tr>`;
     return;
   }
 
-  if (!data || data.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="4">⚠ No watch history found</td></tr>`;
+  if (data.length === 0) {
+    tbody.innerHTML = `
+      <tr><td colspan="7" style="text-align:center;padding:20px;">
+        No watch history yet.
+      </td></tr>`;
     return;
   }
 
   tbody.innerHTML = "";
 
   data.forEach((row) => {
-    console.log("➡ Row:", row);
-
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${row.video_lookup ?? row.Video_Lookup ?? "(missing)"}</td>
-      <td>${row.view_count ?? "(missing)"}</td>
-      <td>${formatWatchTime(row.total_watch_time ?? 0)}</td>
-      <td>${formatDate(row.last_watched)}</td>
+      <td>${row.Song || "(Unknown Song)"}</td>
+      <td>${row.Artist || "(Unknown Artist)"}</td>
+      <td>${row.Country || ""}</td>
+      <td>${row.views}</td>
+      <td>${formatWatchTime(row.total_watch_seconds)}</td>
+      <td>${formatDate(row.last_watched_at)}</td>
     `;
 
     tbody.appendChild(tr);
@@ -89,8 +92,9 @@ async function loadWatchHistory() {
 }
 
 // -------------------------------------------------------------
-// Sorting (unchanged)
+// SORTING
 // -------------------------------------------------------------
+
 let currentSort = { column: null, direction: 1 };
 
 function sortTable(column) {
@@ -98,6 +102,7 @@ function sortTable(column) {
   const tbody = table.querySelector("tbody");
   const rows = Array.from(tbody.querySelectorAll("tr"));
 
+  // Toggle direction
   if (currentSort.column === column) {
     currentSort.direction *= -1;
   } else {
@@ -105,14 +110,33 @@ function sortTable(column) {
     currentSort.direction = 1;
   }
 
-  rows.sort((a, b) => {
-    const A = a.children[getCol(column)].innerText.trim();
-    const B = b.children[getCol(column)].innerText.trim();
+  // Reset sort indicators
+  document.querySelectorAll("#wh-table th").forEach((th) => {
+    th.classList.remove("sort-asc", "sort-desc");
+  });
 
-    if (!isNaN(A) && !isNaN(B)) {
+  const th = document.querySelector(`#wh-table th[data-sort="${column}"]`);
+  if (th) th.classList.add(currentSort.direction === 1 ? "sort-asc" : "sort-desc");
+
+  const colIndex = getColumnIndex(column);
+
+  rows.sort((a, b) => {
+    const A = a.children[colIndex].innerText.trim();
+    const B = b.children[colIndex].innerText.trim();
+
+    // Numeric sort
+    if (!isNaN(A) && !isNaN(B) && A !== "" && B !== "") {
       return (Number(A) - Number(B)) * currentSort.direction;
     }
 
+    // Date sort
+    if (column === "lastwatched") {
+      return (
+        new Date(A).getTime() - new Date(B).getTime()
+      ) * currentSort.direction;
+    }
+
+    // Default string sort
     return A.localeCompare(B) * currentSort.direction;
   });
 
@@ -120,17 +144,32 @@ function sortTable(column) {
   rows.forEach((r) => tbody.appendChild(r));
 }
 
-function getCol(c) {
-  return { video: 0, views: 1, watchtime: 2, lastwatched: 3 }[c] || 0;
+function getColumnIndex(column) {
+  switch (column) {
+    case "song":
+      return 0;
+    case "artist":
+      return 1;
+    case "country":
+      return 2;
+    case "views":
+      return 3;
+    case "watchtime":
+      return 4;
+    case "lastwatched":
+      return 5;
+    default:
+      return 0;
+  }
 }
 
 // -------------------------------------------------------------
-// AUTO POSITION STATS
+// AUTO-POSITION STATS (centered on red divider)
 // -------------------------------------------------------------
+
 function autoPositionStats() {
   const panel = document.querySelector(".wh-summary-panel");
   const divider = document.querySelector(".banner-divider");
-
   if (!panel || !divider) return;
 
   const dividerBox = divider.getBoundingClientRect();
@@ -138,12 +177,12 @@ function autoPositionStats() {
 
   const dividerCenter = dividerBox.top + dividerBox.height / 2;
   const panelCenter = panelBox.top + panelBox.height / 2;
-
   const offset = dividerCenter - panelCenter;
+
   panel.style.transform = `translateY(${offset}px)`;
 }
 
-function waitForBannerImage() {
+function waitForBanner() {
   const img = document.querySelector(".banner-static img");
   if (img) img.addEventListener("load", autoPositionStats);
 }
@@ -151,20 +190,23 @@ function waitForBannerImage() {
 // -------------------------------------------------------------
 // INIT
 // -------------------------------------------------------------
+
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("🔵 DOMContentLoaded fired — loading both views");
   loadSummary();
   loadWatchHistory();
 
+  // Sorting handlers
   document.querySelectorAll("#wh-table th[data-sort]").forEach((th) => {
     th.addEventListener("click", () => sortTable(th.dataset.sort));
   });
 });
 
+// Header loads banner dynamically → then align stats
 document.addEventListener("header-ready", () => {
-  waitForBannerImage();
+  waitForBanner();
   autoPositionStats();
 });
 
-window.addEventListener("load", autoPositionStats);
+// Reposition on resize / load
 window.addEventListener("resize", autoPositionStats);
+window.addEventListener("load", autoPositionStats);
