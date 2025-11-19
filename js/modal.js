@@ -1,46 +1,110 @@
-/* =====================================================================
-   0.  SUPABASE CLIENT + WATCH SESSION STATE
-   ===================================================================== */
+/* -------------------------------------------------------------
+   0. SUPABASE + WATCH SESSION STATE
+   ------------------------------------------------------------- */
 
 const supabase = window.supabaseClient || null;
 
-// Stores current video session until modal closes
+// Track the user's current watch session
 let currentWatchSession = null;
 
 
-/* =====================================================================
-   1. LOAD modal.html INTO #modal-container
-   ===================================================================== */
+/* -------------------------------------------------------------
+   1. PRELOAD modal.html INTO #modal-container
+   ------------------------------------------------------------- */
 
 window.modalReady = new Promise((resolve) => {
   document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("modal-container");
-    if (!container) return resolve();
+    if (!container) {
+      console.warn("modal-container not found. Modal HTML not loaded.");
+      return resolve();
+    }
 
     fetch("modal.html")
-      .then((res) => res.text())
-      .then((html) => {
+      .then(r => r.text())
+      .then(html => {
         container.innerHTML = html;
         resolve();
       })
-      .catch(() => resolve());
+      .catch(err => {
+        console.error("Failed to load modal.html:", err);
+        resolve();
+      });
   });
 });
 
 
-/* =====================================================================
-   2. UNIVERSAL ENTRY POINT
-   Called from video.js:
-   openVideoModal({ url, entry })
-   ===================================================================== */
+/* -------------------------------------------------------------
+   2. GOOGLE DRIVE + DIRECT VIDEO HANDLER
+   ------------------------------------------------------------- */
 
-window.openVideoModal = async function (arg1, arg2) {
+function convertDriveUrl(url) {
+  if (!url.includes("drive.google.com")) return url;
+
+  const match = url.match(/\/d\/(.*?)\//);
+  if (!match || !match[1]) return url;
+
+  const id = match[1];
+
+  // STREAMABLE Google Drive download URL
+  return `https://drive.googleusercontent.com/uc?id=${id}&export=download`;
+}
+
+window.GDriveOpenModalWithVideo = function(videoUrl, titleText, entry = null) {
+  const modal = document.getElementById("videoModal");
+  const video = document.getElementById("modalVideo");
+  const iframe = document.getElementById("modalIframe");
+
+  if (!modal) {
+    console.error("[modal.js] videoModal element missing.");
+    return;
+  }
+
+  modal.style.display = "flex";
+
+  // Reset media elements
+  if (video) {
+    video.pause();
+    video.src = "";
+    video.style.display = "none";
+  }
+  if (iframe) {
+    iframe.src = "";
+    iframe.style.display = "none";
+  }
+
+  // Begin watch session (only if we have entry + Video_Lookup)
+  currentWatchSession = {
+    videoLookup: entry?.Video_Lookup || null,
+    startTime: new Date()
+  };
+
+  // Always use direct video streaming for Google Drive now
+  const playableUrl = convertDriveUrl(videoUrl);
+
+  // Show MP4 or Drive-stream video
+  if (video) {
+    video.src = playableUrl;
+    video.style.display = "block";
+
+    setTimeout(() => {
+      video.play().catch(err => console.warn("Video play error:", err));
+    }, 120);
+  }
+};
+
+
+/* -------------------------------------------------------------
+   3. UNIVERSAL OPEN FUNCTION (CALLED FROM ANY PAGE)
+   ------------------------------------------------------------- */
+
+window.openVideoModal = async function(arg1, arg2) {
   await window.modalReady;
 
   let videoUrl = null;
   let entry = null;
 
-  if (typeof arg1 === "object" && arg1.url) {
+  if (arg1 && typeof arg1 === "object" && arg1.url) {
     videoUrl = arg1.url;
     entry = arg1.entry || null;
   } else {
@@ -48,96 +112,53 @@ window.openVideoModal = async function (arg1, arg2) {
     entry = arg2 || null;
   }
 
-  window.openDriveOrDirectVideo(videoUrl, entry);
-};
-
-
-/* =====================================================================
-   3. GOOGLE DRIVE → DIRECT STREAMABLE URL
-   This version WORKS inside a <video> element.
-   ===================================================================== */
-
-function convertGoogleDriveToDirect(url) {
-  if (!url.includes("drive.google.com")) return url;
-
-  const match = url.match(/\/d\/(.*?)\//);
-  if (!match || !match[1]) return url;
-
-  const fileId = match[1];
-
-  // BEST streaming URL (works for video/mp4)
-  return `https://drive.googleusercontent.com/uc?id=${fileId}&export=download`;
-}
-
-
-/* =====================================================================
-   4. OPEN MODAL + PLAY VIDEO
-   ===================================================================== */
-
-window.openDriveOrDirectVideo = function (rawUrl, entry) {
-  const modal = document.getElementById("videoModal");
-  const video = document.getElementById("modalVideo");
-  const iframe = document.getElementById("modalIframe");
-
-  if (!modal || !video) return;
-
-  // NEVER use iframe for Drive anymore — Google blocks it
-  if (iframe) {
-    iframe.src = "";
-    iframe.style.display = "none";
+  if (!videoUrl) {
+    console.error("[modal.js] openVideoModal called without a video URL");
+    return;
   }
 
-  // Reset video element
-  video.pause();
-  video.src = "";
-  video.style.display = "block";
+  // Optional title text (unused visually)
+  let titleText = "";
+  if (entry) {
+    const a = entry.Artist || "";
+    const s = entry.Song || "";
+    titleText = [a, s].filter(Boolean).join(" — ");
+  }
 
-  // Convert Drive → streamable MP4
-  const playableUrl = convertGoogleDriveToDirect(rawUrl);
-
-  // Start watch session
-  currentWatchSession = {
-    videoLookup: entry?.Video_Lookup || null,
-    startTime: new Date()
-  };
-
-  // Show modal
-  modal.style.visibility = "visible";
-  modal.style.display = "flex";
-  modal.classList.add("show");
-
-  // Load & play video
-  video.src = playableUrl;
-  setTimeout(() => {
-    video.play().catch((err) => {
-      console.warn("Video play error:", err);
-    });
-  }, 120);
+  window.GDriveOpenModalWithVideo(videoUrl, titleText, entry);
 };
 
 
-/* =====================================================================
-   5. LOG WATCH SESSION INTO Supabase
-   ===================================================================== */
+/* -------------------------------------------------------------
+   4. LOG WATCH SESSION TO SUPABASE
+   ------------------------------------------------------------- */
 
 async function logWatchSession() {
-  if (!currentWatchSession?.videoLookup) return;
-  if (!supabase) return;
+  if (!supabase) {
+    console.warn("[modal.js] Supabase client not available.");
+    return;
+  }
 
+  if (!currentWatchSession?.videoLookup) return;
+
+  // Get authenticated user
   const { data } = await supabase.auth.getUser();
   const user = data?.user || null;
   if (!user) return;
 
-  const end = new Date();
-  const start = currentWatchSession.startTime || end;
+  const endTime = new Date();
+  const startTime = currentWatchSession.startTime || endTime;
 
-  const durationSeconds = Math.max(0, Math.round((end - start) / 1000));
+  const durationSeconds = Math.max(
+    0,
+    Math.round((endTime - startTime) / 1000)
+  );
 
   await supabase.from("video_views").insert({
     user_id: user.id,
     video_lookup: currentWatchSession.videoLookup,
-    start_time: start.toISOString(),
-    end_time: end.toISOString(),
+    start_time: startTime.toISOString(),
+    end_time: endTime.toISOString(),
     duration_seconds: durationSeconds
   });
 
@@ -145,46 +166,56 @@ async function logWatchSession() {
 }
 
 
-/* =====================================================================
-   6. CLOSE MODAL (× button or click outside)
-   ===================================================================== */
+/* -------------------------------------------------------------
+   5. CLOSE MODAL
+   ------------------------------------------------------------- */
 
-window.GDriveCloseModal = async function (event) {
+window.GDriveCloseModal = async function(event) {
   if (event) event.stopPropagation();
 
   const modal = document.getElementById("videoModal");
   const video = document.getElementById("modalVideo");
+  const iframe = document.getElementById("modalIframe");
 
   if (!modal) return;
 
-  // Stop playback
+  // Stop playback & reset
   if (video) {
     video.pause();
     video.src = "";
+    video.style.display = "none";
+  }
+  if (iframe) {
+    iframe.src = "";
   }
 
-  // Log watch time
+  // 🔥 Log watch time to Supabase
   await logWatchSession();
 
-  // Hide modal completely
-  modal.classList.remove("show");
   modal.style.display = "none";
-  modal.style.visibility = "hidden";
 };
 
 
-/* =====================================================================
-   7. CLICK OUTSIDE MODAL CONTENT TO CLOSE
-   ===================================================================== */
+/* -------------------------------------------------------------
+   6. OPTIONAL PREVIEW HOVER HELPERS
+   ------------------------------------------------------------- */
 
-document.addEventListener("click", (e) => {
-  const modal = document.getElementById("videoModal");
-  if (!modal || !modal.classList.contains("show")) return;
+window.showPreview = function(container) {
+  const video = container.querySelector("video");
+  const img = container.querySelector("img");
+  if (!video || !img) return;
 
-  const content = document.querySelector(".modal-content");
-  if (!content) return;
+  img.style.display = "none";
+  video.style.display = "block";
+  video.play().catch(() => {});
+};
 
-  if (!content.contains(e.target)) {
-    GDriveCloseModal(e);
-  }
-});
+window.hidePreview = function(container) {
+  const video = container.querySelector("video");
+  const img = container.querySelector("img");
+  if (!video || !img) return;
+
+  video.pause();
+  video.style.display = "none";
+  img.style.display = "block";
+};
