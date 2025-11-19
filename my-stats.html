@@ -46,20 +46,27 @@
       </div>
 
       <!-- TABLE -->
-      <table id="watch-table" class="scoreboard-table wh-table">
-        <thead>
-          <tr>
-            <th class="sortable" data-sort="video">Video</th>
-            <th class="sortable" data-sort="artist">Artist</th>
-            <th class="sortable" data-sort="song">Song</th>
-            <th class="sortable" data-sort="country">Country</th>
-            <th class="sortable" data-sort="views">Views</th>
-            <th class="sortable" data-sort="watch">Watch Time</th>
-            <th class="sortable" data-sort="last">Last Watched</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
+      <div class="table-aligned-container">
+
+        <div class="table-header-row">
+          <h2 id="tableHeader">Watch History</h2>
+        </div>
+
+        <div class="table-wrapper">
+          <table id="wh-table">
+            <thead>
+              <tr>
+                <th data-sort="video">Video</th>
+                <th data-sort="views">Views</th>
+                <th data-sort="watchtime">Watch Time</th>
+                <th data-sort="lastwatched">Last Watched</th>
+              </tr>
+          </thead>
+          <tbody id="wh-tbody"></tbody>
       </table>
+  </div>
+
+</div>
 
     </main>
   </div>
