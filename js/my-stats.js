@@ -161,6 +161,13 @@ function autoPositionStats() {
 /* -----------------------------------------------------------
    Init
 ------------------------------------------------------------ */
+function waitForBannerImage() {
+  const img = document.querySelector(".banner-static img");
+  if (img) {
+    img.addEventListener("load", autoPositionStats);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   loadStats();
 
@@ -172,7 +179,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* Reposition when header loads the banner */
-document.addEventListener("header-ready", autoPositionStats);
+document.addEventListener("header-ready", () => {
+  waitForBannerImage();
+  autoPositionStats();
+});
 
+/* Also reposition on load and resize */
 window.addEventListener("load", autoPositionStats);
 window.addEventListener("resize", autoPositionStats);
