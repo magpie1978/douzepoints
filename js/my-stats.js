@@ -27,7 +27,7 @@ async function loadSummary() {
   console.log("🔵 Loading summary view…");
 
   const { data, error } = await supabase
-    .from("view_watch_history_summary")
+    .from("view_watch_history")
     .select("*")
     .single();
 
