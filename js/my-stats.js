@@ -109,3 +109,30 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+/* -----------------------------------------------------------
+   ALIGN SUMMARY PANEL EXACTLY TO THE RED DIVIDER LINE
+------------------------------------------------------------ */
+
+function alignSummaryToDivider() {
+  const divider = document.querySelector(".banner-divider");
+  const panel = document.querySelector(".wh-summary-panel");
+
+  if (!divider || !panel) return;
+
+  // Divider position
+  const rect = divider.getBoundingClientRect();
+  const dividerCenterY = rect.top + rect.height / 2 + window.scrollY;
+
+  // Panel height
+  const panelHeight = panel.offsetHeight;
+  const panelCenterOffset = panelHeight / 2;
+
+  // FINAL: place the panel so its centre = divider's centre
+  panel.style.top = (dividerCenterY - panelCenterOffset) + "px";
+}
+
+// Run after content & header load
+window.addEventListener("load", alignSummaryToDivider);
+window.addEventListener("resize", alignSummaryToDivider);
+
