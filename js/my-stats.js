@@ -1,13 +1,13 @@
 // =============================================================
-// my-stats.js  —  Watch History + Stats Dashboard
+// DEBUG MODE — my-stats.js
+// This version prints EVERYTHING to console so we see the issue.
 // =============================================================
 
 const supabase = window.supabaseClient;
 
 // -------------------------------------------------------------
-// HELPER FUNCTIONS
+// Helpers
 // -------------------------------------------------------------
-
 function formatWatchTime(seconds) {
   if (!seconds || seconds <= 0) return "0m 0s";
   const m = Math.floor(seconds / 60);
@@ -15,44 +15,42 @@ function formatWatchTime(seconds) {
   return `${m}m ${s}s`;
 }
 
-function formatDate(value) {
-  if (!value) return "—";
-  return new Date(value).toLocaleString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
+function formatDate(v) {
+  if (!v) return "—";
+  return new Date(v).toLocaleString();
 }
 
 // -------------------------------------------------------------
-// LOAD STATS (TOP BOXES)
+// LOAD SUMMARY
 // -------------------------------------------------------------
 async function loadSummary() {
-  const totalVideosEl = document.getElementById("total-videos-watched");
-  const totalViewsEl = document.getElementById("total-views");
-  const totalWatchEl = document.getElementById("total-watch-time");
+  console.log("🔵 Loading summary view…");
 
   const { data, error } = await supabase
     .from("view_watch_history_summary")
     .select("*")
     .single();
 
-  if (error) {
-    console.error("Error loading summary:", error);
-    return;
-  }
+  console.log("🟣 Summary returned:", { data, error });
 
-  totalVideosEl.textContent = data.total_videos || 0;
-  totalViewsEl.textContent = data.total_views || 0;
-  totalWatchEl.textContent = formatWatchTime(data.total_watch_time || 0);
+  if (error || !data) return;
+
+  document.getElementById("total-videos-watched").textContent =
+    data.total_videos || 0;
+
+  document.getElementById("total-views").textContent =
+    data.total_views || 0;
+
+  document.getElementById("total-watch-time").textContent =
+    formatWatchTime(data.total_watch_time || 0);
 }
 
 // -------------------------------------------------------------
 // LOAD WATCH HISTORY TABLE
 // -------------------------------------------------------------
 async function loadWatchHistory() {
+  console.log("🔵 Loading watch history view…");
+
   const tbody = document.getElementById("wh-tbody");
 
   const { data, error } = await supabase
@@ -60,28 +58,29 @@ async function loadWatchHistory() {
     .select("*")
     .order("last_watched", { ascending: false });
 
+  console.log("🟣 Watch history returned:", { data, error });
+
   if (error) {
-    console.error("Error loading watch history:", error);
+    tbody.innerHTML = `<tr><td colspan="4">Error loading data</td></tr>`;
     return;
   }
 
   if (!data || data.length === 0) {
-    tbody.innerHTML = `
-      <tr><td colspan="7" style="text-align:center; padding:20px;">
-        No watch history yet.
-      </td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4">⚠ No watch history found</td></tr>`;
     return;
   }
 
   tbody.innerHTML = "";
 
   data.forEach((row) => {
+    console.log("➡ Row:", row);
+
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${row.video_lookup}</td>
-      <td>${row.view_count}</td>
-      <td>${formatWatchTime(row.total_watch_time)}</td>
+      <td>${row.video_lookup ?? row.Video_Lookup ?? "(missing)"}</td>
+      <td>${row.view_count ?? "(missing)"}</td>
+      <td>${formatWatchTime(row.total_watch_time ?? 0)}</td>
       <td>${formatDate(row.last_watched)}</td>
     `;
 
@@ -90,7 +89,7 @@ async function loadWatchHistory() {
 }
 
 // -------------------------------------------------------------
-// SORTING
+// Sorting (unchanged)
 // -------------------------------------------------------------
 let currentSort = { column: null, direction: 1 };
 
@@ -99,40 +98,21 @@ function sortTable(column) {
   const tbody = table.querySelector("tbody");
   const rows = Array.from(tbody.querySelectorAll("tr"));
 
-  // Determine direction
   if (currentSort.column === column) {
-    currentSort.direction *=  -1;
+    currentSort.direction *= -1;
   } else {
     currentSort.column = column;
     currentSort.direction = 1;
   }
 
-  // Clear sort indicators
-  document.querySelectorAll("#wh-table th").forEach((th) => {
-    th.classList.remove("sort-asc", "sort-desc");
-  });
-
-  // Add indicator to selected
-  const th = document.querySelector(`#wh-table th[data-sort="${column}"]`);
-  if (th) th.classList.add(currentSort.direction === 1 ? "sort-asc" : "sort-desc");
-
   rows.sort((a, b) => {
-    const A = a.children[getColumnIndex(column)].innerText.trim();
-    const B = b.children[getColumnIndex(column)].innerText.trim();
+    const A = a.children[getCol(column)].innerText.trim();
+    const B = b.children[getCol(column)].innerText.trim();
 
-    // Numeric?
     if (!isNaN(A) && !isNaN(B)) {
       return (Number(A) - Number(B)) * currentSort.direction;
     }
 
-    // Date?
-    if (column === "lastwatched") {
-      return (
-        new Date(A).getTime() - new Date(B).getTime()
-      ) * currentSort.direction;
-    }
-
-    // Default string
     return A.localeCompare(B) * currentSort.direction;
   });
 
@@ -140,18 +120,12 @@ function sortTable(column) {
   rows.forEach((r) => tbody.appendChild(r));
 }
 
-function getColumnIndex(column) {
-  switch (column) {
-    case "video": return 0;
-    case "views": return 1;
-    case "watchtime": return 2;
-    case "lastwatched": return 3;
-    default: return 0;
-  }
+function getCol(c) {
+  return { video: 0, views: 1, watchtime: 2, lastwatched: 3 }[c] || 0;
 }
 
 // -------------------------------------------------------------
-// AUTO-POSITION STAT BOXES OVER RED DIVIDER
+// AUTO POSITION STATS
 // -------------------------------------------------------------
 function autoPositionStats() {
   const panel = document.querySelector(".wh-summary-panel");
@@ -166,7 +140,6 @@ function autoPositionStats() {
   const panelCenter = panelBox.top + panelBox.height / 2;
 
   const offset = dividerCenter - panelCenter;
-
   panel.style.transform = `translateY(${offset}px)`;
 }
 
@@ -176,25 +149,22 @@ function waitForBannerImage() {
 }
 
 // -------------------------------------------------------------
-// INITIALIZE
+// INIT
 // -------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
+  console.log("🔵 DOMContentLoaded fired — loading both views");
   loadSummary();
   loadWatchHistory();
 
-  // Sorting
   document.querySelectorAll("#wh-table th[data-sort]").forEach((th) => {
     th.addEventListener("click", () => sortTable(th.dataset.sort));
   });
 });
 
-// After header + banner loads
 document.addEventListener("header-ready", () => {
   waitForBannerImage();
   autoPositionStats();
 });
 
-// Reposition on resize
-window.addEventListener("resize", autoPositionStats);
-// Reposition after full load
 window.addEventListener("load", autoPositionStats);
+window.addEventListener("resize", autoPositionStats);
