@@ -1,6 +1,119 @@
+/* window.GDriveOpenModalWithVideo = function(videoUrl, titleText) {
+  const modal = document.getElementById("videoModal");
+  const video = document.getElementById("modalVideo");
+  const iframe = document.getElementById("modalIframe");
+  modal.style.display = "flex";
+  video.style.display = "none";
+  iframe.style.display = "none";
+  video.pause();
+  iframe.src = "";
+  if (videoUrl.includes('drive.google.com')) {
+    const match = videoUrl.match(/\/d\/(.*?)\//);
+    if (match && match[1]) {
+      iframe.src = `https://drive.google.com/file/d/${match[1]}/preview`;
+      iframe.style.display = "block";
+    }
+  } else {
+    video.src = videoUrl;
+    video.style.display = "block";
+    video.play();
+  }
+};
+
+
+//  new 13/11/2025 //
+// Bridge for video.js -> use our existing GDriveOpenModalWithVideo
+window.openVideoModal = function (arg1, arg2) {
+  let videoUrl = null;
+  let entry = null;
+
+  // Support object signature: openVideoModal({ url, entry })
+  if (arg1 && typeof arg1 === 'object' && arg1.url) {
+    videoUrl = arg1.url;
+    entry = arg1.entry || null;
+  } else {
+    // Support openVideoModal(videoUrl, entry)
+    videoUrl = arg1;
+    entry = arg2 || null;
+  }
+
+  // Optional: build a title from the entry (if present)
+  let titleText = '';
+  if (entry) {
+    const artist = entry.Artist || '';
+    const song   = entry.Song   || '';
+    titleText = [artist, song].filter(Boolean).join(' — ');
+  }
+
+  if (!videoUrl) {
+    console.error('[modal.js] openVideoModal called without a video URL');
+    return;
+  }
+
+  // Reuse the existing modal logic
+  window.GDriveOpenModalWithVideo(videoUrl, titleText);
+};
+
+
+
+
+window.GDriveCloseModal = function(event) {
+  event.stopPropagation();
+  const modal = document.getElementById("videoModal");
+  const video = document.getElementById("modalVideo");
+  const iframe = document.getElementById("modalIframe");
+  video.pause();
+  video.src = "";
+  iframe.src = "";
+  modal.style.display = "none";
+};
+
+window.showPreview = function(container) {
+  const video = container.querySelector('video');
+  const img = container.querySelector('img');
+  img.style.display = 'none';
+  video.style.display = 'block';
+  video.play();
+};
+
+window.hidePreview = function(container) {
+  const video = container.querySelector('video');
+  const img = container.querySelector('img');
+  video.pause();
+  video.style.display = 'none';
+  img.style.display = 'block';
+};
+
+
+
+// Dynamically load modal.html into #modal-container
+// This script dynamically loads the contents of modal.html into the page at runtime, but only after the DOM is fully loaded 
+// and only if #modal-container exists. It's a clean way to modularize your HTML without server-side includes.
+
+document.addEventListener('DOMContentLoaded', () => {             // Wait for the DOM to be ready — This ensures the code inside doesn’t run until the entire HTML document has been fully loaded and parsed. It's important because we want to be sure that the #modal-container element exists in the DOM before trying to access it.
+const container = document.getElementById('modal-container');     // Get the target element — This finds the element in your HTML with id="modal-container" and stores it in a variable called container.
+  if (container) {                                                // Check if the container exists — This prevents errors. If the element was found (i.e., it’s not null), the code inside the if block runs.
+    fetch('modal.html')                                           // Fetch modal.html — This sends a request to load the contents of modal.html (a separate HTML file containing your modal markup).
+      .then(response => response.text())                          // Convert the response to text — Once the file is fetched, this line converts the HTTP response (a stream of data) into plain text, which is what we want for HTML injection.
+      .then(html => {                                             // Insert the HTML — This line takes the resulting HTML content and sets it as the innerHTML of the #modal-container element — effectively injecting the modal markup into your page.
+        container.innerHTML = html;
+      });
+  } else {                                                        // Fallback warning — If the #modal-container element was not found in the DOM, this logs a warning to the browser console so developers know why the modal wasn’t loaded.
+    console.warn('modal-container not found. Modal HTML was not loaded.');
+  }
+});
+/*
+
+/**
+ * modal.js — Universal video modal system
+ * Fully patched to ensure the modal loads BEFORE any play button is clicked.
+ * Fixes the issue where the first click does nothing.
+ */
+
 /* -------------------------------------------------------------
    1. PRELOAD MODAL.HTML BEFORE ANY VIDEO IS CLICKED
    ------------------------------------------------------------- */
+
 window.modalReady = new Promise((resolve) => {
   document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("modal-container");
@@ -25,173 +138,10 @@ window.modalReady = new Promise((resolve) => {
 
 
 /* -------------------------------------------------------------
-   1a. BACKDROP CLICK HANDLER (ONLY CLOSE ON OUTSIDE CLICK)
-   ------------------------------------------------------------- */
-window.modalReady.then(() => {
-  const modal = document.getElementById("videoModal");
-  if (!modal) return;
-
-  // Close ONLY when clicking the dark backdrop, not the content box
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      GDriveCloseModal(e);
-    }
-  });
-});
-
-
-/* -------------------------------------------------------------
-   1b. VIEW LOGGING STATE & FUNCTIONS (NEW)
-   ------------------------------------------------------------- */
-
-let activeViewId = null;
-let viewStartTime = null;
-
-async function logViewStart(entryOrUrl) {
-  // Uses global supabase client
-  const supabase = window.supabaseClient;
-  if (!supabase) return;
-
-  const { data } = await supabase.auth.getUser();
-  const user = data?.user;
-  if (!user) return;
-
-  // Prefer Video_Lookup from entry, fall back to URL
-  let videoLookup = null;
-  if (entryOrUrl && typeof entryOrUrl === "object" && entryOrUrl.Video_Lookup) {
-    videoLookup = entryOrUrl.Video_Lookup;
-  } else {
-    videoLookup = entryOrUrl;
-  }
-
-  const { data: inserted, error } = await supabase
-    .from("video_views")
-    .insert({
-      user_id: user.id,
-      video_lookup: videoLookup,
-      start_time: new Date().toISOString()
-    })
-    .select()
-    .single();
-
-  if (!error && inserted) {
-    activeViewId = inserted.id;
-    viewStartTime = Date.now();
-  }
-}
-
-async function logViewEnd() {
-  const supabase = window.supabaseClient;
-  if (!supabase) return;
-  if (!activeViewId || !viewStartTime) return;
-
-  const duration = Math.round((Date.now() - viewStartTime) / 1000);
-
-  await supabase
-    .from("video_views")
-    .update({
-      end_time: new Date().toISOString(),
-      duration_seconds: duration
-    })
-    .eq("id", activeViewId);
-
-  activeViewId = null;
-  viewStartTime = null;
-}
-
-
-
-// DEBUG LOGGING
-function debugLog(...msg) {
-  console.log("[WATCH]", ...msg);
-}
-
-// Replace calls:
-async function logViewStart(entryOrUrl) {
-  debugLog("logViewStart CALLED", entryOrUrl);
-
-  const supabase = window.supabaseClient;
-  if (!supabase) return;
-
-  const { data } = await supabase.auth.getUser();
-  const user = data?.user;
-  if (!user) {
-    debugLog("NO USER FOUND");
-    return;
-  }
-
-  let videoLookup = null;
-  if (entryOrUrl && typeof entryOrUrl === "object" && entryOrUrl.Video_Lookup) {
-    videoLookup = entryOrUrl.Video_Lookup;
-  } else {
-    videoLookup = entryOrUrl;
-  }
-
-  debugLog("INSERTING ROW FOR", videoLookup);
-
-  const { data: inserted, error } = await supabase
-    .from("video_views")
-    .insert({
-      user_id: user.id,
-      video_lookup: videoLookup,
-      start_time: new Date().toISOString()
-    })
-    .select()
-    .single();
-
-  if (error) {
-    debugLog("INSERT ERROR", error);
-  } else {
-    debugLog("INSERTED", inserted);
-    activeViewId = inserted.id;
-    viewStartTime = Date.now();
-    debugLog("activeViewId SET =", activeViewId);
-  }
-}
-
-async function logViewEnd() {
-  debugLog("logViewEnd CALLED");
-
-  const supabase = window.supabaseClient;
-  if (!supabase) return;
-
-  if (!activeViewId || !viewStartTime) {
-    debugLog("Missing activeViewId or viewStartTime", activeViewId, viewStartTime);
-    return;
-  }
-
-  const duration = Math.round((Date.now() - viewStartTime) / 1000);
-  debugLog("CALCULATED DURATION =", duration);
-
-  const { error } = await supabase
-    .from("video_views")
-    .update({
-      end_time: new Date().toISOString(),
-      duration_seconds: duration
-    })
-    .eq("id", activeViewId);
-
-  if (error) {
-    debugLog("UPDATE ERROR", error);
-  } else {
-    debugLog("UPDATE SUCCESS");
-  }
-
-  activeViewId = null;
-  viewStartTime = null;
-}
-
-
-
-
-
-
-
-/* -------------------------------------------------------------
    2. GOOGLE DRIVE + DIRECT VIDEO HANDLER
    ------------------------------------------------------------- */
 
-window.GDriveOpenModalWithVideo = function(videoUrl, titleText, entry) {
+window.GDriveOpenModalWithVideo = function(videoUrl, titleText) {
   const modal = document.getElementById("videoModal");
   const video = document.getElementById("modalVideo");
   const iframe = document.getElementById("modalIframe");
@@ -201,40 +151,29 @@ window.GDriveOpenModalWithVideo = function(videoUrl, titleText, entry) {
     return;
   }
 
-  // ⭐ Start logging when modal opens
-  logViewStart(entry || videoUrl);
-
   modal.style.display = "flex";
 
   // Reset both elements
-  if (video) {
-    video.pause();
-    video.style.display = "none";
-    video.src = "";
-  }
-  if (iframe) {
-    iframe.style.display = "none";
-    iframe.src = "";
-  }
+  video.pause();
+  video.style.display = "none";
+  iframe.style.display = "none";
+  video.src = "";
+  iframe.src = "";
 
   // Google Drive video
   if (videoUrl.includes("drive.google.com")) {
-    const match = videoUrl.match(/\/d\/(.*?)\//) || videoUrl.match(/id=([^&]+)/);
-    const fileId = match && match[1] ? match[1] : null;
-
-    if (fileId && iframe) {
-      iframe.src = `https://drive.google.com/file/d/${fileId}/preview`;
+    const match = videoUrl.match(/\/d\/(.*?)\//);
+    if (match && match[1]) {
+      iframe.src = `https://drive.google.com/file/d/${match[1]}/preview`;
       iframe.style.display = "block";
     }
   }
 
   // Standard MP4 or other direct video file
-  else if (video) {
+  else {
     video.src = videoUrl;
     video.style.display = "block";
-    video.play().catch(err => {
-      console.warn("Autoplay failed:", err);
-    });
+    video.play();
   }
 };
 
@@ -274,8 +213,7 @@ window.openVideoModal = async function(arg1, arg2) {
     titleText = [artist, song].filter(Boolean).join(" — ");
   }
 
-  // ⭐ Pass entry through so logging has full metadata
-  window.GDriveOpenModalWithVideo(videoUrl, titleText, entry);
+  window.GDriveOpenModalWithVideo(videoUrl, titleText);
 };
 
 
@@ -292,18 +230,13 @@ window.GDriveCloseModal = function(event) {
 
   if (!modal) return;
 
-  // ⭐ End logging when modal closes
-  logViewEnd();
-
   // Stop playback & reset
   if (video) {
     video.pause();
     video.src = "";
-    video.style.display = "none";
   }
   if (iframe) {
     iframe.src = "";
-    iframe.style.display = "none";
   }
 
   modal.style.display = "none";
@@ -321,7 +254,7 @@ window.showPreview = function(container) {
 
   img.style.display = "none";
   video.style.display = "block";
-  video.play().catch(() => {});
+  video.play();
 };
 
 window.hidePreview = function(container) {
@@ -333,3 +266,4 @@ window.hidePreview = function(container) {
   video.style.display = "none";
   img.style.display = "block";
 };
+

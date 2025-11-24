@@ -1,16 +1,17 @@
-const supabase = window.supabaseClient || null;
-const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
+/**
+ * video.js — modal-only trigger + home carousels + multi-page routing
+ */
 
 (function () {
   // ------------------------------------------------------------
   // UTILITIES
   // ------------------------------------------------------------
   function escapeHTML(str) {
-    if (str == null) return "";
+    if (str == null) return '';
     return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
   }
 
   function getQueryParam(name) {
@@ -19,317 +20,194 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
   }
 
   // ------------------------------------------------------------
-  // FAVOURITES STATE
-  // ------------------------------------------------------------
-  let currentUser = null;
-  let favoriteIds = new Set();
-  let favoritesLoaded = false;
-
-  /**
-   * Get stable favourite key for a video.
-   */
-  function getVideoKey(entry) {
-    return entry.Video_Lookup || null;
-  }
-
-  async function ensureFavoritesLoaded() {
-    if (favoritesLoaded) return;
-
-    if (!supabase) {
-      console.warn("[video.js] supabase client missing – favourites disabled.");
-      favoritesLoaded = true;
-      return;
-    }
-
-    const { data } = await supabase.auth.getUser();
-    const user = data?.user || null;
-
-    if (!user) {
-      currentUser = null;
-      favoriteIds = new Set();
-      favoritesLoaded = true;
-      return;
-    }
-
-    currentUser = user;
-
-    const { data: favRows, error } = await supabase
-      .from("user_favorites")
-      .select("video_id")
-      .eq("user_id", user.id);
-
-    if (error) {
-      console.error("[video.js] error loading favourites:", error);
-      favoriteIds = new Set();
-    } else {
-      favoriteIds = new Set((favRows || []).map(r => String(r.video_id)));
-    }
-
-    favoritesLoaded = true;
-  }
-
-  async function toggleFavorite(button, videoKey) {
-    if (!supabase) {
-      console.warn("[video.js] supabase missing – cannot toggle favourites.");
-      return;
-    }
-
-    await ensureFavoritesLoaded();
-
-    if (!currentUser) {
-      alert("Please log in to save favourites.");
-      return;
-    }
-
-    const key = String(videoKey);
-
-    if (favoriteIds.has(key)) {
-      const { error } = await supabase
-        .from("user_favorites")
-        .delete()
-        .eq("user_id", currentUser.id)
-        .eq("video_id", key);
-
-      if (error) {
-        console.error("Error removing favourite:", error);
-        return;
-      }
-
-      favoriteIds.delete(key);
-      button.classList.remove("is-favorite");
-      return;
-    }
-
-    const { error } = await supabase
-      .from("user_favorites")
-      .insert({
-        user_id: currentUser.id,
-        video_id: key
-      });
-
-    if (error) {
-      console.error("Error adding favourite:", error);
-      return;
-    }
-
-    favoriteIds.add(key);
-    button.classList.add("is-favorite");
-  }
-
-  // ------------------------------------------------------------
-  // MODAL WRAPPER
+  // MODAL WRAPPER (strict)
   // ------------------------------------------------------------
   function openModalStrict(videoUrl, entry) {
     if (!videoUrl) {
-      console.error("[video.js] No Video_URL found:", entry);
+      console.error('[video.js] No Video_URL found:', entry);
       return;
     }
 
-    if (typeof window.openVideoModal === "function") {
+    if (typeof window.openVideoModal === 'function') {
       try {
-        // This calls into modal.js, which now logs views
         window.openVideoModal({ url: videoUrl, entry });
         return;
-      } catch (e) {
-        console.error("[video.js] Error calling openVideoModal:", e);
+      } catch (_) {
+        try { window.openVideoModal(videoUrl, entry); return; } catch (_) {}
+        try { window.openVideoModal(videoUrl); return; } catch (_) {}
       }
     }
 
-    console.error("[video.js] No modal function found.");
+    if (typeof window.showVideoModal === 'function') {
+      try { window.showVideoModal(videoUrl, entry); return; } catch (_) {}
+    }
+    if (typeof window.openModal === 'function') {
+      try { window.openModal(videoUrl, entry); return; } catch (_) {}
+    }
+
+    console.error('[video.js] No modal function found.');
   }
 
   // ------------------------------------------------------------
-  // RENDER A SINGLE VIDEO CARD
+  // RENDER ONE CARD (grid or carousel)
   // ------------------------------------------------------------
-  function renderEntry(entry, variant = "grid") {
-    const wrapper = document.createElement("div");
-
-    // ⭐ Sorting.js dataset attributes
-    wrapper.dataset.year          = entry.Year || "";
-    wrapper.dataset.artist        = entry.Artist || "";
-    wrapper.dataset.song          = entry.Song || "";
-    wrapper.dataset.country       = entry.Country || "";
-    wrapper.dataset.total         = entry.Final_TotalPoints || 0;
-    wrapper.dataset.totalrank     = entry.Final_Rank || "";
-    wrapper.dataset.jury          = entry.Final_JuryPoints || 0;
-    wrapper.dataset.juryrank      = entry.Final_JuryRank || "";
-    wrapper.dataset.televote      = entry.Final_TelevotePoints || 0;
-    wrapper.dataset.televoterank  = entry.Final_TelevoteRank || "";
-    wrapper.dataset.dnq           = (!entry.Final_Rank || entry.Final_Rank === 0) ? "1" : "0";
-
-    wrapper.className = variant === "carousel" ? "carousel-video-item" : "video-item";
-    wrapper.setAttribute("role", "button");
+  function renderEntry(entry, variant = 'grid') {
+    const wrapper = document.createElement('div');
+    wrapper.className = (variant === 'carousel') ? 'carousel-video-item' : 'video-item';
+    wrapper.setAttribute('role', 'button');
     wrapper.tabIndex = 0;
 
-    const videoKey = getVideoKey(entry);
-    const isFavorite = videoKey && favoriteIds.has(String(videoKey));
+    // Points & ranks
+    const totalPoints    = Number(entry.Final_TotalPoints)     || 0;
+    const juryPoints     = Number(entry.Final_JuryPoints)      || 0;
+    const televotePoints = Number(entry.Final_TelevotePoints)  || 0;
+    const totalRank      = Number(entry.Final_Rank)            || 0;
+    const juryRank       = Number(entry.Final_JuryRank)        || 0;
+    const televoteRank   = Number(entry.Final_TelevoteRank)    || 0;
 
-    const countryCode = entry.Country_Code?.toLowerCase() || "";
+    // DNQ
+    const dnq = (
+      !entry.Final_Rank ||
+      Number(entry.Final_Rank) === 0 ||
+      String(entry.QualifiedFinal || '').toUpperCase() === 'N'
+    );
+
+    // Sorting data attributes (used only on grid pages, but harmless on carousels)
+    wrapper.dataset.total        = String(totalPoints);
+    wrapper.dataset.jury         = String(juryPoints);
+    wrapper.dataset.televote     = String(televotePoints);
+    wrapper.dataset.totalrank    = String(totalRank);
+    wrapper.dataset.juryrank     = String(juryRank);
+    wrapper.dataset.televoterank = String(televoteRank);
+    wrapper.dataset.dnq          = dnq ? '1' : '0';
+
+    if (entry.Year)    wrapper.dataset.year = entry.Year;
+    if (entry.Artist)  wrapper.dataset.artist = entry.Artist.toLowerCase();
+    if (entry.Song)    wrapper.dataset.song = entry.Song.toLowerCase();
+    if (entry.Country) wrapper.dataset.country = entry.Country.toLowerCase();
+
+    // Visuals
+    const countryCode = entry.Country_Code?.toLowerCase();
     const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
-    const videoUrl = entry.Video_URL;
     const flagUrl = `/flags/${countryCode}.png`;
+    const videoUrl = entry.Video_URL;
 
-    // DNQ logic
-    const finalRank = entry.Final_Rank;
-    const finalPoints = entry.Final_TotalPoints;
-    const qualifiedFlag = String(entry.QualifiedFinal || "").toUpperCase();
-    const isDNQ =
-      !finalRank ||
-      Number(finalRank) === 0 ||
-      qualifiedFlag === "N";
+    const titleHTML = `
+      <div class="title-line">
+        <div class="title-artist">${escapeHTML(entry.Artist || '')}</div>
+        <div class="title-song">${escapeHTML(entry.Song || '')}</div>
+      </div>
+      <div class="title-meta">
+        <span class="title-country">${escapeHTML(entry.Country || '')}</span>
+        ${entry.Year ? `<span class="title-year">${escapeHTML(entry.Year)}</span>` : ''}
+      </div>
+    `;
 
-    const rankDisplay = isDNQ ? "NQ" : finalRank;
-    const pointsDisplay = isDNQ ? "NQ" : finalPoints;
-
-    const rankClass = isDNQ ? "score-circle dnq score-pos" : "score-circle score-pos";
-    const pointsClass = isDNQ ? "score-circle dnq score-pts" : "score-circle score-pts";
+    const rankDisplay   = dnq ? 'NQ' : totalRank;
+    const pointsDisplay = dnq ? 'NQ' : totalPoints;
+    const rankClass     = dnq ? 'score-circle dnq score-pos' : 'score-circle score-pos';
+    const pointsClass   = dnq ? 'score-circle dnq score-pts' : 'score-circle score-pts';
 
     wrapper.innerHTML = `
-      <div class="preview-container" data-video-url="${escapeHTML(videoUrl || "")}">
-        <button
-          class="favorite-btn ${isFavorite ? "is-favorite" : ""}"
-          data-video-key="${escapeHTML(String(videoKey || ""))}"
-          aria-label="Toggle favourite"
-        >
-          <i data-lucide="heart"></i>
-        </button>
-
-        <img class="thumbnail" src="${escapeHTML(imageUrl)}" alt="${escapeHTML(entry.Artist || "")}">
+      <div class="preview-container" data-video-url="${escapeHTML(videoUrl || '')}">
+        <img class="thumbnail" src="${escapeHTML(imageUrl)}" alt="${escapeHTML(entry.Artist || '')}" />
       </div>
 
       <div class="video-title-with-icon" style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
         <div style="display:flex;align-items:center;gap:10px;">
-          <a href="country.html?country=${encodeURIComponent(entry.Country || "")}" onclick="event.stopPropagation()">
-            <img class="flag-icon" src="${escapeHTML(flagUrl)}" alt="Flag">
+          <a href="country.html?country=${encodeURIComponent(entry.Country || '')}" onclick="event.stopPropagation()">
+            <img class="flag-icon" src="${escapeHTML(flagUrl)}" alt="Flag" />
           </a>
-          <div class="video-title-text">
-            <div class="title-line">
-              <div class="title-artist">${escapeHTML(entry.Artist || "")}</div>
-              <div class="title-song">${escapeHTML(entry.Song || "")}</div>
-            </div>
-            <div class="title-meta">
-              <span class="title-country">${escapeHTML(entry.Country || "")}</span>
-              ${entry.Year ? `<span class="title-year">${escapeHTML(entry.Year)}</span>` : ""}
-            </div>
-          </div>
+          <div class="video-title-text">${titleHTML}</div>
         </div>
 
         ${
-          variant === "carousel" || isFavoritesPage
-            ? ""
+          variant === 'carousel'
+            ? '' // ⛔ no Pos/Pts or circles in carousels
             : `
-            <div class="score-wrapper">
-              <table class="score-table">
-                <tr><th>Pos</th><th>Pts</th></tr>
-                <tr>
-                  <td><div class="${rankClass}">${escapeHTML(String(rankDisplay || ""))}</div></td>
-                  <td><div class="${pointsClass}">${escapeHTML(String(pointsDisplay || ""))}</div></td>
-                </tr>
-              </table>
-            </div>
-          `
+              <div class="score-wrapper">
+                <table class="score-table">
+                  <tr><th>Pos</th><th>Pts</th></tr>
+                  <tr>
+                    <td><div class="${rankClass}">${escapeHTML(String(rankDisplay))}</div></td>
+                    <td><div class="${pointsClass}">${escapeHTML(String(pointsDisplay))}</div></td>
+                  </tr>
+                </table>
+              </div>
+            `
         }
       </div>
     `;
 
+    // Modal triggers
     const open = (e) => {
-      e.stopPropagation();
-      e.preventDefault();
+      e?.preventDefault?.();
+      e?.stopPropagation?.();
       openModalStrict(videoUrl, entry);
     };
 
-    wrapper.addEventListener("click", open);
-    wrapper.querySelector(".thumbnail")?.addEventListener("click", open);
-    wrapper.querySelector(".preview-container")?.addEventListener("click", open);
+    wrapper.addEventListener('click', open);
+    wrapper.querySelector('.thumbnail')?.addEventListener('click', open);
+    wrapper.querySelector('.preview-container')?.addEventListener('click', open);
 
-    wrapper.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
+    wrapper.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         open(e);
       }
     });
 
-    const favBtn = wrapper.querySelector(".favorite-btn");
-    if (favBtn && videoKey) {
-      favBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleFavorite(favBtn, videoKey);
-      });
-    }
-
     return wrapper;
   }
 
   // ------------------------------------------------------------
-  // RENDER GRID (⭐ Calls triggerInitialSort)
+  // RENDERING (GRID PAGES)
   // ------------------------------------------------------------
   function renderVideos(entries) {
-    const container = document.getElementById("video-container");
+    const container = document.getElementById('video-container');
     if (!container) return;
+    container.innerHTML = '';
 
-    container.innerHTML = "";
     const frag = document.createDocumentFragment();
-
-    entries.forEach(entry => {
-      frag.appendChild(renderEntry(entry, "grid"));
-    });
-
+    entries.forEach(entry => frag.appendChild(renderEntry(entry, 'grid')));
     container.appendChild(frag);
 
-    if (window.lucide?.createIcons) {
-      window.lucide.createIcons();
-    }
-
-    // ⭐ Apply sorting AFTER videos exist
-    if (window.triggerInitialSort) {
-      window.triggerInitialSort();
-    }
+    if (window.triggerInitialSort) window.triggerInitialSort();
   }
 
   // ------------------------------------------------------------
-  // RENDER CAROUSEL
+  // RENDERING (CAROUSELS)
   // ------------------------------------------------------------
   function renderIntoCarousel(trackId, entries) {
     const track = document.getElementById(trackId);
     if (!track) return;
 
-    track.innerHTML = "";
+    track.innerHTML = '';
     const frag = document.createDocumentFragment();
-
-    entries.forEach(entry => {
-      frag.appendChild(renderEntry(entry, "carousel"));
-    });
-
+    entries.forEach(entry => frag.appendChild(renderEntry(entry, 'carousel')));
     track.appendChild(frag);
-
-    if (window.lucide?.createIcons) {
-      window.lucide.createIcons();
-    }
   }
 
   // ------------------------------------------------------------
   // FETCH WRAPPER
   // ------------------------------------------------------------
-  async function fetchAndRender(queryFn) {
-    if (!supabase) {
-      console.error("[video.js] supabase client not available.");
+  async function fetchAndRender(queryFn, errorMsg, emptyMsg) {
+    const supa = window.supabaseClient;
+    const container = document.getElementById('video-container');
+
+    if (!supa) {
+      console.error('[video.js] Supabase missing.');
       return;
     }
 
-    await ensureFavoritesLoaded();
-
-    const { data, error } = await queryFn(supabase);
+    const { data, error } = await queryFn(supa);
     if (error) {
-      console.error("Error fetching videos:", error);
+      console.error(errorMsg, error);
+      if (container) container.innerHTML = `<p style="padding:16px">${escapeHTML(errorMsg)}</p>`;
       return;
     }
-
     if (!data || data.length === 0) {
-      const container = document.getElementById("video-container");
-      if (container) {
-        container.innerHTML = `<p style="padding:16px;">No videos found.</p>`;
-      }
+      if (container) container.innerHTML = `<p style="padding:16px">${escapeHTML(emptyMsg)}</p>`;
       return;
     }
 
@@ -339,147 +217,190 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
   // ------------------------------------------------------------
   // PAGE LOADERS
   // ------------------------------------------------------------
-  function loadEdition() {
-    const year = getQueryParam("edition");
-    if (!year) return;
 
-    fetchAndRender(s =>
-      s.from("douzepoints")
-        .select("*")
-        .eq("Year", year)
-        .order("Final_Rank", { ascending: true })
-    );
-  }
-
+  // Country.html
   function loadCountry() {
-    const c = getQueryParam("country");
-    if (!c) return;
+    const country = getQueryParam('country');
+    const container = document.getElementById('video-container');
 
-    fetchAndRender(s =>
-      s.from("douzepoints")
-        .select("*")
-        .ilike("Country", c)
-        .order("Year", { ascending: false })
+    if (!country) {
+      if (container) {
+        container.innerHTML = `<p style="padding:16px">No country specified. Add <code>?country=Sweden</code>.</p>`;
+      }
+      return;
+    }
+
+    return fetchAndRender(
+      (supa) => supa
+        .from('douzepoints')
+        .select('*')
+        .ilike('Country', country)
+        .order('Year', { ascending: false }),
+      `Error loading ${country}`,
+      `No entries for ${country}.`
     );
   }
 
+  // Edition.html
+  function loadEdition() {
+    const edition = getQueryParam('edition');
+    const container = document.getElementById('video-container');
+
+    if (!edition) {
+      if (container) container.innerHTML = `<p style="padding:16px">Add <code>?edition=2024</code>.</p>`;
+      return;
+    }
+
+    return fetchAndRender(
+      (supa) => supa
+        .from('douzepoints')
+        .select('*')
+        .eq('Year', edition)
+        .order('Final_Rank', { ascending: true }),
+      `Error loading edition ${edition}`,
+      `No entries for ${edition}.`
+    );
+  }
+
+  // Winners.html
   function loadWinners() {
-    fetchAndRender(s =>
-      s.from("douzepoints")
-        .select("*")
-        .eq("Final_Rank", 1)
-        .order("Year", { ascending: false })
+    return fetchAndRender(
+      (supa) => supa
+        .from('douzepoints')
+        .select('*')
+        .eq('Final_Rank', 1)
+        .order('Year', { ascending: false }),
+      'Error loading winners',
+      'No winners found.'
     );
   }
 
+  // Fan-favorites.html  (FanFave = 'Y')
   function loadFanFavorites() {
-    fetchAndRender(s =>
-      s.from("douzepoints")
-        .select("*")
-        .eq("FanFave", "Y")
-        .order("Year", { ascending: false })
+    return fetchAndRender(
+      (supa) =>
+        supa
+          .from('douzepoints')
+          .select('*')
+          .eq('FanFave', 'Y')
+          .order('Year', { ascending: false }),
+      'Error loading fan favourites',
+      'No fan favourites found.'
     );
   }
 
+  // ------------------------------------------------------------
+  // HOME PAGE (index.html) — FOUR CAROUSELS
+  // ------------------------------------------------------------
   async function loadHome() {
-    if (!supabase) return;
-    await ensureFavoritesLoaded();
+    const supa = window.supabaseClient;
+    if (!supa) return;
 
-    const car1 = document.getElementById("carouselTrack1");
-    const car2 = document.getElementById("carouselTrack2");
-    const car3 = document.getElementById("carouselTrack3");
-    const car4 = document.getElementById("carouselTrack4");
+    const track1 = document.getElementById('carouselTrack1'); // Winners
+    const track2 = document.getElementById('carouselTrack2'); // 2024 Malmö
+    const track3 = document.getElementById('carouselTrack3'); // Fan Favourites
+    const track4 = document.getElementById('carouselTrack4'); // 2025 Basel
 
-    if (car1) {
-      supabase
-        .from("douzepoints")
-        .select("*")
-        .eq("Final_Rank", 1)
-        .order("Year", { ascending: false })
-        .limit(40)
-        .then(({ data, error }) => {
-          if (!error) renderIntoCarousel("carouselTrack1", data || []);
-        });
-    }
+    try {
+      const tasks = [];
 
-    if (car2) {
-      supabase
-        .from("douzepoints")
-        .select("*")
-        .eq("Year", 2024)
-        .order("Final_Rank", { ascending: true })
-        .then(({ data, error }) => {
-          if (!error) renderIntoCarousel("carouselTrack2", data || []);
-        });
-    }
+      // Winners carousel
+      if (track1) {
+        tasks.push(
+          supa.from('douzepoints')
+            .select('*')
+            .eq('Final_Rank', 1)
+            .order('Year', { ascending: false })
+            .limit(40)
+            .then(({ data, error }) => {
+              if (!error) renderIntoCarousel('carouselTrack1', data || []);
+            })
+        );
+      }
 
-    if (car3) {
-      supabase
-        .from("douzepoints")
-        .select("*")
-        .eq("FanFave", "Y")
-        .order("Year", { ascending: false })
-        .then(({ data, error }) => {
-          if (!error) renderIntoCarousel("carouselTrack3", data || []);
-        });
-    }
+      // Basel 2025
+      if (track4) {
+        tasks.push(
+          supa.from('douzepoints')
+            .select('*')
+            .eq('Year', 2025)
+            .order('Final_Rank', { ascending: true })
+            .then(({ data, error }) => {
+              if (!error) renderIntoCarousel('carouselTrack4', data || []);
+            })
+        );
+      }
 
-    if (car4) {
-      supabase
-        .from("douzepoints")
-        .select("*")
-        .eq("Year", 2025)
-        .order("Final_Rank", { ascending: true })
-        .then(({ data, error }) => {
-          if (!error) renderIntoCarousel("carouselTrack4", data || []);
-        });
+      // Malmö 2024
+      if (track2) {
+        tasks.push(
+          supa.from('douzepoints')
+            .select('*')
+            .eq('Year', 2024)
+            .order('Final_Rank', { ascending: true })
+            .then(({ data, error }) => {
+              if (!error) renderIntoCarousel('carouselTrack2', data || []);
+            })
+        );
+      }
+
+      // Fan Favourites
+      if (track3) {
+        tasks.push(
+          supa.from('douzepoints')
+            .select('*')
+            .eq('FanFave', 'Y')
+            .order('Year', { ascending: false })
+            .then(({ data, error }) => {
+              if (!error) renderIntoCarousel('carouselTrack3', data || []);
+            })
+        );
+      }
+
+      await Promise.all(tasks);
+    } catch (e) {
+      console.error('Home carousel load error:', e);
     }
   }
 
   // ------------------------------------------------------------
   // CAROUSEL SCROLLING
   // ------------------------------------------------------------
-  function scrollCarousel(direction, trackId) {
+  window.scrollCarousel = function (direction, trackId) {
     const track = document.getElementById(trackId);
     if (!track) return;
 
     const container = track.parentElement;
-    const card = track.querySelector(".carousel-video-item") || track.querySelector(".video-item");
+    const card = track.querySelector('.carousel-video-item') || track.querySelector('.video-item');
 
     const cardWidth = card ? card.getBoundingClientRect().width + 30 : 260;
     const scrollAmount = direction * cardWidth * 4;
 
     container.scrollBy({
       left: scrollAmount,
-      behavior: "smooth"
+      behavior: 'smooth'
     });
-  }
+  };
 
   // ------------------------------------------------------------
-  // ROUTING
+  // PAGE ROUTING
   // ------------------------------------------------------------
-  document.addEventListener("DOMContentLoaded", () => {
-    const path = window.location.pathname || "";
+  document.addEventListener('DOMContentLoaded', () => {
+    const path = window.location.pathname;
 
-    if (path.includes("my-favorites.html")) {
-      return;
-    } else if (path.includes("edition.html")) {
-      loadEdition();
-    } else if (path.includes("country.html")) {
-      loadCountry();
-    } else if (path.includes("winners.html")) {
-      loadWinners();
-    } else if (path.includes("fan-favorites.html")) {
-      loadFanFavorites();
-    } else if (path.includes("index.html") || path === "/") {
+    if (path.endsWith('/') || path.endsWith('index.html') || path.includes('index.html')) {
       loadHome();
+    } else if (path.includes('country.html')) {
+      loadCountry();
+    } else if (path.includes('edition.html')) {
+      loadEdition();
+    } else if (path.includes('winners.html')) {
+      loadWinners();
+    } else if (path.includes('fan-favorites.html')) {
+      loadFanFavorites();
     }
   });
 
-  // ------------------------------------------------------------
-  // EXPORTS
-  // ------------------------------------------------------------
+  // Expose manual renderer
   window.renderVideos = renderVideos;
-  window.scrollCarousel = scrollCarousel;
-  window.ensureFavoritesLoaded = ensureFavoritesLoaded;
 })();
