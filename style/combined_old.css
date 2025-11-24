@@ -478,3 +478,83 @@ h4 {
   display: block;
   margin: 0 auto;
 }
+
+/************************************************************
+  DOUZEPOINTS VIDEO MODAL (NEW SYSTEM)
+*************************************************************/
+
+/* Overlay container — hidden by default */
+.dp-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  display: none;                /* default: not visible */
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* When JS removes .hidden, show it as flex */
+.dp-modal-overlay:not(.hidden) {
+  display: flex;
+}
+
+/* Modal box */
+.dp-modal {
+  background: #000;
+  border-radius: 12px;
+  max-width: 950px;
+  width: 90%;
+  padding: 22px;
+  position: relative;
+  color: #fff;
+}
+
+/* Title text */
+.dp-modal-title {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+/* Close button */
+.dp-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Video wrapper */
+.dp-video-wrapper {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  position: relative;
+  background: #000;
+}
+
+/* Media elements hidden by default */
+.dp-video,
+.dp-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: none;
+}
+
+/* JS will add .active to the one we’re using */
+.dp-video.active,
+.dp-iframe.active {
+  display: block;
+}
