@@ -127,7 +127,6 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
 
     if (typeof window.openVideoModal === "function") {
       try {
-        // This calls into modal.js, which now logs views
         window.openVideoModal({ url: videoUrl, entry });
         return;
       } catch (e) {
