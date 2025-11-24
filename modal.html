@@ -1,17 +1,43 @@
-<div id="videoModal" class="dp-modal">
+<!--<div id="videoModal" class="dp-modal">
     <div class="dp-modal-content" onclick="event.stopPropagation()">
 
         <!-- Close Button -->
-        <button class="dp-close-btn" id="dpModalCloseBtn">×</button>
+        <!--<button class="dp-close-btn" id="dpModalCloseBtn">×</button>
 
         <!-- Title -->
-        <div class="dp-modal-title" id="dpModalTitle"></div>
+        <!--<div class="dp-modal-title" id="dpModalTitle"></div>
 
         <!-- Video Container -->
-        <div class="dp-video-wrapper">
+        <!--<div class="dp-video-wrapper">
             <video id="modalVideo" class="dp-video" controls playsinline></video>
             <iframe id="modalIframe" class="dp-iframe" allowfullscreen></iframe>
         </div>
 
     </div>
+</div>
+-->
+
+<!-- Modal Overlay (hidden by default) -->
+<div id="dpModalOverlay" class="dp-modal-overlay hidden">
+
+    <!-- Modal Container -->
+    <div id="videoModal" class="dp-modal" onclick="event.stopPropagation()">
+
+        <div class="dp-modal-content">
+
+            <!-- Close Button -->
+            <button class="dp-close-btn" id="dpModalCloseBtn">×</button>
+
+            <!-- Title -->
+            <div class="dp-modal-title" id="dpModalTitle"></div>
+
+            <!-- Video Container -->
+            <div class="dp-video-wrapper">
+                <video id="modalVideo" class="dp-video" controls playsinline></video>
+                <iframe id="modalIframe" class="dp-iframe" allowfullscreen></iframe>
+            </div>
+
+        </div>
+    </div>
+
 </div>
