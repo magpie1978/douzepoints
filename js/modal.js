@@ -1,195 +1,138 @@
-/********************************************************************
- *  MODAL LOADING (loads modal.html into #modal-container)
- ********************************************************************/
+/* -------------------------------------------------------------
+   1. PRELOAD MODAL.HTML BEFORE ANY VIDEO IS CLICKED
+------------------------------------------------------------- */
+
 window.modalReady = new Promise((resolve) => {
-    document.addEventListener("DOMContentLoaded", () => {
-        const container = document.getElementById("modal-container");
-        if (!container) {
-            console.warn("[modal.js] modal-container not found.");
-            resolve();
-            return;
-        }
-
-        fetch("modal.html")
-            .then(r => r.text())
-            .then(html => {
-                container.innerHTML = html;
-                resolve();
-            })
-            .catch(err => {
-                console.error("[modal.js] Failed to load modal.html:", err);
-                resolve();
-            });
-    });
-});
-
-
-/********************************************************************
- *  INTERNAL STATE
- ********************************************************************/
-let activeVideoElement = null;
-let activeIframe = null;
-let watchSessionStart = null;
-let currentUserId = null;
-
-
-/********************************************************************
- *  SUPABASE INITIALISATION
- ********************************************************************/
-let supabaseClient = null;
-
-document.addEventListener("DOMContentLoaded", async () => {
-    if (window.supabase) {
-        supabaseClient = window.supabase;
-        const { data } = await supabaseClient.auth.getUser();
-        currentUserId = data?.user?.id || null;
+  document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById("modal-container");
+    if (!container) {
+      console.warn("modal-container not found. Modal HTML not loaded.");
+      resolve();
+      return;
     }
+
+    fetch("modal.html")
+      .then(r => r.text())
+      .then(html => {
+        container.innerHTML = html;
+        resolve();
+      })
+      .catch(err => {
+        console.error("Failed to load modal.html:", err);
+        resolve();
+      });
+  });
 });
 
 
-/********************************************************************
- *  WATCH-TIME LOGGING
- ********************************************************************/
-async function startWatchSession() {
-    watchSessionStart = new Date();
-}
+/* -------------------------------------------------------------
+   2. EXTRACT CLEAN STREAMABLE URL
+------------------------------------------------------------- */
 
-async function endWatchSession(videoLookup) {
-    if (!watchSessionStart || !videoLookup || !supabaseClient || !currentUserId) return;
+function getStreamableUrl(inputUrl) {
+  if (!inputUrl) return null;
 
-    const end = new Date();
-    const durationSeconds = Math.floor((end - watchSessionStart) / 1000);
+  // 1️⃣ Handle Google Drive URLs
+  if (inputUrl.includes("drive.google.com")) {
+    const match = inputUrl.match(/\/d\/(.*?)\//);
+    if (match) {
+      const fileId = match[1];
+      return `https://drive.google.com/file/d/${fileId}/preview`;
+    }
 
-    if (durationSeconds <= 0) return;
+    const matchAlt = inputUrl.match(/id=([a-zA-Z0-9_-]+)/);
+    if (matchAlt) {
+      const fileId = matchAlt[1];
+      return `https://drive.google.com/file/d/${fileId}/preview`;
+    }
 
-    const { error } = await supabaseClient
-        .from("video_views")
-        .insert({
-            user_id: currentUserId,
-            video_lookup: videoLookup,
-            start_time: watchSessionStart.toISOString(),
-            end_time: end.toISOString(),
-            duration_seconds: durationSeconds
-        });
+    console.warn("Could not extract Google Drive file ID from URL:", inputUrl);
+  }
 
-    if (error) console.error("[modal.js] Error writing watch session:", error);
+  // 2️⃣ If it's an MP4 URL — use directly
+  if (inputUrl.endsWith(".mp4") || inputUrl.includes(".mp4?")) {
+    return inputUrl;
+  }
 
-    watchSessionStart = null;
+  // Default fallback
+  return inputUrl;
 }
 
 
-/********************************************************************
- *  OPEN MODAL (MAIN FUNCTION CALLED BY video.js)
- ********************************************************************/
-window.openVideoModal = async function ({ url, entry }) {
-    await window.modalReady;
+/* -------------------------------------------------------------
+   3. STANDARD OPEN MODAL FUNCTION
+------------------------------------------------------------- */
 
-    const overlay = document.getElementById("dpModalOverlay");
-    const modal = document.getElementById("videoModal");
-    activeVideoElement = document.getElementById("dpVideo");
-    activeIframe = document.getElementById("dpIframe");
-    const titleEl = document.getElementById("dpModalTitle");
+window.openVideoModal = async function (input, entry) {
+  await window.modalReady;
 
-    if (!overlay || !modal || !activeVideoElement || !activeIframe) {
-        console.error("[modal.js] Modal elements missing.");
-        return;
-    }
+  let videoUrl = null;
 
-    // Reset everything first
-    activeVideoElement.pause();
-    activeVideoElement.src = "";
-    activeVideoElement.classList.remove("active");
+  if (typeof input === "object" && input.url) {
+    videoUrl = input.url;
+    entry = input.entry ?? null;
+  } else {
+    videoUrl = input;
+  }
 
-    activeIframe.src = "";
-    activeIframe.classList.remove("active");
+  const cleanUrl = getStreamableUrl(videoUrl);
 
-    // Title
-    if (entry) {
-        const artist = entry.Artist || "";
-        const song = entry.Song || "";
-        titleEl.textContent = [artist, song].filter(Boolean).join(" — ");
-    } else {
-        titleEl.textContent = "";
-    }
+  const overlay = document.getElementById("dpModalOverlay");
+  const title   = document.getElementById("dpModalTitle");
+  const video   = document.getElementById("dpVideo");
+  const iframe  = document.getElementById("dpIframe");
 
-    let isGoogleDrive = false;
-    let finalUrl = url;
+  if (!overlay) {
+    console.error("[modal.js] Modal overlay not found");
+    return;
+  }
 
-    // Convert share URL → downloadable URL
-    if (url.includes("drive.google.com")) {
-        const match = url.match(/\/d\/(.*?)\//);
-        if (match && match[1]) {
-            const fileId = match[1];
-            finalUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-            isGoogleDrive = true;
-        }
-    }
+  // Title
+  title.textContent = entry
+    ? `${entry.Artist ?? ""} — ${entry.Song ?? ""}`
+    : "";
 
-    // Show the overlay
-    overlay.classList.remove("hidden");
+  // Reset
+  video.pause();
+  video.src = "";
+  video.classList.remove("active");
 
-    // Show correct player
-    if (isGoogleDrive) {
-        activeIframe.src = finalUrl;
-        activeIframe.classList.add("active");
-    } else {
-        activeVideoElement.src = finalUrl;
-        activeVideoElement.classList.add("active");
-        activeVideoElement.play().catch(err => console.warn("Autoplay blocked:", err));
-    }
+  iframe.src = "";
+  iframe.classList.remove("active");
 
-    // Start watch timer
-    startWatchSession();
+  /* ---------------------------------------------------------
+     DETECT WHETHER URL IS Video File or Google Drive Preview
+  ---------------------------------------------------------- */
 
-    // Store lookup for when modal closes
-    modal.dataset.lookup = entry?.Video_Lookup || null;
+  if (cleanUrl.includes("drive.google.com")) {
+    // Use IFRAME for Google Drive preview
+    iframe.src = cleanUrl;
+    iframe.classList.add("active");
+  } else {
+    // Use <video> for MP4 files
+    video.src = cleanUrl;
+    video.classList.add("active");
+    video.play().catch(e => console.warn("Autoplay blocked:", e));
+  }
+
+  overlay.classList.remove("hidden");
 };
 
 
-/********************************************************************
- *  CLOSE MODAL
- ********************************************************************/
-window.closeDpModal = async function () {
-    const overlay = document.getElementById("dpModalOverlay");
-    const modal = document.getElementById("videoModal");
-    activeVideoElement = document.getElementById("dpVideo");
-    activeIframe = document.getElementById("dpIframe");
+/* -------------------------------------------------------------
+   4. CLOSE MODAL
+------------------------------------------------------------- */
 
-    if (!overlay || !modal) return;
+window.closeDpModal = function () {
+  const overlay = document.getElementById("dpModalOverlay");
+  const video   = document.getElementById("dpVideo");
+  const iframe  = document.getElementById("dpIframe");
 
-    // Log watch
-    const lookup = modal.dataset.lookup || null;
-    if (lookup) await endWatchSession(lookup);
+  if (!overlay) return;
 
-    // Stop video
-    if (activeVideoElement) {
-        activeVideoElement.pause();
-        activeVideoElement.src = "";
-        activeVideoElement.classList.remove("active");
-    }
+  video.pause();
+  video.src = "";
+  iframe.src = "";
 
-    // Stop iframe
-    if (activeIframe) {
-        activeIframe.src = "";
-        activeIframe.classList.remove("active");
-    }
-
-    overlay.classList.add("hidden");
+  overlay.classList.add("hidden");
 };
-
-
-/********************************************************************
- *  CLICK OUTSIDE MODAL → CLOSE
- ********************************************************************/
-document.addEventListener("click", (e) => {
-    const overlay = document.getElementById("dpModalOverlay");
-    const modal = document.getElementById("videoModal");
-
-    if (!overlay || !modal) return;
-    if (overlay.classList.contains("hidden")) return;
-
-    const clickedInside = modal.contains(e.target);
-    if (!clickedInside) {
-        closeDpModal();
-    }
-});
