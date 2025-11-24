@@ -90,3 +90,82 @@
     border: none;
     display: none !important;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/************************************************************
+   NEW CODE
+*************************************************************/
+/* Overlay - hidden by default */
+.dp-modal-overlay.hidden {
+    display: none !important;
+}
+
+.dp-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Modal box *
+.dp-modal {
+    background: #111;
+    border-radius: 12px;
+    max-width: 900px;
+    width: 90%;
+    padding: 20px;
+}
+
+/* Close button *
+.dp-close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+/* Hide iframe by default */
+#modalIframe {
+    display: none;
+}
+
+/* Style video wrapper 
+.dp-video-wrapper {
+    width: 100%;
+    position: relative;
+    margin-top: 10px;
+} */
+
