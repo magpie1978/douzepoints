@@ -74,7 +74,7 @@ async function loadHeader() {
         }
 
     } else if (isMyFavoritesPage) {
-        banner.src = "/banners/my-favorites.png";
+        banner.src = "/banners/my-faves.png";
         banner.alt = "My Favorites";
     } else if (isAboutPage) {
         banner.src = "/banners/about.png";
