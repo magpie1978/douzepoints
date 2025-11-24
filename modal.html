@@ -17,27 +17,15 @@
 </div>
 -->
 
-<!-- Modal Overlay (hidden by default) -->
 <div id="dpModalOverlay" class="dp-modal-overlay hidden">
+    <div id="videoModal" class="dp-modal">
+        <button class="dp-close-btn" onclick="closeDpModal()">×</button>
+        <h2 id="dpModalTitle" class="dp-modal-title"></h2>
 
-    <!-- Modal Container -->
-    <div id="videoModal" class="dp-modal" onclick="event.stopPropagation()">
-
-        <div class="dp-modal-content">
-
-            <!-- Close Button -->
-            <button class="dp-close-btn" id="dpModalCloseBtn">×</button>
-
-            <!-- Title -->
-            <div class="dp-modal-title" id="dpModalTitle"></div>
-
-            <!-- Video Container -->
-            <div class="dp-video-wrapper">
-                <video id="modalVideo" class="dp-video" controls playsinline></video>
-                <iframe id="modalIframe" class="dp-iframe" allowfullscreen></iframe>
-            </div>
-
+        <div class="dp-video-wrapper dp-modal-content">
+            <video id="dpVideo" class="dp-video" controls></video>
+            <iframe id="dpIframe" class="dp-iframe"></iframe>
         </div>
     </div>
-
 </div>
+
