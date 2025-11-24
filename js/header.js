@@ -28,6 +28,7 @@ async function loadHeader() {
     const isFAQPage = path.includes("faq.html");
     const isPrivacyPage = path.includes("privacy.html");
     const isScoreboardPage = path.includes("scoreboard.html");
+    const isMyFavoritesPage = path.includes("my-favorites.html");
 
     if (!banner) return;
 
@@ -71,6 +72,10 @@ async function loadHeader() {
         } else {
             console.warn("⚠️ No country code found for:", country);
         }
+
+    } else if (isMyFavoritesPage) {
+        banner.src = "/banners/my-favorites.png";
+        banner.alt = "My Favorites";
     } else if (isAboutPage) {
         banner.src = "/banners/about.png";
         banner.alt = "About";
