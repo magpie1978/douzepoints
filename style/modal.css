@@ -1,0 +1,9 @@
+/* Hide modal close button unless modal is active */
+.close-button {
+    display: none !important;
+}
+
+/* When modal is visible, allow close button */
+#videoModal.active .close-button {
+    display: block !important;
+}
