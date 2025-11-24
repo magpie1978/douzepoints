@@ -476,7 +476,7 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
   });
 
   // ------------------------------------------------------------
-  // EXPORTS
+  // EXPORTS 
   // ------------------------------------------------------------
   window.renderVideos = renderVideos;
   window.scrollCarousel = scrollCarousel;
