@@ -1,163 +1,108 @@
-/* ============================================================
-   LOAD MODAL HTML BEFORE USE
-   ============================================================ */
-window.modalReady = new Promise((resolve) => {
-  document.addEventListener("DOMContentLoaded", async () => {
-    const container = document.getElementById("modal-container");
-    if (!container) {
-      console.warn("[modal.js] #modal-container missing");
-      resolve();
-      return;
-    }
+/* -------------------------------------------------------------
+   GLOBAL MODAL ELEMENTS
+------------------------------------------------------------- */
 
-    try {
-      const html = await fetch("modal.html").then(r => r.text());
-      container.innerHTML = html;
-    } catch (e) {
-      console.error("[modal.js] Failed to load modal.html", e);
-    }
+const overlay = document.getElementById("dpModalOverlay");
+const modalTitle = document.getElementById("dpModalTitle");
+const videoEl = document.getElementById("dpVideo");
+const iframeEl = document.getElementById("dpIframe");
+const closeBtn = document.getElementById("dpCloseBtn");
 
-    resolve();
-  });
-});
-
-
-/* ============================================================
-   SUPABASE INITIALIZE
-   ============================================================ */
-const supabaseClient = window.supabaseClient || null;
-
-
-
-/* ============================================================
-   WATCH SESSION TRACKING
-   ============================================================ */
 let watchSession = {
-  start: null,
-  video_lookup: null
+  video_lookup: null,
+  start_time: null,
+  user_id: null
 };
 
-async function logWatchSession(eventType) {
-  if (!supabaseClient) {
-    console.warn("[modal.js] No Supabase client");
-    return;
-  }
 
-  const { data } = await supabaseClient.auth.getUser();
-  if (!data?.user) return;
+/* -------------------------------------------------------------
+   SUPABASE CLIENT
+------------------------------------------------------------- */
+const supabase = window.supabaseClient || null;
 
-  const now = new Date();
 
-  if (eventType === "start") {
-    watchSession.start = now;
-    return;
-  }
+/* -------------------------------------------------------------
+   LOG WATCH SESSION
+------------------------------------------------------------- */
 
-  if (eventType === "end" && watchSession.start && watchSession.video_lookup) {
-    const duration = Math.max(
-      0,
-      Math.round((now - watchSession.start) / 1000)
-    );
+async function dpLogWatchSession(endTime) {
+  if (!supabase || !watchSession.video_lookup) return;
 
-    await supabaseClient.from("video_views").insert({
-      user_id: data.user.id,
-      video_lookup: watchSession.video_lookup,
-      start_time: watchSession.start.toISOString(),
-      end_time: now.toISOString(),
-      duration_seconds: duration
-    });
-  }
+  const startTime = watchSession.start_time;
+  if (!startTime) return;
 
-  watchSession.start = null;
-  watchSession.video_lookup = null;
+  const duration = Math.max(0, (endTime - startTime) / 1000);
+
+  await supabase.from("video_views").insert({
+    user_id: watchSession.user_id,
+    video_lookup: watchSession.video_lookup,
+    start_time: new Date(startTime).toISOString(),
+    end_time: new Date(endTime).toISOString(),
+    duration_seconds: duration
+  });
 }
 
 
+/* -------------------------------------------------------------
+   OPEN MODAL
+------------------------------------------------------------- */
 
-/* ============================================================
-   OPEN VIDEO MODAL
-   ============================================================ */
 window.openVideoModal = async function ({ url, entry }) {
-  await window.modalReady;
+  if (!url) return;
 
-  const overlay = document.getElementById("dpModalOverlay");
-  const modalVideo = document.getElementById("dpVideo");
-  const modalIframe = document.getElementById("dpIframe");
-  const modalTitle = document.getElementById("dpModalTitle");
+  // Reset
+  videoEl.style.display = "none";
+  iframeEl.style.display = "none";
+  videoEl.src = "";
+  iframeEl.src = "";
 
-  if (!overlay) return;
+  // Title  
+  const artist = entry?.Artist || "";
+  const song = entry?.Song || "";
+  modalTitle.textContent = artist && song ? `${artist} — ${song}` : "";
 
-  /* Reset */
-  modalVideo.pause();
-  modalVideo.src = "";
-  modalVideo.classList.remove("active");
-
-  modalIframe.src = "";
-  modalIframe.classList.remove("active");
-
-  /* Title */
-  if (entry) {
-    modalTitle.textContent =
-      `${entry.Artist || ""} — ${entry.Song || ""}`.trim();
-  } else {
-    modalTitle.textContent = "";
-  }
-
-  /* Start watch session */
+  // Watch session setup
+  const { data } = await supabase.auth.getUser();
+  watchSession.user_id = data?.user?.id || null;
   watchSession.video_lookup = entry?.Video_Lookup || null;
-  logWatchSession("start");
+  watchSession.start_time = Date.now();
 
-  /* Show modal */
-  overlay.classList.remove("hidden");
-
-  /* Handle Google Drive vs MP4 */
+  // Video type handling
   if (url.includes("drive.google.com")) {
-    const match = url.match(/\/d\/(.*?)\//);
-    if (match && match[1]) {
-      modalIframe.src =
-        `https://drive.google.com/file/d/${match[1]}/preview`;
-      modalIframe.classList.add("active");
+    const idMatch = url.match(/\/d\/(.*?)\//);
+    if (idMatch && idMatch[1]) {
+      iframeEl.src = `https://drive.google.com/file/d/${idMatch[1]}/preview`;
+      iframeEl.style.display = "block";
     }
   } else {
-    modalVideo.src = url;
-    modalVideo.classList.add("active");
-    modalVideo.play();
+    videoEl.src = url;
+    videoEl.style.display = "block";
+    videoEl.play().catch(() => {});
   }
+
+  overlay.classList.remove("hidden");
 };
 
 
+/* -------------------------------------------------------------
+   CLOSE MODAL
+------------------------------------------------------------- */
 
-/* ============================================================
-   CLOSE VIDEO MODAL
-   ============================================================ */
-window.closeVideoModal = function () {
+function closeModal() {
+  // Log session
+  dpLogWatchSession(Date.now());
 
-  const overlay = document.getElementById("dpModalOverlay");
-  const modalVideo = document.getElementById("dpVideo");
-  const modalIframe = document.getElementById("dpIframe");
-
-  /* End tracking */
-  logWatchSession("end");
-
-  /* Reset */
-  modalVideo.pause();
-  modalVideo.src = "";
-  modalVideo.classList.remove("active");
-
-  modalIframe.src = "";
-  modalIframe.classList.remove("active");
+  // Reset sources
+  videoEl.pause();
+  videoEl.src = "";
+  iframeEl.src = "";
 
   overlay.classList.add("hidden");
-};
+}
 
+closeBtn.addEventListener("click", closeModal);
 
-
-/* ============================================================
-   ATTACH CLOSE BUTTON
-   ============================================================ */
-document.addEventListener("click", (e) => {
-  if (e.target.id === "dpCloseBtn") {
-    e.stopPropagation();
-    closeVideoModal();
-  }
+// Click outside to close
+overlay.addEventListener("click", (e) => {
+  if (e.target === overlay) closeModal();
 });
