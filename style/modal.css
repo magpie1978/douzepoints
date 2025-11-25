@@ -20,8 +20,8 @@
    MODAL (TRUE 90% OF SCREEN)
 *************************************************************/
 .dp-modal {
-    width: 90vw;
-    height: 90vh;
+    width: 95vw;
+    height: 95vh;
     background: #000;
 
     display: flex;
