@@ -73,15 +73,16 @@
 /************************************************************
    VIDEO + IFRAME
 *************************************************************/
+
 .dp-video,
 .dp-iframe {
-    width: 100%;
-    height: 100%;
+    width: 90vw !important;
+    height: 90vh !important;
     display: none;
     border: none;
-    object-fit: contain;
-    background: #000;
+    object-fit: contain !important;
 }
+
 
 .dp-video.active,
 .dp-iframe.active {
@@ -116,16 +117,4 @@
 
 .dp-close-btn:hover {
     background: rgba(255,255,255,0.35);
-}
-
-
-/************************************************************
-   FORCE VIDEO TO FIT 90% OF SCREEN
-*************************************************************/
-
-.dp-video,
-.dp-iframe {
-  width: 90vw !important;
-  height: 90vh !important;
-  object-fit: contain;
 }
