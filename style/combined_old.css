@@ -249,6 +249,7 @@ body {
   color: inherit;         /* Inherit color from surrounding text */
 }
 
+/*
 .modal {
   display: none;
   position: fixed;
@@ -261,20 +262,25 @@ body {
   justify-content: center;
   align-items: center;
 }
+*/
 
 /* CHOOSE ONE VERSION OF MODAL CONTENT */
-.modal-content {
+/*.modal-content {
   position: relative;
   max-width: 100%;
   max-height: 100%;
 }
+*/
 
+/*
 .modal-content video,
 .modal-content iframe {
-  width: 90vw;  /* was 81 */
-  height: 90vh; /* was 81 */
+  width: 90vw;  
+  height: 90vh;
 }
+*/
 
+/*
 .close-button {
   position: absolute;
   color: #fff;
@@ -286,6 +292,7 @@ body {
   z-index: 9999;
   border-radius: 50%;
 }
+*/
 
 .site-footer {
   margin-top: 3rem;
