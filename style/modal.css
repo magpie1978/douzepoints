@@ -68,21 +68,19 @@
 }
 
 /************************************************************
-   VIDEO + IFRAME
+   VIDEO + IFRAME  — FULL COVERAGE
 *************************************************************/
-
 .dp-video,
 .dp-iframe {
-    width: 100%;
-    height: 100%;
-    object-fit: contain !important;
-    display: none;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;   /* FULL video; can crop edges */
+    display: none !important;
 }
-
 
 .dp-video.active,
 .dp-iframe.active {
-    display: block;
+    display: block !important;
 }
 
 /************************************************************
