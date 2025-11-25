@@ -88,24 +88,40 @@
 /************************************************************
    VIDEO WRAPPER
 *************************************************************/
-.dp-video-wrapper {
+/*.dp-video-wrapper {
     width: 100%;
     aspect-ratio: 16/9;
     position: relative;
     background: black;
+}
+ */
+.dp-video-wrapper {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 
 /************************************************************
    MEDIA ELEMENTS
 *************************************************************/
-.dp-video,
+/*.dp-video,
 .dp-iframe {
     width: 100%;
     height: 100%;
     border: none;
     display: none;
 }
+*/
+.dp-video,
+.dp-iframe {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;   /* no cropping, keep aspect ratio */
+    display: none;
+}
+
 
 .dp-video.active,
 .dp-iframe.active {
