@@ -23,12 +23,26 @@
 .dp-modal {
     background: #000;
     border-radius: 12px;
+    width: 90vw;          /* 90% of viewport width */
+    height: 90vh;         /* 90% of viewport height */
+    max-width: 90vw;
+    max-height: 90vh;
+    padding: 22px;
+    position: relative;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+/*.dp-modal {
+    background: #000;
+    border-radius: 12px;
     max-width: 950px;
     width: 90%;
     padding: 22px;
     position: relative;
     color: #fff;
-}
+} */
 
 
 /************************************************************
