@@ -1,46 +1,67 @@
-/************************************************************
-   OVERLAY — ALWAYS FULLSCREEN
-*************************************************************/
+/* ============================================================
+   FULLSCREEN MODAL FOR CURRENT dp-* STRUCTURE
+   ============================================================ */
+
+#dpModalOverlay {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.9) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 99999 !important;
+}
+
 .dp-modal-overlay.hidden {
-    display: none !important;
+  display: none !important;
 }
 
-.dp-modal-overlay {
-    position: fixed !important;
-    inset: 0 !important;
-
-    width: 100vw !important;
-    height: 100vh !important;
-
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(4px);
-
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    z-index: 999999 !important;
-}
-
-/************************************************************
-   MODAL — TRUE 90% OF VIEWPORT
-*************************************************************/
 .dp-modal {
-    width: 90vw !important;
-    height: 90vh !important;
-    max-width: 90vw !important;
-    max-height: 90vh !important;
+  width: 90vw !important;
+  height: 90vh !important;
+  max-width: none !important;
+  max-height: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
 
-    background: #000;
-    border-radius: 12px;
-    overflow: hidden;
+.dp-close-btn {
+  position: absolute !important;
+  top: 15px !important;
+  right: 20px !important;
+  font-size: 40px !important;
+  color: white !important;
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  z-index: 100000 !important;
+}
 
-    display: flex;
-    flex-direction: column;
-    position: relative;
+.dp-video-wrapper {
+  flex: 1 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.dp-video,
+.dp-iframe {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important; /* or cover */
+  display: none;
+}
+
+.dp-video.active,
+.dp-iframe.active {
+  display: block !important;
 }
 
 
