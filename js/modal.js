@@ -1,138 +1,163 @@
-/******************************************************************
-   1. Load modal.html into #modal-container
-******************************************************************/
+/* ============================================================
+   LOAD MODAL HTML BEFORE USE
+   ============================================================ */
 window.modalReady = new Promise((resolve) => {
-    document.addEventListener("DOMContentLoaded", () => {
-        const container = document.getElementById("modal-container");
+  document.addEventListener("DOMContentLoaded", async () => {
+    const container = document.getElementById("modal-container");
+    if (!container) {
+      console.warn("[modal.js] #modal-container missing");
+      resolve();
+      return;
+    }
 
-        if (!container) {
-            console.warn("[modal.js] No modal-container found.");
-            resolve();
-            return;
-        }
+    try {
+      const html = await fetch("modal.html").then(r => r.text());
+      container.innerHTML = html;
+    } catch (e) {
+      console.error("[modal.js] Failed to load modal.html", e);
+    }
 
-        fetch("modal.html")
-            .then(res => res.text())
-            .then(html => {
-                container.innerHTML = html;
-                resolve();
-            })
-            .catch(err => {
-                console.error("[modal.js] Failed to load modal.html:", err);
-                resolve();
-            });
-    });
+    resolve();
+  });
 });
 
 
-/******************************************************************
-   2. Tracking state
-******************************************************************/
-let watchStartTime = null;
-let currentVideoLookup = null;
+/* ============================================================
+   SUPABASE INITIALIZE
+   ============================================================ */
+const supabaseClient = window.supabaseClient || null;
 
 
-/******************************************************************
-   3. Logging to Supabase
-******************************************************************/
-async function logWatchSession() {
-    if (!window.supabaseClient || !currentVideoLookup || !watchStartTime) return;
 
-    const watchEnd = Date.now();
-    const duration = Math.max(0, Math.round((watchEnd - watchStartTime) / 1000));
+/* ============================================================
+   WATCH SESSION TRACKING
+   ============================================================ */
+let watchSession = {
+  start: null,
+  video_lookup: null
+};
 
-    const { data: userData } = await window.supabaseClient.auth.getUser();
-    const user = userData?.user;
-    if (!user) return;
+async function logWatchSession(eventType) {
+  if (!supabaseClient) {
+    console.warn("[modal.js] No Supabase client");
+    return;
+  }
 
-    await window.supabaseClient.from("video_views").insert({
-        user_id: user.id,
-        video_lookup: currentVideoLookup,
-        start_time: new Date(watchStartTime).toISOString(),
-        end_time: new Date(watchEnd).toISOString(),
-        duration_seconds: duration
+  const { data } = await supabaseClient.auth.getUser();
+  if (!data?.user) return;
+
+  const now = new Date();
+
+  if (eventType === "start") {
+    watchSession.start = now;
+    return;
+  }
+
+  if (eventType === "end" && watchSession.start && watchSession.video_lookup) {
+    const duration = Math.max(
+      0,
+      Math.round((now - watchSession.start) / 1000)
+    );
+
+    await supabaseClient.from("video_views").insert({
+      user_id: data.user.id,
+      video_lookup: watchSession.video_lookup,
+      start_time: watchSession.start.toISOString(),
+      end_time: now.toISOString(),
+      duration_seconds: duration
     });
+  }
+
+  watchSession.start = null;
+  watchSession.video_lookup = null;
 }
 
 
-/******************************************************************
-   4. Open modal — called by video.js
-******************************************************************/
-window.openVideoModal = async function (payload) {
-    await window.modalReady;
 
-    const overlay = document.getElementById("dpModalOverlay");
-    const title = document.getElementById("dpModalTitle");
-    const videoEl = document.getElementById("dpVideo");
-    const iframeEl = document.getElementById("dpIframe");
+/* ============================================================
+   OPEN VIDEO MODAL
+   ============================================================ */
+window.openVideoModal = async function ({ url, entry }) {
+  await window.modalReady;
 
-    overlay.classList.remove("hidden");
+  const overlay = document.getElementById("dpModalOverlay");
+  const modalVideo = document.getElementById("dpVideo");
+  const modalIframe = document.getElementById("dpIframe");
+  const modalTitle = document.getElementById("dpModalTitle");
 
-    // reset
-    videoEl.pause();
-    videoEl.src = "";
-    iframeEl.src = "";
-    videoEl.classList.remove("active");
-    iframeEl.classList.remove("active");
+  if (!overlay) return;
 
-    // extract params
-    const videoUrl = payload.url;
-    const entry = payload.entry || {};
-    currentVideoLookup = entry.Video_Lookup || null;
+  /* Reset */
+  modalVideo.pause();
+  modalVideo.src = "";
+  modalVideo.classList.remove("active");
 
-    // update UI title
-    title.textContent = `${entry.Artist || ""} — ${entry.Song || ""}`.trim();
+  modalIframe.src = "";
+  modalIframe.classList.remove("active");
 
-    /**************************************
-       Google Drive URL -> direct stream
-    **************************************/
-    if (videoUrl.includes("drive.google.com")) {
-        const match = videoUrl.match(/\/d\/(.*?)\//);
-        if (match && match[1]) {
-            const fileId = match[1];
-            iframeEl.src = `https://drive.google.com/file/d/${fileId}/preview`;
-            iframeEl.classList.add("active");
-        }
+  /* Title */
+  if (entry) {
+    modalTitle.textContent =
+      `${entry.Artist || ""} — ${entry.Song || ""}`.trim();
+  } else {
+    modalTitle.textContent = "";
+  }
+
+  /* Start watch session */
+  watchSession.video_lookup = entry?.Video_Lookup || null;
+  logWatchSession("start");
+
+  /* Show modal */
+  overlay.classList.remove("hidden");
+
+  /* Handle Google Drive vs MP4 */
+  if (url.includes("drive.google.com")) {
+    const match = url.match(/\/d\/(.*?)\//);
+    if (match && match[1]) {
+      modalIframe.src =
+        `https://drive.google.com/file/d/${match[1]}/preview`;
+      modalIframe.classList.add("active");
     }
-    else {
-        videoEl.src = videoUrl;
-        videoEl.classList.add("active");
-        videoEl.play().catch(() => {});
-    }
-
-    // start timer
-    watchStartTime = Date.now();
+  } else {
+    modalVideo.src = url;
+    modalVideo.classList.add("active");
+    modalVideo.play();
+  }
 };
 
 
-/******************************************************************
-   5. Close modal
-******************************************************************/
-window.closeVideoModal = async function () {
-    await logWatchSession();
 
-    const overlay = document.getElementById("dpModalOverlay");
-    const videoEl = document.getElementById("dpVideo");
-    const iframeEl = document.getElementById("dpIframe");
+/* ============================================================
+   CLOSE VIDEO MODAL
+   ============================================================ */
+window.closeVideoModal = function () {
 
-    // stop playback
-    videoEl.pause();
-    videoEl.src = "";
-    iframeEl.src = "";
+  const overlay = document.getElementById("dpModalOverlay");
+  const modalVideo = document.getElementById("dpVideo");
+  const modalIframe = document.getElementById("dpIframe");
 
-    overlay.classList.add("hidden");
+  /* End tracking */
+  logWatchSession("end");
+
+  /* Reset */
+  modalVideo.pause();
+  modalVideo.src = "";
+  modalVideo.classList.remove("active");
+
+  modalIframe.src = "";
+  modalIframe.classList.remove("active");
+
+  overlay.classList.add("hidden");
 };
 
 
-/******************************************************************
-   6. Close event listeners
-******************************************************************/
+
+/* ============================================================
+   ATTACH CLOSE BUTTON
+   ============================================================ */
 document.addEventListener("click", (e) => {
-    if (e.target.id === "dpCloseBtn") {
-        closeVideoModal();
-    }
-
-    if (e.target.id === "dpModalOverlay") {
-        closeVideoModal();
-    }
+  if (e.target.id === "dpCloseBtn") {
+    e.stopPropagation();
+    closeVideoModal();
+  }
 });
