@@ -271,8 +271,8 @@ body {
 
 .modal-content video,
 .modal-content iframe {
-  width: 81vw;
-  height: 81vh;
+  width: 90vw;  /* was 81 */
+  height: 90vh; /* was 81 */
 }
 
 .close-button {
