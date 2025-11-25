@@ -31,7 +31,6 @@
 .dp-modal {
     width: 90vw !important;
     height: 90vh !important;
-
     max-width: 90vw !important;
     max-height: 90vh !important;
 
@@ -42,10 +41,8 @@
     display: flex;
     flex-direction: column;
     position: relative;
-
-    margin: 0 !important;
-    padding: 0 !important;
 }
+
 
 /************************************************************
    TITLE BAR
@@ -76,11 +73,10 @@
 
 .dp-video,
 .dp-iframe {
-    width: 90vw !important;
-    height: 90vh !important;
-    display: none;
-    border: none;
+    width: 100%;
+    height: 100%;
     object-fit: contain !important;
+    display: none;
 }
 
 
