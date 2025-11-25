@@ -1,5 +1,5 @@
 /************************************************************
-   OVERLAY (hidden by default)
+   OVERLAY
 *************************************************************/
 .dp-modal-overlay.hidden {
     display: none !important;
@@ -16,51 +16,71 @@
     z-index: 9999;
 }
 
-
 /************************************************************
-   MODAL BOX
+   MODAL BOX — 90% of screen
 *************************************************************/
 .dp-modal {
     background: #000;
     border-radius: 12px;
-    width: 90vw;          /* 90% of viewport width */
-    height: 90vh;         /* 90% of viewport height */
+    width: 90vw;
+    height: 90vh;
     max-width: 90vw;
     max-height: 90vh;
-    padding: 22px;
+
+    padding: 0;                   /* remove padding for true 90% playback */
+    overflow: hidden;             /* REQUIRED for iframe & video scaling */
+
     position: relative;
-    color: #fff;
     display: flex;
     flex-direction: column;
-}
-
-/*.dp-modal {
-    background: #000;
-    border-radius: 12px;
-    max-width: 950px;
-    width: 90%;
-    padding: 22px;
-    position: relative;
     color: #fff;
-} */
-
+}
 
 /************************************************************
-   MODAL CONTENT
+   TITLE
 *************************************************************/
-.dp-modal-content {
-    width: 100%;
-    position: relative;
+.dp-modal-title {
+    text-align: center;
+    font-size: 22px;
+    padding: 12px;
+    flex: 0 0 auto;
 }
 
+/************************************************************
+   VIDEO WRAPPER (stretches fully)
+*************************************************************/
+.dp-video-wrapper {
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;     /* critical for proper scaling */
+}
+
+/************************************************************
+   MEDIA ELEMENTS
+*************************************************************/
+.dp-video,
+.dp-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: none;
+    object-fit: contain;    /* keep full video visible, NO crop */
+}
+
+.dp-video.active,
+.dp-iframe.active {
+    display: block;
+}
 
 /************************************************************
    CLOSE BUTTON
 *************************************************************/
 .dp-close-btn {
     position: absolute;
-    top: 14px;
-    right: 14px;
+    top: 12px;
+    right: 12px;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -69,63 +89,8 @@
     color: white;
     font-size: 26px;
     cursor: pointer;
+    z-index: 10000;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-
-/************************************************************
-   TITLE
-*************************************************************/
-.dp-modal-title {
-    text-align: center;
-    font-size: 20px;
-    margin-bottom: 16px;
-}
-
-
-/************************************************************
-   VIDEO WRAPPER
-*************************************************************/
-/*.dp-video-wrapper {
-    width: 100%;
-    aspect-ratio: 16/9;
-    position: relative;
-    background: black;
-}
- */
-
-.dp-video-wrapper {
-    flex: 1;
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-
-/************************************************************
-   MEDIA ELEMENTS
-*************************************************************/
-/*.dp-video,
-.dp-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    display: none;
-}
-*/
-.dp-video,
-.dp-iframe {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;   /* no cropping, keep aspect ratio */
-    display: none;
-    object-fit: cover;  /* test */
-}
-
-
-.dp-video.active,
-.dp-iframe.active {
-    display: block;
 }
