@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Eurovision Winners</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- CORE CSS -->
+    <link rel="stylesheet" href="style/combined.css" />
+    <link rel="stylesheet" href="style/modal.css" />
+
+    <!-- ICONS -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body oncontextmenu="return false">
+
+    <!-- HEADER -->
+    <div id="header-container"></div>
+
+    <!-- ⭐ MODAL CONTAINER — MUST BE OUTSIDE PAGE CONTENT ⭐ -->
+    <div id="modal-container"></div>
+
+    <!-- PAGE WRAPPER -->
+    <div class="container">
+
+        <h2 class="page-title">Eurovision Winners</h2>
+
+        <!-- SORTING DROPDOWN -->
+        <div style="margin: 20px 0;">
+            <label for="sort-options" style="margin-right: 10px;">Sort by:</label>
+            <select id="sort-options">
+                <option value="year-desc">Year (Descending)</option>
+                <option value="year-asc">Year (Ascending)</option>
+                <option value="country">Country (A–Z)</option>
+                <option value="artist">Artist (A–Z)</option>
+                <option value="song">Song (A–Z)</option>
+                <option value="total">Total Points</option>
+                <option value="jury">Jury Points</option>
+                <option value="televote">Televote Points</option>
+            </select>
+        </div>
+
+        <!-- VIDEO GRID -->
+        <div id="video-container" class="grid-container"></div>
+
+        <!-- FOOTER -->
+        <div id="footer"></div>
+
+    </div> <!-- end .container -->
+
+
+    <!-- ========================= -->
+    <!--   SCRIPT LOAD ORDER FIX   -->
+    <!-- ========================= -->
+
+    <!-- SUPABASE CLIENT -->
+    <script type="module" src="js/supabaseClient.js"></script>
+
+    <!-- HEADER + FOOTER -->
+    <script type="module" src="js/header.js"></script>
+    <script type="module" src="js/footer.js"></script>
+
+    <!-- 1) LOAD MODAL JS FIRST -->
+    <script type="module" src="js/modal.js"></script>
+
+    <!-- 2) WAIT UNTIL MODAL IS READY, THEN LOAD VIDEO.JS -->
+    <script>
+        window.modalReady.then(() => {
+            import("./js/video.js");
+        });
+    </script>
+
+    <!-- 3) SORTING + ICONS LAST -->
+    <script type="module" src="js/sorting.js"></script>
+    <script type="module" src="js/icons.js"></script>
+
+</body>
+</html>
