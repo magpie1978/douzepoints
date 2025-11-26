@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eurovision Scoreboard</title>
+
+  <link href="style/scoreboard.css" rel="stylesheet" />
+  <link href="style/footer.css" rel="stylesheet" />
+
+  <!-- Scripts -->
+  <script type="module" src="js/header.js"></script>
+  <script src="js/footer.js" defer></script>
+  <script type="module" src="js/scoreboard.js" defer></script>
+  <script src="https://unpkg.com/feather-icons" defer></script>
+</head>
+
+<body>
+  <!-- Header container -->
+  <div id="header-container"></div>
+
+  <div class="main-content">
+    <h1 id="tableHeader">Eurovision Grand Final - 2025</h1>
+
+    <div class="table-controls">
+      <label for="yearSelect">Year:</label>
+      <select id="yearSelect"></select>
+      <label for="stageSelect">Stage:</label>
+      <select id="stageSelect">
+        <option>Final</option>
+        <option>Semi Final 1</option>
+        <option>Semi Final 2</option>
+      </select>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead id="tableHead"></thead>
+        <tbody id="eurovision-table-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Video Modal -->
+  <div id="video-modal" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:#000; padding:20px; border-radius:8px; z-index:1000;">
+    <video id="modal-video" width="640" height="360" controls autoplay></video>
+  </div>
+
+  <!-- Footer -->
+  <div id="footer"></div>
+
+  <!-- Modal close logic -->
+  <script>
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('video-trigger')) {
+        const videoUrl = e.target.getAttribute('data-url');
+        if (videoUrl) {
+          const modal = document.getElementById('video-modal');
+          const video = document.getElementById('modal-video');
+          video.src = videoUrl;
+          modal.style.display = 'block';
+        }
+      } else if (!e.target.closest('#video-modal')) {
+        const modal = document.getElementById('video-modal');
+        const video = document.getElementById('modal-video');
+        video.pause();
+        modal.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
