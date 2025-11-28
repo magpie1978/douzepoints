@@ -24,7 +24,7 @@
   // ------------------------------------------------------------
   function openModalStrict(videoUrl, entry) {
     if (!videoUrl) {
-      console.error('[/v2/video.js] No Video_URL found:', entry);
+      console.error('[video.js] No Video_URL found:', entry);
       return;
     }
 
@@ -45,7 +45,7 @@
       try { window.openModal(videoUrl, entry); return; } catch (_) {}
     }
 
-    console.error('[/v2/video.js] No modal function found.');
+    console.error('[video.js] No modal function found.');
   }
 
   // ------------------------------------------------------------
@@ -89,7 +89,7 @@
     // Visuals
     const countryCode = entry.Country_Code?.toLowerCase();
     const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
-    const flagUrl = `/v2/flags/${countryCode}.png`;
+    const flagUrl = `/flags/${countryCode}.png`;
     const videoUrl = entry.Video_URL;
 
     const titleHTML = `
@@ -190,7 +190,7 @@
     const container = document.getElementById('video-container');
 
     if (!supa) {
-      console.error('[/v2/video.js] Supabase missing.');
+      console.error('[video.js] Supabase missing.');
       return;
     }
 
@@ -382,15 +382,15 @@
   document.addEventListener('DOMContentLoaded', () => {
     const path = window.location.pathname;
 
-    if (path.endsWith('/') || path.endsWith('/v2/index.html') || path.includes('/v2/index.html')) {
+    if (path.endsWith('/') || path.endsWith('/v2/index.html') || path.includes('index.html')) {
       loadHome();
-    } else if (path.includes('/v2/country.html')) {
+    } else if (path.includes('country.html')) {
       loadCountry();
-    } else if (path.includes('/v2/edition.html')) {
+    } else if (path.includes('edition.html')) {
       loadEdition();
-    } else if (path.includes('/v2/winners.html')) {
+    } else if (path.includes('winners.html')) {
       loadWinners();
-    } else if (path.includes('/v2/fan-favorites.html')) {
+    } else if (path.includes('fan-favorites.html')) {
       loadFanFavorites();
     }
   });
