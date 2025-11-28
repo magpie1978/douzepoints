@@ -35,7 +35,7 @@ body {
   object-fit: cover;
 }      
 
-.header-overlay {
+/*.header-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -46,6 +46,7 @@ body {
   justify-content: space-between;
   align-items: center;
 } 
+
 
 .home-link {
   color: #fff;
@@ -75,6 +76,7 @@ body {
 .header-links a:hover {
   color: #e50914;
 }
+*/
 
 .banner-text {
   position: absolute;
