@@ -259,22 +259,39 @@ async function loadScoreboard(selectedYear) {
     .select("*")
     .eq("Year", selectedYear);
 
-  // Semi-final logic uses SemiFinal column
-  if (stage === "Semi Final 1") query = query.eq("SemiFinal", "1");
-  if (stage === "Semi Final 2") query = query.eq("SemiFinal", "2");
+  // ------------------------------
+  //  FINAL: ONLY FINAL PARTICIPANTS
+  // ------------------------------
+  if (stage === "Final") {
+    query = query.eq("QualifiedFinal", "Y");
+  }
 
-  // "Final" uses existing Year filter only
+  // ------------------------------
+  //  SEMI FINALS
+  // ------------------------------
+  if (stage === "Semi Final 1") {
+    query = query.eq("SemiFinal", "1");
+  }
 
-  const { data, error } = await query.order("Final_Rank", { ascending: true });
+  if (stage === "Semi Final 2") {
+    query = query.eq("SemiFinal", "2");
+  }
+
+  // ------------------------------
+  //  ORDER BY TOTAL POINTS (DESC)
+  // ------------------------------
+  query = query.order("Final_TotalPoints", { ascending: false });
+
+  const { data, error } = await query;
 
   if (error) {
     console.error("Error loading scoreboard:", error);
     return;
   }
 
-  // Render table
   renderScoreboardTable(data, tableHead, tableBody);
 }
+
 
 // -------------------------------------------------------------
 //  Render Scoreboard Table
