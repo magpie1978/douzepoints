@@ -290,17 +290,19 @@ function renderScoreboardTable(entries, tableHead, tableBody) {
   // TABLE HEADERS
   // --------------------------------------------
   tableHead.innerHTML = `
-    <tr>
-      <th></th>
-      <th>Country</th>
-      <th data-key="Televote Rank">Televote Rank</th>
-      <th data-key="Televote Pts">Televote Pts</th>
-      <th data-key="Jury Rank">Jury Rank</th>
-      <th data-key="Jury Pts">Jury Pts</th>
-      <th data-key="Total Points">Total Points</th>
-      <th>Play</th>
-    </tr>
-  `;
+  <tr>
+    <th></th>
+    <th>Artist</th>
+    <th>Song</th>
+    <th>Country</th>
+    <th data-key="Televote Rank">Televote Rank</th>
+    <th data-key="Televote Pts">Televote Pts</th>
+    <th data-key="Jury Rank">Jury Rank</th>
+    <th data-key="Jury Pts">Jury Pts</th>
+    <th data-key="Total Points">Total Points</th>
+    <th>Play</th>
+  </tr>
+`;
 
   // --------------------------------------------
   // TABLE BODY
@@ -321,7 +323,17 @@ function renderScoreboardTable(entries, tableHead, tableBody) {
     `;
     row.appendChild(flagCell);
 
-    // COUNTRY NAME
+    // ARTIST
+    const artistCell = document.createElement("td");
+    artistCell.textContent = entry.Artist || "";
+    row.appendChild(artistCell);
+
+    // SONG
+    const songCell = document.createElement("td");
+    songCell.textContent = entry.Song || "";
+    row.appendChild(songCell);
+
+    // COUNTRY
     const countryCell = document.createElement("td");
     countryCell.textContent = entry.Country;
     row.appendChild(countryCell);
