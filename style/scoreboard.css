@@ -242,3 +242,16 @@ td.divider-right {
   color: #e50914 !important;
 }
 */
+
+
+.play-icon i {
+  font-size: 22px;
+  color: #e50914;
+  cursor: pointer;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.play-icon i:hover {
+  transform: scale(1.2);
+  color: #fff;
+}
