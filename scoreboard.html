@@ -48,15 +48,15 @@
     </div>
   </div>
 
-  <!-- Video Modal -->
+  <!-- Video Modal --
   <div id="video-modal" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:#000; padding:20px; border-radius:8px; z-index:1000;">
     <video id="modal-video" width="640" height="360" controls autoplay></video>
   </div>
 
-  <!-- Footer -->
+  <!-- Footer --
   <div id="footer"></div>
 
-  <!-- Modal close logic -->
+  <!-- Modal close logic --
   <script>
     document.addEventListener('click', function(e) {
       if (e.target.classList.contains('video-trigger')) {
@@ -75,5 +75,17 @@
       }
     });
   </script>
+  -->
+
+
+  <!-- MODAL -->
+<script src="js/modal.js"></script>
+<div id="modal-container"></div>
+
+<!-- VIDEO LOGIC -->
+<script type="module" src="js/video.js"></script>
+
+
+  
 </body>
 </html>
