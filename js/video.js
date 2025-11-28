@@ -115,7 +115,7 @@
 
       <div class="video-title-with-icon" style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
         <div style="display:flex;align-items:center;gap:10px;">
-          <a href="/v2/country.html?country=${encodeURIComponent(entry.Country || '')}" onclick="event.stopPropagation()">
+          <a href="country.html?country=${encodeURIComponent(entry.Country || '')}" onclick="event.stopPropagation()">
             <img class="flag-icon" src="${escapeHTML(flagUrl)}" alt="Flag" />
           </a>
           <div class="video-title-text">${titleHTML}</div>
@@ -382,7 +382,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     const path = window.location.pathname;
 
-    if (path.endsWith('/') || path.endsWith('/v2/index.html') || path.includes('index.html')) {
+    if (path.endsWith('/') || path.endsWith('index.html') || path.includes('index.html')) {
       loadHome();
     } else if (path.includes('country.html')) {
       loadCountry();
