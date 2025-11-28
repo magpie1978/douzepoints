@@ -75,7 +75,7 @@ async function loadHeader() {
         banner.src = "/banners/about.png";
         banner.alt = "About";
     } else if (isScoreboardPage) {
-        banner.src = "/banners/douzepoints.png";
+        banner.src = "/banners/scoreboard.png";
         banner.alt = "Scoreboard";        
     } else if (isContactPage) {
         banner.src = "/banners/contact.png";
