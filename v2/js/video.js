@@ -24,7 +24,7 @@
   // ------------------------------------------------------------
   function openModalStrict(videoUrl, entry) {
     if (!videoUrl) {
-      console.error('[video.js] No Video_URL found:', entry);
+      console.error('[v2/video.js] No Video_URL found:', entry);
       return;
     }
 
@@ -89,7 +89,7 @@
     // Visuals
     const countryCode = entry.Country_Code?.toLowerCase();
     const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
-    const flagUrl = `/flags/${countryCode}.png`;
+    const flagUrl = `../flags/${countryCode}.png`;
     const videoUrl = entry.Video_URL;
 
     const titleHTML = `
@@ -115,7 +115,7 @@
 
       <div class="video-title-with-icon" style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
         <div style="display:flex;align-items:center;gap:10px;">
-          <a href="country.html?country=${encodeURIComponent(entry.Country || '')}" onclick="event.stopPropagation()">
+          <a href="/v2/country.html?country=${encodeURIComponent(entry.Country || '')}" onclick="event.stopPropagation()">
             <img class="flag-icon" src="${escapeHTML(flagUrl)}" alt="Flag" />
           </a>
           <div class="video-title-text">${titleHTML}</div>
@@ -190,7 +190,7 @@
     const container = document.getElementById('video-container');
 
     if (!supa) {
-      console.error('[video.js] Supabase missing.');
+      console.error('[v2/video.js] Supabase missing.');
       return;
     }
 
@@ -382,15 +382,15 @@
   document.addEventListener('DOMContentLoaded', () => {
     const path = window.location.pathname;
 
-    if (path.endsWith('/') || path.endsWith('index.html') || path.includes('index.html')) {
+    if (path.endsWith('/') || path.endsWith('index.html') || path.includes('v2/index.html')) {
       loadHome();
-    } else if (path.includes('country.html')) {
+    } else if (path.includes('v2/country.html')) {
       loadCountry();
-    } else if (path.includes('edition.html')) {
+    } else if (path.includes('v2/edition.html')) {
       loadEdition();
-    } else if (path.includes('winners.html')) {
+    } else if (path.includes('v2/winners.html')) {
       loadWinners();
-    } else if (path.includes('fan-favorites.html')) {
+    } else if (path.includes('v2/fan-favorites.html')) {
       loadFanFavorites();
     }
   });
