@@ -1,50 +1,24 @@
-/* Base styling */
+/* Base layout */
 body {
-    font-family: 'Raleway', sans-serif;
-    background: #0f111a;
-    color: #ccc;
-    margin: 0;
+  font-family: 'Raleway', sans-serif;
+  background: #0f111a;
+  color: #ccc;
+  margin: 0;
 }
 
-.container {
-    display: flex;
-}
-
-/* BANNER (still needed, shared across pages) */
-.banner-static {
-  width: 100%;
-  height: 400px;
-  overflow: hidden;
-}
-
-.banner-static img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.banner-divider {
-  width: 100%;
-  height: 1px;
-  background-color: #e50914;
-}
-
-/* Main content */
 .main-content {
-  flex-grow: 1;
   padding: 20px;
 }
 
-/* TABLE */
-.table-wrapper {
-  max-width: 1280px;
-  margin: auto;
-  background: #181a24;
-  border-radius: 12px;
-  overflow-x: auto;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+/* Page title */
+h1#tableHeader {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  padding-left: 4px;
 }
 
+/* Table controls */
 .table-controls {
   display: flex;
   justify-content: flex-end;
@@ -66,12 +40,14 @@ body {
   border-radius: 6px;
 }
 
-h1#tableHeader {
-  text-align: left;
-  padding-left: 10px;
-  font-size: 1.6rem;
-  font-weight: 600;
-  margin-bottom: 10px;
+/* Table wrapper */
+.table-wrapper {
+  max-width: 1280px;
+  margin: auto;
+  background: #181a24;
+  border-radius: 12px;
+  overflow-x: auto;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
 }
 
 /* Table */
@@ -95,7 +71,7 @@ th {
   font-weight: 500;
 }
 
-/* Center-align numeric columns */
+/* Center numeric columns */
 .televote-rank,
 .televote-pts,
 .jury-rank,
@@ -104,7 +80,7 @@ th {
   text-align: center;
 }
 
-/* Flag styling */
+/* Country flag */
 .flag {
   width: 20px;
   height: 20px;
@@ -113,7 +89,7 @@ th {
   margin-right: 12px;
 }
 
-/* PLAY ICON — uses Lucide */
+/* PLAY ICON (global modal trigger) */
 .play-icon i {
   font-size: 22px;
   color: #e50914;
@@ -126,7 +102,7 @@ th {
   color: #ffffff;
 }
 
-/* Divider columns (if used) */
+/* Optional divider column */
 th.divider-right,
 td.divider-right {
   border-right: 1px dashed rgba(255,255,255,0.1);
