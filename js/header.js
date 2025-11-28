@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadHeader() {
     const path = window.location.pathname;
-    const headerHtml = await fetch("v2/header.html").then(res => res.text());
+    const headerHtml = await fetch("header.html").then(res => res.text());
     const headerContainer = document.getElementById("header-container");
     if (!headerContainer) {
         console.error("header-container element not found");
@@ -17,17 +17,17 @@ async function loadHeader() {
     const banner = document.getElementById("country-banner");
 
     //const isIndexPage = path.endsWith("/") || path.includes("index.html");
-    const isIndexPage = path === "/" || path.endsWith("v2/index.html");
+    const isIndexPage = path === "/" || path.endsWith("index.html");
     const country = new URLSearchParams(window.location.search).get("country");
-    const isCountryPage = path.includes("v2/country.html");
-    const isEditionPage = path.includes("v2/edition.html");
-    const isWinnersPage = path.includes("v2/winners.html");
-    const isFavouritesPage = path.includes("v2/fan-favorites.html");
-    const isAboutPage = path.includes("v2/about.html");
-    const isContactPage = path.includes("v2/contact.html");
-    const isFAQPage = path.includes("v2/faq.html");
-    const isPrivacyPage = path.includes("v2/privacy.html");
-    const isScoreboardPage = path.includes("v2/scoreboard.html");
+    const isCountryPage = path.includes("country.html");
+    const isEditionPage = path.includes("edition.html");
+    const isWinnersPage = path.includes("winners.html");
+    const isFavouritesPage = path.includes("fan-favorites.html");
+    const isAboutPage = path.includes("about.html");
+    const isContactPage = path.includes("contact.html");
+    const isFAQPage = path.includes("faq.html");
+    const isPrivacyPage = path.includes("privacy.html");
+    const isScoreboardPage = path.includes("scoreboard.html");
 
     if (!banner) return;
 
