@@ -1,86 +1,130 @@
 body {
-  font-family: 'Raleway', sans-serif;
-  background: #0f111a;
-  color: #ccc;
-  margin: 0;
+    font-family: 'Raleway', sans-serif;
+    background: #0f111a;
+    color: #ccc;
+    margin: 0;
+    }
+
+.container {
+    display: flex;
+}
+
+
+/* HEADER BANNER */
+.banner-static {
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+}
+
+.banner-static img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}   
+
+.banner-divider {
+  width: 100%;
+  height: 1px;
+  background-color: #e50914;
+  }
+
+.header-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+} 
+
+.home-link {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.header-links {
+  display: flex;
+  gap: 20px;
+}
+
+.header-links a {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.header-links a:hover {
+  color: #e50914;
+}
+
+.banner-text {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  text-align: left;
+  color: black;
+  z-index: 3;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
 }
 
 .main-content {
+  flex-grow: 1;
   padding: 20px;
 }
 
-/* Keep everything aligned to same width as table */
-.table-aligned-container {
-  max-width: 1280px;
-  margin: 0 auto;
-}
 
-/* ----------------------------------------------
-   HEADER + CONTROLS ROW (NEW)
----------------------------------------------- */
-.table-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;   /* ensures header + dropdowns sit on same line */
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-bottom: 10px;
-}
-
-/* TITLE */
-#tableHeader {
-  margin: 0;
-  padding-left: 2px;
-  font-size: 28px;
-  font-weight: 700;
-}
-
-/* ----------------------------------------------
-   DROP-DOWNS (UPDATED)
----------------------------------------------- */
-
-.table-controls {
-  display: flex;
-  flex-direction: row;
-  gap: 24px;
-}
-
-/* Label ABOVE dropdown */
-.control-block {
-  display: flex;
-  flex-direction: column;
-}
-
-.control-block label {
-  font-size: 12px;
-  margin-bottom: 4px;
-  color: #ccc;
-}
-
-/* Select styling kept from original */
-.table-controls select {
-  background: #1f212d;
-  color: #ccc;
-  border: none;
-  border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 14px;
-}
-
-/* ----------------------------------------------
-   TABLE WRAPPER
----------------------------------------------- */
-
+/* TABLE */
 .table-wrapper {
+  max-width: 1280px;
+  margin: auto;
   background: #181a24;
   border-radius: 12px;
   overflow-x: auto;
   box-shadow: 0 0 20px rgba(0,0,0,0.3);
 }
 
-/* ----------------------------------------------
-   TABLE
----------------------------------------------- */
+.table-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 20px;
+  vertical-align: middle;
+}
+
+.table-controls label {
+  font-size: 12px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.table-controls select {
+  font-size: 12px;
+  padding: 4px 8px;
+  vertical-align: middle;
+}
+
+.table-header {
+  padding: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border-bottom: 1px solid #2a2d3a;
+}
 
 table {
   width: 100%;
@@ -101,17 +145,33 @@ thead {
 
 th {
   color: #aaa;
+  font-weight: 500;
   user-select: none;
-  font-weight: 600;
 }
 
-/* sorting arrows */
-th.sort-asc::after { content: "▲"; margin-left: 6px; }
-th.sort-desc::after { content: "▼"; margin-left: 6px; }
+th.sort-asc::after,
+th.sort-desc::after {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 12px;
+  vertical-align: middle;
+}
 
-/* ----------------------------------------------
-   COUNTRY FLAG (UNCHANGED — original size)
----------------------------------------------- */
+th.sort-asc::after { content: "▲"; }
+th.sort-desc::after { content: "▼"; }
+
+th[data-key="Televote Rank"],
+th[data-key="Televote Pts"],
+th[data-key="Jury Rank"],
+th[data-key="Jury Pts"],
+th[data-key="Total Points"],
+td.televote-rank,
+td.televote-pts,
+td.jury-rank,
+td.jury-pts,
+td.total-pts {
+  text-align: center;
+}
 
 .flag {
   width: 20px;
@@ -119,37 +179,50 @@ th.sort-desc::after { content: "▼"; margin-left: 6px; }
   border-radius: 50%;
   object-fit: cover;
   margin-right: 12px;
+  vertical-align: middle;
 }
 
-/* ----------------------------------------------
-   BADGES
----------------------------------------------- */
+.country-name {
+  vertical-align: middle;
+}
 
 .badge {
   padding: 4px 10px;
   font-size: 11px;
   border-radius: 6px;
+  display: inline-block;
+  white-space: nowrap;
 }
 
+.winner  { background: #28a74530; color: #28a745; }
 .qualified { background: #007bff30; color: #339af0; }
 .dnq { background: #dc354530; color: #dc3545; }
 
-/* ----------------------------------------------
-   PLAY ICON
----------------------------------------------- */
-
-.play-icon i {
-  color: #e50914;
-  cursor: pointer;
+select {
+  background: #1f212d;
+  color: #ccc;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 14px;
 }
 
-/* ----------------------------------------------
-   RESPONSIVE
----------------------------------------------- */
+th.divider-right,
+td.divider-right {
+  border-right: 1px dashed rgba(255, 255, 255, 0.1);
+}
 
-@media (max-width: 800px) {
-  .table-header-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.play-icon {
+  text-align: center;
+}
+
+.play-icon i {
+  font-size: 16px;
+  color: #e50914;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.play-icon i:hover {
+  transform: scale(1.2);
 }

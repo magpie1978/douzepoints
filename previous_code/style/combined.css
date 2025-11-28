@@ -1,0 +1,186 @@
+/* -------------------------------------------------------------
+   GLOBAL RESET
+------------------------------------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0f1117;
+  font-family: "Inter", sans-serif;
+  color: #fff;
+}
+
+/* -------------------------------------------------------------
+   GENERAL LAYOUT
+------------------------------------------------------------- */
+.container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.red-divider {
+  width: 100%;
+  height: 2px;
+  background: #a00;
+  margin: 20px 0;
+}
+
+/* -------------------------------------------------------------
+   VIDEO GRID + CAROUSEL
+------------------------------------------------------------- */
+.video-item,
+.carousel-video-item {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #11141c;
+  cursor: pointer;
+}
+
+.video-item img.thumbnail,
+.carousel-video-item img.thumbnail {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+}
+
+/* -------------------------------------------------------------
+   FAVOURITE HEART BUTTON
+------------------------------------------------------------- */
+.favorite-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+  cursor: pointer;
+}
+
+.favorite-btn i {
+  color: #fff;
+  width: 18px;
+  height: 18px;
+}
+
+.favorite-btn.is-favorite {
+  background: #e63946;
+  border-color: #e63946;
+}
+
+/* -------------------------------------------------------------
+   SCOREBOARD STYLES (kept)
+------------------------------------------------------------- */
+.score-table {
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.score-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+}
+
+.score-pos {
+  background: #444;
+}
+
+.score-pts {
+  background: #222;
+}
+
+.dnq {
+  opacity: 0.5;
+}
+
+/* -------------------------------------------------------------
+   REMOVE ALL OLD MODAL STYLES
+------------------------------------------------------------- */
+/* ❌ Removed:
+   .modal { }
+   .modal-content { }
+   [class*="modal"] { }
+   videoModal, modalIframe, modalVideo styles
+   iframe/video width/height overrides
+------------------------------------------------------------- */
+
+/* -------------------------------------------------------------
+   FOOTER
+------------------------------------------------------------- */
+.footer {
+  padding: 30px 0;
+  text-align: center;
+  opacity: 0.5;
+  font-size: 14px;
+}
+
+/* -------------------------------------------------------------
+   SIDEBAR (kept)
+------------------------------------------------------------- */
+#sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 260px;
+  height: 100vh;
+  padding-top: 120px;
+  background: #11141c;
+  overflow-y: auto;
+}
+
+#sidebar a {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  color: #ddd;
+  text-decoration: none;
+}
+
+#sidebar a:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+/* -------------------------------------------------------------
+   FLAG ICONS (kept)
+------------------------------------------------------------- */
+.flag-icon {
+  width: 24px;
+  height: 16px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+/* -------------------------------------------------------------
+   TYPOGRAPHY
+------------------------------------------------------------- */
+.title-artist {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.title-song {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.title-country,
+.title-year {
+  font-size: 0.8rem;
+  opacity: 0.5;
+}
+

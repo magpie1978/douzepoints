@@ -1,17 +1,63 @@
-<div id="dpModalOverlay" class="dp-modal-overlay hidden">
-    <div class="dp-modal">
+<!--  
 
-        <!-- Close Button -->
-        <button class="dp-close-btn" id="dpCloseBtn">×</button>
+MODAL
+A modal is a user interface element that appears on top of the main content, typically to:
+ - Display a video
+ - Show a form
+ - Confirm an action
+ - Present focused information without navigating away
 
-        <!-- Title -->
-        <div class="dp-modal-title" id="dpModalTitle"></div>
+It usually:
+ - Blocks interaction with the rest of the page until dismissed
+ - Appears in a layer above the main content (often with a dimmed background)
 
-        <!-- Video / Iframe wrapper -->
-        <div class="dp-video-wrapper">
-            <video id="dpVideo" class="dp-video" controls playsinline></video>
-            <iframe id="dpIframe" class="dp-iframe" allow="autoplay"></iframe>
-        </div>
+SUMMARY
+This modal supports two video sources:
+ - Direct video files via <video>
+ - Embedded Google Drive or YouTube links via <iframe>
+Only one player is shown at a time based on the video URL.
 
-    </div>
+LINE ONE
+<div>: This is a container element that defines the modal.
+class="modal": Applies CSS styles that position the modal (usually centered and with a backdrop).
+id="videoModal": A unique identifier so JavaScript can find and control this modal.
+onclick="GDriveCloseModal(event)": When any part of the modal background is clicked, it runs a JavaScript function (GDriveCloseModal) to close the modal. The event is passed in to let the function know which element was clicked.
+
+LINE TWO
+A nested <div> that contains the actual content inside the modal (video/iframe/close button).
+class="modal-content": Typically styled to look like a pop-up window centered in the modal background.
+
+LINE THREE
+<span>: Displays a small inline element — here it's used for the "×" (close) icon.
+class="close-button": For styling the position/appearance of the close icon.
+onclick="GDriveCloseModal(event)": Clicking the "×" runs the GDriveCloseModal() function, which closes the modal.
+
+LINE FOUR
+<video>: An HTML5 video player.
+autoplay: Starts playing automatically when shown.
+controls: Adds play/pause buttons, timeline, etc.
+controlslist="nodownload": Tries to hide the download button (note: not foolproof).
+id="modalVideo": Allows JavaScript to control the video (e.g., set src, play, pause).
+style="display: none;": Initially hidden until a video is actually being shown.
+oncontextmenu="return false": Disables the right-click menu over the video to prevent download or copy.
+
+LINE FIVE
+<iframe>: Used to embed videos from sources like Google Drive or YouTube.
+allow="autoplay; encrypted-media": Allows video to autoplay and supports secure media playback.
+allowfullscreen: Enables full-screen playback.
+frameborder="0": Removes the border around the iframe.
+id="modalIframe": Lets JavaScript control the iframe's src and visibility.
+style="display: none;": Initially hidden. Shown only when embedding an iframe-based video.
+
+LINE SIX AND SEVEB
+Closes the .modal-content and .modal containers.
+
+-->
+
+<div class="modal" id="videoModal" onclick="GDriveCloseModal(event)">
+  <div class="modal-content">
+    <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
+    <video autoplay controls controlslist="nodownload" id="modalVideo" style="display: none;" oncontextmenu="return false"></video>
+    <iframe allow="autoplay; encrypted-media" allowfullscreen frameborder="0" id="modalIframe" style="display: none;"></iframe>
+  </div>
 </div>

@@ -1,79 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <title>Eurovision Winners</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <!-- CORE CSS -->
-    <link rel="stylesheet" href="style/combined.css" />
-    <link rel="stylesheet" href="style/modal.css" />
-
-    <!-- ICONS -->
+  <head>
+    <meta charset="utf-8"/>
+    <title>DouzePoints | Winners</title>
+    <link rel="stylesheet" type="text/css" href="/v2/style/combined.css">
+    <link rel="stylesheet" type="text/css" href="/v2/style/sidebar.css">
     <script src="https://unpkg.com/lucide@latest"></script>
-</head>
-
-<body oncontextmenu="return false">
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  
+  <body oncontextmenu="return false">
+    
     <!-- HEADER -->
     <div id="header-container"></div>
-
-    <!-- ⭐ MODAL CONTAINER — MUST BE OUTSIDE PAGE CONTENT ⭐ -->
+    <script type="module" src="/v2/js/header.js"></script>
+  
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+      <div id="sidebar-container" class="sidebar"></div>
+  
+      <div class="main-content">
+        <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
+          <div style="flex: 1;"></div>
+          <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
+            <label for="sort-options">
+              <i data-lucide="list-filter" style="margin-right: 15px;"></i>
+            </label>
+            <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
+              <option value="year-desc" selected>Year (desc)</option>
+              <option value="year-asc">Year (asc)</option>
+              <option value="artist">Artist Name</option>
+              <option value="song">Song Title</option>
+              <option value="jury">Jury Points</option>
+              <option value="televote">Televote Points</option>
+              <option value="total">Total Points</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid-container" id="video-container"></div>
+      </div>
+    </div>
+  
+  
+    <!-- MODAL -->
+    <script src="/v2/js/modal.js"></script>
     <div id="modal-container"></div>
 
-    <!-- PAGE WRAPPER -->
-    <div class="container">
-
-        <h2 class="page-title">Eurovision Winners</h2>
-
-        <!-- SORTING DROPDOWN -->
-        <div style="margin: 20px 0;">
-            <label for="sort-options" style="margin-right: 10px;">Sort by:</label>
-            <select id="sort-options">
-                <option value="year-desc">Year (Descending)</option>
-                <option value="year-asc">Year (Ascending)</option>
-                <option value="country">Country (A–Z)</option>
-                <option value="artist">Artist (A–Z)</option>
-                <option value="song">Song (A–Z)</option>
-                <option value="total">Total Points</option>
-                <option value="jury">Jury Points</option>
-                <option value="televote">Televote Points</option>
-            </select>
-        </div>
-
-        <!-- VIDEO GRID -->
-        <div id="video-container" class="grid-container"></div>
-
-        <!-- FOOTER -->
-        <div id="footer"></div>
-
-    </div> <!-- end .container -->
-
-
-    <!-- ========================= -->
-    <!--   SCRIPT LOAD ORDER FIX   -->
-    <!-- ========================= -->
-
-    <!-- SUPABASE CLIENT -->
-    <script type="module" src="js/supabaseClient.js"></script>
-
-    <!-- HEADER + FOOTER -->
-    <script type="module" src="js/header.js"></script>
-    <script type="module" src="js/footer.js"></script>
-
-    <!-- 1) LOAD MODAL JS FIRST -->
-    <script type="module" src="js/modal.js"></script>
-
-    <!-- 2) WAIT UNTIL MODAL IS READY, THEN LOAD VIDEO.JS -->
-    <script>
-        window.modalReady.then(() => {
-            import("/js/video.js");
-        });
-    </script>
-
-    <!-- 3) SORTING + ICONS LAST -->
-    <script type="module" src="js/sorting.js"></script>
-    <script type="module" src="js/icons.js"></script>
-
-</body>
+    <script type="module" src="/v2/js/video.js"></script>
+  
+    <!-- FOOTER -->
+    <div id="footer"></div>
+    <script src="/v2/js/footer.js" type="text/javascript"></script>
+    
+    <!-- SCRIPTS -->
+    <script src="/v2/js/sorting.js" type="text/javascript"></script>
+    <script src="/v2/js/icons.js" type="text/javascript"></script>
+   
+    <!-- SIDEBAR LOADER -->
+    <script type="module" src="/v2/js/sidebar.js"></script>
+    
+  </body>
 </html>

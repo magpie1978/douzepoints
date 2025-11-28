@@ -24,7 +24,7 @@
   // ------------------------------------------------------------
   function openModalStrict(videoUrl, entry) {
     if (!videoUrl) {
-      console.error('[video.js] No Video_URL found:', entry);
+      console.error('[/v2/video.js] No Video_URL found:', entry);
       return;
     }
 
@@ -45,13 +45,13 @@
       try { window.openModal(videoUrl, entry); return; } catch (_) {}
     }
 
-    console.error('[video.js] No modal function found.');
+    console.error('[/v2/video.js] No modal function found.');
   }
 
   // ------------------------------------------------------------
   // RENDER ONE CARD (grid or carousel)
   // ------------------------------------------------------------
-  function renderEntry(entry, variant = 'grid') {
+  function renderEntry(entry, variant) {
     const wrapper = document.createElement('div');
     wrapper.className = (variant === 'carousel') ? 'carousel-video-item' : 'video-item';
     wrapper.setAttribute('role', 'button');
@@ -72,7 +72,7 @@
       String(entry.QualifiedFinal || '').toUpperCase() === 'N'
     );
 
-    // Sorting data attributes (used only on grid pages, but harmless on carousels)
+    // Sorting data attributes (used only on grid pages)
     wrapper.dataset.total        = String(totalPoints);
     wrapper.dataset.jury         = String(juryPoints);
     wrapper.dataset.televote     = String(televotePoints);
@@ -89,13 +89,13 @@
     // Visuals
     const countryCode = entry.Country_Code?.toLowerCase();
     const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
-    const flagUrl = `/flags/${countryCode}.png`;
+    const flagUrl = `/v2/flags/${countryCode}.png`;
     const videoUrl = entry.Video_URL;
 
     const titleHTML = `
       <div class="title-line">
         <div class="title-artist">${escapeHTML(entry.Artist || '')}</div>
-        <div class="title-song">${escapeHTML(entry.Song || '')}</div>
+        <div class="title-song">— ${escapeHTML(entry.Song || '')}</div>
       </div>
       <div class="title-meta">
         <span class="title-country">${escapeHTML(entry.Country || '')}</span>
@@ -115,27 +115,21 @@
 
       <div class="video-title-with-icon" style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
         <div style="display:flex;align-items:center;gap:10px;">
-          <a href="country.html?country=${encodeURIComponent(entry.Country || '')}" onclick="event.stopPropagation()">
+          <a href="/v2/country.html?country=${encodeURIComponent(entry.Country || '')}" onclick="event.stopPropagation()">
             <img class="flag-icon" src="${escapeHTML(flagUrl)}" alt="Flag" />
           </a>
           <div class="video-title-text">${titleHTML}</div>
         </div>
 
-        ${
-          variant === 'carousel'
-            ? '' // ⛔ no Pos/Pts or circles in carousels
-            : `
-              <div class="score-wrapper">
-                <table class="score-table">
-                  <tr><th>Pos</th><th>Pts</th></tr>
-                  <tr>
-                    <td><div class="${rankClass}">${escapeHTML(String(rankDisplay))}</div></td>
-                    <td><div class="${pointsClass}">${escapeHTML(String(pointsDisplay))}</div></td>
-                  </tr>
-                </table>
-              </div>
-            `
-        }
+        <div class="score-wrapper">
+          <table class="score-table">
+            <tr><th>Pos</th><th>Pts</th></tr>
+            <tr>
+              <td><div class="${rankClass}">${escapeHTML(String(rankDisplay))}</div></td>
+              <td><div class="${pointsClass}">${escapeHTML(String(pointsDisplay))}</div></td>
+            </tr>
+          </table>
+        </div>
       </div>
     `;
 
@@ -161,7 +155,7 @@
   }
 
   // ------------------------------------------------------------
-  // RENDERING (GRID PAGES)
+  // RENDERING (GRID)
   // ------------------------------------------------------------
   function renderVideos(entries) {
     const container = document.getElementById('video-container');
@@ -196,7 +190,7 @@
     const container = document.getElementById('video-container');
 
     if (!supa) {
-      console.error('[video.js] Supabase missing.');
+      console.error('[/v2/video.js] Supabase missing.');
       return;
     }
 
@@ -275,14 +269,14 @@
     );
   }
 
-  // Fan-favorites.html  (FanFave = 'Y')
+  // Fan-favorites.html  (***corrected to FanFave***)
   function loadFanFavorites() {
     return fetchAndRender(
       (supa) =>
         supa
           .from('douzepoints')
           .select('*')
-          .eq('FanFave', 'Y')
+          .eq('FanFave', 'Y')   // <--- FIXED
           .order('Year', { ascending: false }),
       'Error loading fan favourites',
       'No fan favourites found.'
@@ -344,12 +338,12 @@
         );
       }
 
-      // Fan Favourites
+      // Fan Favourites (***corrected column***)
       if (track3) {
         tasks.push(
           supa.from('douzepoints')
             .select('*')
-            .eq('FanFave', 'Y')
+            .eq('FanFave', 'Y')   // <--- FIXED HERE TOO
             .order('Year', { ascending: false })
             .then(({ data, error }) => {
               if (!error) renderIntoCarousel('carouselTrack3', data || []);
@@ -388,19 +382,20 @@
   document.addEventListener('DOMContentLoaded', () => {
     const path = window.location.pathname;
 
-    if (path.endsWith('/') || path.endsWith('index.html') || path.includes('index.html')) {
+    if (path.endsWith('/') || path.endsWith('/v2/index.html') || path.includes('/v2/index.html')) {
       loadHome();
-    } else if (path.includes('country.html')) {
+    } else if (path.includes('/v2/country.html')) {
       loadCountry();
-    } else if (path.includes('edition.html')) {
+    } else if (path.includes('/v2/edition.html')) {
       loadEdition();
-    } else if (path.includes('winners.html')) {
+    } else if (path.includes('/v2/winners.html')) {
       loadWinners();
-    } else if (path.includes('fan-favorites.html')) {
+    } else if (path.includes('/v2/fan-favorites.html')) {
       loadFanFavorites();
     }
   });
 
   // Expose manual renderer
   window.renderVideos = renderVideos;
+
 })();
