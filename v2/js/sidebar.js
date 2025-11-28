@@ -4,13 +4,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   const path = window.location.pathname;
 
   if (
-    path.includes("country.html") ||
-    path.includes("winners.html") ||
-    path.includes("fan-favorites.html")   // load countries sidebar if page is country.html, winners.html or fan-favorites.html
+    path.includes("v2/country.html") ||
+    path.includes("v2/winners.html") ||
+    path.includes("v2/fan-favorites.html")   // load countries sidebar if page is country.html, winners.html or fan-favorites.html
   ) {
     await loadSidebarCountries();
   } else if (
-    path.includes("edition.html")   // load edition sidebar if page is edition.html
+    path.includes("v2/edition.html")   // load edition sidebar if page is edition.html
   ) {
     await loadSidebarYears();
   }
@@ -33,10 +33,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       div.className = "sidebar-row";
 
       const a = document.createElement("a");
-      a.href = `country.html?country=${encodeURIComponent(country)}`;
+      a.href = `v2/country.html?country=${encodeURIComponent(country)}`;
 
       const img = document.createElement("img");
-      img.src = `flags/${countryCode}.png`;
+      img.src = `../flags/${countryCode}.png`;
       img.alt = country;
       img.className = "flag-icon";
 
@@ -66,13 +66,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       div.className = "sidebar-row";
 
       const a = document.createElement("a");
-      a.href = `edition.html?edition=${year}`;
+      a.href = `v2/edition.html?edition=${year}`;
       a.style.display = 'flex';
       a.style.alignItems = 'center';
       a.style.gap = '10px';
 
       const img = document.createElement("img");
-      img.src = `/flags/${hostCountryCode}.png`;
+      img.src = `../flags/${hostCountryCode}.png`;
       img.alt = hostCountryCode.toUpperCase();
       img.className = "flag-icon";
 
