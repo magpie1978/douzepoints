@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient.js';
+/* import { supabase } from './supabaseClient.js';
 
 // --- Global State ---
 let allRawData = [];
@@ -188,3 +188,203 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 });
+
+*/
+
+
+
+
+
+import { supabase } from "./supabaseClient.js";
+
+// -------------------------------------------------------------
+//  Dropdown Loading (Year + Stage)
+// -------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  loadYears();
+  loadStageListener();
+});
+
+// Load all years available in the database
+async function loadYears() {
+  const yearSelect = document.getElementById("yearSelect");
+
+  const { data, error } = await supabase
+    .from("douzepoints")
+    .select("Year")
+    .order("Year", { ascending: false });
+
+  if (error) {
+    console.error("Error loading years", error);
+    return;
+  }
+
+  const uniqueYears = [...new Set(data.map(x => x.Year))];
+
+  yearSelect.innerHTML = uniqueYears
+    .map(yr => `<option value="${yr}">${yr}</option>`)
+    .join("");
+
+  // Load initial year immediately
+  loadScoreboard(uniqueYears[0]);
+}
+
+// Attach listeners for Year + Stage changes
+function loadStageListener() {
+  const yearSelect = document.getElementById("yearSelect");
+  const stageSelect = document.getElementById("stageSelect");
+
+  yearSelect.addEventListener("change", () => {
+    loadScoreboard(yearSelect.value);
+  });
+
+  stageSelect.addEventListener("change", () => {
+    loadScoreboard(yearSelect.value);
+  });
+}
+
+// -------------------------------------------------------------
+//  Load Scoreboard (based on Year + Stage)
+// -------------------------------------------------------------
+async function loadScoreboard(selectedYear) {
+  const stage = document.getElementById("stageSelect").value;
+  const tableHeader = document.getElementById("tableHeader");
+  const tableHead = document.getElementById("tableHead");
+  const tableBody = document.getElementById("eurovision-table-body");
+
+  tableHeader.textContent = `Eurovision ${selectedYear} — ${stage}`;
+
+  let query = supabase
+    .from("douzepoints")
+    .select("*")
+    .eq("Year", selectedYear);
+
+  // Semi-final logic uses SemiFinal column
+  if (stage === "Semi Final 1") query = query.eq("SemiFinal", "1");
+  if (stage === "Semi Final 2") query = query.eq("SemiFinal", "2");
+
+  // "Final" uses existing Year filter only
+
+  const { data, error } = await query.order("Final_Rank", { ascending: true });
+
+  if (error) {
+    console.error("Error loading scoreboard:", error);
+    return;
+  }
+
+  // Render table
+  renderScoreboardTable(data, tableHead, tableBody);
+}
+
+// -------------------------------------------------------------
+//  Render Scoreboard Table
+// -------------------------------------------------------------
+function renderScoreboardTable(entries, tableHead, tableBody) {
+  if (!entries || entries.length === 0) {
+    tableHead.innerHTML = "";
+    tableBody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:20px;">No results</td></tr>`;
+    return;
+  }
+
+  // --------------------------------------------
+  // TABLE HEADERS
+  // --------------------------------------------
+  tableHead.innerHTML = `
+    <tr>
+      <th></th>
+      <th>Country</th>
+      <th data-key="Televote Rank">Televote Rank</th>
+      <th data-key="Televote Pts">Televote Pts</th>
+      <th data-key="Jury Rank">Jury Rank</th>
+      <th data-key="Jury Pts">Jury Pts</th>
+      <th data-key="Total Points">Total Points</th>
+      <th>Play</th>
+    </tr>
+  `;
+
+  // --------------------------------------------
+  // TABLE BODY
+  // --------------------------------------------
+  tableBody.innerHTML = "";
+
+  entries.forEach(entry => {
+    const row = document.createElement("tr");
+
+    const flag = entry.Country_Code?.toLowerCase() || "xx";
+    const sf = entry.SemiFinal;
+    const finalist = entry.QualifiedFinal === "Y";
+
+    // FLAG CELL
+    const flagCell = document.createElement("td");
+    flagCell.innerHTML = `
+      <img src="flags/${flag}.png" class="flag" alt="${entry.Country}" />
+    `;
+    row.appendChild(flagCell);
+
+    // COUNTRY NAME
+    const countryCell = document.createElement("td");
+    countryCell.textContent = entry.Country;
+    row.appendChild(countryCell);
+
+    // TELEVOTE RANK
+    const tvRank = document.createElement("td");
+    tvRank.classList.add("televote-rank");
+    tvRank.textContent = entry.Final_TelevoteRank || "";
+    row.appendChild(tvRank);
+
+    // TELEVOTE PTS
+    const tvPts = document.createElement("td");
+    tvPts.classList.add("televote-pts");
+    tvPts.textContent = entry.Final_TelevotePoints || "";
+    row.appendChild(tvPts);
+
+    // JURY RANK
+    const juryRank = document.createElement("td");
+    juryRank.classList.add("jury-rank");
+    juryRank.textContent = entry.Final_JuryRank || "";
+    row.appendChild(juryRank);
+
+    // JURY POINTS
+    const juryPts = document.createElement("td");
+    juryPts.classList.add("jury-pts");
+    juryPts.textContent = entry.Final_JuryPoints || "";
+    row.appendChild(juryPts);
+
+    // TOTAL POINTS
+    const totalPts = document.createElement("td");
+    totalPts.classList.add("total-pts");
+    totalPts.textContent = entry.Final_TotalPoints || "";
+    row.appendChild(totalPts);
+
+    // PLAY ICON (NEW — unified modal trigger)
+    const playCell = document.createElement("td");
+    playCell.classList.add("play-icon");
+    playCell.innerHTML = `
+      <i data-lucide="play-circle" class="play-trigger" data-url="${entry.Video_URL}"></i>
+    `;
+    row.appendChild(playCell);
+
+    tableBody.appendChild(row);
+  });
+
+  // Refresh Lucide icons
+  if (window.lucide) window.lucide.createIcons();
+}
+
+// -------------------------------------------------------------
+//  PLAY ICON CLICK HANDLER — unified with video.js
+// -------------------------------------------------------------
+document.addEventListener("click", (e) => {
+  const icon = e.target.closest(".play-trigger");
+  if (!icon) return;
+
+  const videoUrl = icon.getAttribute("data-url");
+  if (!videoUrl) return;
+
+  if (typeof window.openVideoModal === "function") {
+    window.openVideoModal(videoUrl);
+  } else {
+    console.error("openVideoModal() not found. Check modal.js and video.js");
+  }
+});
+
