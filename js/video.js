@@ -72,7 +72,7 @@
       String(entry.QualifiedFinal || '').toUpperCase() === 'N'
     );
 
-    // Sorting data attributes (used only on grid pages)
+    // Sorting data attributes (grid only)
     wrapper.dataset.total        = String(totalPoints);
     wrapper.dataset.jury         = String(juryPoints);
     wrapper.dataset.televote     = String(televotePoints);
@@ -103,10 +103,30 @@
       </div>
     `;
 
+    // Ranking visuals
     const rankDisplay   = dnq ? 'NQ' : totalRank;
     const pointsDisplay = dnq ? 'NQ' : totalPoints;
     const rankClass     = dnq ? 'score-circle dnq score-pos' : 'score-circle score-pos';
     const pointsClass   = dnq ? 'score-circle dnq score-pts' : 'score-circle score-pts';
+
+    // ------------------------------------------------------------
+    // NEW: Remove the score-wrapper on index.html only
+    // ------------------------------------------------------------
+    const isIndexPage =
+      window.location.pathname.endsWith('/') ||
+      window.location.pathname.endsWith('index.html');
+
+    const scoreHTML = isIndexPage ? '' : `
+      <div class="score-wrapper">
+        <table class="score-table">
+          <tr><th>Pos</th><th>Pts</th></tr>
+          <tr>
+            <td><div class="${rankClass}">${escapeHTML(String(rankDisplay))}</div></td>
+            <td><div class="${pointsClass}">${escapeHTML(String(pointsDisplay))}</div></td>
+          </tr>
+        </table>
+      </div>
+    `;
 
     wrapper.innerHTML = `
       <div class="preview-container" data-video-url="${escapeHTML(videoUrl || '')}">
@@ -121,15 +141,7 @@
           <div class="video-title-text">${titleHTML}</div>
         </div>
 
-        <div class="score-wrapper">
-          <table class="score-table">
-            <tr><th>Pos</th><th>Pts</th></tr>
-            <tr>
-              <td><div class="${rankClass}">${escapeHTML(String(rankDisplay))}</div></td>
-              <td><div class="${pointsClass}">${escapeHTML(String(pointsDisplay))}</div></td>
-            </tr>
-          </table>
-        </div>
+        ${scoreHTML}
       </div>
     `;
 
@@ -212,7 +224,6 @@
   // PAGE LOADERS
   // ------------------------------------------------------------
 
-  // Country.html
   function loadCountry() {
     const country = getQueryParam('country');
     const container = document.getElementById('video-container');
@@ -235,7 +246,6 @@
     );
   }
 
-  // Edition.html
   function loadEdition() {
     const edition = getQueryParam('edition');
     const container = document.getElementById('video-container');
@@ -256,7 +266,6 @@
     );
   }
 
-  // Winners.html
   function loadWinners() {
     return fetchAndRender(
       (supa) => supa
@@ -269,14 +278,13 @@
     );
   }
 
-  // Fan-favorites.html  (***corrected to FanFave***)
   function loadFanFavorites() {
     return fetchAndRender(
       (supa) =>
         supa
           .from('douzepoints')
           .select('*')
-          .eq('FanFave', 'Y')   // <--- FIXED
+          .eq('FanFave', 'Y')
           .order('Year', { ascending: false }),
       'Error loading fan favourites',
       'No fan favourites found.'
@@ -290,15 +298,14 @@
     const supa = window.supabaseClient;
     if (!supa) return;
 
-    const track1 = document.getElementById('carouselTrack1'); // Winners
-    const track2 = document.getElementById('carouselTrack2'); // 2024 Malmö
-    const track3 = document.getElementById('carouselTrack3'); // Fan Favourites
-    const track4 = document.getElementById('carouselTrack4'); // 2025 Basel
+    const track1 = document.getElementById('carouselTrack1'); 
+    const track2 = document.getElementById('carouselTrack2');
+    const track3 = document.getElementById('carouselTrack3');
+    const track4 = document.getElementById('carouselTrack4');
 
     try {
       const tasks = [];
 
-      // Winners carousel
       if (track1) {
         tasks.push(
           supa.from('douzepoints')
@@ -312,7 +319,6 @@
         );
       }
 
-      // Basel 2025
       if (track4) {
         tasks.push(
           supa.from('douzepoints')
@@ -325,7 +331,6 @@
         );
       }
 
-      // Malmö 2024
       if (track2) {
         tasks.push(
           supa.from('douzepoints')
@@ -338,12 +343,11 @@
         );
       }
 
-      // Fan Favourites (***corrected column***)
       if (track3) {
         tasks.push(
           supa.from('douzepoints')
             .select('*')
-            .eq('FanFave', 'Y')   // <--- FIXED HERE TOO
+            .eq('FanFave', 'Y')
             .order('Year', { ascending: false })
             .then(({ data, error }) => {
               if (!error) renderIntoCarousel('carouselTrack3', data || []);
@@ -395,7 +399,6 @@
     }
   });
 
-  // Expose manual renderer
   window.renderVideos = renderVideos;
 
 })();
