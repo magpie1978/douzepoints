@@ -247,7 +247,8 @@ function loadStageListener() {
 //  Load Scoreboard (based on Year + Stage)
 // -------------------------------------------------------------
 async function loadScoreboard(selectedYear) {
-  const stage = document.getElementById("stageSelect").value;
+  const stageSelect = document.getElementById("stageSelect");
+  const stage = stageSelect.value;  // "Final" by default
   const tableHeader = document.getElementById("tableHeader");
   const tableHead = document.getElementById("tableHead");
   const tableBody = document.getElementById("eurovision-table-body");
@@ -259,27 +260,30 @@ async function loadScoreboard(selectedYear) {
     .select("*")
     .eq("Year", selectedYear);
 
-  // ------------------------------
-  //  FINAL: ONLY FINAL PARTICIPANTS
-  // ------------------------------
+  // --------------------------------------------
+  //  FINAL → Show ONLY songs that reached the final
+  // --------------------------------------------
   if (stage === "Final") {
     query = query.eq("QualifiedFinal", "Y");
   }
 
-  // ------------------------------
-  //  SEMI FINALS
-  // ------------------------------
+  // --------------------------------------------
+  //  SEMI FINAL 1 → Show ONLY Semi 1 participants
+  // --------------------------------------------
   if (stage === "Semi Final 1") {
     query = query.eq("SemiFinal", "1");
   }
 
+  // --------------------------------------------
+  //  SEMI FINAL 2 → Show ONLY Semi 2 participants
+  // --------------------------------------------
   if (stage === "Semi Final 2") {
     query = query.eq("SemiFinal", "2");
   }
 
-  // ------------------------------
-  //  ORDER BY TOTAL POINTS (DESC)
-  // ------------------------------
+  // --------------------------------------------
+  //  ALWAYS order by Total Points (Final_TotalPoints) DESC
+  // --------------------------------------------
   query = query.order("Final_TotalPoints", { ascending: false });
 
   const { data, error } = await query;
