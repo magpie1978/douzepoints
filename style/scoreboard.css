@@ -226,3 +226,16 @@ td.divider-right {
 .play-icon i:hover {
   transform: scale(1.2);
 }
+
+/* Match header link style to index.html */
+.header-links a {
+  font-size: 0.9rem !important;
+  font-weight: normal !important;
+  letter-spacing: 0.3px !important;
+  text-decoration: none !important;
+  color: #fff !important;
+}
+
+.header-links a:hover {
+  color: #e50914 !important;
+}
