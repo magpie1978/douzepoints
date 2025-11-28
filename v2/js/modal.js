@@ -43,7 +43,7 @@ window.openVideoModal = function (arg1, arg2) {
     const artist = entry.Artist || '';
     const song   = entry.Song   || '';
     // titleText = [artist, song].filter(Boolean).join(' — ');   remove dash from video titles
-    titleText = [artist, song].filter(Boolean).join('');
+    titleText = [artist, song].filter(Boolean).join(' ');
   }
 
   if (!videoUrl) {
