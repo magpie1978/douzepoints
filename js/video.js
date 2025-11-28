@@ -95,7 +95,7 @@
     const titleHTML = `
       <div class="title-line">
         <div class="title-artist">${escapeHTML(entry.Artist || '')}</div>
-        <div class="title-song">— ${escapeHTML(entry.Song || '')}</div>
+        <div class="title-song">${escapeHTML(entry.Song || '')}</div>
       </div>
       <div class="title-meta">
         <span class="title-country">${escapeHTML(entry.Country || '')}</span>
