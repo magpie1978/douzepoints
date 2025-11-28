@@ -47,7 +47,7 @@ window.openVideoModal = function (arg1, arg2) {
   }
 
   if (!videoUrl) {
-    console.error('[modal.js] openVideoModal called without a video URL');
+    console.error('[v2/modal.js] openVideoModal called without a video URL');
     return;
   }
 
@@ -94,7 +94,7 @@ window.hidePreview = function(container) {
 document.addEventListener('DOMContentLoaded', () => {             // Wait for the DOM to be ready — This ensures the code inside doesn’t run until the entire HTML document has been fully loaded and parsed. It's important because we want to be sure that the #modal-container element exists in the DOM before trying to access it.
 const container = document.getElementById('modal-container');     // Get the target element — This finds the element in your HTML with id="modal-container" and stores it in a variable called container.
   if (container) {                                                // Check if the container exists — This prevents errors. If the element was found (i.e., it’s not null), the code inside the if block runs.
-    fetch('modal.html')                                           // Fetch modal.html — This sends a request to load the contents of modal.html (a separate HTML file containing your modal markup).
+    fetch('v2/modal.html')                                           // Fetch modal.html — This sends a request to load the contents of modal.html (a separate HTML file containing your modal markup).
       .then(response => response.text())                          // Convert the response to text — Once the file is fetched, this line converts the HTTP response (a stream of data) into plain text, which is what we want for HTML injection.
       .then(html => {                                             // Insert the HTML — This line takes the resulting HTML content and sets it as the innerHTML of the #modal-container element — effectively injecting the modal markup into your page.
         container.innerHTML = html;
