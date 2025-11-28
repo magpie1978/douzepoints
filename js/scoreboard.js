@@ -208,6 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Load all years available in the database
 async function loadYears() {
   const yearSelect = document.getElementById("yearSelect");
+  const stageSelect = document.getElementById("stageSelect");
 
   const { data, error } = await supabase
     .from("douzepoints")
@@ -221,13 +222,18 @@ async function loadYears() {
 
   const uniqueYears = [...new Set(data.map(x => x.Year))];
 
+  // Populate the dropdown
   yearSelect.innerHTML = uniqueYears
     .map(yr => `<option value="${yr}">${yr}</option>`)
     .join("");
 
-  // Load initial year immediately
+  // 🔥 IMPORTANT: force Stage dropdown to “Final”
+  stageSelect.value = "Final";
+
+  // 🔥 Now safely load the default scoreboard
   loadScoreboard(uniqueYears[0]);
 }
+
 
 // Attach listeners for Year + Stage changes
 function loadStageListener() {
