@@ -93,7 +93,7 @@ async function loadHeader() {
         banner.src = "/banners/my-faves.png";
         banner.alt = "My Favorites";
     } else if (isMyStatsPage) {
-        banner.src = "/banners/my-stats.png";
+        banner.src = "/banners/watchstats.png";
         banner.alt = "My Stats";
     }
 }
