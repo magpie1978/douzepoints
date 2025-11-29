@@ -1,92 +1,278 @@
+/* -------------------------------------------------------------
+   GENERAL PAGE STYLING
+------------------------------------------------------------- */
 body {
-  background-color: #0f111a;
-  color: #ccc;
-  font-family: 'Raleway', sans-serif;
-  margin: 0;
-  padding: 20px;
+    margin: 0;
+    font-family: Raleway, sans-serif;
+    background: url("../banners/blank.png") center/cover no-repeat fixed;  
+    color: #fff;
+    overflow-x: hidden;
 }
 
-.top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #1c1f2a;
-  padding: 20px;
-  border-bottom: 2px solid #e50914;
+/* Container just for positioning the floating login pill */
+.banner {
+    position: relative;
+    width: 100%;
+    height: 140px;
 }
 
-.top-bar h1 {
-  margin: 0;
-  font-size: 24px;
-  color: #fff;
+/* -------------------------------------------------------------
+   FLOATING LOGIN PILL (top-right)
+------------------------------------------------------------- */
+.login-box {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 20;
+    padding: 10px 14px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
-.add-button {
-  background-color: #e50914;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 16px;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 14px;
+/* Horizontal row (Email | Password | Log In) */
+.login-strip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.add-button:hover {
-  background-color: #b00610;
+.login-strip input {
+    width: 160px;
+    padding: 6px 10px;
+    font-size: 13px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.35);
+    background: rgba(0,0,0,0.45);
+    color: #fff;
 }
 
-#filter-container {
-  margin: 20px 0;
+.login-strip input::placeholder {
+    color: rgba(255,255,255,0.7);
 }
 
-#filter-container label {
-  font-size: 16px;
-  margin-right: 10px;
+.login-strip .login-btn {
+    padding: 7px 14px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: none;
+    background: #e50914;
+    color: #fff;
+    cursor: pointer;
+    white-space: nowrap;
 }
 
-#yearFilter {
-  padding: 8px;
-  background: #2a2d3d;
-  color: #eee;
-  border: none;
-  border-radius: 4px;
+.login-strip .login-btn:hover {
+    background: #f6121d;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #1c1f2a;
+/* Inline login error message */
+#login-error {
+    color: #e50914;
+    font-size: 13px;
+    margin: 6px 0 0 2px;
+    min-height: 18px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
-th, td {
-  padding: 10px;
-  border: 1px solid #444;
-  text-align: left;
-  color: #ddd;
+/* Shake animation for “Invalid login credentials” */
+@keyframes shake {
+    0%   { transform: translateX(0); }
+    20%  { transform: translateX(-6px); }
+    40%  { transform: translateX(6px); }
+    60%  { transform: translateX(-4px); }
+    80%  { transform: translateX(4px); }
+    100% { transform: translateX(0); }
 }
 
-th {
-  background-color: #2a2d3d;
-  font-weight: bold;
+.shake-error {
+    animation: shake 0.35s ease;
 }
 
-button {
-  background-color: #e50914;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
+/* -------------------------------------------------------------
+   PAGE HEADERS (Douze Points + subtitle)
+------------------------------------------------------------- */
+.big-title {
+    font-size: 78px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    position: relative;
+    margin-top: 2px;
+    margin-left: 80px;
+    color: rgba(255,255,255,0.92);
+    text-shadow: 0 4px 20px rgba(0,0,0,0.45);
+    z-index: 5;
 }
 
-button:hover {
-  background-color: #b00610;
+.big-subtitle {
+    font-size: 38px;
+    font-weight: 500;
+    margin-left: 80px;
+    margin-top: 10px;
+    color: rgba(255,255,255,0.85);
+    text-shadow: 0 3px 14px rgba(0,0,0,0.45);
+    position: relative;
+    z-index: 5;
 }
 
-.message-area {
-  margin-bottom: 15px;
-  font-weight: bold;
-  font-size: 14px;
-  color: lightgreen;
+/* -------------------------------------------------------------
+   PLAN CARDS SECTION
+------------------------------------------------------------- */
+.plans-section {
+    padding: 60px 0;
+    margin-top: 80px;
+    text-align: center;
+}
+
+.plans-title {
+    font-size: 32px;
+    margin-bottom: 40px;
+    font-weight: 700;
+}
+
+.plans-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    padding: 0 20px;
+}
+
+.plan-card {
+    width: 300px;
+    background: #141414;
+    border-radius: 16px;
+    padding: 28px;
+    border: 1px solid rgba(255,255,255,0.15);
+    transition: transform 0.2s ease;
+}
+
+.plan-card:hover {
+    transform: translateY(-6px);
+    border-color: #e50914;
+}
+
+.plan-title {
+    font-size: 22px;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.plan-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 22px 0;
+}
+
+.plan-list li {
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+/* Price text red */
+.plan-price {
+    color: #e50914;
+    font-size: 0.9em;
+    font-weight: 700;
+}
+
+/* “Sign Up” buttons */
+.signup-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: #e50914;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.signup-btn:hover {
+    background: #f6121d;
+}
+
+/* -------------------------------------------------------------
+   SIGN-UP GLASS MODAL
+------------------------------------------------------------- */
+#signup-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(4px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+#signup-modal {
+    width: 360px;
+    background: rgba(255,255,255,0.08);
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.15);
+}
+
+#signup-modal h3 {
+    margin-top: 0;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#signup-modal input {
+    width: 100%;
+    box-sizing: border-box;           /* Makes width exactly match buttons */
+    margin-bottom: 12px;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(0,0,0,0.4);
+    color: #fff;
+    font-size: 15px;
+}
+
+
+/* Modal buttons */
+#signup-modal .modal-btn {
+    width: 100%;
+    padding: 10px 0;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+#signup-modal .modal-btn.primary {
+    background: #e50914;
+    color: #fff;
+}
+
+#signup-modal .modal-btn.primary:hover {
+    background: #f6121d;
+}
+
+#signup-modal .modal-btn.secondary {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.25);
+}
+
+#signup-modal .modal-btn.secondary:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+/* Signup error text inside modal */
+#signup-error {
+    color: #e50914;
+    font-size: 14px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    min-height: 18px;
+    text-align: center;
 }
