@@ -28,6 +28,8 @@ async function loadHeader() {
     const isFAQPage = path.includes("faq.html");
     const isPrivacyPage = path.includes("privacy.html");
     const isScoreboardPage = path.includes("scoreboard.html");
+    const isMyFavesPage = path.includes("my-favorites.html");
+    
 
     if (!banner) return;
 
@@ -86,6 +88,9 @@ async function loadHeader() {
     } else if (isPrivacyPage) {
         banner.src = "/banners/privacy.png";
         banner.alt = "Privacy";
+    } else if (isMyFavesPage) {
+        banner.src = "/banners/my-faves.png";
+        banner.alt = "My Favorites";
         
     }
 }
