@@ -1,0 +1,240 @@
+/* ==========================================================================
+   PLAYLIST SIDEBAR & GENERAL LAYOUT
+   ========================================================================== */
+
+body.favorites-page .container {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  width: 100%;
+}
+
+body.favorites-page #playlist-sidebar {
+  width: 200px !important;
+  min-width: 200px !important;
+  background: #161823;
+  border-right: 1px solid #2a2d3a;
+  padding: 20px;
+  margin-top: 20px;
+  box-sizing: border-box;
+  color: #fff;
+  font-family: 'Raleway', sans-serif;
+}
+
+body.favorites-page #playlist-sidebar h3 {
+  margin-top: 0;
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+body.favorites-page .playlist-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+body.favorites-page .playlist-item {
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1c1f2b;
+  color: #fff;
+}
+
+body.favorites-page .playlist-item:hover {
+  background: #242836;
+}
+
+body.favorites-page .playlist-item.active {
+  background: #303548;
+}
+
+body.favorites-page .playlist-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+/* Icons inside playlist list */
+body.favorites-page #playlist-sidebar .playlist-actions svg {
+  transform: scale(0.5);
+  transform-origin: center center;
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+}
+
+/* ==========================================================================
+   MAIN CONTENT AREA
+   ========================================================================== */
+
+body.favorites-page .main-content {
+  flex: 1 !important;
+  padding: 20px 40px !important;
+  width: 100% !important;
+  max-width: 1400px !important;
+  margin: 20px auto !important;
+  color: #fff;
+}
+
+body.favorites-page .main-content h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 26px;
+  color: #fff;
+}
+
+/* ==========================================================================
+   VIDEO GRID
+   ========================================================================== */
+
+body.favorites-page #video-container.grid-container {
+  width: 100% !important;
+  max-width: 1400px !important;
+  margin: 0 auto;
+}
+
+body.favorites-page .video-item,
+body.favorites-page .carousel-video-item {
+  width: 100% !important;
+  max-width: 420px !important;
+  background: #1c1f2b !important;
+  border-radius: 12px !important;
+}
+
+/* ==========================================================================
+   PLAYLIST "+" BTN ON VIDEO CARDS
+   ========================================================================== */
+
+body.favorites-page .preview-container {
+  position: relative !important;
+}
+
+body.favorites-page .playlist-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 30;
+}
+
+body.favorites-page .playlist-btn svg {
+  stroke: #ffffff;
+  width: 16px;
+  height: 16px;
+}
+
+/* ==========================================================================
+   FAVOURITE HEART FIX
+   ========================================================================== */
+
+body.favorites-page .favorite-btn {
+  top: 8px !important;
+  left: 8px !important;
+  z-index: 30 !important;
+}
+
+/* ==========================================================================
+   GLASS MODALS (Create, Rename, Delete)
+   ========================================================================== */
+
+.glass-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+}
+
+.glass-modal {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  padding: 25px 30px;
+  width: 360px;
+  max-width: 90%;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  animation: fadeInScale 0.25s ease-out;
+  box-sizing: border-box;
+}
+
+.glass-modal h4 {
+  margin: 0 0 18px 0;
+  font-size: 20px;
+  color: #fff;
+  text-align: center;
+}
+
+.glass-modal input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(0,0,0,0.35);
+  color: white;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.glass-modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.glass-btn {
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  border: none;
+  color: #fff;
+  background: #e50914;
+}
+
+.glass-btn.cancel {
+  background: #444;
+}
+
+.glass-btn.danger {
+  background: #c92a2a;
+}
+
+.playlist-select {
+  width: 100%;
+  padding: 10px;
+  background: rgba(0,0,0,0.35);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 8px;
+  margin-bottom: 14px;
+  font-size: 15px;
+}
+
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}

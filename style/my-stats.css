@@ -1,0 +1,120 @@
+/* Stats panel floats & auto-positions */
+.wh-summary-panel {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+
+  z-index: 20;
+}
+
+/* Stat box styling */
+.stat-box {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 18px;
+
+  padding: 32px 40px;
+  min-width: 220px;
+  text-align: center;
+
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.stat-value {
+  font-size: 40px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: 18px;
+  opacity: 0.85;
+}
+
+/* ----------------------------------------------
+   MATCH SCOREBOARD STYLE
+---------------------------------------------- */
+
+.table-aligned-container {
+  max-width: 1280px;
+  margin: 60px auto 0 auto; /* leave space for stat boxes */
+  padding: 0 20px;
+}
+
+.table-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+#tableHeader {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* ----------------- TABLE WRAPPER ------------------ */
+
+.table-wrapper {
+  background: #181a24;
+  border-radius: 12px;
+  overflow-x: auto;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+/* ----------------- TABLE ------------------ */
+
+#wh-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #ccc;
+}
+
+#wh-table th,
+#wh-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #2a2d3a;
+  font-size: 14px;
+  text-align: left;
+}
+
+#wh-table thead {
+  background: #1f212d;
+}
+
+#wh-table thead th {
+  cursor: pointer;
+  color: #bbb;
+  font-weight: 600;
+  user-select: none;
+}
+
+/* Sorting arrows */
+#wh-table th.sort-asc::after { content: "▲"; margin-left: 6px; }
+#wh-table th.sort-desc::after { content: "▼"; margin-left: 6px; }
+
+/* Hover effect rows */
+#wh-table tbody tr:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 800px) {
+  .table-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  #tableHeader {
+    font-size: 22px;
+  }
+}
+
