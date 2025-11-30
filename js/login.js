@@ -88,7 +88,9 @@ document.getElementById("signup-submit").onclick = async () => {
     const { data: promoRows, error: promoError } = await supabase
         .from("promo_codes")
         .select("code")
-        .ilike("code", promo);   // case-insensitive exact match
+        //.ilike("code", promo);   
+        .eq("code", promo.toUpperCase());
+
 
     if (promoError) {
         errorBox.textContent = "Could not verify promo code. Try again later.";
