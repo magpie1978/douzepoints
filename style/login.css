@@ -69,13 +69,17 @@ body {
 }
 
 /* Inline login error message */
+
+
 #login-error {
     color: #e50914;
     font-size: 13px;
     margin: 6px 0 0 2px;
-    min-height: 18px;
+    display: none; /* hidden by default */
     text-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
+
+
 
 /* Shake animation for “Invalid login credentials” */
 @keyframes shake {
