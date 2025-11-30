@@ -8,7 +8,6 @@
     <link rel="apple-touch-icon" sizes="180x180" href="banners/favicon-circle-180.png">
     <link rel="icon" type="image/x-icon" href="banners/favicon-circle.ico">
 
-    
     <meta charset="UTF-8">
     <title>Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,8 +15,6 @@
     <!-- STYLES -->
     <link rel="stylesheet" href="style/login.css">
     <link rel="stylesheet" href="style/footer.css">
-    
-    
 </head>
 
 <body>
@@ -32,20 +29,13 @@
                 <button id="login-btn" class="login-btn">Log In</button>
             </div>
 
-            <p id="login-error" style="
-    color:#e50914;
-    font-size:13px;
-    margin:6px 0 0 2px;
-    display:none;                /* hidden by default */
-    text-shadow:0 2px 6px rgba(0,0,0,0.4);
-"></p>
+            <!-- ERROR MESSAGE (now styled via CSS) -->
+            <p id="login-error"></p>
         </div>
     </div>
 
     <div class="big-title">Douze Points</div>
     <div class="big-subtitle">Your hub for Eurovision performances</div>
-
-
 
     <!-- PLANS SECTION -->
     <section class="plans-section">
@@ -55,9 +45,9 @@
 
             <!-- BASIC -->
             <div class="plan-card">
-                <div class="plan-title"> Basic <br><br>
+                <div class="plan-title">Basic <br><br>
                 <span class="plan-price">£4.99/month</span><br><br></div>
-                    <ul class="plan-list">
+                <ul class="plan-list">
                     <li>Access to 10 years of Eurovision videos</li>
                     <li>Favourite up to 25 videos</li>
                     <li>Create 1 playlist</li>
@@ -67,8 +57,8 @@
 
             <!-- STANDARD -->
             <div class="plan-card">
-                <div class="plan-title">Standard <br> <br>
-                    <span class="plan-price">£5.99/month</span><br><br></div>
+                <div class="plan-title">Standard <br><br>
+                <span class="plan-price">£5.99/month</span><br><br></div>
                 <ul class="plan-list">
                     <li>Access to all Eurovision years</li>
                     <li>Unlimited favourites</li>
@@ -79,8 +69,8 @@
 
             <!-- PREMIUM -->
             <div class="plan-card">
-                <div class="plan-title">Premium <br> <br>
-                    <span class="plan-price">£7.99/month</span><br><br></div>
+                <div class="plan-title">Premium <br><br>
+                <span class="plan-price">£7.99/month</span><br><br></div>
                 <ul class="plan-list">
                     <li>Unlimited everything</li>
                     <li>Exclusive analytics + stats</li>
@@ -96,14 +86,9 @@
     <div id="signup-modal-overlay">
         <div id="signup-modal">
             <h3>Create Account</h3>
-                <p id="signup-error" style="
-                color:#e50914;
-                font-size:14px;
-                margin-top:0;
-                margin-bottom:10px;
-                min-height:18px;
-                text-align:center;
-            "></p>
+
+            <!-- SIGNUP ERROR (CSS handles styling now) -->
+            <p id="signup-error"></p>
 
             <input id="signup-email" type="email" placeholder="Email">
             <input id="signup-password" type="password" placeholder="Password">
@@ -116,8 +101,7 @@
 
     <script type="module" src="js/login.js"></script>
     <script src="js/footer.js" defer></script>
-    
     <div id="footer"></div>
-    
+
 </body>
 </html>
