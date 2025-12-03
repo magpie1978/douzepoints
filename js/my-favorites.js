@@ -2,7 +2,10 @@
 // Favourites + Playlists for my-favorites.html
 
 //const supabase = window.supabaseClient;
-const supabase = window.supabaseClient || window.supabase;
+const supabase = window.supabaseClient;
+if (!supabase) {
+  console.error("[my-favorites] window.supabaseClient NOT FOUND");
+}
 
 
 // Auth / core state
