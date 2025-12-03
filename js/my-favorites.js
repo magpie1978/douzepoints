@@ -1,7 +1,9 @@
 // my-favorites.js
 // Favourites + Playlists for my-favorites.html
 
-const supabase = window.supabaseClient;
+//const supabase = window.supabaseClient;
+const supabase = window.supabaseClient || window.supabase;
+
 
 // Auth / core state
 let currentUser = null;
