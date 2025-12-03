@@ -1,4 +1,4 @@
-// my-favorites.js
+// my-favorites2.js
 // Fully patched version — unified on data-video-key, fully compatible with video.js
 
 const supabase = window.supabaseClient;
@@ -24,17 +24,27 @@ let selectedVideoForPlaylist = null;
 let playlistHandlersAttached = false;
 let heartHandlersAttached = false;
 
-document.addEventListener("DOMContentLoaded", initFavoritesPage);
-
 /* ============================================================
    INIT
    ============================================================ */
+
+// IMPORTANT: when this module is imported after DOMContentLoaded,
+// we must call initFavoritesPage() immediately instead of relying
+// on a DOMContentLoaded listener that will never fire.
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initFavoritesPage);
+} else {
+  // DOM is already ready (our case on my-favorites.html)
+  initFavoritesPage();
+}
 
 async function initFavoritesPage() {
   if (!supabase) {
     console.error("[my-favorites] Supabase client missing.");
     return;
   }
+
+  console.log("[my-favorites] initFavoritesPage starting…");
 
   // 1. Get active user
   const { data: userData, error: userError } = await supabase.auth.getUser();
@@ -45,14 +55,19 @@ async function initFavoritesPage() {
 
   const user = userData?.user || null;
   if (!user) {
+    console.warn("[my-favorites] No user — redirecting to login.");
     window.location.href = "login.html";
     return;
   }
   currentUser = user;
+  console.log("[my-favorites] Logged in as", currentUser.id);
 
   // 2. Load favourites + playlists
   await loadFavorites();
   await loadPlaylistsAndMappings();
+
+  console.log("[my-favorites] Favourites loaded:", allFavoriteVideos.length);
+  console.log("[my-favorites] Playlists loaded:", playlists.length);
 
   // 3. If no favourites → show sidebar + message
   if (!allFavoriteVideos.length) {
@@ -81,6 +96,8 @@ async function initFavoritesPage() {
    ============================================================ */
 
 async function loadFavorites() {
+  console.log("[my-favorites] Loading favourites…");
+
   // Load favourite video_ids
   const { data: favRows, error: favError } = await supabase
     .from("user_favorites")
@@ -93,11 +110,13 @@ async function loadFavorites() {
   }
 
   if (!favRows?.length) {
+    console.log("[my-favorites] No favourite rows found.");
     allFavoriteVideos = [];
     return;
   }
 
   const favouriteIds = favRows.map(r => r.video_id);
+  console.log("[my-favorites] Favourite IDs:", favouriteIds);
 
   // Fetch matching videos
   const { data: videos, error: videosError } = await supabase
@@ -111,6 +130,7 @@ async function loadFavorites() {
   }
 
   allFavoriteVideos = videos || [];
+  console.log("[my-favorites] Loaded videos from douzepoints:", allFavoriteVideos.length);
 
   // Sync video.js favourite state
   if (window.ensureFavoritesLoaded) {
@@ -123,6 +143,8 @@ async function loadFavorites() {
 }
 
 async function loadPlaylistsAndMappings() {
+  console.log("[my-favorites] Loading playlists…");
+
   // Playlists
   const { data: plData, error: plError } = await supabase
     .from("playlists")
@@ -130,7 +152,14 @@ async function loadPlaylistsAndMappings() {
     .eq("user_id", currentUser.id)
     .order("created_at", { ascending: true });
 
-  playlists = plError ? [] : plData || [];
+  if (plError) {
+    console.error("[my-favorites] Error loading playlists:", plError);
+    playlists = [];
+  } else {
+    playlists = plData || [];
+  }
+
+  console.log("[my-favorites] Playlists:", playlists);
 
   // Playlist-to-video mapping
   const { data: pvData, error: pvError } = await supabase
@@ -147,6 +176,8 @@ async function loadPlaylistsAndMappings() {
       playlistVideosMap.get(row.playlist_id).add(row.video_id);
     });
   }
+
+  console.log("[my-favorites] playlistVideosMap:", playlistVideosMap);
 }
 
 /* ============================================================
@@ -165,7 +196,10 @@ function showMessage(msg) {
 
 function renderPlaylistSidebar() {
   const listEl = document.getElementById("playlist-list");
-  if (!listEl) return;
+  if (!listEl) {
+    console.error("[my-favorites] #playlist-list not found.");
+    return;
+  }
 
   listEl.innerHTML = "";
 
