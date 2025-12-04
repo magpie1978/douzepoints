@@ -1,89 +1,66 @@
 // edition-yt.js
+// --------------------------------------------
+// Plays videos using YT_URL instead of Video_URL
+// Reuses the full rendering engine in video.js
+// --------------------------------------------
+
 import { supabase } from "./supabaseClient.js";
 
-// -------------------------------------------
-// Override: Load edition videos but use YT_URL
-// -------------------------------------------
-function loadEditionYT() {
-  const params = new URLSearchParams(window.location.search);
-  const year = params.get("edition");
-  if (!year) return;
+document.addEventListener("DOMContentLoaded", () => {
+    loadEditionYT();
+});
 
-  fetchAndRenderYT(s =>
-    s.from("douzepoints")
-      .select("*")
-      .eq("Year", year)
-      .order("Final_Rank", { ascending: true })
-  );
+// --------------------------------------------
+// Load edition data using Supabase
+// --------------------------------------------
+async function loadEditionYT() {
+    const params = new URLSearchParams(window.location.search);
+    const year = params.get("edition");
+
+    if (!year) {
+        console.warn("No edition year in URL");
+        return;
+    }
+
+    const { data, error } = await supabase
+        .from("douzepoints")
+        .select("*")
+        .eq("Year", year)
+        .order("Final_Rank", { ascending: true });
+
+    if (error) {
+        console.error("Error loading edition-yt:", error);
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        const container = document.getElementById("video-container");
+        if (container) {
+            container.innerHTML = `<p style="padding:20px;">No videos found.</p>`;
+        }
+        return;
+    }
+
+    // ----------------------------------------------------
+    // ⭐ OVERRIDE KEY FIELD:
+    // Make the renderer think YT_URL *is* the Video_URL
+    // ----------------------------------------------------
+    const patchedEntries = data.map(entry => ({
+        ...entry,
+        Video_URL: entry.YT_URL   // ← THE IMPORTANT CHANGE
+    }));
+
+    // ----------------------------------------------------
+    // Use the existing global renderer from video.js
+    // This handles sorting, favourites, modal, etc.
+    // ----------------------------------------------------
+    if (window.ensureFavoritesLoaded) {
+        await window.ensureFavoritesLoaded();
+    }
+
+    if (typeof window.renderVideos === "function") {
+        window.renderVideos(patchedEntries);
+    } else {
+        console.error("renderVideos() not found. Ensure video.js is loaded before edition-yt.js.");
+    }
 }
-
-// -------------------------------------------
-// Fetch wrapper but passes YT_URL into renderer
-// -------------------------------------------
-async function fetchAndRenderYT(queryFn) {
-  const { data, error } = await queryFn(supabase);
-
-  if (error) {
-    console.error("Error loading edition-yt:", error);
-    return;
-  }
-
-  const container = document.getElementById("video-container");
-  if (!data || data.length === 0) {
-    container.innerHTML = `<p style="padding:16px;">No videos found.</p>`;
-    return;
-  }
-
-  renderVideosYT(data);
-}
-
-// -------------------------------------------
-// Render using YT_URL instead of Video_URL
-// -------------------------------------------
-function renderVideosYT(entries) {
-  const container = document.getElementById("video-container");
-  container.innerHTML = "";
-
-  const frag = document.createDocumentFragment();
-  entries.forEach(entry => {
-    frag.appendChild(renderYTEntry(entry));
-  });
-
-  container.appendChild(frag);
-
-  if (window.lucide?.createIcons) window.lucide.createIcons();
-  if (window.triggerInitialSort) window.triggerInitialSort();
-}
-
-// -------------------------------------------
-// Clone of renderEntry() but with videoUrl = entry.YT_URL
-// -------------------------------------------
-function renderYTEntry(entry) {
-  const wrapper = document.createElement("div");
-  wrapper.className = "video-item";
-
-  const videoUrl = entry.YT_URL;      // ⭐ KEY CHANGE
-  const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
-
-  wrapper.innerHTML = `
-    <div class="preview-container" data-video-url="${videoUrl}">
-      <img class="thumbnail" src="${imageUrl}">
-    </div>
-
-    <div class="video-title-with-icon">
-      <div class="title-artist">${entry.Artist}</div>
-      <div class="title-song">${entry.Song}</div>
-    </div>
-  `;
-
-  wrapper.addEventListener("click", () => {
-    openVideoModal(videoUrl, entry);
-  });
-
-  return wrapper;
-}
-
-// -------------------------------------------
-// When edition-yt.html loads
-// -------------------------------------------
-document.addEventListener("DOMContentLoaded", loadEditionYT);
