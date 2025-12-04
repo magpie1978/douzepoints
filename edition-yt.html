@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Douze Points – Edition (YouTube Version)</title>
 
-    <!-- Main site styles -->
+    <!-- Main CSS -->
     <link rel="stylesheet" href="style/combined.css" />
     <link rel="stylesheet" href="style/footer.css" />
     <link rel="stylesheet" href="style/score_circle.css" />
@@ -25,10 +25,10 @@
         <!-- SIDEBAR -->
         <div id="sidebar-container" class="sidebar"></div>
 
-        <!-- MAIN COLUMN -->
+        <!-- MAIN CONTENT AREA -->
         <main class="dp-main">
 
-            <!-- BANNER IMAGE (set automatically by header.js) -->
+            <!-- PAGE BANNER (auto-set by header.js) -->
             <img id="country-banner" class="country-banner" alt="Edition Banner" />
 
             <!-- SORTING BAR -->
@@ -55,25 +55,29 @@
     <!-- FOOTER -->
     <footer id="footer"></footer>
 
-    <!-- MODAL LOADER -->
+    <!-- MODAL ROOT -->
     <div id="modal-container"></div>
 
-    
 
-    <!-- 🔥 SCRIPT LOAD ORDER IS CRITICAL 🔥 -->
-    <!-- 1. Supabase client MUST stay as a module -->
+    <!-- ========================== -->
+    <!-- 🔥 SCRIPT LOAD ORDER MATTERS 🔥 -->
+    <!-- ========================== -->
+
+    <!-- 1️⃣ Supabase client MUST load first AND must be a module -->
     <script type="module" src="js/supabaseClient.js"></script>
 
-    <!-- 2. Standard scripts (NOT modules) -->
+    <!-- 2️⃣ These scripts IMPORT supabase → must be modules -->
     <script type="module" src="js/header.js"></script>
     <script type="module" src="js/sidebar.js"></script>
+
+    <!-- 3️⃣ Legacy global scripts (NOT modules) -->
     <script src="js/sorting.js"></script>
     <script src="js/video.js"></script>
 
-    <!-- 3. YOUTUBE EDITION LOADER (depends on video.js) -->
+    <!-- 4️⃣ YouTube edition loader (depends on video.js globals) -->
     <script src="js/edition-yt.js"></script>
 
-    <!-- 4. Footer + modal -->
+    <!-- 5️⃣ Footer + modal scripts -->
     <script src="js/footer.js"></script>
     <script src="js/modal.js"></script>
 
