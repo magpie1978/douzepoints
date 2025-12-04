@@ -1,4 +1,3 @@
-<!--
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,40 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Eurovision Scoreboard</title>
   
-    <!-- favicons  
+    <!-- favicons  -->
     <link rel="icon" type="image/png" sizes="16x16" href="banners/favicon-circle-16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="banners/favicon-circle-32.png">
     <link rel="apple-touch-icon" sizes="180x180" href="banners/favicon-circle-180.png">
     <link rel="icon" type="image/x-icon" href="banners/favicon-circle.ico">
   
-    <!-- Styles -
+    <!-- Styles -->
     <link rel="stylesheet" href="style/header.css" />
     <link rel="stylesheet" href="style/video.css">
     <link rel="stylesheet" href="style/combined.css" />
     <link rel="stylesheet" href="style/scoreboard.css" />
     <link rel="stylesheet" href="style/footer.css" />
   
-    <!-- Icons -
+    <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
   
-    <!-- Supabase -
+    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   </head>
   
   <body>
   
-    <!-- HEADER -
+    <!-- HEADER -->
     <div id="header-container"></div>
     <script type="module" src="js/header.js"></script>
   
-    <!-- MAIN CONTENT -
+    <!-- MAIN CONTENT -->
     <div class="main-content">
   
       <div class="table-aligned-container">
         <h1 id="tableHeader">Eurovision Grand Final - 2025</h1>
   
-        <!-- FILTER CONTROLS --
+        <!-- FILTER CONTROLS -->
         <div class="table-controls">
           <label for="yearSelect">Year:</label>
           <select id="yearSelect"></select>
@@ -52,7 +51,7 @@
           </select>
         </div>
   
-        <!-- TABLE --
+        <!-- TABLE -->
         <div class="table-wrapper">
           <table>
             <thead id="tableHead"></thead>
@@ -63,111 +62,16 @@
   
     </div>
   
-    <!-- MODAL  --
+    <!-- MODAL  -->
     <script src="js/modal.js"></script>
     <div id="modal-container"></div>
   
-    <!-- SCOREBOARD LOGIC --
+    <!-- SCOREBOARD LOGIC -->
     <script type="module" src="js/scoreboard.js"></script>
   
-    <!-- FOOTER --
+    <!-- FOOTER -->
     <div id="footer"></div>
     <script src="js/footer.js"></script>
   
   </body>
-</html>
-
--->
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Douze Points – Scoreboard</title>
-
-    <link rel="stylesheet" href="/style/combined.css">
-    <link rel="stylesheet" href="/style/footer.css">
-    <link rel="stylesheet" href="/style/score_circle.css">
-    <link rel="stylesheet" href="/style/scoreboard.css">
-
-    <script src="https://unpkg.com/lucide@latest"></script>
-</head>
-
-<body>
-
-    <!-- HEADER -->
-    <div id="header-container"></div>
-
-    <!-- MAIN LAYOUT -->
-    <div class="dp-layout">
-
-        <!-- SIDEBAR -->
-        <div id="sidebar-container" class="sidebar"></div>
-
-        <!-- MAIN CONTENT AREA -->
-        <main class="dp-main">
-
-            <!-- 🚀 NEW: TITLE + FILTERS HORIZONTAL ROW -->
-            <div class="table-header-row">
-                <h1 id="tableHeader">Eurovision Grand Final - 2025</h1>
-
-                <div class="table-controls">
-                    <label for="yearSelect">Year:</label>
-                    <select id="yearSelect"></select>
-
-                    <label for="stageSelect">Stage:</label>
-                    <select id="stageSelect">
-                        <option value="Final">Final</option>
-                        <option value="Semi Final 1">Semi Final 1</option>
-                        <option value="Semi Final 2">Semi Final 2</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- FULL SCOREBOARD TABLE WRAPPER -->
-            <div class="table-wrapper">
-                <table id="resultsTable">
-                    <thead>
-                        <tr>
-                            <th>Pos</th>
-                            <th>Flag</th>
-                            <th>Country</th>
-                            <th>Artist</th>
-                            <th>Song</th>
-                            <th class="border-right">R/O</th>
-                            <th class="border-right">Televote Rank</th>
-                            <th class="border-right">Televote Pts</th>
-                            <th class="border-right">Jury Rank</th>
-                            <th class="border-right">Jury Pts</th>
-                            <th>Total Points</th>
-                        </tr>
-                    </thead>
-                    <tbody id="resultsBody">
-                        <!-- Rows populated by scoreboard.js -->
-                    </tbody>
-                </table>
-            </div>
-
-        </main>
-    </div>
-
-    <!-- FOOTER -->
-    <footer id="footer"></footer>
-
-    <!-- MODAL -->
-    <div id="modal-container"></div>
-
-    <!-- SCRIPTS -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/js/supabaseClient.js"></script>
-    <script src="/js/header.js"></script>
-    <script src="/js/sidebar.js"></script>
-
-    <script src="/js/scoreboard.js"></script>
-
-    <script src="/js/footer.js"></script>
-    <script src="/js/modal.js"></script>
-</body>
 </html>
