@@ -1,18 +1,3 @@
-/**
- * sorting.js
- * Sorts video cards and updates the score-table circles based on the selected option.
- *
- * Expected <select id="sort-options"> values:
- *   - "jury"      -> use Final_JuryRank / Final_JuryPoints in circles, sort by jury points (desc)
- *   - "televote"  -> (optional) use Final_TelevoteRank / Final_TelevotePoints, sort by televote points (desc)
- *   - "total"     -> default; use Final_Rank / Final_TotalPoints, sort by total points (desc)
- *   - "year-asc"  -> sort by Year ascending
- *   - "year-desc" -> sort by Year descending
- *   - "artist"    -> sort by Artist (A→Z)
- *   - "song"      -> sort by Song (A→Z)
- *   - "country"   -> sort by Country (A→Z)
- */
-
 (function () {
   function comparatorFactory(sortType) {
     const num = (el, key) => Number(el.dataset[key] || 0);
