@@ -1,5 +1,3 @@
-// video.js — fully patched + synced with my-favorites.js
-
 const supabase = window.supabaseClient || null;
 const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
 
