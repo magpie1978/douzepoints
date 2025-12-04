@@ -139,7 +139,7 @@ async function loadHeader() {
         banner.alt = "About";
         
     } else if (isAboutPage) {
-        banner.src = "/banners/blank.png";
+        banner.src = "/banners/about.png";
         banner.alt = "About";
 
     } else if (isScoreboardPage) {
@@ -147,15 +147,15 @@ async function loadHeader() {
         banner.alt = "Scoreboard";
 
     } else if (isContactPage) {
-        banner.src = "/banners/blank.png";
+        banner.src = "/banners/contact.png";
         banner.alt = "Contact";
 
     } else if (isFAQPage) {
-        banner.src = "/banners/blank.png";
+        banner.src = "/banners/faq.png";
         banner.alt = "FAQ";
 
     } else if (isPrivacyPage) {
-        banner.src = "/banners/blank.png";
+        banner.src = "/banners/privacy.png";
         banner.alt = "Privacy";
     }
 }
