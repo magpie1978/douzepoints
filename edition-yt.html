@@ -1,75 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Douze Points – Edition (YouTube Version)</title>
+    <head>
+        <meta charset="utf-8"/>
+        <title>DouzePoints | Edition</title>
 
-    <!-- Main site styles -->
-    <link rel="stylesheet" href="combined.css" />
-    <link rel="stylesheet" href="footer.css" />
-    <link rel="stylesheet" href="score_circle.css" />
+        <!-- favicons  -->
+        <link rel="icon" type="image/png" sizes="16x16" href="banners/favicon-circle-16.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="banners/favicon-circle-32.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="banners/favicon-circle-180.png">
+        <link rel="icon" type="image/x-icon" href="banners/favicon-circle.ico">
 
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-</head>
+        <!-- STYLES -->
+        <link rel="stylesheet" href="style/header.css">
+        <link rel="stylesheet" href="style/favorites.css">
+        <link rel="stylesheet" href="style/video.css">
+        <link rel="stylesheet" type="text/css" href="style/combined.css">
+        <link rel="stylesheet" type="text/css" href="style/sidebar.css">
+        <link rel="stylesheet" type="text/css" href="style/score_circle.css">
+        <link rel="stylesheet" type="text/css" href="style/footer.css">
 
-<body>
 
-    <!-- HEADER -->
-    <div id="header-container"></div>
 
-    <!-- MAIN CONTENT WRAPPER -->
-    <div class="dp-layout">
+        <!-- JAVASCRIPT -->
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        
+    </head>
 
-        <!-- SIDEBAR -->
-        <div id="sidebar-container" class="sidebar"></div>
-
-        <!-- MAIN COLUMN -->
-        <main class="dp-main">
-
-            <!-- Banner Image (handled by header.js) -->
-            <img id="country-banner" class="country-banner" alt="Edition Banner" />
-
-            <!-- SORTING BAR -->
-            <div class="video-controls">
-                <div class="sort-wrapper">
-                    <i data-lucide="filter"></i>
-                    <select id="sort-options">
-                        <option value="country">Country (A–Z)</option>
-                        <option value="artist">Artist</option>
-                        <option value="song">Song</option>
-                        <option value="jury">Jury Points</option>
-                        <option value="televote">Televote Points</option>
-                        <option value="total">Total Points</option>
-                    </select>
+    <body oncontextmenu="return false">
+    
+        <!-- HEADER -->
+        <div id="header-container"></div>
+        <script type="module" src="js/header.js"></script>
+    
+        <!-- MAIN CONTAINER -->
+        <div class="container">
+            <div id="sidebar-container" class="sidebar"></div>
+    
+            <div class="main-content">
+                <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
+                    <div style="flex: 1;"></div>
+                    <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
+                        <label for="sort-options">
+                            <i data-lucide="list-filter" style="margin-right: 15px;"></i>
+                        </label>
+                        <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
+                            <option value="country" selected>Country (A–Z)</option>
+                            <option value="country-desc">Country (Z–A)</option>
+                            <option value="artist">Artist Name</option>
+                            <option value="song">Song Title</option>
+                            <option value="jury">Jury Points</option>
+                            <option value="televote">Televote Points</option>
+                            <option value="total">Total Points</option>
+                        </select>
+                    </div>
                 </div>
+                <div class="grid-container" id="video-container"></div>
             </div>
+        </div>
+    
+        <!-- whatever you already have for Supabase + header + sidebar + sorting -->
+        <script type="module" src="supabaseClient.js"></script>
+        <script type="module" src="header.js"></script>
+        <script src="sidebar.js"></script>
+        <script src="sorting.js"></script>
 
-            <!-- VIDEO GRID -->
-            <div id="video-container" class="video-grid"></div>
-        </main>
-    </div>
+        <!-- existing video engine (unchanged) -->
+        <script src="video.js"></script>
 
-    <!-- FOOTER -->
-    <footer id="footer"></footer>
+        <!-- NEW: YouTube edition loader (no type="module") -->
+        <script src="edition-yt.js"></script>
 
-    <!-- MODAL (loaded dynamically) -->
-    <div id="modal-container"></div>
+        <!-- existing footer + modal scripts (unchanged) -->
+        <script src="footer.js"></script>
+        <script src="modal.js"></script>
 
-    <!-- JS ORDER IMPORTANT -->
-    <script type="module" src="supabaseClient.js"></script>
-    <script src="header.js" type="module"></script>
-    <script src="sidebar.js"></script>
-    <script src="sorting.js"></script>
-
-    <!-- MUST ALWAYS LOAD video.js (renderer + modal functions) -->
-    <script src="video.js"></script>
-
-    <!-- YOUTUBE VERSION OF EDITION PAGE -->
-    <script type="module" src="edition-yt.js"></script>
-
-    <script src="footer.js"></script>
-    <script src="modal.js"></script>
-</body>
+    </body>
 </html>
