@@ -6,9 +6,9 @@
     <title>Douze Points – Edition (YouTube Version)</title>
 
     <!-- Main site styles -->
-    <link rel="stylesheet" href="/combined.css" />
-    <link rel="stylesheet" href="/footer.css" />
-    <link rel="stylesheet" href="/score_circle.css" />
+    <link rel="stylesheet" href="style/combined.css" />
+    <link rel="stylesheet" href="style/footer.css" />
+    <link rel="stylesheet" href="style/score_circle.css" />
 
     <!-- Lucide icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -62,20 +62,20 @@
     <!-- 🔥 SCRIPT LOAD ORDER IS CRITICAL 🔥 -->
 
     <!-- 1. Supabase client MUST stay as a module -->
-    <script type="module" src="/supabaseClient.js"></script>
+    <script type="module" src="js/supabaseClient.js"></script>
 
     <!-- 2. Standard scripts (NOT modules) -->
-    <script src="/header.js"></script>
-    <script src="/sidebar.js"></script>
-    <script src="/sorting.js"></script>
-    <script src="/video.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/sorting.js"></script>
+    <script src="js/video.js"></script>
 
     <!-- 3. YOUTUBE EDITION LOADER (depends on video.js) -->
-    <script src="/edition-yt.js"></script>
+    <script src="js/edition-yt.js"></script>
 
     <!-- 4. Footer + modal -->
-    <script src="/footer.js"></script>
-    <script src="/modal.js"></script>
+    <script src="js/footer.js"></script>
+    <script src="js/modal.js"></script>
 
 </body>
 </html>
