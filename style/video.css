@@ -9,7 +9,6 @@
   margin-right: 10px;
 }
 
-
 .video-item:hover {
   transform: scale(1.1);
 }
@@ -32,7 +31,6 @@
   object-fit: cover;
 }
 
-
 .video-title-with-icon {
   display: flex;
   align-items: center;
@@ -40,6 +38,11 @@
   gap: 8px;
   color: white;
   font-size: 0.8rem;
+}
+
+.video-title-text::first-line {
+  font-size: 0.85rem;
+  font-weight: bold;
 }
 
 .icon-placeholder {
@@ -50,7 +53,6 @@
   object-fit: cover;
   margin-left: 8px;
 }
-
 
 .modal {
   display: none;
