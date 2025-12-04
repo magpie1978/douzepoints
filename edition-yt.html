@@ -60,13 +60,12 @@
 
 
     <!-- 🔥 SCRIPT LOAD ORDER IS CRITICAL 🔥 -->
-
     <!-- 1. Supabase client MUST stay as a module -->
     <script type="module" src="js/supabaseClient.js"></script>
 
     <!-- 2. Standard scripts (NOT modules) -->
-    <script src="js/header.js"></script>
-    <script src="js/sidebar.js"></script>
+    <script type="module" src="/header.js"></script>
+    <script type="module" src="/sidebar.js"></script>
     <script src="js/sorting.js"></script>
     <script src="js/video.js"></script>
 
