@@ -11,42 +11,6 @@ body {
       display: flex;
     }
 
-
-/* HEADER BANNER 
-.banner-divider {
-  width: 100%;
-  height: 1px;
-  background-color: #e50914;
-  }
-
-
-.banner-static {
-  width: 100%;
-  height: 400px;
-  overflow: hidden;
- 
-}
-
-.banner-static img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}      
-
-*/
-
-.banner-text {
-  position: absolute;
-  bottom: 30px;
-  left: 30px;
-  text-align: left;
-  color: black;
-  z-index: 3;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 8px;
-}
-
 .main-content {
   flex-grow: 1;
   padding: 20px;
