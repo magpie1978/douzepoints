@@ -41,7 +41,7 @@ body {
 .preview-container {
   position: relative;
   width: 100%;
-  padding-top: 56.25%; /* 16:9 */
+  padding-top: 56.25%;
   overflow: hidden;
   border-radius: 6px;
 }
@@ -171,26 +171,3 @@ h4 {
   color: #e50914;
   text-decoration: none;
 }
-
-
-.logout-link {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #ffffff !important;      /* TEXT → white */
-    font-weight: bold;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.logout-link:hover {
-    opacity: 0.75;
-}
-
-.logout-icon {
-    width: 22px;
-    height: 22px;
-    stroke-width: 2.5;
-    color: #ffffff;                  /* ICON → white */
-}
-
