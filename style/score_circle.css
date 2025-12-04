@@ -1,0 +1,56 @@
+.score-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 10px;
+  width: 30%; /* Adjust width as needed */
+  box-sizing: border-box;
+}
+
+.score-box {
+   /*  display: flex; */ 
+  justify-content: flex-end;
+  align-items: center;
+  width: 30%;
+  /* min-width: 120px; */
+}
+
+.score-table {
+  border-collapse: collapse;
+  text-align: center;
+  width: auto;
+}
+
+.score-table th {
+  font-size: 9px;
+  font-weight: normal;
+  color: white;
+  padding-bottom: 4px;
+}
+
+.score-table td {
+  padding: 4px 10px;
+}
+
+
+/* Base score circle */
+.score-circle {
+  font-weight: bold;
+  font-size: 11px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid white;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  background-color: transparent;
+  color: white;
+}
+
+/* DNQ special styling */
+.score-circle.dnq {
+  color: #e50914;       /* Eurovision red */
+  border-color: #e50914; /* Red border */
+  font-size: 10px;       /* Slightly smaller text for DNQ */
+}
