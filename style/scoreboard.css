@@ -107,3 +107,23 @@ th.divider-right,
 td.divider-right {
   border-right: 1px dashed rgba(255,255,255,0.1);
 }
+
+/* NEW: ensures the header and controls align with the table */
+.table-aligned-container {
+  max-width: 1280px;
+  margin: 0 auto; /* center horizontally */
+  padding: 0 20px; /* optional: match table horizontal padding */
+}
+
+/* Fine-tune spacing */
+#tableHeader {
+  margin-left: 0;
+  padding-left: 0;
+}
+
+/* Right-align the controls to the table width */
+.table-controls {
+  justify-content: flex-end;
+  padding-right: 0;
+}
+
