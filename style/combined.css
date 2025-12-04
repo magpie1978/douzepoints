@@ -104,9 +104,7 @@ body {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  /* background-color: #444;*/
   background-color: ##181a24;
-  
   object-fit: cover;
   margin-left: 8px;
 }
@@ -149,6 +147,7 @@ body {
   border-radius: 50%;
 }
 
+/*
 .site-footer {
   margin-top: 3rem;
   padding: 2rem 1rem;
@@ -204,6 +203,7 @@ body {
   text-decoration: underline;
 }
 
+*/
 h4 {
   font-size: 1.5rem;
   font-weight: bold;
