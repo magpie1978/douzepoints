@@ -68,9 +68,9 @@ body {
   margin-right: 10px;
 }
 
+/*
 .carousel-video-item {
   cursor: pointer;
-  /* background-color: #1a1a1a; */
   background-color: #181a24;
   padding: 10px;
   border-radius: 8px;
@@ -79,6 +79,7 @@ body {
   flex: 0 0 220px;
   margin-right: 30px;
 }
+*/
 
 .video-item:hover {
   transform: scale(1.1);
@@ -298,7 +299,7 @@ h4 {
 
 
 
-/* CAROUSELS */
+/* CAROUSELS 
 .carousel-section {
   width: 90%;
   max-width: 1200px;
@@ -331,13 +332,14 @@ h4 {
   overflow-x: auto;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 20px; /* add breathing room for hover effect */
+  padding-bottom: 20px;
 }
 
 .carousel-track {
   display: flex;
   width: max-content;
 }
+*/
 
 .video-title-text::first-line {
   font-size: 0.85rem;
