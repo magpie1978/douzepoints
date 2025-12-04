@@ -115,15 +115,28 @@ td.divider-right {
   padding: 0 20px; /* optional: match table horizontal padding */
 }
 
-/* Fine-tune spacing */
-#tableHeader {
-  margin-left: 0;
-  padding-left: 0;
+/* NEW: Title + dropdowns aligned horizontally */
+.table-header-row {
+  display: flex;
+  justify-content: space-between;  /* title on left, controls on right */
+  align-items: center;             /* vertical alignment */
+  max-width: 1280px;
+  margin: 0 auto 10px auto;        /* match table width + spacing */
+  padding: 0 20px;                 /* same horizontal padding as container */
 }
 
-/* Right-align the controls to the table width */
-.table-controls {
-  justify-content: flex-end;
-  padding-right: 0;
+/* Remove extra spacing from title */
+#tableHeader {
+  margin: 0;
+  padding: 0;
 }
+
+/* Controls stay styled but remove vertical spacing */
+.table-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0;
+}
+
 
