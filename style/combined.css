@@ -416,3 +416,13 @@ h4 {
   display: block;
   margin: 0 auto;
 }
+
+.page-content {
+  width: 90%;
+  max-width: 1200px;
+  margin: 40px auto; /* centers content + adds spacing */
+  line-height: 1.6;
+  font-size: 1.1rem;
+  color: #ccc;
+}
+
