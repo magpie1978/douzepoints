@@ -1,0 +1,109 @@
+/* Base layout */
+body {
+  font-family: 'Raleway', sans-serif;
+  background: #0f111a;
+  color: #ccc;
+  margin: 0;
+}
+
+.main-content {
+  padding: 20px;
+}
+
+/* Page title */
+h1#tableHeader {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  padding-left: 4px;
+}
+
+/* Table controls */
+.table-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 20px;
+}
+
+.table-controls label {
+  font-size: 12px;
+}
+
+.table-controls select {
+  font-size: 12px;
+  padding: 4px 8px;
+  background: #1f212d;
+  color: #ccc;
+  border: none;
+  border-radius: 6px;
+}
+
+/* Table wrapper */
+.table-wrapper {
+  max-width: 1280px;
+  margin: auto;
+  background: #181a24;
+  border-radius: 12px;
+  overflow-x: auto;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #1f212d;
+}
+
+th, td {
+  padding: 12px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid #2a2d3a;
+}
+
+th {
+  color: #aaa;
+  font-weight: 500;
+}
+
+/* Center numeric columns */
+.televote-rank,
+.televote-pts,
+.jury-rank,
+.jury-pts,
+.total-pts {
+  text-align: center;
+}
+
+/* Country flag */
+.flag {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 12px;
+}
+
+/* PLAY ICON (global modal trigger) */
+.play-icon i {
+  font-size: 22px;
+  color: #e50914;
+  cursor: pointer;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.play-icon i:hover {
+  transform: scale(1.2);
+  color: #ffffff;
+}
+
+/* Optional divider column */
+th.divider-right,
+td.divider-right {
+  border-right: 1px dashed rgba(255,255,255,0.1);
+}
