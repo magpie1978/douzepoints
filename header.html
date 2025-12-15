@@ -1,0 +1,96 @@
+<header class="main-header">
+
+    <div class="header-overlay">
+
+        <!-- LEFT: Navigation links -->
+        <div class="header-links">
+            <a class="home-link" href="index.html">Home</a>
+            <a class="home-link" href="country.html?country=Albania">Countries</a>
+            <a class="home-link" href="edition.html?edition=2025">Editions</a>
+            <a class="home-link" href="scoreboard.html">Scoreboard</a>
+            <a class="home-link" href="my-favorites.html">My Favorites</a>
+            <a class="home-link" href="my-stats.html">My Stats</a>
+
+        </div>
+
+        <!-- RIGHT: Logout button with icon -->
+        <div class="header-right">
+            <a class="logout-link" href="#" id="logout-btn">
+                <i data-lucide="log-out" class="logout-icon"></i>
+                <span class="logout-text">Logout</span>
+            </a>
+        </div>
+
+    </div>
+
+    <div class="banner-static">
+        <img alt="Banner" id="country-banner" src="" />
+    </div>
+</header>
+
+<div class="banner-divider"></div>
+
+
+<!-- Lucide Icons (correct script that actually works) -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- Logout & Icon Logic -->
+<script type="module">
+    import { supabase } from './supabaseClient.js';
+
+    // Render Lucide icons AFTER script loads
+    lucide.createIcons();
+
+    document.getElementById("logout-btn").addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        const { error } = await supabase.auth.signOut();
+
+        if (error) {
+            console.error("Logout error:", error);
+            alert("Failed to log out.");
+        } else {
+            window.location.href = "login.html";
+        }
+    });
+</script>
+
+<style>
+    /* Layout */
+    .header-overlay {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 30px;
+    }
+
+    .header-links a {
+        margin-right: 20px;
+    }
+
+    .header-right {
+        margin-left: auto;
+    }
+
+.logout-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff !important;      /* TEXT → white */
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.logout-link:hover {
+    opacity: 0.75;
+}
+
+.logout-icon {
+    width: 22px;
+    height: 22px;
+    stroke-width: 2.5;
+    color: #ffffff;                  /* ICON → white */
+}
+
+</style>

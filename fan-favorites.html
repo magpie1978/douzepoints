@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <!-- favicons  -->
+    <link rel="icon" type="image/png" sizes="16x16" href="banners/favicon-circle-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="banners/favicon-circle-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="banners/favicon-circle-180.png">
+    <link rel="icon" type="image/x-icon" href="banners/favicon-circle.ico">
+
+
+    
+    <meta charset="utf-8" />
+    <title>DouzePoints | Fan Favourites</title>
+    <link rel="stylesheet" type="text/css" href="style/combined.css">
+    <link rel="stylesheet" type="text/css" href="style/footer.css">
+    <link rel="stylesheet" type="text/css" href="style/video-cards.css">
+    <link rel="stylesheet" type="text/css" href="style/favorites.css">
+    <link rel="stylesheet" type="text/css" href="style/sidebar.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+
+  <body oncontextmenu="return false">
+    
+    <!-- HEADER -->
+    <div id="header-container"></div>
+    <script type="module" src="js/header.js"></script>
+    
+    <!-- MAIN CONTENT -->
+    <div class="container">
+      <div id="sidebar-container" class="sidebar"></div>
+  
+      <div class="main-content">
+        <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
+          <div style="flex: 1;"></div>
+          <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
+            <label for="sort-options">
+              <i data-lucide="list-filter" style="margin-right: 15px;"></i>
+            </label>
+            <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
+              <option value="year-desc" selected>Year (desc)</option>
+              <option value="year-asc">Year (asc)</option>
+              <option value="artist">Artist Name</option>
+              <option value="song">Song Title</option>
+              <option value="jury">Jury Points</option>
+              <option value="televote">Televote Points</option>
+              <option value="total">Total Points</option>
+            </select>
+          </div>
+        </div>
+  
+        <div class="grid-container" id="video-container"></div>
+      </div>
+    </div>
+
+    <!-- MODAL -->
+    <script src="js/modal.js"></script>
+    <div id="modal-container"></div>
+    
+    <script type="module" src="js/video.js"></script>
+    
+    <!-- FOOTER -->
+    <div id="footer"></div>
+    <script src="js/footer.js" type="text/javascript"></script>
+  
+    <!-- SCRIPTS -->
+    <script src="js/sorting.js" type="text/javascript"></script>
+    <script src="js/icons.js" type="text/javascript"></script>
+  
+    <!-- LOAD SIDEBAR MODULE -->
+    <script type="module" src="js/sidebar.js"></script>
+  </body>
+</html>
