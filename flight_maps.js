@@ -158,10 +158,14 @@ async function loadRoutes() {
   }
 
   const features = data.map(r => ({
-    type: "Feature",
-    geometry: r.geom,
-    properties: r
-  }));
+  type: "Feature",
+  geometry: r.geom,
+  properties: {
+    ...r,
+    journey_type: r.type   // 🔑 rename it here
+  }
+}));
+
 
   const fc = { type: "FeatureCollection", features };
 
