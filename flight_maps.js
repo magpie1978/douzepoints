@@ -175,8 +175,8 @@ async function loadRoutes() {
       type: "line",
       source: "routes",
       paint: {
-        "line-width": 2.5,
-        "line-opacity": 0.85,
+        "line-width": 1.0,
+        "line-opacity": 0.75,
 
         // 🎨 Route colouring by type
         "line-color": [
