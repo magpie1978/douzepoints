@@ -182,12 +182,11 @@ async function loadRoutes() {
         "line-color": [
           "case",
             ["==", ["get", "type"], "Flight"],
-          "#FFD700",        // yellow
+          "#E53935",        // yellow
 
             ["==", ["get", "type"], "Drive"],
           "#1E90FF",        // blue
-
-          "#E53935"         // red (everything else)
+          "#FFD700"         // red (everything else)
           ]
         }
       });
