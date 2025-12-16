@@ -67,7 +67,7 @@ function fitToBounds(features) {
 // =====================================================
 async function loadFilters() {
   const { data, error } = await sb
-    .from("journeys_filters")
+    .from("journeys_filters_cache")
     .select("year, airline");
 
   if (error) {
