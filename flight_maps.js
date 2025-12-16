@@ -176,9 +176,22 @@ async function loadRoutes() {
       source: "routes",
       paint: {
         "line-width": 2.5,
-        "line-opacity": 0.85
-      }
-    });
+        "line-opacity": 0.85,
+
+        // 🎨 Route colouring by type
+        "line-color": [
+          "case",
+            ["==", ["get", "type"], "Flight"],
+          "#FFD700",        // yellow
+
+            ["==", ["get", "type"], "Drive"],
+          "#1E90FF",        // blue
+
+          "#E53935"         // red (everything else)
+          ]
+        }
+      });
+
 
     map.on("mouseenter", "routes-line", () => {
       map.getCanvas().style.cursor = "pointer";
