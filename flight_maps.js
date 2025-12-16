@@ -63,13 +63,12 @@ function fitToBounds(features) {
 }
 
 // =====================================================
-// LOAD FILTER OPTIONS (from journeys_flights)
+// LOAD FILTER OPTIONS (from journeys_filters)
 // =====================================================
 async function loadFilters() {
   const { data, error } = await sb
     .from("journeys_filters")
     .select("year, airline");
-
 
   if (error) {
     console.error(error);
@@ -105,8 +104,12 @@ async function loadRoutes() {
 
   let q = sb
     .from("journeys_routes")
-    .select("uid,callsign,airline,origin,destination,journey_distance,geom")
-    .eq("year", yearSelect.value);
+    .select("uid,callsign,airline,origin,destination,journey_distance,geom");
+
+  // ✅ YEAR GUARD (this is the fix)
+  if (yearSelect.value) {
+    q = q.eq("year", yearSelect.value);
+  }
 
   if (airlineSelect.value) {
     q = q.eq("airline", airlineSelect.value);
@@ -183,7 +186,7 @@ async function loadRoutes() {
   }
 
   fitToBounds(features);
-  setStatus(`${features.length} flights in ${yearSelect.value}`);
+  setStatus(`${features.length} flights${yearSelect.value ? ` in ${yearSelect.value}` : ""}`);
 }
 
 // =====================================================
