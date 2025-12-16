@@ -211,8 +211,14 @@ async function loadRoutes() {
 // =====================================================
 map.on("load", async () => {
   await loadFilters();
-  await loadRoutes();
+
+  if (yearSelect.value) {
+    await loadRoutes();
+  } else {
+    setStatus("Select a year");
+  }
 });
+
 
 yearSelect.addEventListener("change", loadRoutes);
 airlineSelect.addEventListener("change", loadRoutes);
