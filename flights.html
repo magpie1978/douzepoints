@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Journeys Map</title>
+
+  <!-- Mapbox GL JS (CSS + JS) -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/3.15.0/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/3.15.0/mapbox-gl.js"></script> <!-- Mapbox GL JS --> <!-- :contentReference[oaicite:1]{index=1} -->
+
+  <!-- Supabase JS (UMD via CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> <!-- :contentReference[oaicite:2]{index=2} -->
+
+  <link rel="stylesheet" href="./map.css" />
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="title">Flight Journeys</div>
+
+    <div class="controls">
+      <label>
+        Days back
+        <select id="daysBack">
+          <option value="3">3</option>
+          <option value="7" selected>7</option>
+          <option value="14">14</option>
+          <option value="30">30</option>
+        </select>
+      </label>
+
+      <label>
+        Callsign contains
+        <input id="callsignFilter" type="text" placeholder="e.g. BAW" />
+      </label>
+
+      <button id="reloadBtn">Reload</button>
+      <div id="status" class="status"></div>
+    </div>
+  </header>
+
+  <main>
+    <div id="map"></div>
+  </main>
+
+  <script type="module" src="./map.js"></script>
+</body>
+</html>
