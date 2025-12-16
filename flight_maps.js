@@ -70,7 +70,7 @@ function fitToBounds(features) {
 async function loadFilters() {
   const { data, error } = await sb
     .from("journeys_routes_cache")
-    .select("year, airline, type");
+    .select("year, airline, journey_type");
 
   if (error) {
     console.error(error);
@@ -105,7 +105,7 @@ async function loadFilters() {
     airlines.map(a => `<option value="${a}">${a}</option>`).join("");
 
   // ---- TYPES ----
-  const types = [...new Set(data.map(d => d.type).filter(Boolean))].sort();
+  const types = [...new Set(data.map(d => d.journey_type).filter(Boolean))].sort();
 
   typeSelect.innerHTML =
     `<option value="">All types</option>` +
@@ -127,12 +127,12 @@ async function loadRoutes() {
   let q = sb
     .from("journeys_routes_cache")
     .select(
-      "uid,callsign,airline,type,origin,destination,journey_distance,geom"
+      "uid,callsign,airline,journey_type,origin,destination,journey_distance,geom"
     );
 
   if (yearSelect.value) q = q.eq("year", yearSelect.value);
   if (airlineSelect.value) q = q.eq("airline", airlineSelect.value);
-  if (typeSelect.value) q = q.eq("type", typeSelect.value);
+  if (typeSelect.value) q = q.eq("journey_type", typeSelect.value);
 
   const cs = callsignEl.value.trim();
   if (cs) q = q.ilike("callsign", `%${cs}%`);
@@ -163,7 +163,7 @@ async function loadRoutes() {
     geometry: r.geom,
     properties: {
       ...r,
-      journey_type: r.type, // avoid GeoJSON "type" collision
+      journey_type: r.journey_type, // avoid GeoJSON "type" collision
     },
   }));
 
