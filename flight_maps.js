@@ -12,7 +12,7 @@ const MAPBOX_TOKEN = "pk.eyJ1IjoiY2hyaXMtZHVuaWdhbiIsImEiOiJjbWo4dDRtbGowM25lM2V
 const VIEW_NAME = "journeys";
 
 // Safety limits (avoid fetching the whole world accidentally)
-const MAX_ROWS = 20000;          // cap total track points returned
+const MAX_ROWS = 2000000;          // cap total track points returned
 const MAX_POINTS_PER_FLIGHT = 10000; // downsample per flight if huge
 
 // -----------------------------
