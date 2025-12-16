@@ -5,20 +5,21 @@
 // 1) CONFIG — fill these in
 // -----------------------------
 const SUPABASE_URL = "https://jxmyetsjqkrluxqtevxy.supabase.co";
-const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_ANON_KEY_HERE";
-const MAPBOX_TOKEN = "PASTE_YOUR_MAPBOX_PUBLIC_TOKEN_HERE";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4bXlldHNqcWtybHV4cXRldnh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMzI2NjYsImV4cCI6MjA4MDYwODY2Nn0.YoXEtsY_Zh1Eeuj0kl11AOaj01VrZzGGKoPhJyQP-iU";
+const MAPBOX_TOKEN = "pk.eyJ1IjoiY2hyaXMtZHVuaWdhbiIsImEiOiJjbWo4dDRtbGowM25lM2VzYWV0eHhocHp5In0.kO8gJyPmFLqQhz-kTTDyIQ";
 
 // View name
 const VIEW_NAME = "journeys";
 
 // Safety limits (avoid fetching the whole world accidentally)
 const MAX_ROWS = 20000;          // cap total track points returned
-const MAX_POINTS_PER_FLIGHT = 800; // downsample per flight if huge
+const MAX_POINTS_PER_FLIGHT = 10000; // downsample per flight if huge
 
 // -----------------------------
 // 2) Init clients
 // -----------------------------
 mapboxgl.accessToken = MAPBOX_TOKEN;
+
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
