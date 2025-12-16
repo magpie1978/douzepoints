@@ -121,7 +121,7 @@ async function loadRoutes() {
 
   let q = sb
     .from("journeys_routes_cache")
-    .select("uid,callsign,airline,origin,destination,journey_distance,geom");
+    .select("uid,callsign,airline,origin,destination,journey_distance,geom,type");
 
   // ✅ YEAR GUARD (this is the fix)
   if (yearSelect.value) {
@@ -184,14 +184,16 @@ async function loadRoutes() {
 
         // 🎨 Route colouring by type
         "line-color": [
-          "case",
-            ["==", ["get", "type"], "Flight"],
-          "#E53935",        // yellow
+  "case",
+  ["==", ["get", "journey_type"], "Flight"],
+  "#FFD700",   // yellow
 
-            ["==", ["get", "type"], "Drive"],
-          "#1E90FF",        // blue
-          "#FFD700"         // red (everything else)
-          ]
+  ["==", ["get", "journey_type"], "Drive"],
+  "#1E90FF",   // blue
+
+  "#E53935"    // red (Boat, Bus, Walk, anything else)
+]
+
         }
       });
 
