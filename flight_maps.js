@@ -120,7 +120,7 @@ async function loadRoutes() {
   setStatus("Loading routes…");
 
   let q = sb
-    .from("journeys_routes")
+    .from("journeys_routes_cache")
     .select("uid,callsign,airline,origin,destination,journey_distance,geom");
 
   // ✅ YEAR GUARD (this is the fix)
