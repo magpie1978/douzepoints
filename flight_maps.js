@@ -68,7 +68,7 @@ function fitToBounds(features) {
 async function loadFilters() {
   const { data, error } = await sb
     .from("journeys_filters_cache")
-    .select("year, airline");
+    .select("year, airline","type");
 
   if (error) {
     console.error("Filter load error:", error);
@@ -106,6 +106,16 @@ async function loadFilters() {
     yearSelect.value = years[0][1]; // full date value
   }
 
+  // ---- TYPE SELECTOR ----
+  const typeSelect = document.getElementById("typeSelect");
+
+  const types = [...new Set(data.map(d => d.type).filter(Boolean))].sort();
+
+typeSelect.innerHTML =
+  `<option value="">All types</option>` +
+  types.map(t => `<option value="${t}">${t}</option>`).join("");
+
+
   console.log("Filters loaded:", {
     years: years.map(y => y[0]),
     airlines
@@ -120,21 +130,27 @@ async function loadRoutes() {
   setStatus("Loading routes…");
 
   let q = sb
-    .from("journeys_routes_cache")
-    .select("uid,callsign,airline,origin,destination,journey_distance,geom,type");
+  .from("journeys_routes_cache")
+  .select("uid,callsign,airline,origin,destination,journey_distance,geom,type");
+
 
   // ✅ YEAR GUARD (this is the fix)
   if (yearSelect.value) {
-    q = q.eq("year", yearSelect.value);
-  }
+  q = q.eq("year", yearSelect.value);
+}
 
-  if (airlineSelect.value) {
-    q = q.eq("airline", airlineSelect.value);
-  }
+if (airlineSelect.value) {
+  q = q.eq("airline", airlineSelect.value);
+}
 
-  if (callsignEl.value.trim()) {
-    q = q.ilike("callsign", `%${callsignEl.value.trim()}%`);
-  }
+if (typeSelect.value) {
+  q = q.eq("type", typeSelect.value);
+}
+
+if (callsignEl.value.trim()) {
+  q = q.ilike("callsign", `%${callsignEl.value.trim()}%`);
+}
+
 
   const { data, error } = await q;
 
@@ -241,6 +257,7 @@ map.on("load", async () => {
 yearSelect.addEventListener("change", loadRoutes);
 airlineSelect.addEventListener("change", loadRoutes);
 reloadBtn.addEventListener("click", loadRoutes);
+typeSelect.addEventListener("change", loadRoutes);
 
 callsignEl.addEventListener("keydown", e => {
   if (e.key === "Enter") loadRoutes();
