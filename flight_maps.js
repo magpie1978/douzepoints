@@ -71,30 +71,47 @@ async function loadFilters() {
     .select("year, airline");
 
   if (error) {
-    console.error(error);
+    console.error("Filter load error:", error);
     setStatus("Failed to load filters");
     return;
   }
 
-  const years = [...new Set(data.map(d => d.year).filter(Boolean))]
-    .sort((a, b) => b.localeCompare(a));
+  // ---- YEARS ----
+  const yearMap = new Map();
+  data.forEach(d => {
+    if (d.year) {
+      const yearStr = d.year.substring(0, 4); // "2024"
+      yearMap.set(yearStr, d.year);            // keep full date value
+    }
+  });
 
-  const airlines = [...new Set(data.map(d => d.airline).filter(Boolean))]
-    .sort();
+  const years = [...yearMap.entries()]
+    .sort((a, b) => b[0].localeCompare(a[0])); // sort by YYYY desc
 
   yearSelect.innerHTML = years
-    .map(y => `<option value="${y}">${y}</option>`)
+    .map(([label, value]) =>
+      `<option value="${value}">${label}</option>`
+    )
     .join("");
+
+  // ---- AIRLINES ----
+  const airlines = [...new Set(data.map(d => d.airline).filter(a => a))].sort();
 
   airlineSelect.innerHTML =
     `<option value="">All airlines</option>` +
     airlines.map(a => `<option value="${a}">${a}</option>`).join("");
 
-  // Default to latest year
+  // ---- DEFAULT YEAR (latest) ----
   if (years.length) {
-    yearSelect.value = years[0];
+    yearSelect.value = years[0][1]; // full date value
   }
+
+  console.log("Filters loaded:", {
+    years: years.map(y => y[0]),
+    airlines
+  });
 }
+
 
 // =====================================================
 // LOAD & RENDER ROUTES (from journeys_routes)
