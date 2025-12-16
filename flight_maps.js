@@ -12,7 +12,7 @@ mapboxgl.accessToken =
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Guardrail for Mapbox performance
+// Safety guardrail
 const MAX_ROUTES = 300;
 
 // =====================================================
@@ -28,64 +28,27 @@ const map = new mapboxgl.Map({
 map.addControl(new mapboxgl.NavigationControl(), "top-right");
 
 // =====================================================
-// UI ELEMENTS (match your HTML ids)
+// UI ELEMENTS
 // =====================================================
-const yearSelect = document.getElementById("yearSelect");           // optional
-const airlineSelect = document.getElementById("airlineSelect");     // optional
-const daysBackEl = document.getElementById("daysBack");             // optional
-const callsignEl = document.getElementById("callsignFilter");       // "Callsign contains"
-const reloadBtn = document.getElementById("reloadBtn");             // Reload button
+const yearSelect = document.getElementById("yearSelect");
+const airlineSelect = document.getElementById("airlineSelect");
+const callsignEl = document.getElementById("callsignFilter");
+const reloadBtn = document.getElementById("reloadBtn");
 const statusEl = document.getElementById("status");
 
 // =====================================================
-// SMALL HELPERS
+// HELPERS
 // =====================================================
 function setStatus(msg) {
-  if (statusEl) statusEl.textContent = msg || "";
-}
-
-function safeValue(el) {
-  return el ? (el.value ?? "").toString().trim() : "";
-}
-
-function upsertRoutes(fc) {
-  if (map.getSource("routes")) {
-    map.getSource("routes").setData(fc);
-    return;
-  }
-
-  map.addSource("routes", { type: "geojson", data: fc });
-
-  map.addLayer({
-    id: "routes-line",
-    type: "line",
-    source: "routes",
-    paint: {
-      "line-width": 2.5,
-      "line-opacity": 0.85,
-    },
-  });
-
-  map.on("mouseenter", "routes-line", () => (map.getCanvas().style.cursor = "pointer"));
-  map.on("mouseleave", "routes-line", () => (map.getCanvas().style.cursor = ""));
-
-  map.on("click", "routes-line", (e) => {
-    const p = e.features?.[0]?.properties || {};
-    new mapboxgl.Popup()
-      .setLngLat(e.lngLat)
-      .setHTML(`
-        <strong>${p.callsign || "Flight"}</strong><br/>
-        ${p.origin || "?"} → ${p.destination || "?"}<br/>
-        ${p.airline || ""}<br/>
-        ${p.journey_distance || ""} mi
-      `)
-      .addTo(map);
-  });
+  statusEl.textContent = msg || "";
 }
 
 function clearRoutes() {
   if (map.getSource("routes")) {
-    map.getSource("routes").setData({ type: "FeatureCollection", features: [] });
+    map.getSource("routes").setData({
+      type: "FeatureCollection",
+      features: []
+    });
   }
 }
 
@@ -93,20 +56,16 @@ function fitToBounds(features) {
   if (!features.length) return;
 
   const bounds = new mapboxgl.LngLatBounds();
-  for (const f of features) {
-    const coords = f.geometry?.coordinates || [];
-    for (const c of coords) bounds.extend(c);
-  }
+  features.forEach(f => {
+    f.geometry.coordinates.forEach(c => bounds.extend(c));
+  });
   map.fitBounds(bounds, { padding: 60, duration: 600 });
 }
 
 // =====================================================
-// LOAD FILTER OPTIONS (uses journeys_flights)
+// LOAD FILTER OPTIONS (from journeys_flights)
 // =====================================================
 async function loadFilters() {
-  // If you don't have year/airline dropdowns in the HTML, skip silently.
-  if (!yearSelect && !airlineSelect) return;
-
   const { data, error } = await sb
     .from("journeys_flights")
     .select("year, airline");
@@ -117,101 +76,113 @@ async function loadFilters() {
     return;
   }
 
-  const years = [...new Set((data || []).map((d) => d.year).filter(Boolean))]
+  const years = [...new Set(data.map(d => d.year).filter(Boolean))]
     .sort((a, b) => b.localeCompare(a));
-  const airlines = [...new Set((data || []).map((d) => d.airline).filter(Boolean))].sort();
 
-  if (yearSelect) {
-    yearSelect.innerHTML =
-      `<option value="">All years</option>` +
-      years.map((y) => `<option value="${y}">${y}</option>`).join("");
+  const airlines = [...new Set(data.map(d => d.airline).filter(Boolean))]
+    .sort();
 
-    // default to latest year to avoid loading everything
-    if (years.length) yearSelect.value = years[0];
-  }
+  yearSelect.innerHTML = years
+    .map(y => `<option value="${y}">${y}</option>`)
+    .join("");
 
-  if (airlineSelect) {
-    airlineSelect.innerHTML =
-      `<option value="">All airlines</option>` +
-      airlines.map((a) => `<option value="${a}">${a}</option>`).join("");
+  airlineSelect.innerHTML =
+    `<option value="">All airlines</option>` +
+    airlines.map(a => `<option value="${a}">${a}</option>`).join("");
+
+  // Default to latest year
+  if (years.length) {
+    yearSelect.value = years[0];
   }
 }
 
 // =====================================================
-// LOAD & RENDER ROUTES (uses journeys_routes)
+// LOAD & RENDER ROUTES (from journeys_routes)
 // =====================================================
 async function loadRoutes() {
   setStatus("Loading routes…");
 
-  const year = safeValue(yearSelect);
-  const airline = safeValue(airlineSelect);
-  const callsignText = safeValue(callsignEl);
-  const daysBack = safeValue(daysBackEl);
-
   let q = sb
     .from("journeys_routes")
-    .select("uid,callsign,airline,origin,destination,journey_distance,year,geom");
+    .select("uid,callsign,airline,origin,destination,journey_distance,geom")
+    .eq("year", yearSelect.value);
 
-  // Optional filters
-  if (year) q = q.eq("year", year);
-  if (airline) q = q.eq("airline", airline);
-
-  // Callsign contains (case-insensitive)
-  if (callsignText) {
-    q = q.ilike("callsign", `%${callsignText}%`);
+  if (airlineSelect.value) {
+    q = q.eq("airline", airlineSelect.value);
   }
 
-  // Optional "days back" filter:
-  // journeys_routes has no timestamp column by design, so we filter on year only.
-  // If you want true date filtering, we can add flight_date / first_timestamp to journeys_flights,
-  // and filter uids via journeys_flights first.
-  if (daysBack) {
-    // No-op for now; leaving this comment so behaviour is explicit.
+  if (callsignEl.value.trim()) {
+    q = q.ilike("callsign", `%${callsignEl.value.trim()}%`);
   }
 
   const { data, error } = await q;
 
   if (error) {
     console.error(error);
-    setStatus(`Error loading routes: ${error.message}`);
+    setStatus("Failed to load routes");
     clearRoutes();
     return;
   }
 
-  const rows = data || [];
-
-  if (!rows.length) {
-    setStatus("No flights match your filters.");
+  if (!data || !data.length) {
+    setStatus("No flights found for this year");
     clearRoutes();
     return;
   }
 
-  if (rows.length > MAX_ROUTES) {
-    setStatus(`Too many flights (${rows.length}) — refine filters.`);
+  if (data.length > MAX_ROUTES) {
+    setStatus(`Too many flights (${data.length}) — refine filters`);
     clearRoutes();
     return;
   }
 
-  // Build GeoJSON FeatureCollection (geom is already JSON from your view)
-  const features = rows.map((r) => ({
+  const features = data.map(r => ({
     type: "Feature",
     geometry: r.geom,
-    properties: {
-      uid: r.uid,
-      callsign: r.callsign,
-      airline: r.airline,
-      origin: r.origin,
-      destination: r.destination,
-      journey_distance: r.journey_distance,
-    },
+    properties: r
   }));
 
   const fc = { type: "FeatureCollection", features };
 
-  upsertRoutes(fc);
-  fitToBounds(features);
+  if (map.getSource("routes")) {
+    map.getSource("routes").setData(fc);
+  } else {
+    map.addSource("routes", { type: "geojson", data: fc });
 
-  setStatus(`${features.length} flights`);
+    map.addLayer({
+      id: "routes-line",
+      type: "line",
+      source: "routes",
+      paint: {
+        "line-width": 2.5,
+        "line-opacity": 0.85
+      }
+    });
+
+    map.on("mouseenter", "routes-line", () => {
+      map.getCanvas().style.cursor = "pointer";
+    });
+
+    map.on("mouseleave", "routes-line", () => {
+      map.getCanvas().style.cursor = "";
+    });
+
+    map.on("click", "routes-line", e => {
+      const p = e.features[0].properties;
+      new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(`
+          <strong>${p.callsign}</strong><br/>
+          ${p.origin} → ${p.destination}<br/>
+          ${p.airline || ""}<br/>
+          ${p.journey_distance || ""} mi
+        `)
+        .addTo(map);
+    });
+  }
+
+  fitToBounds(features);
+  setStatus(`${features.length} flights in ${yearSelect.value}`);
 }
 
 // =====================================================
@@ -222,16 +193,10 @@ map.on("load", async () => {
   await loadRoutes();
 });
 
-// Reload button (if present)
-if (reloadBtn) reloadBtn.addEventListener("click", loadRoutes);
+yearSelect.addEventListener("change", loadRoutes);
+airlineSelect.addEventListener("change", loadRoutes);
+reloadBtn.addEventListener("click", loadRoutes);
 
-// Change events (if present)
-if (yearSelect) yearSelect.addEventListener("change", loadRoutes);
-if (airlineSelect) airlineSelect.addEventListener("change", loadRoutes);
-
-// Enter key in callsign box triggers reload
-if (callsignEl) {
-  callsignEl.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") loadRoutes();
-  });
-}
+callsignEl.addEventListener("keydown", e => {
+  if (e.key === "Enter") loadRoutes();
+});
