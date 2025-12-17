@@ -190,25 +190,46 @@
     <!-- =============================
          TOP FILTER BAR
     ============================== -->
-    <div id="top-bar">
-      <label>Year</label>
-      <div class="filter">
-        <button class="filter-btn" data-filter="year">Year ▾</button>
-        <div class="filter-menu" id="yearFilter"></div>
-      </div>
+  <div id="top-bar">
 
-      <div class="filter">
-        <button class="filter-btn" data-filter="airline">Airline ▾</button>
-        <div class="filter-menu" id="airlineFilter"></div>
+    <!-- Year -->
+    <div id="filter-year" class="filter">
+      <button class="filter-toggle">Year ▾</button>
+      <div class="filter-menu">
+        <div class="filter-actions">
+          <button class="select-all">Select all</button>
+          <button class="clear">Clear</button>
+        </div>
+        <div class="filter-options"></div>
       </div>
-
-      <div class="filter">
-        <button class="filter-btn" data-filter="type">Type ▾</button>
-        <div class="filter-menu" id="typeFilter"></div>
-      </div>
-
-      <button id="reloadBtn">Reload</button>
     </div>
+
+    <!-- Airline -->
+    <div id="filter-airline" class="filter">
+      <button class="filter-toggle">Airline ▾</button>
+      <div class="filter-menu">
+        <div class="filter-actions">
+          <button class="select-all">Select all</button>
+          <button class="clear">Clear</button>
+        </div>
+        <div class="filter-options"></div>
+      </div>
+    </div>
+
+    <!-- Type -->
+    <div id="filter-type" class="filter">
+      <button class="filter-toggle">Type ▾</button>
+      <div class="filter-menu">
+        <div class="filter-actions">
+          <button class="select-all">Select all</button>
+          <button class="clear">Clear</button>
+        </div>
+        <div class="filter-options"></div>
+      </div>
+    </div>
+
+    <button id="reloadBtn">Reload</button>
+  </div>
 
     <!-- =============================
          MAIN CONTENT
