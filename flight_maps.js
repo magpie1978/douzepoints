@@ -11,7 +11,7 @@ mapboxgl.accessToken =
   "pk.eyJ1IjoiY2hyaXMtZHVuaWdhbiIsImEiOiJjbWo4dDRtbGowM25lM2VzYWV0eHhocHp5In0.kO8gJyPmFLqQhz-kTTDyIQ";
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-const MAX_ROUTES = 300;
+const MAX_ROUTES = 1000;
 
 // =====================================================
 // MAP INIT
