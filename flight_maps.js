@@ -100,8 +100,8 @@ function renderFlightList(routes) {
       ? String(r.journey_date).slice(0, 10)
       : "";
 
-    const flightNo = r.flight_number
-      ? r.flight_number + " · "
+    const flightNo = r.callsign
+      ? r.callsign + " · "
       : "";
 
     li.innerHTML =
@@ -276,7 +276,7 @@ async function loadRoutes() {
   let q = sb
     .from("journeys_routes_cache")
     .select(
-      "uid,callsign,airline,flight_number,journey_type,origin,destination,journey_distance,journey_date,geom"
+      "uid,callsign,airline,callsign,journey_type,origin,destination,journey_distance,journey_date,geom"
     );
 
   if (yearSelect?.value) q = q.eq("year", yearSelect.value);
