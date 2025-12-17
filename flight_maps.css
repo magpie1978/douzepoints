@@ -1,342 +1,227 @@
-* { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+/* =====================================================
+   GLOBAL
+===================================================== */
 
-.topbar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:10px 14px;
-  border-bottom:1px solid rgba(0,0,0,0.12);
+* {
+  box-sizing: border-box;
 }
 
-.title{
-  font-weight:700;
-  letter-spacing:0.2px;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  background: #111;
+  color: #fff;
 }
 
-.controls{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
+/* =====================================================
+   TOP BAR
+===================================================== */
+
+#top-bar {
+  height: 52px;
+  background: #f5f5f5;
+  color: #000;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-bottom: 1px solid #ddd;
 }
 
-label{
-  display:flex;
-  align-items:center;
-  gap:6px;
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* =====================================================
+   FILTER DROPDOWNS
+===================================================== */
+
+.filter {
+  position: relative;
+}
+
+.filter-toggle {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #000;
+}
+
+.filter-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background: #222;
+  color: #fff;
+  border-radius: 10px;
+  min-width: 220px;
+  max-height: 300px;
+  display: none;
+  flex-direction: column;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+}
+
+.filter-menu.open {
+  display: flex;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.filter-actions button {
+  background: none;
+  border: none;
+  color: #9fc9ff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.filter-options {
+  overflow-y: auto;
+  padding: 6px 10px;
+}
+
+.filter-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
   font-size: 13px;
+  cursor: pointer;
+  color: #fff;
 }
 
-input, select, button{
-  padding:7px 9px;
-  border:1px solid rgba(0,0,0,0.2);
-  border-radius:8px;
-  font-size: 13px;
+.filter-options input {
+  accent-color: #ffd700;
 }
 
-button{ cursor:pointer; }
+/* =====================================================
+   RELOAD BUTTON
+===================================================== */
 
-.status{
-  font-size: 13px;
-  opacity: 0.75;
-  min-width: 140px;
+#reloadBtn {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
+/* =====================================================
+   MAIN LAYOUT
+===================================================== */
 
-#sidebar h3 {
-  margin: 0 0 10px;
+#layout {
+  display: flex;
+  height: calc(100vh - 52px);
+}
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+#sidebar {
+  width: 280px;
+  background: linear-gradient(to bottom, #0d0d0d, #141414);
+  border-right: 1px solid #222;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.25s ease;
+}
+
+#sidebar.collapsed {
+  width: 48px;
+}
+
+#sidebar-header {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border-bottom: 1px solid #222;
   font-size: 14px;
   text-transform: uppercase;
-  opacity: 0.8;
+  letter-spacing: 0.08em;
+}
+
+#sidebarToggle {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
 }
 
 #flightList {
   list-style: none;
   padding: 0;
   margin: 0;
+  overflow-y: auto;
+  flex: 1;
 }
 
 #flightList li {
-  padding: 8px;
-  border-bottom: 1px solid #222;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   cursor: pointer;
+  transition: background 0.15s ease;
 }
 
 #flightList li:hover {
-  background: #222;
+  background: rgba(255, 255, 255, 0.06);
 }
 
 #flightList li.active {
-  background: #333;
-  font-weight: bold;
+  background: rgba(255, 215, 0, 0.15);
 }
 
-/* Container holding sidebar + map 
-#map-layout {
-  display: flex;
-  flex-direction: row;      
-  width: 100%;
-  height: 100vh;           
-}
-*/
-
-#map-layout {
-  display: flex;
-  width: 100%;
-  height: 100vh;
-}
-
-#map {
-  flex: 1;
-  height: 100%;
-}
-
-
-
-/* Sidebar on the left */
-#sidebar {
-  width: 320px;
-  min-width: 320px;
-  max-width: 320px;
-  background: #111;
-  color: #fff;
-  overflow-y: auto;
-  border-right: 1px solid #222;
-  transition: width 0.25s ease;
-}
-
-/* Collapsed state */
-#sidebar.collapsed {
-  width: 42px;
-  min-width: 42px;
-  max-width: 42px;
-}
-
-/* Sidebar header */
-#sidebar-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px;
-  border-bottom: 1px solid #222;
-  background: #0d0d0d;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-/* Hide text when collapsed */
-#sidebar.collapsed #sidebar-header span {
-  display: none;
-}
-
-/* Toggle button */
-#sidebarToggle {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 18px;
-  cursor: pointer;
-}
-
-/* Hide flight list when collapsed */
-#sidebar.collapsed #flightList {
-  display: none;
-}
-
-
-/* Map fills remaining space 
-#map {
-  flex: 1;                 
-  height: 100%;
-}
-*/
-
-#map {
-  position: relative;
-}
-
-
-/* Glass effect info box 
-.glass-box {
-  pointer-events: auto;
-  min-width: 140px;
-  padding: 10px 14px;
-  border-radius: 12px;
-
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-
-  color: #fff;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-}
-
-
-
-.glass-number {
-  font-size: 26px;
-  font-weight: 600;
-  line-height: 1.1;
-}
-
-.glass-label {
+#flightList .date {
   font-size: 12px;
-  opacity: 0.85;
+  opacity: 0.7;
 }
 
-*/
-
-#main-layout {
-  display: flex;
-  height: calc(100vh - 56px); /* height of white filter bar */
+#flightList .route {
+  font-size: 14px;
+  margin-top: 2px;
 }
 
-#sidebar {
-  width: 320px;
-  flex-shrink: 0;
-}
+/* =====================================================
+   MAP WRAPPER
+===================================================== */
 
 #map-wrapper {
-  position: relative;     /* 🔑 anchor for glass box */
+  position: relative;
   flex: 1;
-  overflow: hidden;
 }
 
 #map {
-  width: 100%;
-  height: 100%;
-}
-
-.filter {
-  position: relative;
-}
-
-.filter-btn {
-  padding: 6px 10px;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.filter-menu {
   position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 20;
-
-  background: #fff;
-  color: #000;
-  min-width: 220px;
-  max-height: 260px;
-  overflow-y: auto;
-
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.25);
-
-  display: none;
-  padding: 8px;
+  inset: 0;
 }
 
-.filter-menu.open {
-  display: block;
-}
+/* =====================================================
+   GLASS COUNTERS
+===================================================== */
 
-.filter-menu label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  padding: 4px 0;
-  cursor: pointer;
-}
-
-.filter-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 6px;
-}
-
-.filter-actions button {
-  font-size: 11px;
-  padding: 2px 6px;
-  cursor: pointer;
-}
-
-
-#top-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: nowrap;
-}
-
-.filter {
-  position: relative;
-}
-
-.filter-menu {
-  display: none;
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  min-width: 220px;
-  max-height: 320px;
-  overflow-y: auto;
-  background: rgba(20, 20, 20, 0.95);
-  border-radius: 8px;
-  padding: 8px;
-  z-index: 20;
-}
-
-.filter-menu.open {
-  display: block;
-}
-
-.filter-options label {
-  display: flex;
-  gap: 6px;
-  padding: 4px;
-  cursor: pointer;
-}
-
-
-/* ===============================
-   DROPDOWN TEXT COLOUR
-   =============================== */
-
-.filter-menu,
-.filter-menu * {
-  color: #ffffff;
-}
-
-.filter-options label {
-  color: #ffffff;
-}
-
-.filter-options input[type="checkbox"] {
-  accent-color: #ffffff;
-}
-
-/* Buttons inside dropdown */
-.filter-actions button {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-}
-
-.filter-actions button:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-
-/* Wrapper positioned inside map */
 #glassCounters {
   position: absolute;
-  top: 70px;        /* below white filter bar */
-  left: 16px;       /* inside map, right of sidebar */
+  top: 70px;
+  left: 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -344,7 +229,6 @@ button{ cursor:pointer; }
   pointer-events: none;
 }
 
-/* Individual glass boxes — NOT positioned */
 .glass-box {
   pointer-events: auto;
   min-width: 140px;
@@ -369,4 +253,29 @@ button{ cursor:pointer; }
   font-size: 12px;
   opacity: 0.85;
   text-transform: uppercase;
+}
+
+/* =====================================================
+   MAPBOX OVERRIDES
+===================================================== */
+
+.mapboxgl-popup {
+  font-size: 12px;
+}
+
+.mapboxgl-ctrl-top-right {
+  top: 10px;
+}
+
+/* =====================================================
+   SCROLLBAR (SUBTLE)
+===================================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
 }
