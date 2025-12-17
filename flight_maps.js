@@ -13,7 +13,7 @@ mapboxgl.accessToken =
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Safety guardrail
-const MAX_ROUTES = 300;
+const MAX_ROUTES = 1000;
 
 // =====================================================
 // MAP INIT
