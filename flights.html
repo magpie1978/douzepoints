@@ -192,13 +192,20 @@
     ============================== -->
     <div id="top-bar">
       <label>Year</label>
-      <select id="yearSelect" multiple size="4"></select>
+      <div class="filter">
+        <button class="filter-btn" data-filter="year">Year ▾</button>
+        <div class="filter-menu" id="yearFilter"></div>
+      </div>
 
-      <label>Airline</label>
-      <select id="airlineSelect" multiple size="6"></select>
+      <div class="filter">
+        <button class="filter-btn" data-filter="airline">Airline ▾</button>
+        <div class="filter-menu" id="airlineFilter"></div>
+      </div>
 
-      <label>Type</label>
-      <select id="typeSelect" multiple size="4"></select>
+      <div class="filter">
+        <button class="filter-btn" data-filter="type">Type ▾</button>
+        <div class="filter-menu" id="typeFilter"></div>
+      </div>
 
       <button id="reloadBtn">Reload</button>
     </div>
