@@ -147,10 +147,15 @@ button{ cursor:pointer; }
 }
 
 
-/* Map fills remaining space */
+/* Map fills remaining space 
 #map {
-  flex: 1;                  /* take all remaining width */
+  flex: 1;                 
   height: 100%;
+}
+*/
+
+#map {
+  position: relative;
 }
 
 
@@ -159,10 +164,10 @@ button{ cursor:pointer; }
   position: absolute;
   top: 16px;
   left: 16px;
-  z-index: 10;
+  z-index: 5;
 
   padding: 12px 16px;
-  min-width: 120px;
+  min-width: 110px;
 
   background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(12px) saturate(140%);
@@ -176,9 +181,9 @@ button{ cursor:pointer; }
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
 
   color: #fff;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  pointer-events: none; /* clicks pass through to map */
+  pointer-events: none; /* map interactions pass through */
 }
+
 
 .glass-number {
   font-size: 26px;
