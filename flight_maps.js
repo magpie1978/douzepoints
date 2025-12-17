@@ -453,11 +453,36 @@ function setStatus(msg) {
   if (statusEl) statusEl.textContent = msg || "";
 }
 
-function updateJourneyCounter(count) {
+let counterAnimFrame = null;
+
+function updateJourneyCounter(target) {
   if (!journeyCounterEl) return;
-  const num = journeyCounterEl.querySelector(".glass-number");
-  if (num) num.textContent = count;
+
+  const numEl = journeyCounterEl.querySelector(".glass-number");
+  if (!numEl) return;
+
+  cancelAnimationFrame(counterAnimFrame);
+
+  const start = parseInt(numEl.textContent || "0", 10);
+  const end = target;
+  const duration = 400; // ms
+  const startTime = performance.now();
+
+  function animate(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3); // ease-out
+    const value = Math.round(start + (end - start) * eased);
+
+    numEl.textContent = value;
+
+    if (progress < 1) {
+      counterAnimFrame = requestAnimationFrame(animate);
+    }
+  }
+
+  counterAnimFrame = requestAnimationFrame(animate);
 }
+
 
 function clearRoutes() {
   if (map.getSource("routes")) {
