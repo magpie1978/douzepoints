@@ -454,8 +454,16 @@ function renderFlightList(routes) {
 
   routes.forEach(r => {
     const li = document.createElement("li");
-    li.textContent = `${r.callsign} · ${r.origin} → ${r.destination}`;
     li.dataset.uid = r.uid;
+
+    const date = r.journey_date
+      ? new Date(r.journey_date).toISOString().slice(0, 10)
+      : "";
+
+    li.innerHTML = `
+      <div style="font-size:12px; opacity:0.7;">${date}</div>
+      <div><strong>${r.origin} → ${r.destination}</strong></div>
+    `;
 
     if (r.uid === isolatedUid) {
       li.classList.add("active");
@@ -468,6 +476,7 @@ function renderFlightList(routes) {
     flightListEl.appendChild(li);
   });
 }
+
 
 function isolateFlight(uid) {
   isolatedUid = isolatedUid === uid ? null : uid;
@@ -608,7 +617,9 @@ async function loadRoutes() {
   let q = sb
     .from("journeys_routes_cache")
     .select(
-      "uid,callsign,airline,journey_type,origin,destination,journey_distance,geom"
+      "uid,callsign,airline,journey_type,origin,destination,journey_distance,journey_date,geom"
+    );
+
     );
 
   if (yearSelect.value) q = q.eq("year", yearSelect.value);
