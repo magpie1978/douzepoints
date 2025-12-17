@@ -282,8 +282,8 @@ button{ cursor:pointer; }
 #top-bar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-wrap: nowrap;   /* 🔑 critical */
+  gap: 10px;
+  flex-wrap: nowrap;
 }
 
 .filter {
@@ -291,12 +291,26 @@ button{ cursor:pointer; }
 }
 
 .filter-menu {
+  display: none;
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
-  display: none;
+  min-width: 220px;
+  max-height: 320px;
+  overflow-y: auto;
+  background: rgba(20, 20, 20, 0.95);
+  border-radius: 8px;
+  padding: 8px;
+  z-index: 20;
 }
 
 .filter-menu.open {
   display: block;
+}
+
+.filter-options label {
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  cursor: pointer;
 }
