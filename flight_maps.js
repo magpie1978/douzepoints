@@ -627,6 +627,9 @@ const callsignEl = document.getElementById("callsignFilter");
 const reloadBtn = document.getElementById("reloadBtn");
 const statusEl = document.getElementById("status");
 const flightListEl = document.getElementById("flightList");
+const sidebar = document.getElementById("sidebar");
+const sidebarToggle = document.getElementById("sidebarToggle");
+
 
 // =====================================================
 // STATE
@@ -910,6 +913,20 @@ async function loadRoutes() {
   fitToBounds(features);
   setStatus(`${data.length} journeys`);
 }
+
+
+
+sidebarToggle.addEventListener("click", () => {
+  sidebar.classList.toggle("collapsed");
+
+  // Let the CSS transition finish, then resize map
+  setTimeout(() => {
+    map.resize();
+  }, 260);
+});
+
+
+
 
 // =====================================================
 // INIT + EVENTS
