@@ -32,7 +32,12 @@ const flightListEl = document.getElementById("flightList");
 const sidebar = document.getElementById("sidebar");
 const sidebarToggle = document.getElementById("sidebarToggle");
 const reloadBtn = document.getElementById("reloadBtn");
-const journeyCounterEl = document.getElementById("journeyCounter");
+
+// Glass counter container is #journeyCounter (glass-box)
+// Number lives in .glass-number, label in .glass-label
+const journeyCounterBox = document.getElementById("journeyCounter");
+const journeyNumberEl = journeyCounterBox?.querySelector(".glass-number") || null;
+const journeyLabelEl = journeyCounterBox?.querySelector(".glass-label") || null;
 
 // =====================================================
 // STATE
@@ -41,7 +46,7 @@ let currentRoutes = [];
 let isolatedUid = null;
 
 const selected = {
-  years: new Set(),
+  years: new Set(),     // holds "YYYY" strings
   airlines: new Set(),
   types: new Set(),
 };
@@ -51,20 +56,18 @@ const selected = {
 // =====================================================
 function clearSource(id) {
   if (map.getSource(id)) {
-    map.getSource(id).setData({
-      type: "FeatureCollection",
-      features: [],
-    });
+    map.getSource(id).setData({ type: "FeatureCollection", features: [] });
   }
 }
 
-function fitToBounds(features) {
-  if (!features?.length) return;
+function fitToBoundsFromLineGeoms(lineGeoms) {
+  if (!lineGeoms?.length) return;
 
   const bounds = new mapboxgl.LngLatBounds();
-  features.forEach(f => {
-    f.geometry.coordinates.forEach(c => bounds.extend(c));
-  });
+  for (const g of lineGeoms) {
+    if (!g?.coordinates?.length) continue;
+    for (const c of g.coordinates) bounds.extend(c);
+  }
 
   map.fitBounds(bounds, {
     padding: { top: 120, bottom: 80, left: 80, right: 80 },
@@ -73,25 +76,33 @@ function fitToBounds(features) {
 }
 
 // =====================================================
-// GLASS COUNTER
+// GLASS COUNTER (ANIMATED) — updates ONLY the number div
 // =====================================================
 let counterRAF = null;
 
-function animateCounter(target) {
-  if (!journeyCounterEl) return;
+function setJourneyLabel(n) {
+  if (!journeyLabelEl) return;
+  journeyLabelEl.textContent = n === 1 ? "journey" : "journeys";
+}
+
+function animateJourneyCount(target) {
+  if (!journeyNumberEl) return;
 
   cancelAnimationFrame(counterRAF);
 
-  const start = Number(journeyCounterEl.textContent) || 0;
+  const start = Number(journeyNumberEl.textContent) || 0;
   const startTime = performance.now();
-  const duration = 400;
+  const duration = 420;
+
+  // Keep label correct during/after animation
+  setJourneyLabel(target);
 
   function step(t) {
     const p = Math.min((t - startTime) / duration, 1);
     const eased = 1 - Math.pow(1 - p, 3);
     const value = Math.round(start + (target - start) * eased);
 
-    journeyCounterEl.textContent = value;
+    journeyNumberEl.textContent = String(value);
 
     if (p < 1) counterRAF = requestAnimationFrame(step);
   }
@@ -99,42 +110,39 @@ function animateCounter(target) {
   counterRAF = requestAnimationFrame(step);
 }
 
-
 // =====================================================
 // SIDEBAR
 // =====================================================
 function renderSidebar(routes) {
+  if (!flightListEl) return;
   flightListEl.innerHTML = "";
 
   routes.forEach(r => {
     const li = document.createElement("li");
     li.dataset.uid = r.uid;
 
-    const date = r.journey_date
-      ? r.journey_date.slice(0, 10)
-      : "";
-
+    const date = r.journey_date ? r.journey_date.slice(0, 10) : "";
     li.innerHTML = `
       <div class="date">${date}</div>
       <div class="route">
         <strong>${r.callsign || ""}</strong>
-        ${r.origin} → ${r.destination}
+        ${r.origin || ""} → ${r.destination || ""}
       </div>
     `;
 
     if (r.uid === isolatedUid) li.classList.add("active");
-
     li.addEventListener("click", () => toggleIsolation(r.uid));
     flightListEl.appendChild(li);
   });
 }
 
 // =====================================================
-// ISOLATION LOGIC
+// ISOLATION (click sidebar → fit to that route)
 // =====================================================
 function toggleIsolation(uid) {
   isolatedUid = isolatedUid === uid ? null : uid;
   applyIsolation();
+  // ensure map canvas recalculates after UI interactions
   setTimeout(() => map.resize(), 50);
 }
 
@@ -151,41 +159,60 @@ function applyIsolation() {
   if (isolatedUid) {
     const r = currentRoutes.find(x => x.uid === isolatedUid);
     if (r?.geom?.coordinates?.length) {
-      const bounds = new mapboxgl.LngLatBounds();
-      r.geom.coordinates.forEach(c => bounds.extend(c));
-      map.fitBounds(bounds, {
-        padding: { top: 120, bottom: 80, left: 80, right: 80 },
-        duration: 600,
-        maxZoom: 8,
-      });
+      fitToBoundsFromLineGeoms([r.geom]);
     }
   } else {
-    fitToBounds(
-      currentRoutes.map(r => ({ geometry: r.geom }))
-    );
+    fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
   }
 
-  [...flightListEl.children].forEach(li => {
-    li.classList.toggle("active", li.dataset.uid === isolatedUid);
-  });
+  // Sync sidebar highlight
+  if (flightListEl) {
+    [...flightListEl.children].forEach(li => {
+      li.classList.toggle("active", li.dataset.uid === isolatedUid);
+    });
+  }
 }
 
 // =====================================================
-// FILTER UI
+// FILTER UI (CHECKBOX DROPDOWNS)
+// Expected HTML structure:
+//  <div id="filter-year" class="filter">
+//    <button class="filter-toggle">Year ▾</button>
+//    <div class="filter-menu">
+//      <div class="filter-actions">
+//        <button class="select-all">Select all</button>
+//        <button class="clear">Clear</button>
+//      </div>
+//      <div class="filter-options"></div>
+//    </div>
+//  </div>
 // =====================================================
 function buildFilterMenu(containerId, values, targetSet) {
   const container = document.getElementById(containerId);
+  if (!container) {
+    console.error("Missing filter container:", containerId);
+    return;
+  }
+
   const menu = container.querySelector(".filter-menu");
-  const list = menu.querySelector(".filter-options");
+  const list = container.querySelector(".filter-options");
+  const toggleBtn = container.querySelector(".filter-toggle");
+  const selectAllBtn = container.querySelector(".select-all");
+  const clearBtn = container.querySelector(".clear");
+
+  if (!menu || !list || !toggleBtn || !selectAllBtn || !clearBtn) {
+    console.error("Filter HTML missing required elements inside:", containerId);
+    return;
+  }
 
   list.innerHTML = "";
 
   values.forEach(v => {
     const label = document.createElement("label");
-    label.innerHTML = `<input type="checkbox" value="${v}"> ${v}`;
-    const cb = label.querySelector("input");
+    label.innerHTML = `<input type="checkbox" value="${String(v)}"> ${String(v)}`;
 
-    if (targetSet.has(v)) cb.checked = true;
+    const cb = label.querySelector("input");
+    cb.checked = targetSet.has(v);
 
     cb.addEventListener("change", () => {
       cb.checked ? targetSet.add(v) : targetSet.delete(v);
@@ -195,54 +222,88 @@ function buildFilterMenu(containerId, values, targetSet) {
     list.appendChild(label);
   });
 
-  menu.querySelector(".select-all").onclick = () => {
+  selectAllBtn.onclick = () => {
     targetSet.clear();
     values.forEach(v => targetSet.add(v));
-    list.querySelectorAll("input").forEach(cb => (cb.checked = true));
+    list.querySelectorAll("input[type='checkbox']").forEach(cb => (cb.checked = true));
     loadRoutes();
   };
 
-  menu.querySelector(".clear").onclick = () => {
+  clearBtn.onclick = () => {
     targetSet.clear();
-    list.querySelectorAll("input").forEach(cb => (cb.checked = false));
+    list.querySelectorAll("input[type='checkbox']").forEach(cb => (cb.checked = false));
     loadRoutes();
   };
 
-  container.querySelector(".filter-toggle").onclick = () =>
+  toggleBtn.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     menu.classList.toggle("open");
+  };
 }
 
+// Close dropdowns when clicking outside any filter
+document.addEventListener("click", (e) => {
+  if (e.target.closest(".filter")) return;
+  document.querySelectorAll(".filter-menu.open").forEach(m => m.classList.remove("open"));
+});
+
 // =====================================================
-// LOAD FILTERS
+// LOAD FILTERS (defaults: current year + Flight)
 // =====================================================
 async function loadFilters() {
-  const { data } = await sb
+  const { data, error } = await sb
     .from("journeys_routes_cache")
     .select("year, airline, journey_type");
 
+  if (error) {
+    console.error("Filter load failed:", error);
+    return;
+  }
+
   const currentYear = new Date().getFullYear().toString();
 
+  // YEAR options (YYYY)
   const years = [...new Set(
-    data.map(d => d.year?.slice(0, 4)).filter(Boolean)
+    (data || [])
+      .map(d => (d.year ? String(d.year).slice(0, 4) : null))
+      .filter(Boolean)
   )].sort((a, b) => b.localeCompare(a));
 
-  const airlines = [...new Set(data.map(d => d.airline).filter(Boolean))].sort();
-  const types = [...new Set(data.map(d => d.journey_type).filter(Boolean))].sort();
+  // AIRLINE options
+  const airlines = [...new Set(
+    (data || []).map(d => d.airline).filter(Boolean)
+  )].sort();
 
+  // TYPE options
+  const types = [...new Set(
+    (data || []).map(d => d.journey_type).filter(Boolean)
+  )].sort();
+
+  // Defaults
   selected.years.clear();
   if (years.includes(currentYear)) selected.years.add(currentYear);
 
   selected.types.clear();
   if (types.includes("Flight")) selected.types.add("Flight");
 
+  // Build menus
   buildFilterMenu("filter-year", years, selected.years);
   buildFilterMenu("filter-airline", airlines, selected.airlines);
   buildFilterMenu("filter-type", types, selected.types);
 }
 
 // =====================================================
-// LOAD AIRPORT MARKERS
+// AIRPORT MARKERS + HOVER TOOLTIP
 // =====================================================
+const airportHoverPopup = new mapboxgl.Popup({
+  closeButton: false,
+  closeOnClick: false,
+  offset: 10,
+});
+
+let airportHoverBound = false;
+
 async function loadAirports(routes) {
   const codes = new Set();
   routes.forEach(r => {
@@ -255,16 +316,23 @@ async function loadAirports(routes) {
     return;
   }
 
-  const { data } = await sb
+  const { data, error } = await sb
     .from("journey_locations")
     .select("airport_code, airport, city, country, longitude, latitude")
     .in("airport_code", [...codes]);
 
-  const features = data.map(a => ({
-    type: "Feature",
-    geometry: { type: "Point", coordinates: [a.longitude, a.latitude] },
-    properties: a,
-  }));
+  if (error) {
+    console.error("Airport load failed:", error);
+    return;
+  }
+
+  const features = (data || [])
+    .filter(a => a.longitude != null && a.latitude != null)
+    .map(a => ({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [a.longitude, a.latitude] },
+      properties: a,
+    }));
 
   const fc = { type: "FeatureCollection", features };
 
@@ -278,49 +346,85 @@ async function loadAirports(routes) {
       source: "airports",
       paint: {
         "circle-radius": 5,
-        "circle-color": "#fff",
+        "circle-color": "#ffffff",
         "circle-stroke-width": 1.5,
-        "circle-stroke-color": "#000",
+        "circle-stroke-color": "#000000",
       },
+    });
+  }
+
+  // Bind hover handlers once
+  if (!airportHoverBound) {
+    airportHoverBound = true;
+
+    map.on("mouseenter", "airports-circle", (e) => {
+      map.getCanvas().style.cursor = "pointer";
+      const f = e.features?.[0];
+      if (!f) return;
+
+      const p = f.properties || {};
+      airportHoverPopup
+        .setLngLat(f.geometry.coordinates)
+        .setHTML(
+          `<strong>${p.airport_code || ""}</strong> — ${p.airport || ""}<br/>${p.city || ""}, ${p.country || ""}`
+        )
+        .addTo(map);
+    });
+
+    map.on("mouseleave", "airports-circle", () => {
+      map.getCanvas().style.cursor = "";
+      airportHoverPopup.remove();
     });
   }
 }
 
 // =====================================================
-// LOAD ROUTES
+// LOAD ROUTES (sidebar sorted by date)
 // =====================================================
 async function loadRoutes() {
   isolatedUid = null;
 
   let q = sb.from("journeys_routes_cache").select("*");
 
+  // years stored as "YYYY", table year is date like "2025-01-01"
   if (selected.years.size) {
-    q = q.in(
-      "year",
-      [...selected.years].map(y => `${y}-01-01`)
-    );
+    q = q.in("year", [...selected.years].map(y => `${y}-01-01`));
   }
-
   if (selected.airlines.size) q = q.in("airline", [...selected.airlines]);
   if (selected.types.size) q = q.in("journey_type", [...selected.types]);
 
   const { data, error } = await q;
 
   if (error) {
-    console.error(error);
+    console.error("Route load failed:", error);
+    clearSource("routes");
+    clearSource("airports");
+    renderSidebar([]);
+    animateJourneyCount(0);
     return;
   }
 
+  // Sort newest → oldest for sidebar + internal state
   currentRoutes = (data || [])
     .filter(r => r.journey_date)
     .sort((a, b) => new Date(b.journey_date) - new Date(a.journey_date));
 
-  animateCounter(currentRoutes.length);
+  // Update glass number (label stays visible always)
+  animateJourneyCount(currentRoutes.length);
 
   if (!currentRoutes.length) {
     clearSource("routes");
     clearSource("airports");
     renderSidebar([]);
+    return;
+  }
+
+  // Guardrail
+  if (currentRoutes.length > MAX_ROUTES) {
+    clearSource("routes");
+    clearSource("airports");
+    renderSidebar([]);
+    console.warn(`Too many journeys (${currentRoutes.length}) — refine filters`);
     return;
   }
 
@@ -354,14 +458,17 @@ async function loadRoutes() {
   }
 
   renderSidebar(currentRoutes);
-  loadAirports(currentRoutes);
-  fitToBounds(features);
+  applyIsolation(); // ensures reset fits bounds to all routes
+  await loadAirports(currentRoutes);
 }
 
 // =====================================================
-// INIT
+// INIT + EVENTS
 // =====================================================
 map.on("load", async () => {
+  // Make sure label exists / sane even before data loads
+  setJourneyLabel(0);
+
   await loadFilters();
   await loadRoutes();
   map.resize();
@@ -370,6 +477,6 @@ map.on("load", async () => {
 reloadBtn?.addEventListener("click", loadRoutes);
 
 sidebarToggle?.addEventListener("click", () => {
-  sidebar.classList.toggle("collapsed");
+  sidebar?.classList.toggle("collapsed");
   setTimeout(() => map.resize(), 250);
 });
