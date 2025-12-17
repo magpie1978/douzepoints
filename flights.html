@@ -1,81 +1,30 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Journeys Map</title>
+<div id="page">
 
-  <!-- Mapbox GL JS (CSS + JS) -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/3.15.0/mapbox-gl.css" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/3.15.0/mapbox-gl.js"></script> <!-- Mapbox GL JS --> <!-- :contentReference[oaicite:1]{index=1} -->
-
-  <!-- Supabase JS (UMD via CDN) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> <!-- :contentReference[oaicite:2]{index=2} -->
-
-  <link rel="stylesheet" href="./flight_maps.css" />
-</head>
-
-<body>
-  <header class="topbar">
-    <div class="title">Flight Journeys</div>
-
-    <div class="controls">
-      <!--<label>
-        Days back
-        <select id="daysBack">
-          <option value="3">3</option>
-          <option value="7" selected>7</option>
-          <option value="14">14</option>
-          <option value="30">30</option>
-        </select>
-      </label> -->
-
-      <label> Year
-        <select id="yearSelect"></select>
-      </label>
-
-      <label> Airline
-        <select id="airlineSelect"></select>
-      </label>
-
-      <label> Type
-        <select id="typeSelect">
-          <option value="">All types</option>
-        </select>
-      </label>
-
-      <!--<label>
-        Callsign contains
-        <input id="callsignFilter" type="text" placeholder="e.g. BAW" />
-      </label> -->
-
-      <button id="reloadBtn">Reload</button>
-      <div id="status" class="status"></div>
-    </div>
-  </header>
-
-  <div id="map-layout">
-    <!-- <div id="sidebar">
-      <h3>Visible journeys</h3>
-      <ul id="flightList"></ul>
-    </div> -->
-    <div id="sidebar">
-      <div id="sidebar-header">
-        <button id="sidebarToggle">☰</button>
-        <span>Visible journeys</span>
-      </div>
-      <ul id="flightList"></ul>
-    </div>
-
-    <div id="journeyCounter" class="glass-box">
-      <div class="glass-number">0</div>
-      <div class="glass-label">Journeys</div>
-    </div>
-
-    <div id="map"></div>
+  <!-- TOP FILTER BAR -->
+  <div id="top-bar">
+    <!-- Year / Airline / Type / Reload -->
   </div>
 
+  <!-- MAIN CONTENT -->
+  <div id="main-layout">
 
-  <script type="module" src="./flight_maps.js"></script>
-</body>
-</html>
+    <!-- SIDEBAR -->
+    <div id="sidebar">
+      ...
+    </div>
+
+    <!-- MAP WRAPPER (IMPORTANT) -->
+    <div id="map-wrapper">
+
+      <!-- GLASS BOX (MUST LIVE HERE) -->
+      <div id="journeyCounter" class="glass-box">
+        <div class="glass-number">0</div>
+        <div class="glass-label">Journeys</div>
+      </div>
+
+      <!-- MAP -->
+      <div id="map"></div>
+
+    </div>
+  </div>
+</div>
