@@ -314,3 +314,33 @@ button{ cursor:pointer; }
   padding: 4px;
   cursor: pointer;
 }
+
+
+/* ===============================
+   DROPDOWN TEXT COLOUR
+   =============================== */
+
+.filter-menu,
+.filter-menu * {
+  color: #ffffff;
+}
+
+.filter-options label {
+  color: #ffffff;
+}
+
+.filter-options input[type="checkbox"] {
+  accent-color: #ffffff;
+}
+
+/* Buttons inside dropdown */
+.filter-actions button {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.filter-actions button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
