@@ -79,24 +79,52 @@ async function loadFilters() {
   }
 
   // ---- YEARS ----
-  const yearMap = new Map();
-  data.forEach(d => {
-    if (d.year) {
-      const label = d.year.substring(0, 4);
-      yearMap.set(label, d.year);
-    }
-  });
+  //const yearMap = new Map();
+  //data.forEach(d => {
+  //  if (d.year) {
+  //    const label = d.year.substring(0, 4);
+  //    yearMap.set(label, d.year);
+  //  }
+  //});
 
-  const years = [...yearMap.entries()].sort((a, b) =>
-    b[0].localeCompare(a[0])
-  );
+  //const years = [...yearMap.entries()].sort((a, b) =>
+  //  b[0].localeCompare(a[0])
+  //);
 
-  yearSelect.innerHTML = years
+  //yearSelect.innerHTML = years
+  //  .map(([label, value]) => `<option value="${value}">${label}</option>`)
+  //  .join("");
+
+  //if (years.length) yearSelect.value = years[0][1];
+
+
+  // ---- YEARS ----
+const yearMap = new Map();
+data.forEach(d => {
+  if (d.year) {
+    const label = d.year.substring(0, 4); // "2025"
+    yearMap.set(label, d.year);           // full date value
+  }
+});
+
+const years = [...yearMap.entries()].sort((a, b) =>
+  b[0].localeCompare(a[0])
+);
+
+// Add "All" option at the top
+yearSelect.innerHTML =
+  `<option value="">All</option>` +
+  years
     .map(([label, value]) => `<option value="${value}">${label}</option>`)
     .join("");
 
-  if (years.length) yearSelect.value = years[0][1];
+// ✅ Default to latest year (not "All")
+if (years.length) {
+  yearSelect.value = years[0][1];
+}
 
+
+  
   // ---- AIRLINES ----
   const airlines = [...new Set(data.map(d => d.airline).filter(Boolean))].sort();
 
