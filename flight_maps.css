@@ -83,14 +83,55 @@ button{ cursor:pointer; }
 
 /* Sidebar on the left */
 #sidebar {
-  width: 320px;             /* fixed width */
+  width: 320px;
   min-width: 320px;
   max-width: 320px;
   background: #111;
   color: #fff;
   overflow-y: auto;
   border-right: 1px solid #222;
+  transition: width 0.25s ease;
 }
+
+/* Collapsed state */
+#sidebar.collapsed {
+  width: 42px;
+  min-width: 42px;
+  max-width: 42px;
+}
+
+/* Sidebar header */
+#sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border-bottom: 1px solid #222;
+  background: #0d0d0d;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Hide text when collapsed */
+#sidebar.collapsed #sidebar-header span {
+  display: none;
+}
+
+/* Toggle button */
+#sidebarToggle {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Hide flight list when collapsed */
+#sidebar.collapsed #flightList {
+  display: none;
+}
+
 
 /* Map fills remaining space */
 #map {
