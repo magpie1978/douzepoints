@@ -168,20 +168,79 @@ function buildFilterMenu(containerId, values, targetSet) {
 // LOAD FILTER OPTIONS
 // =====================================================
 async function loadFilters() {
-  const { data } = await sb
+  const { data, error } = await sb
     .from("journeys_routes_cache")
     .select("year, airline, journey_type");
 
-  const years = [...new Set(data.map(d => d.year?.slice(0, 4)))].filter(Boolean).sort().reverse();
-  const airlines = [...new Set(data.map(d => d.airline))].filter(Boolean).sort();
-  const types = [...new Set(data.map(d => d.journey_type))].filter(Boolean).sort();
+  if (error) {
+    console.error(error);
+    return;
+  }
 
-  years.forEach(y => selected.years.add(y)); // default = all years
+  const currentYear = new Date().getFullYear().toString();
+
+  // -----------------------------
+  // YEARS
+  // -----------------------------
+  const years = [
+    ...new Set(
+      data
+        .map(d => d.year && String(d.year).substring(0, 4))
+        .filter(Boolean)
+    )
+  ].sort((a, b) => b.localeCompare(a));
+
+  selected.years.clear();
+
+  // Default: current year only
+  if (years.includes(currentYear)) {
+    selected.years.add(currentYear);
+  }
 
   buildFilterMenu("filter-year", years, selected.years);
+
+  // Tick default year checkbox
+  setTimeout(() => {
+    document
+      .querySelectorAll("#filter-year input[type='checkbox']")
+      .forEach(cb => {
+        cb.checked = cb.value === currentYear;
+      });
+  });
+
+  // -----------------------------
+  // AIRLINES
+  // -----------------------------
+  const airlines = [...new Set(data.map(d => d.airline).filter(Boolean))].sort();
+  selected.airlines.clear();
   buildFilterMenu("filter-airline", airlines, selected.airlines);
+
+  // -----------------------------
+  // TYPES
+  // -----------------------------
+  const types = [
+    ...new Set(data.map(d => d.journey_type).filter(Boolean))
+  ].sort();
+
+  selected.types.clear();
+
+  // Default: Flight only
+  if (types.includes("Flight")) {
+    selected.types.add("Flight");
+  }
+
   buildFilterMenu("filter-type", types, selected.types);
+
+  // Tick default type checkbox
+  setTimeout(() => {
+    document
+      .querySelectorAll("#filter-type input[type='checkbox']")
+      .forEach(cb => {
+        cb.checked = cb.value === "Flight";
+      });
+  });
 }
+
 
 // =====================================================
 // LOAD AIRPORT MARKERS
