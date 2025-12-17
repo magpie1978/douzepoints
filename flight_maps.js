@@ -86,6 +86,7 @@ function fitToBounds(features) {
 // =====================================================
 // SIDEBAR
 // =====================================================
+
 function renderFlightList(routes) {
   if (!flightListEl) return;
 
@@ -95,13 +96,20 @@ function renderFlightList(routes) {
     const li = document.createElement("li");
     li.dataset.uid = r.uid;
 
-    const date = r.journey_date ? String(r.journey_date).slice(0, 10) : "";
+    const date = r.journey_date
+      ? String(r.journey_date).slice(0, 10)
+      : "";
+
+    const flightNo = r.flight_number
+      ? r.flight_number + " · "
+      : "";
 
     li.innerHTML =
       '<div style="font-size:12px; opacity:0.7;">' +
       date +
       "</div>" +
       '<div><strong>' +
+      flightNo +
       (r.origin || "") +
       " → " +
       (r.destination || "") +
@@ -118,6 +126,7 @@ function renderFlightList(routes) {
     flightListEl.appendChild(li);
   });
 }
+
 
 function isolateFlight(uid) {
   isolatedUid = isolatedUid === uid ? null : uid;
@@ -267,7 +276,7 @@ async function loadRoutes() {
   let q = sb
     .from("journeys_routes_cache")
     .select(
-      "uid,callsign,airline,journey_type,origin,destination,journey_distance,journey_date,geom"
+      "uid,callsign,airline,flight_number,journey_type,origin,destination,journey_distance,journey_date,geom"
     );
 
   if (yearSelect?.value) q = q.eq("year", yearSelect.value);
