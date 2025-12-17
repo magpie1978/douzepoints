@@ -310,7 +310,12 @@ async function loadRoutes() {
 
   const { data } = await q;
 
-  currentRoutes = data || [];
+  currentRoutes = (data || [])
+  .filter(r => r.journey_date)
+  .sort((a, b) => {
+    return new Date(b.journey_date) - new Date(a.journey_date);
+  });
+
   updateCounter(currentRoutes.length);
 
   if (!currentRoutes.length) {
