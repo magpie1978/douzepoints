@@ -33,11 +33,13 @@ const sidebar = document.getElementById("sidebar");
 const sidebarToggle = document.getElementById("sidebarToggle");
 const reloadBtn = document.getElementById("reloadBtn");
 
-// Glass counter container is #journeyCounter (glass-box)
-// Number lives in .glass-number, label in .glass-label
-const journeyCounterBox = document.getElementById("journeyCounter");
-const journeyNumberEl = journeyCounterBox?.querySelector(".glass-number") || null;
-const journeyLabelEl = journeyCounterBox?.querySelector(".glass-label") || null;
+// Glass counters
+const journeyBox = document.getElementById("journeyCounter");
+const journeyNumberEl = journeyBox?.querySelector(".glass-number");
+const journeyLabelEl = journeyBox?.querySelector(".glass-label");
+
+const milesBox = document.getElementById("milesCounter");
+const milesNumberEl = milesBox?.querySelector(".glass-number");
 
 // =====================================================
 // STATE
@@ -46,7 +48,7 @@ let currentRoutes = [];
 let isolatedUid = null;
 
 const selected = {
-  years: new Set(),     // holds "YYYY" strings
+  years: new Set(),     // "YYYY"
   airlines: new Set(),
   types: new Set(),
 };
@@ -56,7 +58,10 @@ const selected = {
 // =====================================================
 function clearSource(id) {
   if (map.getSource(id)) {
-    map.getSource(id).setData({ type: "FeatureCollection", features: [] });
+    map.getSource(id).setData({
+      type: "FeatureCollection",
+      features: [],
+    });
   }
 }
 
@@ -64,10 +69,10 @@ function fitToBoundsFromLineGeoms(lineGeoms) {
   if (!lineGeoms?.length) return;
 
   const bounds = new mapboxgl.LngLatBounds();
-  for (const g of lineGeoms) {
-    if (!g?.coordinates?.length) continue;
-    for (const c of g.coordinates) bounds.extend(c);
-  }
+  lineGeoms.forEach(g => {
+    if (!g?.coordinates) return;
+    g.coordinates.forEach(c => bounds.extend(c));
+  });
 
   map.fitBounds(bounds, {
     padding: { top: 120, bottom: 80, left: 80, right: 80 },
@@ -76,38 +81,52 @@ function fitToBoundsFromLineGeoms(lineGeoms) {
 }
 
 // =====================================================
-// GLASS COUNTER (ANIMATED) — updates ONLY the number div
+// GLASS COUNTERS (ANIMATED)
 // =====================================================
-let counterRAF = null;
+let journeyRAF = null;
+let milesRAF = null;
 
 function setJourneyLabel(n) {
-  if (!journeyLabelEl) return;
-  journeyLabelEl.textContent = n === 1 ? "journey" : "journeys";
+  if (journeyLabelEl) {
+    journeyLabelEl.textContent = n === 1 ? "journey" : "journeys";
+  }
 }
 
-function animateJourneyCount(target) {
-  if (!journeyNumberEl) return;
+function animateNumber(el, from, to, rafRef) {
+  cancelAnimationFrame(rafRef.value);
 
-  cancelAnimationFrame(counterRAF);
-
-  const start = Number(journeyNumberEl.textContent) || 0;
   const startTime = performance.now();
   const duration = 420;
-
-  // Keep label correct during/after animation
-  setJourneyLabel(target);
 
   function step(t) {
     const p = Math.min((t - startTime) / duration, 1);
     const eased = 1 - Math.pow(1 - p, 3);
-    const value = Math.round(start + (target - start) * eased);
-
-    journeyNumberEl.textContent = String(value);
-
-    if (p < 1) counterRAF = requestAnimationFrame(step);
+    el.textContent = Math.round(from + (to - from) * eased).toLocaleString();
+    if (p < 1) rafRef.value = requestAnimationFrame(step);
   }
 
-  counterRAF = requestAnimationFrame(step);
+  rafRef.value = requestAnimationFrame(step);
+}
+
+function updateJourneyCounter(count) {
+  if (!journeyNumberEl) return;
+  setJourneyLabel(count);
+  animateNumber(
+    journeyNumberEl,
+    Number(journeyNumberEl.textContent.replace(/,/g, "")) || 0,
+    count,
+    { value: journeyRAF }
+  );
+}
+
+function updateMilesCounter(miles) {
+  if (!milesNumberEl) return;
+  animateNumber(
+    milesNumberEl,
+    Number(milesNumberEl.textContent.replace(/,/g, "")) || 0,
+    Math.round(miles),
+    { value: milesRAF }
+  );
 }
 
 // =====================================================
@@ -122,6 +141,7 @@ function renderSidebar(routes) {
     li.dataset.uid = r.uid;
 
     const date = r.journey_date ? r.journey_date.slice(0, 10) : "";
+
     li.innerHTML = `
       <div class="date">${date}</div>
       <div class="route">
@@ -137,12 +157,11 @@ function renderSidebar(routes) {
 }
 
 // =====================================================
-// ISOLATION (click sidebar → fit to that route)
+// ISOLATION
 // =====================================================
 function toggleIsolation(uid) {
   isolatedUid = isolatedUid === uid ? null : uid;
   applyIsolation();
-  // ensure map canvas recalculates after UI interactions
   setTimeout(() => map.resize(), 50);
 }
 
@@ -158,41 +177,24 @@ function applyIsolation() {
 
   if (isolatedUid) {
     const r = currentRoutes.find(x => x.uid === isolatedUid);
-    if (r?.geom?.coordinates?.length) {
+    if (r?.geom?.coordinates) {
       fitToBoundsFromLineGeoms([r.geom]);
     }
   } else {
     fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
   }
 
-  // Sync sidebar highlight
-  if (flightListEl) {
-    [...flightListEl.children].forEach(li => {
-      li.classList.toggle("active", li.dataset.uid === isolatedUid);
-    });
-  }
+  [...flightListEl.children].forEach(li => {
+    li.classList.toggle("active", li.dataset.uid === isolatedUid);
+  });
 }
 
 // =====================================================
 // FILTER UI (CHECKBOX DROPDOWNS)
-// Expected HTML structure:
-//  <div id="filter-year" class="filter">
-//    <button class="filter-toggle">Year ▾</button>
-//    <div class="filter-menu">
-//      <div class="filter-actions">
-//        <button class="select-all">Select all</button>
-//        <button class="clear">Clear</button>
-//      </div>
-//      <div class="filter-options"></div>
-//    </div>
-//  </div>
 // =====================================================
 function buildFilterMenu(containerId, values, targetSet) {
   const container = document.getElementById(containerId);
-  if (!container) {
-    console.error("Missing filter container:", containerId);
-    return;
-  }
+  if (!container) return;
 
   const menu = container.querySelector(".filter-menu");
   const list = container.querySelector(".filter-options");
@@ -200,18 +202,15 @@ function buildFilterMenu(containerId, values, targetSet) {
   const selectAllBtn = container.querySelector(".select-all");
   const clearBtn = container.querySelector(".clear");
 
-  if (!menu || !list || !toggleBtn || !selectAllBtn || !clearBtn) {
-    console.error("Filter HTML missing required elements inside:", containerId);
-    return;
-  }
+  if (!menu || !list || !toggleBtn || !selectAllBtn || !clearBtn) return;
 
   list.innerHTML = "";
 
   values.forEach(v => {
     const label = document.createElement("label");
-    label.innerHTML = `<input type="checkbox" value="${String(v)}"> ${String(v)}`;
-
+    label.innerHTML = `<input type="checkbox" value="${v}"> ${v}`;
     const cb = label.querySelector("input");
+
     cb.checked = targetSet.has(v);
 
     cb.addEventListener("change", () => {
@@ -225,31 +224,33 @@ function buildFilterMenu(containerId, values, targetSet) {
   selectAllBtn.onclick = () => {
     targetSet.clear();
     values.forEach(v => targetSet.add(v));
-    list.querySelectorAll("input[type='checkbox']").forEach(cb => (cb.checked = true));
+    list.querySelectorAll("input").forEach(cb => (cb.checked = true));
     loadRoutes();
   };
 
   clearBtn.onclick = () => {
     targetSet.clear();
-    list.querySelectorAll("input[type='checkbox']").forEach(cb => (cb.checked = false));
+    list.querySelectorAll("input").forEach(cb => (cb.checked = false));
     loadRoutes();
   };
 
-  toggleBtn.onclick = (e) => {
+  toggleBtn.onclick = e => {
     e.preventDefault();
     e.stopPropagation();
     menu.classList.toggle("open");
   };
 }
 
-// Close dropdowns when clicking outside any filter
-document.addEventListener("click", (e) => {
+// Close dropdowns when clicking outside
+document.addEventListener("click", e => {
   if (e.target.closest(".filter")) return;
-  document.querySelectorAll(".filter-menu.open").forEach(m => m.classList.remove("open"));
+  document
+    .querySelectorAll(".filter-menu.open")
+    .forEach(m => m.classList.remove("open"));
 });
 
 // =====================================================
-// LOAD FILTERS (defaults: current year + Flight)
+// LOAD FILTER OPTIONS (defaults applied)
 // =====================================================
 async function loadFilters() {
   const { data, error } = await sb
@@ -257,44 +258,32 @@ async function loadFilters() {
     .select("year, airline, journey_type");
 
   if (error) {
-    console.error("Filter load failed:", error);
+    console.error(error);
     return;
   }
 
   const currentYear = new Date().getFullYear().toString();
 
-  // YEAR options (YYYY)
   const years = [...new Set(
-    (data || [])
-      .map(d => (d.year ? String(d.year).slice(0, 4) : null))
-      .filter(Boolean)
+    data.map(d => d.year && String(d.year).slice(0, 4)).filter(Boolean)
   )].sort((a, b) => b.localeCompare(a));
 
-  // AIRLINE options
-  const airlines = [...new Set(
-    (data || []).map(d => d.airline).filter(Boolean)
-  )].sort();
+  const airlines = [...new Set(data.map(d => d.airline).filter(Boolean))].sort();
+  const types = [...new Set(data.map(d => d.journey_type).filter(Boolean))].sort();
 
-  // TYPE options
-  const types = [...new Set(
-    (data || []).map(d => d.journey_type).filter(Boolean)
-  )].sort();
-
-  // Defaults
   selected.years.clear();
   if (years.includes(currentYear)) selected.years.add(currentYear);
 
   selected.types.clear();
   if (types.includes("Flight")) selected.types.add("Flight");
 
-  // Build menus
   buildFilterMenu("filter-year", years, selected.years);
   buildFilterMenu("filter-airline", airlines, selected.airlines);
   buildFilterMenu("filter-type", types, selected.types);
 }
 
 // =====================================================
-// AIRPORT MARKERS + HOVER TOOLTIP
+// AIRPORT MARKERS
 // =====================================================
 const airportHoverPopup = new mapboxgl.Popup({
   closeButton: false,
@@ -316,17 +305,12 @@ async function loadAirports(routes) {
     return;
   }
 
-  const { data, error } = await sb
+  const { data } = await sb
     .from("journey_locations")
     .select("airport_code, airport, city, country, longitude, latitude")
     .in("airport_code", [...codes]);
 
-  if (error) {
-    console.error("Airport load failed:", error);
-    return;
-  }
-
-  const features = (data || [])
+  const features = data
     .filter(a => a.longitude != null && a.latitude != null)
     .map(a => ({
       type: "Feature",
@@ -346,27 +330,23 @@ async function loadAirports(routes) {
       source: "airports",
       paint: {
         "circle-radius": 5,
-        "circle-color": "#ffffff",
+        "circle-color": "#fff",
         "circle-stroke-width": 1.5,
-        "circle-stroke-color": "#000000",
+        "circle-stroke-color": "#000",
       },
     });
   }
 
-  // Bind hover handlers once
   if (!airportHoverBound) {
     airportHoverBound = true;
 
-    map.on("mouseenter", "airports-circle", (e) => {
+    map.on("mouseenter", "airports-circle", e => {
       map.getCanvas().style.cursor = "pointer";
-      const f = e.features?.[0];
-      if (!f) return;
-
-      const p = f.properties || {};
+      const f = e.features[0];
       airportHoverPopup
         .setLngLat(f.geometry.coordinates)
         .setHTML(
-          `<strong>${p.airport_code || ""}</strong> — ${p.airport || ""}<br/>${p.city || ""}, ${p.country || ""}`
+          `<strong>${f.properties.airport_code}</strong><br>${f.properties.city}, ${f.properties.country}`
         )
         .addTo(map);
     });
@@ -379,14 +359,13 @@ async function loadAirports(routes) {
 }
 
 // =====================================================
-// LOAD ROUTES (sidebar sorted by date)
+// LOAD ROUTES
 // =====================================================
 async function loadRoutes() {
   isolatedUid = null;
 
   let q = sb.from("journeys_routes_cache").select("*");
 
-  // years stored as "YYYY", table year is date like "2025-01-01"
   if (selected.years.size) {
     q = q.in("year", [...selected.years].map(y => `${y}-01-01`));
   }
@@ -396,21 +375,26 @@ async function loadRoutes() {
   const { data, error } = await q;
 
   if (error) {
-    console.error("Route load failed:", error);
+    console.error(error);
+    updateJourneyCounter(0);
+    updateMilesCounter(0);
     clearSource("routes");
     clearSource("airports");
     renderSidebar([]);
-    animateJourneyCount(0);
     return;
   }
 
-  // Sort newest → oldest for sidebar + internal state
   currentRoutes = (data || [])
     .filter(r => r.journey_date)
     .sort((a, b) => new Date(b.journey_date) - new Date(a.journey_date));
 
-  // Update glass number (label stays visible always)
-  animateJourneyCount(currentRoutes.length);
+  updateJourneyCounter(currentRoutes.length);
+
+  const totalMiles = currentRoutes.reduce(
+    (sum, r) => sum + (Number(r.journey_distance) || 0),
+    0
+  );
+  updateMilesCounter(totalMiles);
 
   if (!currentRoutes.length) {
     clearSource("routes");
@@ -419,12 +403,10 @@ async function loadRoutes() {
     return;
   }
 
-  // Guardrail
   if (currentRoutes.length > MAX_ROUTES) {
     clearSource("routes");
     clearSource("airports");
     renderSidebar([]);
-    console.warn(`Too many journeys (${currentRoutes.length}) — refine filters`);
     return;
   }
 
@@ -458,17 +440,15 @@ async function loadRoutes() {
   }
 
   renderSidebar(currentRoutes);
-  applyIsolation(); // ensures reset fits bounds to all routes
+  applyIsolation();
   await loadAirports(currentRoutes);
 }
 
 // =====================================================
-// INIT + EVENTS
+// INIT
 // =====================================================
 map.on("load", async () => {
-  // Make sure label exists / sane even before data loads
   setJourneyLabel(0);
-
   await loadFilters();
   await loadRoutes();
   map.resize();
@@ -477,6 +457,6 @@ map.on("load", async () => {
 reloadBtn?.addEventListener("click", loadRoutes);
 
 sidebarToggle?.addEventListener("click", () => {
-  sidebar?.classList.toggle("collapsed");
+  sidebar.classList.toggle("collapsed");
   setTimeout(() => map.resize(), 250);
 });
