@@ -286,13 +286,21 @@ async function loadRoutes() {
     return;
   }
 
-  currentRoutes = data;
+  /*currentRoutes = data;
 
   const features = data.map(r => ({
     type: "Feature",
     geometry: r.geom,
     properties: r,
   }));
+*/
+
+  currentRoutes = [...data].sort((a, b) => {
+  if (!a.journey_date && !b.journey_date) return 0;
+  if (!a.journey_date) return 1;
+  if (!b.journey_date) return -1;
+  return new Date(b.journey_date) - new Date(a.journey_date);
+});
 
   const fc = { type: "FeatureCollection", features };
 
