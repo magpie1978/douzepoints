@@ -46,3 +46,42 @@ button{ cursor:pointer; }
 
 main { height: calc(100% - 52px); }
 #map { width: 100%; height: 100%; }
+
+
+#sidebar {
+  width: 300px;
+  background: #111;
+  color: #fff;
+  overflow-y: auto;
+  padding: 10px;
+  font-family: system-ui, sans-serif;
+}
+
+#sidebar h3 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+#flightList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#flightList li {
+  padding: 8px;
+  border-bottom: 1px solid #222;
+  cursor: pointer;
+}
+
+#flightList li:hover {
+  background: #222;
+}
+
+#flightList li.active {
+  background: #333;
+  font-weight: bold;
+}
+
