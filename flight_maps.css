@@ -279,3 +279,24 @@ button{ cursor:pointer; }
 }
 
 
+#top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;   /* 🔑 critical */
+}
+
+.filter {
+  position: relative;
+}
+
+.filter-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  display: none;
+}
+
+.filter-menu.open {
+  display: block;
+}
