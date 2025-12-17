@@ -457,13 +457,12 @@ function renderFlightList(routes) {
     li.dataset.uid = r.uid;
 
     const date = r.journey_date
-      ? new Date(r.journey_date).toISOString().slice(0, 10)
+      ? r.journey_date.slice(0, 10)
       : "";
 
-    li.innerHTML = `
-      <div style="font-size:12px; opacity:0.7;">${date}</div>
-      <div><strong>${r.origin} → ${r.destination}</strong></div>
-    `;
+    li.innerHTML =
+      '<div style="font-size:12px; opacity:0.7;">' + date + '</div>' +
+      '<div><strong>' + r.origin + ' → ' + r.destination + '</strong></div>';
 
     if (r.uid === isolatedUid) {
       li.classList.add("active");
@@ -476,6 +475,7 @@ function renderFlightList(routes) {
     flightListEl.appendChild(li);
   });
 }
+
 
 
 function isolateFlight(uid) {
