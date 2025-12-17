@@ -159,7 +159,7 @@ button{ cursor:pointer; }
 }
 
 
-/* Glass effect info box */
+/* Glass effect info box 
 .glass-box {
   pointer-events: auto;
   min-width: 140px;
@@ -187,7 +187,7 @@ button{ cursor:pointer; }
   opacity: 0.85;
 }
 
-
+*/
 
 #main-layout {
   display: flex;
@@ -332,16 +332,41 @@ button{ cursor:pointer; }
 }
 
 
-/* Container anchored to map, not sidebar */
+/* Wrapper positioned inside map */
 #glassCounters {
   position: absolute;
-  top: 70px;            /* below filter bar */
-  left: 16px;           /* inside map area */
+  top: 70px;        /* below white filter bar */
+  left: 16px;       /* inside map, right of sidebar */
   display: flex;
   flex-direction: column;
   gap: 10px;
   z-index: 10;
-  pointer-events: none; /* map still usable underneath */
+  pointer-events: none;
 }
 
+/* Individual glass boxes — NOT positioned */
+.glass-box {
+  pointer-events: auto;
+  min-width: 140px;
+  padding: 10px 14px;
+  border-radius: 12px;
 
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.glass-number {
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.glass-label {
+  font-size: 12px;
+  opacity: 0.85;
+  text-transform: uppercase;
+}
