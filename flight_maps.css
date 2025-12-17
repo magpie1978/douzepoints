@@ -162,27 +162,28 @@ button{ cursor:pointer; }
 /* Glass effect info box */
 .glass-box {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: 12px;      /* below top bar automatically */
+  left: 12px;     /* inside map, not sidebar */
   z-index: 5;
 
   padding: 12px 16px;
   min-width: 110px;
 
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
 
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 
   box-shadow:
     0 8px 24px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 
   color: #fff;
-  pointer-events: none; /* map interactions pass through */
+  pointer-events: none;
 }
+
 
 
 .glass-number {
@@ -200,7 +201,6 @@ button{ cursor:pointer; }
 }
 
 
----
 
 #main-layout {
   display: flex;
