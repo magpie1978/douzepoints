@@ -41,6 +41,10 @@ const journeyLabelEl = journeyBox?.querySelector(".glass-label");
 const milesBox = document.getElementById("milesCounter");
 const milesNumberEl = milesBox?.querySelector(".glass-number");
 
+const countriesBox = document.getElementById("countriesCounter");
+const countriesNumberEl = countriesBox?.querySelector(".glass-number");
+
+
 // =====================================================
 // STATE
 // =====================================================
@@ -85,6 +89,7 @@ function fitToBoundsFromLineGeoms(lineGeoms) {
 // =====================================================
 let journeyRAF = null;
 let milesRAF = null;
+let countriesRAF = null;
 
 function setJourneyLabel(n) {
   if (journeyLabelEl) {
@@ -128,6 +133,18 @@ function updateMilesCounter(miles) {
     { value: milesRAF }
   );
 }
+
+function updateCountriesCounter(count) {
+  if (!countriesNumberEl) return;
+
+  animateNumber(
+    countriesNumberEl,
+    Number(countriesNumberEl.textContent.replace(/,/g, "")) || 0,
+    count,
+    { value: countriesRAF }
+  );
+}
+
 
 // =====================================================
 // SIDEBAR
@@ -366,28 +383,45 @@ async function loadRoutes() {
 
   let q = sb.from("journeys_routes_cache").select("*");
 
+  // ---------------- FILTERS ----------------
   if (selected.years.size) {
-    q = q.in("year", [...selected.years].map(y => `${y}-01-01`));
+    q = q.in(
+      "year",
+      [...selected.years].map(y => `${y}-01-01`)
+    );
   }
-  if (selected.airlines.size) q = q.in("airline", [...selected.airlines]);
-  if (selected.types.size) q = q.in("journey_type", [...selected.types]);
+
+  if (selected.airlines.size) {
+    q = q.in("airline", [...selected.airlines]);
+  }
+
+  if (selected.types.size) {
+    q = q.in("journey_type", [...selected.types]);
+  }
 
   const { data, error } = await q;
 
+  // ---------------- ERROR ----------------
   if (error) {
     console.error(error);
-    updateJourneyCounter(0);
-    updateMilesCounter(0);
+
     clearSource("routes");
     clearSource("airports");
     renderSidebar([]);
+
+    updateJourneyCounter(0);
+    updateMilesCounter(0);
+    updateCountriesCounter(0);
+
     return;
   }
 
+  // ---------------- SORT + STATE ----------------
   currentRoutes = (data || [])
     .filter(r => r.journey_date)
     .sort((a, b) => new Date(b.journey_date) - new Date(a.journey_date));
 
+  // ---------------- COUNTERS ----------------
   updateJourneyCounter(currentRoutes.length);
 
   const totalMiles = currentRoutes.reduce(
@@ -396,6 +430,14 @@ async function loadRoutes() {
   );
   updateMilesCounter(totalMiles);
 
+  const countrySet = new Set(
+    currentRoutes
+      .map(r => r.destination_country)
+      .filter(Boolean)
+  );
+  updateCountriesCounter(countrySet.size);
+
+  // ---------------- EMPTY ----------------
   if (!currentRoutes.length) {
     clearSource("routes");
     clearSource("airports");
@@ -403,25 +445,35 @@ async function loadRoutes() {
     return;
   }
 
+  // ---------------- SAFETY ----------------
   if (currentRoutes.length > MAX_ROUTES) {
+    console.warn("Too many routes to display:", currentRoutes.length);
+
     clearSource("routes");
     clearSource("airports");
     renderSidebar([]);
+
     return;
   }
 
+  // ---------------- GEOJSON ----------------
   const features = currentRoutes.map(r => ({
     type: "Feature",
     geometry: r.geom,
     properties: r,
   }));
 
-  const fc = { type: "FeatureCollection", features };
+  const fc = {
+    type: "FeatureCollection",
+    features,
+  };
 
+  // ---------------- MAP LAYER ----------------
   if (map.getSource("routes")) {
     map.getSource("routes").setData(fc);
   } else {
     map.addSource("routes", { type: "geojson", data: fc });
+
     map.addLayer({
       id: "routes-line",
       type: "line",
@@ -439,10 +491,15 @@ async function loadRoutes() {
     });
   }
 
+  // ---------------- UI SYNC ----------------
   renderSidebar(currentRoutes);
   applyIsolation();
   await loadAirports(currentRoutes);
+
+  // ---------------- FIT MAP ----------------
+  fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
 }
+
 
 // =====================================================
 // INIT
