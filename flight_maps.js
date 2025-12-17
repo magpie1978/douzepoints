@@ -255,8 +255,6 @@ async function loadRoutes() {
       "uid,callsign,airline,journey_type,origin,destination,journey_distance,journey_date,geom"
     );
 
-    );
-
   if (yearSelect.value) q = q.eq("year", yearSelect.value);
   if (airlineSelect.value) q = q.eq("airline", airlineSelect.value);
   if (typeSelect.value) q = q.eq("journey_type", typeSelect.value);
