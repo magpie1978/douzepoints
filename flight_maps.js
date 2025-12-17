@@ -28,6 +28,15 @@ const map = new mapboxgl.Map({
 map.addControl(new mapboxgl.NavigationControl(), "top-right");
 
 // =====================================================
+// AIRPORT HOVER POPUP (NEW)
+// =====================================================
+const airportHoverPopup = new mapboxgl.Popup({
+  closeButton: false,
+  closeOnClick: false,
+  offset: 10,
+});
+
+// =====================================================
 // UI ELEMENTS
 // =====================================================
 const yearSelect = document.getElementById("yearSelect");
@@ -44,6 +53,7 @@ const sidebarToggle = document.getElementById("sidebarToggle");
 // =====================================================
 let currentRoutes = [];
 let isolatedUid = null;
+let airportHoverBound = false;
 
 // =====================================================
 // HELPERS
@@ -86,7 +96,6 @@ function fitToBounds(features) {
 // =====================================================
 // SIDEBAR
 // =====================================================
-
 function renderFlightList(routes) {
   if (!flightListEl) return;
 
@@ -100,9 +109,7 @@ function renderFlightList(routes) {
       ? String(r.journey_date).slice(0, 10)
       : "";
 
-    const flightNo = r.callsign
-      ? r.callsign + " · "
-      : "";
+    const flightNo = r.callsign ? r.callsign + " · " : "";
 
     li.innerHTML =
       '<div style="font-size:12px; opacity:0.7;">' +
@@ -126,7 +133,6 @@ function renderFlightList(routes) {
     flightListEl.appendChild(li);
   });
 }
-
 
 function isolateFlight(uid) {
   isolatedUid = isolatedUid === uid ? null : uid;
@@ -173,7 +179,6 @@ async function loadFilters() {
     return;
   }
 
-  // ---- YEARS ----
   const yearMap = new Map();
   data.forEach(d => {
     if (d.year) yearMap.set(String(d.year).substring(0, 4), d.year);
@@ -184,15 +189,10 @@ async function loadFilters() {
   if (yearSelect) {
     yearSelect.innerHTML =
       `<option value="">All</option>` +
-      years
-        .map(([label, value]) => `<option value="${value}">${label}</option>`)
-        .join("");
-
-    // Default to latest year (not All)
+      years.map(([l, v]) => `<option value="${v}">${l}</option>`).join("");
     if (years.length) yearSelect.value = years[0][1];
   }
 
-  // ---- AIRLINES ----
   const airlines = [...new Set(data.map(d => d.airline).filter(Boolean))].sort();
   if (airlineSelect) {
     airlineSelect.innerHTML =
@@ -200,7 +200,6 @@ async function loadFilters() {
       airlines.map(a => `<option value="${a}">${a}</option>`).join("");
   }
 
-  // ---- TYPES ----
   const types = [...new Set(data.map(d => d.journey_type).filter(Boolean))].sort();
   if (typeSelect) {
     typeSelect.innerHTML =
@@ -210,7 +209,7 @@ async function loadFilters() {
 }
 
 // =====================================================
-// LOAD AIRPORT MARKERS
+// LOAD AIRPORT MARKERS + HOVER TOOLTIP
 // =====================================================
 async function loadAirports(routes) {
   const airportCodes = new Set();
@@ -264,6 +263,36 @@ async function loadAirports(routes) {
       },
     });
   }
+
+  // ---- HOVER TOOLTIP (bind once) ----
+  if (!airportHoverBound) {
+    airportHoverBound = true;
+
+    map.on("mouseenter", "airports-circle", e => {
+      map.getCanvas().style.cursor = "pointer";
+      const f = e.features?.[0];
+      if (!f) return;
+
+      const p = f.properties || {};
+      const html = `
+        <div style="font-size:12px;">
+          <strong>${p.airport_code || ""}</strong>
+          ${p.airport ? " — " + p.airport : ""}<br/>
+          ${(p.city || "")}${p.country ? ", " + p.country : ""}
+        </div>
+      `;
+
+      airportHoverPopup
+        .setLngLat(f.geometry.coordinates)
+        .setHTML(html)
+        .addTo(map);
+    });
+
+    map.on("mouseleave", "airports-circle", () => {
+      map.getCanvas().style.cursor = "";
+      airportHoverPopup.remove();
+    });
+  }
 }
 
 // =====================================================
@@ -276,7 +305,7 @@ async function loadRoutes() {
   let q = sb
     .from("journeys_routes_cache")
     .select(
-      "uid,callsign,airline,callsign,journey_type,origin,destination,journey_distance,journey_date,geom"
+      "uid,callsign,airline,journey_type,origin,destination,journey_distance,journey_date,geom"
     );
 
   if (yearSelect?.value) q = q.eq("year", yearSelect.value);
@@ -285,40 +314,18 @@ async function loadRoutes() {
 
   const { data, error } = await q;
 
-  if (error) {
-    console.error(error);
-    setStatus("Failed to load journeys");
+  if (error || !data?.length) {
     clearRoutes();
     clearAirports();
     renderFlightList([]);
-    return;
-  }
-
-  if (!data?.length) {
     setStatus("No journeys found");
-    clearRoutes();
-    clearAirports();
-    renderFlightList([]);
     return;
   }
 
-  if (data.length > MAX_ROUTES) {
-    setStatus(`Too many journeys (${data.length}) — refine filters`);
-    clearRoutes();
-    clearAirports();
-    renderFlightList([]);
-    return;
-  }
+  currentRoutes = [...data].sort(
+    (a, b) => new Date(b.journey_date) - new Date(a.journey_date)
+  );
 
-  // Sort sidebar + internal state by journey_date (newest first)
-  currentRoutes = [...data].sort((a, b) => {
-    if (!a.journey_date && !b.journey_date) return 0;
-    if (!a.journey_date) return 1;
-    if (!b.journey_date) return -1;
-    return new Date(b.journey_date) - new Date(a.journey_date);
-  });
-
-  // Build GeoJSON from *the same* sorted routes
   const features = currentRoutes.map(r => ({
     type: "Feature",
     geometry: r.geom,
