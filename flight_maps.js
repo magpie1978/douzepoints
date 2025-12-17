@@ -49,7 +49,7 @@ let isolatedUid = null;
 // HELPERS
 // =====================================================
 function setStatus(msg) {
-  statusEl.textContent = msg || "";
+  if (statusEl) statusEl.textContent = msg || "";
 }
 
 function clearRoutes() {
@@ -71,11 +71,13 @@ function clearAirports() {
 }
 
 function fitToBounds(features) {
-  if (!features.length) return;
+  if (!features || !features.length) return;
 
   const bounds = new mapboxgl.LngLatBounds();
   features.forEach(f => {
-    f.geometry.coordinates.forEach(c => bounds.extend(c));
+    if (f?.geometry?.coordinates?.length) {
+      f.geometry.coordinates.forEach(c => bounds.extend(c));
+    }
   });
 
   map.fitBounds(bounds, { padding: 70, duration: 600 });
@@ -85,19 +87,25 @@ function fitToBounds(features) {
 // SIDEBAR
 // =====================================================
 function renderFlightList(routes) {
+  if (!flightListEl) return;
+
   flightListEl.innerHTML = "";
 
   routes.forEach(r => {
     const li = document.createElement("li");
     li.dataset.uid = r.uid;
 
-    const date = r.journey_date
-      ? r.journey_date.slice(0, 10)
-      : "";
+    const date = r.journey_date ? String(r.journey_date).slice(0, 10) : "";
 
     li.innerHTML =
-      '<div style="font-size:12px; opacity:0.7;">' + date + '</div>' +
-      '<div><strong>' + r.origin + ' → ' + r.destination + '</strong></div>';
+      '<div style="font-size:12px; opacity:0.7;">' +
+      date +
+      "</div>" +
+      '<div><strong>' +
+      (r.origin || "") +
+      " → " +
+      (r.destination || "") +
+      "</strong></div>";
 
     if (r.uid === isolatedUid) {
       li.classList.add("active");
@@ -110,8 +118,6 @@ function renderFlightList(routes) {
     flightListEl.appendChild(li);
   });
 }
-
-
 
 function isolateFlight(uid) {
   isolatedUid = isolatedUid === uid ? null : uid;
@@ -129,17 +135,19 @@ function applyIsolation() {
   ]);
 
   if (isolatedUid) {
-    const r = currentRoutes.find(r => r.uid === isolatedUid);
-    if (r) {
+    const r = currentRoutes.find(x => x.uid === isolatedUid);
+    if (r?.geom?.coordinates?.length) {
       const bounds = new mapboxgl.LngLatBounds();
       r.geom.coordinates.forEach(c => bounds.extend(c));
       map.fitBounds(bounds, { padding: 90, duration: 600 });
     }
   }
 
-  [...flightListEl.children].forEach(li => {
-    li.classList.toggle("active", li.dataset.uid === isolatedUid);
-  });
+  if (flightListEl) {
+    [...flightListEl.children].forEach(li => {
+      li.classList.toggle("active", li.dataset.uid === isolatedUid);
+    });
+  }
 }
 
 // =====================================================
@@ -159,32 +167,37 @@ async function loadFilters() {
   // ---- YEARS ----
   const yearMap = new Map();
   data.forEach(d => {
-    if (d.year) yearMap.set(d.year.substring(0, 4), d.year);
+    if (d.year) yearMap.set(String(d.year).substring(0, 4), d.year);
   });
 
-  const years = [...yearMap.entries()].sort((a, b) =>
-    b[0].localeCompare(a[0])
-  );
+  const years = [...yearMap.entries()].sort((a, b) => b[0].localeCompare(a[0]));
 
-  yearSelect.innerHTML =
-    `<option value="">All</option>` +
-    years.map(([label, value]) =>
-      `<option value="${value}">${label}</option>`
-    ).join("");
+  if (yearSelect) {
+    yearSelect.innerHTML =
+      `<option value="">All</option>` +
+      years
+        .map(([label, value]) => `<option value="${value}">${label}</option>`)
+        .join("");
 
-  if (years.length) yearSelect.value = years[0][1];
+    // Default to latest year (not All)
+    if (years.length) yearSelect.value = years[0][1];
+  }
 
   // ---- AIRLINES ----
   const airlines = [...new Set(data.map(d => d.airline).filter(Boolean))].sort();
-  airlineSelect.innerHTML =
-    `<option value="">All airlines</option>` +
-    airlines.map(a => `<option value="${a}">${a}</option>`).join("");
+  if (airlineSelect) {
+    airlineSelect.innerHTML =
+      `<option value="">All airlines</option>` +
+      airlines.map(a => `<option value="${a}">${a}</option>`).join("");
+  }
 
   // ---- TYPES ----
   const types = [...new Set(data.map(d => d.journey_type).filter(Boolean))].sort();
-  typeSelect.innerHTML =
-    `<option value="">All types</option>` +
-    types.map(t => `<option value="${t}">${t}</option>`).join("");
+  if (typeSelect) {
+    typeSelect.innerHTML =
+      `<option value="">All types</option>` +
+      types.map(t => `<option value="${t}">${t}</option>`).join("");
+  }
 }
 
 // =====================================================
@@ -212,14 +225,16 @@ async function loadAirports(routes) {
     return;
   }
 
-  const features = data.map(a => ({
-    type: "Feature",
-    geometry: {
-      type: "Point",
-      coordinates: [a.longitude, a.latitude],
-    },
-    properties: a,
-  }));
+  const features = (data || [])
+    .filter(a => a.longitude != null && a.latitude != null)
+    .map(a => ({
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: [a.longitude, a.latitude],
+      },
+      properties: a,
+    }));
 
   const fc = { type: "FeatureCollection", features };
 
@@ -255,9 +270,9 @@ async function loadRoutes() {
       "uid,callsign,airline,journey_type,origin,destination,journey_distance,journey_date,geom"
     );
 
-  if (yearSelect.value) q = q.eq("year", yearSelect.value);
-  if (airlineSelect.value) q = q.eq("airline", airlineSelect.value);
-  if (typeSelect.value) q = q.eq("journey_type", typeSelect.value);
+  if (yearSelect?.value) q = q.eq("year", yearSelect.value);
+  if (airlineSelect?.value) q = q.eq("airline", airlineSelect.value);
+  if (typeSelect?.value) q = q.eq("journey_type", typeSelect.value);
 
   const { data, error } = await q;
 
@@ -270,7 +285,7 @@ async function loadRoutes() {
     return;
   }
 
-  if (!data.length) {
+  if (!data?.length) {
     setStatus("No journeys found");
     clearRoutes();
     clearAirports();
@@ -286,21 +301,20 @@ async function loadRoutes() {
     return;
   }
 
-  /*currentRoutes = data;
+  // Sort sidebar + internal state by journey_date (newest first)
+  currentRoutes = [...data].sort((a, b) => {
+    if (!a.journey_date && !b.journey_date) return 0;
+    if (!a.journey_date) return 1;
+    if (!b.journey_date) return -1;
+    return new Date(b.journey_date) - new Date(a.journey_date);
+  });
 
-  const features = data.map(r => ({
+  // Build GeoJSON from *the same* sorted routes
+  const features = currentRoutes.map(r => ({
     type: "Feature",
     geometry: r.geom,
     properties: r,
   }));
-*/
-
-  currentRoutes = [...data].sort((a, b) => {
-  if (!a.journey_date && !b.journey_date) return 0;
-  if (!a.journey_date) return 1;
-  if (!b.journey_date) return -1;
-  return new Date(b.journey_date) - new Date(a.journey_date);
-});
 
   const fc = { type: "FeatureCollection", features };
 
@@ -319,18 +333,18 @@ async function loadRoutes() {
         "line-color": [
           "case",
           ["==", ["get", "journey_type"], "Flight"], "#FFD700",
-          ["==", ["get", "journey_type"], "Drive"],  "#1E90FF",
+          ["==", ["get", "journey_type"], "Drive"], "#1E90FF",
           "#E53935",
         ],
       },
     });
   }
 
-  renderFlightList(data);
+  renderFlightList(currentRoutes);
   applyIsolation();
-  await loadAirports(data);
+  await loadAirports(currentRoutes);
   fitToBounds(features);
-  setStatus(`${data.length} journeys`);
+  setStatus(`${currentRoutes.length} journeys`);
 }
 
 // =====================================================
@@ -342,17 +356,12 @@ map.on("load", async () => {
   map.resize();
 });
 
-yearSelect.addEventListener("change", loadRoutes);
-airlineSelect.addEventListener("change", loadRoutes);
-typeSelect.addEventListener("change", loadRoutes);
-reloadBtn.addEventListener("click", loadRoutes);
+yearSelect?.addEventListener("change", loadRoutes);
+airlineSelect?.addEventListener("change", loadRoutes);
+typeSelect?.addEventListener("change", loadRoutes);
+reloadBtn?.addEventListener("click", loadRoutes);
 
-sidebarToggle.addEventListener("click", () => {
-  sidebar.classList.toggle("collapsed");
+sidebarToggle?.addEventListener("click", () => {
+  sidebar?.classList.toggle("collapsed");
   setTimeout(() => map.resize(), 260);
 });
-
-
-
-
-
