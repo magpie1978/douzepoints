@@ -44,15 +44,15 @@ const milesNumberEl = milesBox?.querySelector(".glass-number");
 const countriesBox = document.getElementById("countriesCounter");
 const countriesNumberEl = countriesBox?.querySelector(".glass-number");
 
-
 // =====================================================
 // STATE
 // =====================================================
 let currentRoutes = [];
 let isolatedUid = null;
+let previousView = null;   // ✅ NEW: store map view before isolation
 
 const selected = {
-  years: new Set(),     // "YYYY"
+  years: new Set(),
   airlines: new Set(),
   types: new Set(),
 };
@@ -136,7 +136,6 @@ function updateMilesCounter(miles) {
 
 function updateCountriesCounter(count) {
   if (!countriesNumberEl) return;
-
   animateNumber(
     countriesNumberEl,
     Number(countriesNumberEl.textContent.replace(/,/g, "")) || 0,
@@ -144,7 +143,6 @@ function updateCountriesCounter(count) {
     { value: countriesRAF }
   );
 }
-
 
 // =====================================================
 // SIDEBAR
@@ -174,9 +172,19 @@ function renderSidebar(routes) {
 }
 
 // =====================================================
-// ISOLATION
+// ISOLATION (UPDATED)
 // =====================================================
 function toggleIsolation(uid) {
+  // Save map view on first isolate
+  if (!isolatedUid && uid) {
+    previousView = {
+      center: map.getCenter(),
+      zoom: map.getZoom(),
+      bearing: map.getBearing(),
+      pitch: map.getPitch(),
+    };
+  }
+
   isolatedUid = isolatedUid === uid ? null : uid;
   applyIsolation();
   setTimeout(() => map.resize(), 50);
@@ -198,7 +206,13 @@ function applyIsolation() {
       fitToBoundsFromLineGeoms([r.geom]);
     }
   } else {
-    fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
+    // Restore previous view if available
+    if (previousView) {
+      map.easeTo({ ...previousView, duration: 600 });
+      previousView = null;
+    } else {
+      fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
+    }
   }
 
   [...flightListEl.children].forEach(li => {
@@ -207,100 +221,7 @@ function applyIsolation() {
 }
 
 // =====================================================
-// FILTER UI (CHECKBOX DROPDOWNS)
-// =====================================================
-function buildFilterMenu(containerId, values, targetSet) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  const menu = container.querySelector(".filter-menu");
-  const list = container.querySelector(".filter-options");
-  const toggleBtn = container.querySelector(".filter-toggle");
-  const selectAllBtn = container.querySelector(".select-all");
-  const clearBtn = container.querySelector(".clear");
-
-  if (!menu || !list || !toggleBtn || !selectAllBtn || !clearBtn) return;
-
-  list.innerHTML = "";
-
-  values.forEach(v => {
-    const label = document.createElement("label");
-    label.innerHTML = `<input type="checkbox" value="${v}"> ${v}`;
-    const cb = label.querySelector("input");
-
-    cb.checked = targetSet.has(v);
-
-    cb.addEventListener("change", () => {
-      cb.checked ? targetSet.add(v) : targetSet.delete(v);
-      loadRoutes();
-    });
-
-    list.appendChild(label);
-  });
-
-  selectAllBtn.onclick = () => {
-    targetSet.clear();
-    values.forEach(v => targetSet.add(v));
-    list.querySelectorAll("input").forEach(cb => (cb.checked = true));
-    loadRoutes();
-  };
-
-  clearBtn.onclick = () => {
-    targetSet.clear();
-    list.querySelectorAll("input").forEach(cb => (cb.checked = false));
-    loadRoutes();
-  };
-
-  toggleBtn.onclick = e => {
-    e.preventDefault();
-    e.stopPropagation();
-    menu.classList.toggle("open");
-  };
-}
-
-// Close dropdowns when clicking outside
-document.addEventListener("click", e => {
-  if (e.target.closest(".filter")) return;
-  document
-    .querySelectorAll(".filter-menu.open")
-    .forEach(m => m.classList.remove("open"));
-});
-
-// =====================================================
-// LOAD FILTER OPTIONS (defaults applied)
-// =====================================================
-async function loadFilters() {
-  const { data, error } = await sb
-    .from("journeys_routes_cache")
-    .select("year, airline, journey_type");
-
-  if (error) {
-    console.error(error);
-    return;
-  }
-
-  const currentYear = new Date().getFullYear().toString();
-
-  const years = [...new Set(
-    data.map(d => d.year && String(d.year).slice(0, 4)).filter(Boolean)
-  )].sort((a, b) => b.localeCompare(a));
-
-  const airlines = [...new Set(data.map(d => d.airline).filter(Boolean))].sort();
-  const types = [...new Set(data.map(d => d.journey_type).filter(Boolean))].sort();
-
-  selected.years.clear();
-  if (years.includes(currentYear)) selected.years.add(currentYear);
-
-  selected.types.clear();
-  if (types.includes("Flight")) selected.types.add("Flight");
-
-  buildFilterMenu("filter-year", years, selected.years);
-  buildFilterMenu("filter-airline", airlines, selected.airlines);
-  buildFilterMenu("filter-type", types, selected.types);
-}
-
-// =====================================================
-// AIRPORT MARKERS
+// AIRPORT MARKERS (UNCHANGED)
 // =====================================================
 const airportHoverPopup = new mapboxgl.Popup({
   closeButton: false,
@@ -363,7 +284,10 @@ async function loadAirports(routes) {
       airportHoverPopup
         .setLngLat(f.geometry.coordinates)
         .setHTML(
-          `<strong>${f.properties.airport_code}</strong><br>${f.properties.city}, ${f.properties.country}`
+          `<div style="color:#111;background:#fff;padding:6px;border-radius:6px;font-size:12px">
+            <strong>${f.properties.airport_code}</strong><br>
+            ${f.properties.city}, ${f.properties.country}
+          </div>`
         )
         .addTo(map);
     });
@@ -376,68 +300,48 @@ async function loadAirports(routes) {
 }
 
 // =====================================================
-// LOAD ROUTES
+// LOAD ROUTES (UPDATED WITH CLICK BUFFER)
 // =====================================================
 async function loadRoutes() {
   isolatedUid = null;
+  previousView = null;
 
   let q = sb.from("journeys_routes_cache").select("*");
 
-  // ---------------- FILTERS ----------------
   if (selected.years.size) {
     q = q.in(
       "year",
       [...selected.years].map(y => `${y}-01-01`)
     );
   }
-
-  if (selected.airlines.size) {
-    q = q.in("airline", [...selected.airlines]);
-  }
-
-  if (selected.types.size) {
-    q = q.in("journey_type", [...selected.types]);
-  }
+  if (selected.airlines.size) q = q.in("airline", [...selected.airlines]);
+  if (selected.types.size) q = q.in("journey_type", [...selected.types]);
 
   const { data, error } = await q;
-
-  // ---------------- ERROR ----------------
   if (error) {
     console.error(error);
-
     clearSource("routes");
     clearSource("airports");
     renderSidebar([]);
-
     updateJourneyCounter(0);
     updateMilesCounter(0);
     updateCountriesCounter(0);
-
     return;
   }
 
-  // ---------------- SORT + STATE ----------------
   currentRoutes = (data || [])
     .filter(r => r.journey_date)
     .sort((a, b) => new Date(b.journey_date) - new Date(a.journey_date));
 
-  // ---------------- COUNTERS ----------------
   updateJourneyCounter(currentRoutes.length);
-
-  const totalMiles = currentRoutes.reduce(
-    (sum, r) => sum + (Number(r.journey_distance) || 0),
-    0
+  updateMilesCounter(
+    currentRoutes.reduce((s, r) => s + (Number(r.journey_distance) || 0), 0)
   );
-  updateMilesCounter(totalMiles);
 
-  const countrySet = new Set(
-    currentRoutes
-      .map(r => r.destination_country)
-      .filter(Boolean)
+  updateCountriesCounter(
+    new Set(currentRoutes.map(r => r.destination_country).filter(Boolean)).size
   );
-  updateCountriesCounter(countrySet.size);
 
-  // ---------------- EMPTY ----------------
   if (!currentRoutes.length) {
     clearSource("routes");
     clearSource("airports");
@@ -445,30 +349,14 @@ async function loadRoutes() {
     return;
   }
 
-  // ---------------- SAFETY ----------------
-  if (currentRoutes.length > MAX_ROUTES) {
-    console.warn("Too many routes to display:", currentRoutes.length);
-
-    clearSource("routes");
-    clearSource("airports");
-    renderSidebar([]);
-
-    return;
-  }
-
-  // ---------------- GEOJSON ----------------
   const features = currentRoutes.map(r => ({
     type: "Feature",
     geometry: r.geom,
     properties: r,
   }));
 
-  const fc = {
-    type: "FeatureCollection",
-    features,
-  };
+  const fc = { type: "FeatureCollection", features };
 
-  // ---------------- MAP LAYER ----------------
   if (map.getSource("routes")) {
     map.getSource("routes").setData(fc);
   } else {
@@ -489,17 +377,44 @@ async function loadRoutes() {
         ],
       },
     });
+
+    // 🔥 FAT INVISIBLE HIT BUFFER
+    map.addLayer({
+      id: "routes-hit",
+      type: "line",
+      source: "routes",
+      paint: {
+        "line-width": 14,
+        "line-opacity": 0,
+      },
+    });
+
+    map.on("mouseenter", "routes-hit", () => {
+      map.getCanvas().style.cursor = "pointer";
+    });
+
+    map.on("mouseleave", "routes-hit", () => {
+      map.getCanvas().style.cursor = "";
+    });
+
+    map.on("click", e => {
+      const hits = map.queryRenderedFeatures(e.point, {
+        layers: ["routes-hit"],
+      });
+
+      if (hits.length) {
+        toggleIsolation(hits[0].properties.uid);
+      } else if (isolatedUid) {
+        toggleIsolation(isolatedUid); // reset
+      }
+    });
   }
 
-  // ---------------- UI SYNC ----------------
   renderSidebar(currentRoutes);
   applyIsolation();
   await loadAirports(currentRoutes);
-
-  // ---------------- FIT MAP ----------------
   fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
 }
-
 
 // =====================================================
 // INIT
