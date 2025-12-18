@@ -47,6 +47,10 @@ const countriesNumberEl = countriesBox?.querySelector(".glass-number");
 const airlinesBox = document.getElementById("airlinesCounter");
 const airlinesNumberEl = airlinesBox?.querySelector(".glass-number");
 
+const durationBox = document.getElementById("durationCounter");
+const durationNumberEl = durationBox?.querySelector(".glass-number");
+
+
 
 // =====================================================
 // STATE
@@ -89,12 +93,23 @@ function fitToBoundsFromLineGeoms(lineGeoms) {
   });
 }
 
+function formatDuration(seconds) {
+  if (!seconds || seconds <= 0) return "0h 00min";
+
+  const h = Math.floor(seconds / 3600);
+  const m = Math.round((seconds % 3600) / 60);
+
+  return `${h}h ${String(m).padStart(2, "0")}min`;
+}
+
+
 // =====================================================
 // GLASS COUNTERS (ANIMATED)
 // =====================================================
 let journeyRAF = null;
 let milesRAF = null;
 let countriesRAF = null;
+let durationRAF = null;
 
 function setJourneyLabel(n) {
   if (journeyLabelEl) {
@@ -145,35 +160,67 @@ function updateAirlinesCounter(count) {
   animateNumber(airlinesNumberEl, from, count, { value: null });
 }
 
+function updateDurationCounter(totalSeconds) {
+  if (!durationNumberEl) return;
+
+  cancelAnimationFrame(durationRAF);
+
+  const startSeconds =
+    durationNumberEl.dataset.seconds
+      ? Number(durationNumberEl.dataset.seconds)
+      : 0;
+
+  const targetSeconds = Math.max(0, Math.round(totalSeconds));
+  durationNumberEl.dataset.seconds = targetSeconds;
+
+  const startTime = performance.now();
+  const duration = 420;
+
+  function step(t) {
+    const p = Math.min((t - startTime) / duration, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+
+    const current = Math.round(
+      startSeconds + (targetSeconds - startSeconds) * eased
+    );
+
+    durationNumberEl.textContent = formatDuration(current);
+
+    if (p < 1) durationRAF = requestAnimationFrame(step);
+  }
+
+  durationRAF = requestAnimationFrame(step);
+}
+
 
 // =====================================================
 // COUNTER HELPER (AGGREGATE OR SINGLE ROUTE)
 // =====================================================
 function updateCountersForRoutes(routes) {
-  const list = routes || [];
-  const count = list.length;
+  // ---- Journeys ----
+  updateJourneyCounter(routes.length);
 
-  updateJourneyCounter(count);
-
-  const totalMiles = list.reduce(
-    (sum, r) => sum + (Number(r?.journey_distance) || 0),
+  // ---- Miles ----
+  const totalMiles = routes.reduce(
+    (sum, r) => sum + (Number(r.journey_distance) || 0),
     0
   );
   updateMilesCounter(totalMiles);
 
+  // ---- Countries ----
   const countryCount = new Set(
-    list.map(r => r?.destination_country).filter(Boolean)
+    routes.map(r => r.destination_country).filter(Boolean)
   ).size;
   updateCountriesCounter(countryCount);
 
-// ✅ Airlines
-  const airlineCount = new Set(
-    list.map(r => r?.airline).filter(Boolean)
-  ).size;
-  updateAirlinesCounter(airlineCount);
-
-
+  // ---- Duration ----
+  const totalSeconds = routes.reduce(
+    (sum, r) => sum + (Number(r.journey_duration_seconds) || 0),
+    0
+  );
+  updateDurationCounter(totalSeconds);
 }
+
 
 // =====================================================
 // SIDEBAR
