@@ -98,11 +98,15 @@ function fitToBoundsFromLineGeoms(lineGeoms) {
 // HELPERS FOR DISPLAYING COUNTRY VECTOR MAPS
 // =====================================================
 function fitToVisibleCountries() {
-  if (!map.getLayer("countries-fill")) return;
+  if (!map.getSource("countries")) return;
 
-  // Query rendered country polygons
-  const features = map.queryRenderedFeatures({
-    layers: ["countries-fill"],
+  const visited = getVisitedCountryNames();
+  if (!visited.length) return;
+
+  // Query SOURCE features, not rendered ones
+  const features = map.querySourceFeatures("countries", {
+    sourceLayer: "country_boundaries",
+    filter: ["in", ["get", "name_en"], ["literal", visited]],
   });
 
   if (!features.length) return;
@@ -113,27 +117,35 @@ function fitToVisibleCountries() {
     const geom = f.geometry;
 
     if (geom.type === "Polygon") {
-      geom.coordinates.forEach(ring => {
-        ring.forEach(coord => bounds.extend(coord));
-      });
-    }
-
-    if (geom.type === "MultiPolygon") {
-      geom.coordinates.forEach(polygon => {
-        polygon.forEach(ring => {
-          ring.forEach(coord => bounds.extend(coord));
-        });
-      });
+      geom.coordinates.forEach(ring =>
+        ring.forEach(coord => bounds.extend(coord))
+      );
+    } else if (geom.type === "MultiPolygon") {
+      geom.coordinates.forEach(poly =>
+        poly.forEach(ring =>
+          ring.forEach(coord => bounds.extend(coord))
+        )
+      );
     }
   });
 
-  if (!bounds.isEmpty()) {
-    map.fitBounds(bounds, {
-      padding: { top: 140, bottom: 80, left: 80, right: 80 },
-      duration: 650,
-    });
-  }
+  if (bounds.isEmpty()) return;
+
+  // IMPORTANT: account for sidebar width
+  const sidebarWidth = sidebar?.classList.contains("collapsed") ? 0 : sidebar.offsetWidth || 0;
+
+  map.fitBounds(bounds, {
+    padding: {
+      top: 140,
+      bottom: 80,
+      left: sidebarWidth + 80,
+      right: 80,
+    },
+    duration: 650,
+  });
 }
+
+
 
 
 // =====================================================
