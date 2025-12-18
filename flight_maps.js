@@ -1,4 +1,4 @@
-// global mapboxgl, supabase *
+/* global mapboxgl, supabase */
 
 // =====================================================
 // CONFIG
@@ -34,226 +34,145 @@ const sidebarToggle = document.getElementById("sidebarToggle");
 const reloadBtn = document.getElementById("reloadBtn");
 
 // Glass counters
-const journeyBox = document.getElementById("journeyCounter");
-const journeyNumberEl = journeyBox?.querySelector(".glass-number");
-const journeyLabelEl = journeyBox?.querySelector(".glass-label");
+const journeyNumberEl = document.querySelector("#journeyCounter .glass-number");
+const journeyLabelEl = document.querySelector("#journeyCounter .glass-label");
 
-const milesBox = document.getElementById("milesCounter");
-const milesNumberEl = milesBox?.querySelector(".glass-number");
+const milesNumberEl = document.querySelector("#milesCounter .glass-number");
+const countriesNumberEl = document.querySelector("#countriesCounter .glass-number");
+const airlinesNumberEl = document.querySelector("#airlinesCounter .glass-number");
+const durationNumberEl = document.querySelector("#durationCounter .glass-number");
 
 const countriesBox = document.getElementById("countriesCounter");
-const countriesNumberEl = countriesBox?.querySelector(".glass-number");
-
-const airlinesBox = document.getElementById("airlinesCounter");
-const airlinesNumberEl = airlinesBox?.querySelector(".glass-number");
-
-const durationBox = document.getElementById("durationCounter");
-const durationNumberEl = durationBox?.querySelector(".glass-number");
-
-
 
 // =====================================================
 // STATE
 // =====================================================
 let currentRoutes = [];
 let isolatedUid = null;
-let previousView = null;
+let mapMode = "routes"; // routes | countries
 
 const selected = {
-  years: new Set(), // "YYYY"
+  years: new Set(),
   airlines: new Set(),
   types: new Set(),
 };
-
-// Map event binding guards
-let routeClickBound = false;
-let routeCursorBound = false;
 
 // =====================================================
 // HELPERS
 // =====================================================
 function clearSource(id) {
   if (map.getSource(id)) {
-    map.getSource(id).setData({ type: "FeatureCollection", features: [] });
+    map.getSource(id).setData({
+      type: "FeatureCollection",
+      features: [],
+    });
   }
 }
 
-function fitToBoundsFromLineGeoms(lineGeoms) {
-  if (!lineGeoms?.length) return;
-
+function fitToBoundsFromLineGeoms(geoms) {
+  if (!geoms?.length) return;
   const bounds = new mapboxgl.LngLatBounds();
-  lineGeoms.forEach(g => {
-    if (!g?.coordinates) return;
-    g.coordinates.forEach(c => bounds.extend(c));
-  });
-
+  geoms.forEach(g => g?.coordinates?.forEach(c => bounds.extend(c)));
   map.fitBounds(bounds, {
     padding: { top: 120, bottom: 80, left: 80, right: 80 },
     duration: 600,
   });
 }
 
+// =====================================================
+// GLASS COUNTER ANIMATION
+// =====================================================
+let rafs = {};
+
+function animateNumber(el, from, to, key) {
+  cancelAnimationFrame(rafs[key]);
+  const start = performance.now();
+  const duration = 420;
+
+  function step(t) {
+    const p = Math.min((t - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(from + (to - from) * eased).toLocaleString();
+    if (p < 1) rafs[key] = requestAnimationFrame(step);
+  }
+
+  rafs[key] = requestAnimationFrame(step);
+}
+
 function formatDuration(seconds) {
   if (!seconds || seconds <= 0) return "0h 00min";
-
   const h = Math.floor(seconds / 3600);
   const m = Math.round((seconds % 3600) / 60);
-
   return `${h}h ${String(m).padStart(2, "0")}min`;
 }
 
+function updateDuration(seconds) {
+  cancelAnimationFrame(rafs.duration);
+  const startVal = Number(durationNumberEl.dataset.seconds || 0);
+  const endVal = Math.round(seconds);
+  durationNumberEl.dataset.seconds = endVal;
 
-// =====================================================
-// GLASS COUNTERS (ANIMATED)
-// =====================================================
-let journeyRAF = null;
-let milesRAF = null;
-let airlinesRAF = null;
-let countriesRAF = null;
-let durationRAF = null;
-
-
-
-function setJourneyLabel(n) {
-  if (journeyLabelEl) {
-    journeyLabelEl.textContent = n === 1 ? "journey" : "journeys";
-  }
-}
-
-function animateNumber(el, from, to, rafRefObj) {
-  if (!el) return;
-  if (rafRefObj.value) cancelAnimationFrame(rafRefObj.value);
-
-  const startTime = performance.now();
+  const start = performance.now();
   const duration = 420;
 
   function step(t) {
-    const p = Math.min((t - startTime) / duration, 1);
+    const p = Math.min((t - start) / duration, 1);
     const eased = 1 - Math.pow(1 - p, 3);
-    el.textContent = Math.round(from + (to - from) * eased).toLocaleString();
-    if (p < 1) rafRefObj.value = requestAnimationFrame(step);
-  }
-
-  rafRefObj.value = requestAnimationFrame(step);
-}
-
-function updateJourneyCounter(count) {
-  if (!journeyNumberEl) return;
-  setJourneyLabel(count);
-
-  const from = Number(String(journeyNumberEl.textContent || "0").replace(/,/g, "")) || 0;
-  animateNumber(journeyNumberEl, from, count, { value: journeyRAF });
-}
-
-function updateMilesCounter(miles) {
-  if (!milesNumberEl) return;
-  const from = Number(String(milesNumberEl.textContent || "0").replace(/,/g, "")) || 0;
-  animateNumber(milesNumberEl, from, Math.round(miles), { value: milesRAF });
-}
-
-function updateCountriesCounter(count) {
-  if (!countriesNumberEl) return;
-  const from = Number(String(countriesNumberEl.textContent || "0").replace(/,/g, "")) || 0;
-  animateNumber(countriesNumberEl, from, count, { value: countriesRAF });
-}
-
-function updateAirlinesCounter(count) {
-  if (!airlinesNumberEl) return;
-  const from =Number(String(airlinesNumberEl.textContent || "0").replace(/,/g, "")) || 0;
-  animateNumber(airlinesNumberEl, from, count, { value: null });
-}
-
-function updateDurationCounter(totalSeconds) {
-  if (!durationNumberEl) return;
-
-  cancelAnimationFrame(durationRAF);
-
-  const startSeconds =
-    durationNumberEl.dataset.seconds
-      ? Number(durationNumberEl.dataset.seconds)
-      : 0;
-
-  const targetSeconds = Math.max(0, Math.round(totalSeconds));
-  durationNumberEl.dataset.seconds = targetSeconds;
-
-  const startTime = performance.now();
-  const duration = 420;
-
-  function step(t) {
-    const p = Math.min((t - startTime) / duration, 1);
-    const eased = 1 - Math.pow(1 - p, 3);
-
-    const current = Math.round(
-      startSeconds + (targetSeconds - startSeconds) * eased
-    );
-
+    const current = Math.round(startVal + (endVal - startVal) * eased);
     durationNumberEl.textContent = formatDuration(current);
-
-    if (p < 1) durationRAF = requestAnimationFrame(step);
+    if (p < 1) rafs.duration = requestAnimationFrame(step);
   }
 
-  durationRAF = requestAnimationFrame(step);
+  rafs.duration = requestAnimationFrame(step);
 }
 
-
 // =====================================================
-// COUNTER HELPER (AGGREGATE OR SINGLE ROUTE)
+// COUNTERS (single source of truth)
 // =====================================================
 function updateCountersForRoutes(routes) {
-  // ---- Journeys ----
-  updateJourneyCounter(routes.length);
+  animateNumber(journeyNumberEl, +journeyNumberEl.textContent || 0, routes.length, "journeys");
+  journeyLabelEl.textContent = routes.length === 1 ? "journey" : "journeys";
 
-  // ---- Miles ----
-  const totalMiles = routes.reduce(
-    (sum, r) => sum + (Number(r.journey_distance) || 0),
-    0
+  animateNumber(
+    milesNumberEl,
+    +milesNumberEl.textContent.replace(/,/g, "") || 0,
+    routes.reduce((s, r) => s + (Number(r.journey_distance) || 0), 0),
+    "miles"
   );
-  updateMilesCounter(totalMiles);
 
-  // ---- Countries ----
-  const countryCount = new Set(
-    routes.map(r => r.destination_country).filter(Boolean)
-  ).size;
-  updateCountriesCounter(countryCount);
-
-  // ---- Airlines ----
-  const airlineCount = new Set(
-    routes.map(r => r.airline).filter(Boolean)
-  ).size;
-  updateAirlinesCounter(airlineCount);
-
-  // ---- Duration ----
-  const totalSeconds = routes.reduce(
-    (sum, r) => sum + (Number(r.journey_duration_seconds) || 0),
-    0
+  animateNumber(
+    countriesNumberEl,
+    +countriesNumberEl.textContent || 0,
+    new Set(routes.map(r => r.destination_country).filter(Boolean)).size,
+    "countries"
   );
-  updateDurationCounter(totalSeconds);
+
+  animateNumber(
+    airlinesNumberEl,
+    +airlinesNumberEl.textContent || 0,
+    new Set(routes.map(r => r.airline).filter(Boolean)).size,
+    "airlines"
+  );
+
+  updateDuration(
+    routes.reduce((s, r) => s + (Number(r.journey_duration_seconds) || 0), 0)
+  );
 }
-
 
 // =====================================================
 // SIDEBAR
 // =====================================================
 function renderSidebar(routes) {
-  if (!flightListEl) return;
   flightListEl.innerHTML = "";
-
   routes.forEach(r => {
     const li = document.createElement("li");
     li.dataset.uid = r.uid;
-
-    const date = r.journey_date ? String(r.journey_date).slice(0, 10) : "";
-
     li.innerHTML = `
-      <div class="date">${date}</div>
-      <div class="route">
-        <strong>${r.callsign || ""}</strong>
-        ${r.origin || ""} → ${r.destination || ""}
-      </div>
+      <div class="date">${r.journey_date || ""}</div>
+      <div class="route"><strong>${r.callsign || ""}</strong> ${r.origin} → ${r.destination}</div>
     `;
-
-    if (r.uid === isolatedUid) li.classList.add("active");
-    li.addEventListener("click", () => toggleIsolation(r.uid));
+    li.classList.toggle("active", r.uid === isolatedUid);
+    li.onclick = () => toggleIsolation(r.uid);
     flightListEl.appendChild(li);
   });
 }
@@ -262,19 +181,8 @@ function renderSidebar(routes) {
 // ISOLATION
 // =====================================================
 function toggleIsolation(uid) {
-  // Save map view on first isolate
-  if (!isolatedUid && uid) {
-    previousView = {
-      center: map.getCenter(),
-      zoom: map.getZoom(),
-      bearing: map.getBearing(),
-      pitch: map.getPitch(),
-    };
-  }
-
   isolatedUid = isolatedUid === uid ? null : uid;
   applyIsolation();
-  setTimeout(() => map.resize(), 50);
 }
 
 function applyIsolation() {
@@ -283,299 +191,84 @@ function applyIsolation() {
   map.setPaintProperty("routes-line", "line-opacity", [
     "case",
     ["==", ["get", "uid"], isolatedUid],
-    1.0,
+    1,
     isolatedUid ? 0.12 : 0.85,
   ]);
 
   if (isolatedUid) {
     const r = currentRoutes.find(x => x.uid === isolatedUid);
-
-    // Zoom to single route
-    if (r?.geom?.coordinates) {
-      fitToBoundsFromLineGeoms([r.geom]);
-    }
-
-    // ✅ Single-route counters
-    if (r) updateCountersForRoutes([r]);
+    fitToBoundsFromLineGeoms([r.geom]);
+    updateCountersForRoutes([r]);
   } else {
-    // Restore previous view if available
-    if (previousView) {
-      map.easeTo({ ...previousView, duration: 600 });
-      previousView = null;
-    } else {
-      fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
-    }
-
-    // ✅ Aggregate counters
+    fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
     updateCountersForRoutes(currentRoutes);
   }
-
-  if (flightListEl) {
-    [...flightListEl.children].forEach(li => {
-      li.classList.toggle("active", li.dataset.uid === isolatedUid);
-    });
-  }
 }
 
 // =====================================================
-// FILTER UI (CHECKBOX DROPDOWNS)
+// COUNTRY MODE (Option A – name_en)
 // =====================================================
-function buildFilterMenu(containerId, values, targetSet) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  const menu = container.querySelector(".filter-menu");
-  const list = container.querySelector(".filter-options");
-  const toggleBtn = container.querySelector(".filter-toggle");
-  const selectAllBtn = container.querySelector(".select-all");
-  const clearBtn = container.querySelector(".clear");
-
-  if (!menu || !list || !toggleBtn || !selectAllBtn || !clearBtn) return;
-
-  list.innerHTML = "";
-
-  values.forEach(v => {
-    const label = document.createElement("label");
-    label.innerHTML = `<input type="checkbox" value="${v}"> <span>${v}</span>`;
-    const cb = label.querySelector("input");
-
-    cb.checked = targetSet.has(v);
-
-    cb.addEventListener("change", () => {
-      cb.checked ? targetSet.add(v) : targetSet.delete(v);
-      loadRoutes();
-    });
-
-    list.appendChild(label);
-  });
-
-  selectAllBtn.onclick = e => {
-    e.preventDefault();
-    targetSet.clear();
-    values.forEach(v => targetSet.add(v));
-    list.querySelectorAll("input").forEach(cb => (cb.checked = true));
-    loadRoutes();
-  };
-
-  clearBtn.onclick = e => {
-    e.preventDefault();
-    targetSet.clear();
-    list.querySelectorAll("input").forEach(cb => (cb.checked = false));
-    loadRoutes();
-  };
-
-  toggleBtn.onclick = e => {
-    e.preventDefault();
-    e.stopPropagation();
-    menu.classList.toggle("open");
-  };
+function getVisitedCountryNames() {
+  return [...new Set(
+    currentRoutes.map(r => r.destination_country).filter(Boolean)
+  )];
 }
 
-// Close dropdowns when clicking outside
-document.addEventListener("click", e => {
-  if (e.target.closest(".filter")) return;
-  document.querySelectorAll(".filter-menu.open").forEach(m => m.classList.remove("open"));
-});
-
-// =====================================================
-// LOAD FILTER OPTIONS (defaults applied)
-// =====================================================
-async function loadFilters() {
-  const { data, error } = await sb
-    .from("journeys_routes_cache")
-    .select("year, airline, journey_type");
-
-  if (error || !data?.length) {
-    console.error(error);
-    return;
-  }
-
-  const currentYear = new Date().getFullYear().toString();
-
-  const years = [...new Set(
-    data.map(d => d.year && String(d.year).slice(0, 4)).filter(Boolean)
-  )].sort((a, b) => b.localeCompare(a));
-
-  const airlines = [...new Set(data.map(d => d.airline).filter(Boolean))].sort();
-  const types = [...new Set(data.map(d => d.journey_type).filter(Boolean))].sort();
-
-  // defaults
-  selected.years.clear();
-  selected.airlines.clear();
-  selected.types.clear();
-
-  if (years.includes(currentYear)) selected.years.add(currentYear);
-  else if (years.length) selected.years.add(years[0]);
-
-  if (types.includes("Flight")) selected.types.add("Flight");
-  else if (types.length) selected.types.add(types[0]);
-
-  buildFilterMenu("filter-year", years, selected.years);
-  buildFilterMenu("filter-airline", airlines, selected.airlines);
-  buildFilterMenu("filter-type", types, selected.types);
+function updateCountryHighlight() {
+  const names = getVisitedCountryNames();
+  map.setFilter("countries-fill", [
+    "in",
+    ["get", "name_en"],
+    ["literal", names],
+  ]);
 }
 
-// =====================================================
-// AIRPORT MARKERS + HOVER
-// =====================================================
-const airportHoverPopup = new mapboxgl.Popup({
-  closeButton: false,
-  closeOnClick: false,
-  offset: 10,
-});
+function applyMapMode() {
+  map.setLayoutProperty("routes-line", "visibility", mapMode === "routes" ? "visible" : "none");
+  map.setLayoutProperty("countries-fill", "visibility", mapMode === "countries" ? "visible" : "none");
 
-let airportHoverBound = false;
-
-async function loadAirports(routes) {
-  const codes = new Set();
-  routes.forEach(r => {
-    if (r.origin) codes.add(r.origin);
-    if (r.destination) codes.add(r.destination);
-  });
-
-  if (!codes.size) {
-    clearSource("airports");
-    return;
-  }
-
-  const { data, error } = await sb
-    .from("journey_locations")
-    .select("airport_code, airport, city, country, longitude, latitude")
-    .in("airport_code", [...codes]);
-
-  if (error) {
-    console.error("Airport load failed:", error);
-    clearSource("airports");
-    return;
-  }
-
-  const features = (data || [])
-    .filter(a => a.longitude != null && a.latitude != null)
-    .map(a => ({
-      type: "Feature",
-      geometry: { type: "Point", coordinates: [a.longitude, a.latitude] },
-      properties: a,
-    }));
-
-  const fc = { type: "FeatureCollection", features };
-
-  if (map.getSource("airports")) {
-    map.getSource("airports").setData(fc);
-  } else {
-    map.addSource("airports", { type: "geojson", data: fc });
-    map.addLayer({
-      id: "airports-circle",
-      type: "circle",
-      source: "airports",
-      paint: {
-        "circle-radius": 5,
-        "circle-color": "#fff",
-        "circle-stroke-width": 1.5,
-        "circle-stroke-color": "#000",
-      },
-    });
-  }
-
-  if (!airportHoverBound) {
-    airportHoverBound = true;
-
-    map.on("mouseenter", "airports-circle", e => {
-      map.getCanvas().style.cursor = "pointer";
-      const f = e.features?.[0];
-      if (!f) return;
-
-      airportHoverPopup
-        .setLngLat(f.geometry.coordinates)
-        .setHTML(
-          `<div style="color:#111;background:#fff;padding:6px 8px;border-radius:8px;font-size:12px;line-height:1.3">
-            <strong>${f.properties.airport_code}</strong><br/>
-            ${f.properties.airport || ""}<br/>
-            ${f.properties.city || ""}${f.properties.country ? ", " + f.properties.country : ""}
-          </div>`
-        )
-        .addTo(map);
-    });
-
-    map.on("mouseleave", "airports-circle", () => {
-      map.getCanvas().style.cursor = "";
-      airportHoverPopup.remove();
-    });
-  }
+  if (mapMode === "countries") updateCountryHighlight();
 }
+
+countriesBox.onclick = () => {
+  mapMode = mapMode === "routes" ? "countries" : "routes";
+  applyMapMode();
+};
 
 // =====================================================
 // LOAD ROUTES
 // =====================================================
 async function loadRoutes() {
   isolatedUid = null;
-  previousView = null;
 
   let q = sb.from("journeys_routes_cache").select("*");
+  const { data } = await q;
 
-  // ---------------- FILTERS ----------------
-  if (selected.years.size) {
-    q = q.in("year", [...selected.years].map(y => `${y}-01-01`));
-  }
-  if (selected.airlines.size) q = q.in("airline", [...selected.airlines]);
-  if (selected.types.size) q = q.in("journey_type", [...selected.types]);
+  currentRoutes = (data || []).sort(
+    (a, b) => new Date(b.journey_date) - new Date(a.journey_date)
+  );
 
-  const { data, error } = await q;
-
-  // ---------------- ERROR ----------------
-  if (error) {
-    console.error(error);
-
-    clearSource("routes");
-    clearSource("airports");
-    renderSidebar([]);
-
-    updateCountersForRoutes([]);
-    return;
-  }
-
-  // ---------------- SORT + STATE ----------------
-  currentRoutes = (data || [])
-    .filter(r => r.journey_date)
-    .sort((a, b) => new Date(b.journey_date) - new Date(a.journey_date));
-
-  // ---------------- COUNTERS (aggregate) ----------------
+  renderSidebar(currentRoutes);
   updateCountersForRoutes(currentRoutes);
 
-  // ---------------- EMPTY ----------------
   if (!currentRoutes.length) {
     clearSource("routes");
-    clearSource("airports");
-    renderSidebar([]);
     return;
   }
 
-  // ---------------- SAFETY ----------------
-  if (currentRoutes.length > MAX_ROUTES) {
-    console.warn("Too many routes to display:", currentRoutes.length);
+  const fc = {
+    type: "FeatureCollection",
+    features: currentRoutes.map(r => ({
+      type: "Feature",
+      geometry: r.geom,
+      properties: r,
+    })),
+  };
 
-    clearSource("routes");
-    clearSource("airports");
-    renderSidebar([]);
-
-    return;
-  }
-
-  // ---------------- GEOJSON ----------------
-  const features = currentRoutes.map(r => ({
-    type: "Feature",
-    geometry: r.geom,
-    properties: r,
-  }));
-
-  const fc = { type: "FeatureCollection", features };
-
-  // ---------------- MAP LAYER ----------------
   if (map.getSource("routes")) {
     map.getSource("routes").setData(fc);
   } else {
     map.addSource("routes", { type: "geojson", data: fc });
-
-    // visible line
     map.addLayer({
       id: "routes-line",
       type: "line",
@@ -591,61 +284,35 @@ async function loadRoutes() {
         ],
       },
     });
-
-    // fat invisible hit layer
-    map.addLayer({
-      id: "routes-hit",
-      type: "line",
-      source: "routes",
-      paint: {
-        "line-width": 14,
-        "line-opacity": 0,
-      },
-    });
-
-    // cursor on hit layer
-    if (!routeCursorBound) {
-      routeCursorBound = true;
-      map.on("mouseenter", "routes-hit", () => (map.getCanvas().style.cursor = "pointer"));
-      map.on("mouseleave", "routes-hit", () => (map.getCanvas().style.cursor = ""));
-    }
-
-    // click-to-isolate + click-away reset (bind once)
-    if (!routeClickBound) {
-      routeClickBound = true;
-      map.on("click", e => {
-        const hits = map.queryRenderedFeatures(e.point, { layers: ["routes-hit"] });
-        if (hits.length) {
-          toggleIsolation(hits[0].properties.uid);
-        } else if (isolatedUid) {
-          toggleIsolation(isolatedUid); // toggles off
-        }
-      });
-    }
   }
 
-  // ---------------- UI SYNC ----------------
-  renderSidebar(currentRoutes);
-  applyIsolation();
-  await loadAirports(currentRoutes);
-
-  // ---------------- FIT MAP ----------------
-  if (!isolatedUid) fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
+  applyMapMode();
+  fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
 }
 
 // =====================================================
 // INIT
 // =====================================================
 map.on("load", async () => {
-  setJourneyLabel(0);
-  await loadFilters();
+  map.addSource("countries", {
+    type: "vector",
+    url: "mapbox://mapbox.country-boundaries-v1",
+  });
+
+  map.addLayer({
+    id: "countries-fill",
+    type: "fill",
+    source: "countries",
+    "source-layer": "country_boundaries",
+    layout: { visibility: "none" },
+    paint: { "fill-color": "#FFD700", "fill-opacity": 0.6 },
+  });
+
   await loadRoutes();
-  map.resize();
 });
 
-reloadBtn?.addEventListener("click", loadRoutes);
-
-sidebarToggle?.addEventListener("click", () => {
-  sidebar?.classList.toggle("collapsed");
+reloadBtn?.onclick = loadRoutes;
+sidebarToggle?.onclick = () => {
+  sidebar.classList.toggle("collapsed");
   setTimeout(() => map.resize(), 250);
-});
+};
