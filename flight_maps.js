@@ -34,22 +34,22 @@ const sidebarToggle = document.getElementById("sidebarToggle");
 const reloadBtn = document.getElementById("reloadBtn");
 
 // Glass counters
-const journeyNumberEl = document.querySelector("#journeyCounter .glass-number");
-const journeyLabelEl = document.querySelector("#journeyCounter .glass-label");
+const journeyBox = document.getElementById("journeyCounter");
+const journeyNumberEl = journeyBox?.querySelector(".glass-number");
+const journeyLabelEl = journeyBox?.querySelector(".glass-label");
 
-const milesNumberEl = document.querySelector("#milesCounter .glass-number");
-const countriesNumberEl = document.querySelector("#countriesCounter .glass-number");
-const airlinesNumberEl = document.querySelector("#airlinesCounter .glass-number");
-const durationNumberEl = document.querySelector("#durationCounter .glass-number");
+const milesBox = document.getElementById("milesCounter");
+const milesNumberEl = milesBox?.querySelector(".glass-number");
 
 const countriesBox = document.getElementById("countriesCounter");
+const countriesNumberEl = countriesBox?.querySelector(".glass-number");
 
 // =====================================================
 // STATE
 // =====================================================
 let currentRoutes = [];
 let isolatedUid = null;
-let mapMode = "routes"; // routes | countries
+let countriesMode = false;
 
 const selected = {
   years: new Set(),
@@ -72,7 +72,7 @@ function clearSource(id) {
 function fitToBoundsFromLineGeoms(geoms) {
   if (!geoms?.length) return;
   const bounds = new mapboxgl.LngLatBounds();
-  geoms.forEach(g => g?.coordinates?.forEach(c => bounds.extend(c)));
+  geoms.forEach(g => g.coordinates.forEach(c => bounds.extend(c)));
   map.fitBounds(bounds, {
     padding: { top: 120, bottom: 80, left: 80, right: 80 },
     duration: 600,
@@ -80,12 +80,9 @@ function fitToBoundsFromLineGeoms(geoms) {
 }
 
 // =====================================================
-// GLASS COUNTER ANIMATION
+// GLASS COUNTERS (ANIMATED)
 // =====================================================
-let rafs = {};
-
-function animateNumber(el, from, to, key) {
-  cancelAnimationFrame(rafs[key]);
+function animateNumber(el, from, to) {
   const start = performance.now();
   const duration = 420;
 
@@ -93,85 +90,47 @@ function animateNumber(el, from, to, key) {
     const p = Math.min((t - start) / duration, 1);
     const eased = 1 - Math.pow(1 - p, 3);
     el.textContent = Math.round(from + (to - from) * eased).toLocaleString();
-    if (p < 1) rafs[key] = requestAnimationFrame(step);
+    if (p < 1) requestAnimationFrame(step);
   }
-
-  rafs[key] = requestAnimationFrame(step);
+  requestAnimationFrame(step);
 }
 
-function formatDuration(seconds) {
-  if (!seconds || seconds <= 0) return "0h 00min";
-  const h = Math.floor(seconds / 3600);
-  const m = Math.round((seconds % 3600) / 60);
-  return `${h}h ${String(m).padStart(2, "0")}min`;
+function updateJourneyCounter(n) {
+  if (!journeyNumberEl || !journeyLabelEl) return;
+  journeyLabelEl.textContent = n === 1 ? "journey" : "journeys";
+  animateNumber(journeyNumberEl, Number(journeyNumberEl.textContent) || 0, n);
 }
 
-function updateDuration(seconds) {
-  cancelAnimationFrame(rafs.duration);
-  const startVal = Number(durationNumberEl.dataset.seconds || 0);
-  const endVal = Math.round(seconds);
-  durationNumberEl.dataset.seconds = endVal;
-
-  const start = performance.now();
-  const duration = 420;
-
-  function step(t) {
-    const p = Math.min((t - start) / duration, 1);
-    const eased = 1 - Math.pow(1 - p, 3);
-    const current = Math.round(startVal + (endVal - startVal) * eased);
-    durationNumberEl.textContent = formatDuration(current);
-    if (p < 1) rafs.duration = requestAnimationFrame(step);
-  }
-
-  rafs.duration = requestAnimationFrame(step);
+function updateMilesCounter(m) {
+  if (!milesNumberEl) return;
+  animateNumber(milesNumberEl, Number(milesNumberEl.textContent) || 0, Math.round(m));
 }
 
-// =====================================================
-// COUNTERS (single source of truth)
-// =====================================================
-function updateCountersForRoutes(routes) {
-  animateNumber(journeyNumberEl, +journeyNumberEl.textContent || 0, routes.length, "journeys");
-  journeyLabelEl.textContent = routes.length === 1 ? "journey" : "journeys";
-
-  animateNumber(
-    milesNumberEl,
-    +milesNumberEl.textContent.replace(/,/g, "") || 0,
-    routes.reduce((s, r) => s + (Number(r.journey_distance) || 0), 0),
-    "miles"
-  );
-
-  animateNumber(
-    countriesNumberEl,
-    +countriesNumberEl.textContent || 0,
-    new Set(routes.map(r => r.destination_country).filter(Boolean)).size,
-    "countries"
-  );
-
-  animateNumber(
-    airlinesNumberEl,
-    +airlinesNumberEl.textContent || 0,
-    new Set(routes.map(r => r.airline).filter(Boolean)).size,
-    "airlines"
-  );
-
-  updateDuration(
-    routes.reduce((s, r) => s + (Number(r.journey_duration_seconds) || 0), 0)
-  );
+function updateCountriesCounter(n) {
+  if (!countriesNumberEl) return;
+  animateNumber(countriesNumberEl, Number(countriesNumberEl.textContent) || 0, n);
 }
 
 // =====================================================
 // SIDEBAR
 // =====================================================
 function renderSidebar(routes) {
+  if (!flightListEl) return;
   flightListEl.innerHTML = "";
+
   routes.forEach(r => {
     const li = document.createElement("li");
     li.dataset.uid = r.uid;
+
     li.innerHTML = `
-      <div class="date">${r.journey_date || ""}</div>
-      <div class="route"><strong>${r.callsign || ""}</strong> ${r.origin} → ${r.destination}</div>
+      <div class="date">${r.journey_date?.slice(0, 10) || ""}</div>
+      <div class="route">
+        <strong>${r.callsign || ""}</strong>
+        ${r.origin} → ${r.destination}
+      </div>
     `;
-    li.classList.toggle("active", r.uid === isolatedUid);
+
+    if (r.uid === isolatedUid) li.classList.add("active");
     li.onclick = () => toggleIsolation(r.uid);
     flightListEl.appendChild(li);
   });
@@ -197,73 +156,65 @@ function applyIsolation() {
 
   if (isolatedUid) {
     const r = currentRoutes.find(x => x.uid === isolatedUid);
+    updateJourneyCounter(1);
+    updateMilesCounter(r.journey_distance || 0);
+    updateCountriesCounter(r.destination_country ? 1 : 0);
     fitToBoundsFromLineGeoms([r.geom]);
-    updateCountersForRoutes([r]);
   } else {
+    recalcCounters(currentRoutes);
     fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
-    updateCountersForRoutes(currentRoutes);
   }
 }
 
 // =====================================================
-// COUNTRY MODE (Option A – name_en)
+// COUNTER RECALC
 // =====================================================
-function getVisitedCountryNames() {
-  return [...new Set(
-    currentRoutes.map(r => r.destination_country).filter(Boolean)
-  )];
+function recalcCounters(routes) {
+  updateJourneyCounter(routes.length);
+  updateMilesCounter(routes.reduce((s, r) => s + (r.journey_distance || 0), 0));
+  updateCountriesCounter(new Set(routes.map(r => r.destination_country)).size);
 }
-
-function updateCountryHighlight() {
-  const names = getVisitedCountryNames();
-  map.setFilter("countries-fill", [
-    "in",
-    ["get", "name_en"],
-    ["literal", names],
-  ]);
-}
-
-function applyMapMode() {
-  map.setLayoutProperty("routes-line", "visibility", mapMode === "routes" ? "visible" : "none");
-  map.setLayoutProperty("countries-fill", "visibility", mapMode === "countries" ? "visible" : "none");
-
-  if (mapMode === "countries") updateCountryHighlight();
-}
-
-countriesBox.onclick = () => {
-  mapMode = mapMode === "routes" ? "countries" : "routes";
-  applyMapMode();
-};
 
 // =====================================================
 // LOAD ROUTES
 // =====================================================
 async function loadRoutes() {
   isolatedUid = null;
+  countriesMode = false;
 
   let q = sb.from("journeys_routes_cache").select("*");
-  const { data } = await q;
+
+  if (selected.years.size) {
+    q = q.in("year", [...selected.years].map(y => `${y}-01-01`));
+  }
+  if (selected.airlines.size) q = q.in("airline", [...selected.airlines]);
+  if (selected.types.size) q = q.in("journey_type", [...selected.types]);
+
+  const { data, error } = await q;
+  if (error) {
+    console.error(error);
+    return;
+  }
 
   currentRoutes = (data || []).sort(
     (a, b) => new Date(b.journey_date) - new Date(a.journey_date)
   );
 
+  recalcCounters(currentRoutes);
   renderSidebar(currentRoutes);
-  updateCountersForRoutes(currentRoutes);
 
   if (!currentRoutes.length) {
     clearSource("routes");
     return;
   }
 
-  const fc = {
-    type: "FeatureCollection",
-    features: currentRoutes.map(r => ({
-      type: "Feature",
-      geometry: r.geom,
-      properties: r,
-    })),
-  };
+  const features = currentRoutes.map(r => ({
+    type: "Feature",
+    geometry: r.geom,
+    properties: r,
+  }));
+
+  const fc = { type: "FeatureCollection", features };
 
   if (map.getSource("routes")) {
     map.getSource("routes").setData(fc);
@@ -286,7 +237,6 @@ async function loadRoutes() {
     });
   }
 
-  applyMapMode();
   fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
 }
 
@@ -294,25 +244,23 @@ async function loadRoutes() {
 // INIT
 // =====================================================
 map.on("load", async () => {
-  map.addSource("countries", {
-    type: "vector",
-    url: "mapbox://mapbox.country-boundaries-v1",
-  });
-
-  map.addLayer({
-    id: "countries-fill",
-    type: "fill",
-    source: "countries",
-    "source-layer": "country_boundaries",
-    layout: { visibility: "none" },
-    paint: { "fill-color": "#FFD700", "fill-opacity": 0.6 },
-  });
-
+  updateJourneyCounter(0);
+  updateMilesCounter(0);
+  updateCountriesCounter(0);
   await loadRoutes();
+  map.resize();
 });
 
-reloadBtn?.onclick = loadRoutes;
-sidebarToggle?.onclick = () => {
-  sidebar.classList.toggle("collapsed");
-  setTimeout(() => map.resize(), 250);
-};
+// =====================================================
+// SAFE EVENT BINDINGS (FIXED)
+// =====================================================
+if (reloadBtn) {
+  reloadBtn.onclick = loadRoutes;
+}
+
+if (sidebarToggle && sidebar) {
+  sidebarToggle.onclick = () => {
+    sidebar.classList.toggle("collapsed");
+    setTimeout(() => map.resize(), 250);
+  };
+}
