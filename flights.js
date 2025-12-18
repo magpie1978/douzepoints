@@ -723,7 +723,21 @@ async function loadRoutes() {
 // =====================================================
 // INIT
 // =====================================================
-map.on("load", async () => {
+map.on("load", () => {
+  const style = map.getStyle();
+
+  style.layers.forEach(layer => {
+    // Hide state / province boundaries
+    if (
+      layer.source === "composite" &&
+      layer["source-layer"] === "admin" &&
+      layer.id.includes("boundary") &&
+      layer.id.includes("admin-1")
+    ) {
+      map.setLayoutProperty(layer.id, "visibility", "none");
+    }
+  });
+});
   await loadFilters();
   await loadRoutes();
 });
