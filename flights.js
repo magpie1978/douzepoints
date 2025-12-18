@@ -723,8 +723,7 @@ async function loadRoutes() {
 // =====================================================
 // INIT
 // =====================================================
-map.on("load", () => {
-  const style = map.getStyle();
+map.on("load", async () => {
   await loadFilters();
   await loadRoutes();
 });
