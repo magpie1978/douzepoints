@@ -93,6 +93,49 @@ function fitToBoundsFromLineGeoms(lineGeoms) {
   });
 }
 
+
+// =====================================================
+// HELPERS FOR DISPLAYING COUNTRY VECTOR MAPS
+// =====================================================
+function fitToVisibleCountries() {
+  if (!map.getLayer("countries-fill")) return;
+
+  // Query rendered country polygons
+  const features = map.queryRenderedFeatures({
+    layers: ["countries-fill"],
+  });
+
+  if (!features.length) return;
+
+  const bounds = new mapboxgl.LngLatBounds();
+
+  features.forEach(f => {
+    const geom = f.geometry;
+
+    if (geom.type === "Polygon") {
+      geom.coordinates.forEach(ring => {
+        ring.forEach(coord => bounds.extend(coord));
+      });
+    }
+
+    if (geom.type === "MultiPolygon") {
+      geom.coordinates.forEach(polygon => {
+        polygon.forEach(ring => {
+          ring.forEach(coord => bounds.extend(coord));
+        });
+      });
+    }
+  });
+
+  if (!bounds.isEmpty()) {
+    map.fitBounds(bounds, {
+      padding: { top: 140, bottom: 80, left: 80, right: 80 },
+      duration: 650,
+    });
+  }
+}
+
+
 // =====================================================
 // GLASS COUNTERS (ANIMATED)
 // =====================================================
@@ -448,9 +491,20 @@ function applyMapMode() {
 // Toggle by clicking the Countries box
 if (countriesBox) {
   countriesBox.addEventListener("click", () => {
-    mapMode = mapMode === "routes" ? "countries" : "routes";
-    applyMapMode();
-  });
+  mapMode = mapMode === "routes" ? "countries" : "routes";
+  applyMapMode();
+
+  if (mapMode === "countries") {
+    // Wait one frame so Mapbox applies filters first
+    requestAnimationFrame(() => {
+      fitToVisibleCountries();
+    });
+  } else {
+    // Back to routes → fit to routes again
+    fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
+  }
+});
+
 }
 
 // =====================================================
