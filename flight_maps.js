@@ -103,10 +103,12 @@ function fitToVisibleCountries() {
   const visited = getVisitedCountryNames();
   if (!visited.length) return;
 
-  // Query SOURCE features, not rendered ones
+  // IMPORTANT: classic filter syntax for querySourceFeatures
+  const filter = ["in", "name_en", ...visited];
+
   const features = map.querySourceFeatures("countries", {
     sourceLayer: "country_boundaries",
-    filter: ["in", ["get", "name_en"], ["literal", visited]],
+    filter,
   });
 
   if (!features.length) return;
@@ -114,36 +116,29 @@ function fitToVisibleCountries() {
   const bounds = new mapboxgl.LngLatBounds();
 
   features.forEach(f => {
-    const geom = f.geometry;
+    const g = f.geometry;
+    if (!g) return;
 
-    if (geom.type === "Polygon") {
-      geom.coordinates.forEach(ring =>
-        ring.forEach(coord => bounds.extend(coord))
-      );
-    } else if (geom.type === "MultiPolygon") {
-      geom.coordinates.forEach(poly =>
-        poly.forEach(ring =>
-          ring.forEach(coord => bounds.extend(coord))
-        )
+    if (g.type === "Polygon") {
+      g.coordinates.forEach(ring => ring.forEach(c => bounds.extend(c)));
+    } else if (g.type === "MultiPolygon") {
+      g.coordinates.forEach(poly =>
+        poly.forEach(ring => ring.forEach(c => bounds.extend(c)))
       );
     }
   });
 
   if (bounds.isEmpty()) return;
 
-  // IMPORTANT: account for sidebar width
-  const sidebarWidth = sidebar?.classList.contains("collapsed") ? 0 : sidebar.offsetWidth || 0;
+  const sidebarWidth =
+    sidebar?.classList.contains("collapsed") ? 0 : (sidebar?.offsetWidth || 0);
 
   map.fitBounds(bounds, {
-    padding: {
-      top: 140,
-      bottom: 80,
-      left: sidebarWidth + 80,
-      right: 80,
-    },
+    padding: { top: 140, bottom: 80, left: sidebarWidth + 80, right: 80 },
     duration: 650,
   });
 }
+
 
 
 
@@ -506,15 +501,22 @@ if (countriesBox) {
   mapMode = mapMode === "routes" ? "countries" : "routes";
   applyMapMode();
 
-  if (mapMode === "countries") {
-    // Wait one frame so Mapbox applies filters first
-    requestAnimationFrame(() => {
-      fitToVisibleCountries();
-    });
-  } else {
-    // Back to routes → fit to routes again
-    fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
-  }
+if (mapMode === "countries") {
+  // 1) Apply mode (adds source/layer + sets filter)
+  applyMapMode();
+
+  // 2) Zoom out a bit so country tiles/geometry load beyond the current route view
+  //    (duration 0 keeps it instant and avoids a “double animation” feel)
+  map.easeTo({ zoom: Math.min(map.getZoom(), 2.2), duration: 0 });
+
+  // 3) Wait until tiles finish loading, THEN compute bounds from full polygons
+  map.once("idle", () => {
+    fitToVisibleCountries();
+  });
+} else {
+  applyMapMode();
+  fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
+}
 });
 
 }
