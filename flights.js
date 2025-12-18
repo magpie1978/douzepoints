@@ -332,7 +332,7 @@ function applyIsolation() {
 
   // Sidebar: keep full list but highlight, OR show only the isolated flight.
   // Your prior behaviour generally shows the list filtered to selection — keep that:
-  renderSidebar(isolatedUid ? visibleRoutes : currentRoutes);
+  renderSidebar(currentRoutes);
 
   // Airports follow selection
   loadAirports(visibleRoutes);
