@@ -53,6 +53,8 @@ const durationNumberEl = durationBox?.querySelector(".glass-number");
 let currentRoutes = [];
 let isolatedUid = null;
 let mapMode = "routes"; // routes | countries
+let lastNonIsolatedView = null;
+
 
 // for “revert to prior view” after isolate
 let lastRoutesBounds = null;
@@ -297,14 +299,21 @@ async function loadAirports(routes) {
 // ISOLATION (SIDEBAR OR MAP CLICK)
 // =====================================================
 function toggleIsolation(uid) {
-  const next = isolatedUid === uid ? null : uid;
+  if (!isolatedUid && uid) {
+    // 🔐 Store current map state BEFORE isolating
+    const center = map.getCenter();
+    lastNonIsolatedView = {
+      center: [center.lng, center.lat],
+      zoom: map.getZoom(),
+      bearing: map.getBearing(),
+      pitch: map.getPitch(),
+    };
+  }
 
-  // store bounds BEFORE zooming into isolate
-  if (!isolatedUid && next) storeCurrentMapBoundsAsLastRoutes();
-
-  isolatedUid = next;
+  isolatedUid = isolatedUid === uid ? null : uid;
   applyIsolation();
 }
+
 
 function clearIsolation() {
   if (!isolatedUid) return;
@@ -313,42 +322,36 @@ function clearIsolation() {
 }
 
 function applyIsolation() {
-  // routes layer might not exist yet
-  if (map.getLayer("routes-line")) {
-    map.setPaintProperty("routes-line", "line-opacity", [
-      "case",
-      ["==", ["get", "uid"], isolatedUid],
-      1,
-      isolatedUid ? 0.12 : 0.85,
-    ]);
-  }
+  if (!map.getLayer("routes-line")) return;
 
-  const visibleRoutes = isolatedUid
-    ? currentRoutes.filter(r => r.uid === isolatedUid)
-    : currentRoutes;
+  map.setPaintProperty("routes-line", "line-opacity", [
+    "case",
+    ["==", ["get", "uid"], isolatedUid],
+    1.0,
+    isolatedUid ? 0.12 : 0.85,
+  ]);
 
-  // Counters reflect selection
-  updateCounters(visibleRoutes);
-
-  // Sidebar: keep full list but highlight, OR show only the isolated flight.
-  // Your prior behaviour generally shows the list filtered to selection — keep that:
-  renderSidebar(currentRoutes);
-
-  // Airports follow selection
-  loadAirports(visibleRoutes);
-
-  // Zoom/focus
-  if (mapMode === "routes") {
-    if (isolatedUid && visibleRoutes[0]?.geom) {
-      fitToBoundsFromLineGeoms([visibleRoutes[0].geom]);
-    } else {
-      revertToLastRoutesBoundsOrAllRoutes();
+  if (isolatedUid) {
+    const r = currentRoutes.find(x => x.uid === isolatedUid);
+    if (r?.geom?.coordinates) {
+      fitToBoundsFromLineGeoms([r.geom]);
     }
-  } else {
-    // in countries mode, re-fit to countries
-    fitToVisibleCountries();
+  } else if (lastNonIsolatedView) {
+    // ✅ Restore previous map view instead of zooming out wildly
+    map.easeTo({
+      center: lastNonIsolatedView.center,
+      zoom: lastNonIsolatedView.zoom,
+      bearing: lastNonIsolatedView.bearing,
+      pitch: lastNonIsolatedView.pitch,
+      duration: 600,
+    });
   }
+
+  [...flightListEl.children].forEach(li => {
+    li.classList.toggle("active", li.dataset.uid === isolatedUid);
+  });
 }
+
 
 // =====================================================
 // FILTER UI (checkbox dropdowns)
