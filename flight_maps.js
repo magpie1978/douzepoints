@@ -84,6 +84,52 @@ function fitToBoundsFromLineGeoms(lineGeoms) {
   });
 }
 
+
+// =====================================================
+// LOAD FILTERS
+// =====================================================
+async function loadFilters() {
+  const { data, error } = await sb
+    .from("journeys_routes_cache")
+    .select("year, airline, journey_type");
+
+  if (error || !data?.length) {
+    console.error(error);
+    return;
+  }
+
+  const currentYear = new Date().getFullYear().toString();
+
+  const years = [...new Set(
+    data.map(d => d.year && String(d.year).slice(0, 4)).filter(Boolean)
+  )].sort((a, b) => b.localeCompare(a));
+
+  const airlines = [...new Set(data.map(d => d.airline).filter(Boolean))].sort();
+  const types = [...new Set(data.map(d => d.journey_type).filter(Boolean))].sort();
+
+  // 🔥 IMPORTANT: clear and APPLY defaults BEFORE first loadRoutes
+  selected.years.clear();
+  selected.airlines.clear();
+  selected.types.clear();
+
+  if (years.includes(currentYear)) {
+    selected.years.add(currentYear);
+  } else if (years.length) {
+    selected.years.add(years[0]);
+  }
+
+  if (types.includes("Flight")) {
+    selected.types.add("Flight");
+  } else if (types.length) {
+    selected.types.add(types[0]);
+  }
+
+  buildFilterMenu("filter-year", years, selected.years);
+  buildFilterMenu("filter-airline", airlines, selected.airlines);
+  buildFilterMenu("filter-type", types, selected.types);
+}
+
+
 // =====================================================
 // GLASS COUNTERS (ANIMATED)
 // =====================================================
@@ -397,18 +443,14 @@ async function loadRoutes() {
       map.getCanvas().style.cursor = "";
     });
 
-    map.on("click", e => {
-      const hits = map.queryRenderedFeatures(e.point, {
-        layers: ["routes-hit"],
-      });
+    map.on("load", async () => {
+  setJourneyLabel(0);
 
-      if (hits.length) {
-        toggleIsolation(hits[0].properties.uid);
-      } else if (isolatedUid) {
-        toggleIsolation(isolatedUid); // reset
-      }
-    });
-  }
+  await loadFilters();   // ✅ sets selected.years/types
+  await loadRoutes();    // ✅ now fetches data
+
+  map.resize();
+  });
 
   renderSidebar(currentRoutes);
   applyIsolation();
