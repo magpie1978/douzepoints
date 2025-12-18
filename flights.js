@@ -137,6 +137,41 @@ function revertToLastRoutesBoundsOrAllRoutes() {
   }
 }
 
+
+function updateAllCounters(routes) {
+  // Journeys
+  updateJourneyCounter(routes.length);
+
+  // Miles
+  const totalMiles = routes.reduce(
+    (sum, r) => sum + (Number(r.journey_distance) || 0),
+    0
+  );
+  updateMilesCounter(totalMiles);
+
+  // Countries
+  const countrySet = new Set(
+    routes.map(r => r.destination_country).filter(Boolean)
+  );
+  updateCountriesCounter(countrySet.size);
+
+  // Airlines
+  const airlineSet = new Set(
+    routes.map(r => r.airline).filter(Boolean)
+  );
+  updateAirlinesCounter(airlineSet.size);
+
+  // Duration
+  const totalSeconds = routes.reduce(
+    (sum, r) => sum + (Number(r.journey_duration_seconds) || 0),
+    0
+  );
+  updateDurationCounter(totalSeconds);
+}
+
+
+
+
 // =====================================================
 // COUNTERS
 // =====================================================
@@ -333,24 +368,32 @@ function applyIsolation() {
 
   if (isolatedUid) {
     const r = currentRoutes.find(x => x.uid === isolatedUid);
-    if (r?.geom?.coordinates) {
+    if (r) {
       fitToBoundsFromLineGeoms([r.geom]);
+
+      // ✅ Update counters for single flight
+      updateAllCounters([r]);
     }
-  } else if (lastNonIsolatedView) {
-    // ✅ Restore previous map view instead of zooming out wildly
-    map.easeTo({
-      center: lastNonIsolatedView.center,
-      zoom: lastNonIsolatedView.zoom,
-      bearing: lastNonIsolatedView.bearing,
-      pitch: lastNonIsolatedView.pitch,
-      duration: 600,
-    });
+  } else {
+    // ✅ Restore counters for all filtered routes
+    updateAllCounters(currentRoutes);
+
+    if (lastNonIsolatedView) {
+      map.easeTo({
+        center: lastNonIsolatedView.center,
+        zoom: lastNonIsolatedView.zoom,
+        bearing: lastNonIsolatedView.bearing,
+        pitch: lastNonIsolatedView.pitch,
+        duration: 600,
+      });
+    }
   }
 
   [...flightListEl.children].forEach(li => {
     li.classList.toggle("active", li.dataset.uid === isolatedUid);
   });
 }
+
 
 
 // =====================================================
@@ -582,7 +625,7 @@ async function loadRoutes() {
     .sort((a, b) => new Date(b.journey_date) - new Date(a.journey_date));
 
   // Update UI
-  updateCounters(currentRoutes);
+  updateAllCounters(currentRoutes);
   renderSidebar(currentRoutes);
 
   // Safety
