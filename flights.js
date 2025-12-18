@@ -33,7 +33,7 @@ const flightListEl = document.getElementById("flightList");
 const sidebarToggle = document.getElementById("sidebarToggle");
 const reloadBtn = document.getElementById("reloadBtn");
 
-// Glass boxes
+// Glass counters
 const journeyNumberEl = document.querySelector("#journeyCounter .glass-number");
 const journeyLabelEl = document.querySelector("#journeyCounter .glass-label");
 const milesNumberEl = document.querySelector("#milesCounter .glass-number");
@@ -58,14 +58,19 @@ const selected = {
 // =====================================================
 function clearSource(id) {
   if (map.getSource(id)) {
-    map.getSource(id).setData({ type: "FeatureCollection", features: [] });
+    map.getSource(id).setData({
+      type: "FeatureCollection",
+      features: [],
+    });
   }
 }
 
 function fitToBoundsFromGeoms(geoms) {
   if (!geoms.length) return;
+
   const bounds = new mapboxgl.LngLatBounds();
   geoms.forEach(g => g.coordinates.forEach(c => bounds.extend(c)));
+
   map.fitBounds(bounds, {
     padding: {
       top: 120,
@@ -159,89 +164,89 @@ function applyIsolation() {
 
   updateCounters(routes);
   renderSidebar(routes);
+  loadAirports(routes);
   fitToBoundsFromGeoms(routes.map(r => r.geom));
 }
 
 // =====================================================
-// FILTER UI
+// AIRPORT MARKERS + TOOLTIPS
 // =====================================================
-function buildFilterMenu(containerId, values, targetSet) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  const list = container.querySelector(".filter-options");
-  list.innerHTML = "";
-
-  values.forEach(v => {
-    const label = document.createElement("label");
-    label.innerHTML = `<input type="checkbox" value="${v}"> ${v}`;
-    const cb = label.querySelector("input");
-    cb.checked = targetSet.has(v);
-
-    cb.addEventListener("change", () => {
-      cb.checked ? targetSet.add(v) : targetSet.delete(v);
-      loadRoutes();
-    });
-
-    list.appendChild(label);
-  });
-
-  container.querySelector(".select-all").onclick = () => {
-    targetSet.clear();
-    values.forEach(v => targetSet.add(v));
-    list.querySelectorAll("input").forEach(cb => (cb.checked = true));
-    loadRoutes();
-  };
-
-  container.querySelector(".clear").onclick = () => {
-    targetSet.clear();
-    list.querySelectorAll("input").forEach(cb => (cb.checked = false));
-    loadRoutes();
-  };
-
-  container.querySelector(".filter-toggle").onclick = e => {
-    e.stopPropagation();
-    container.querySelector(".filter-menu").classList.toggle("open");
-  };
-}
-
-document.addEventListener("click", e => {
-  if (e.target.closest(".filter")) return;
-  document
-    .querySelectorAll(".filter-menu.open")
-    .forEach(m => m.classList.remove("open"));
+const airportPopup = new mapboxgl.Popup({
+  closeButton: false,
+  closeOnClick: false,
+  offset: 10,
 });
 
-// =====================================================
-// LOAD FILTERS (defaults restored)
-// =====================================================
-async function loadFilters() {
-  const { data, error } = await sb
-    .from("journeys_routes_cache")
-    .select("year, airline, journey_type");
+async function loadAirports(routes) {
+  const airportCodes = new Set();
 
-  if (error) {
-    console.error(error);
+  routes.forEach(r => {
+    if (r.origin) airportCodes.add(r.origin);
+    if (r.destination) airportCodes.add(r.destination);
+  });
+
+  if (!airportCodes.size) {
+    clearSource("airports");
     return;
   }
 
-  const years = [...new Set(
-    data.map(d => d.year && String(d.year).slice(0, 4)).filter(Boolean)
-  )].sort((a, b) => b.localeCompare(a));
+  const { data, error } = await sb
+    .from("journey_locations")
+    .select("airport_code, airport, city, country, longitude, latitude")
+    .in("airport_code", [...airportCodes]);
 
-  const airlines = [...new Set(data.map(d => d.airline).filter(Boolean))].sort();
-  const types = [...new Set(data.map(d => d.journey_type).filter(Boolean))].sort();
+  if (error) {
+    console.error("Airport load failed:", error);
+    return;
+  }
 
-  selected.years.clear();
-  selected.types.clear();
-  selected.airlines.clear();
+  const features = data
+    .filter(a => a.longitude != null && a.latitude != null)
+    .map(a => ({
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: [a.longitude, a.latitude],
+      },
+      properties: a,
+    }));
 
-  if (years.includes("2025")) selected.years.add("2025");
-  if (types.includes("Flight")) selected.types.add("Flight");
+  const fc = { type: "FeatureCollection", features };
 
-  buildFilterMenu("filter-year", years, selected.years);
-  buildFilterMenu("filter-airline", airlines, selected.airlines);
-  buildFilterMenu("filter-type", types, selected.types);
+  if (map.getSource("airports")) {
+    map.getSource("airports").setData(fc);
+  } else {
+    map.addSource("airports", { type: "geojson", data: fc });
+
+    map.addLayer({
+      id: "airports-circle",
+      type: "circle",
+      source: "airports",
+      paint: {
+        "circle-radius": 5,
+        "circle-color": "#ffffff",
+        "circle-stroke-width": 1.5,
+        "circle-stroke-color": "#000000",
+      },
+    });
+
+    // Hover tooltips
+    map.on("mouseenter", "airports-circle", e => {
+      map.getCanvas().style.cursor = "pointer";
+      const p = e.features[0].properties;
+      airportPopup
+        .setLngLat(e.features[0].geometry.coordinates)
+        .setHTML(
+          `<strong>${p.airport_code}</strong><br>${p.city}, ${p.country}`
+        )
+        .addTo(map);
+    });
+
+    map.on("mouseleave", "airports-circle", () => {
+      map.getCanvas().style.cursor = "";
+      airportPopup.remove();
+    });
+  }
 }
 
 // =====================================================
@@ -300,7 +305,7 @@ async function loadRoutes() {
       },
     });
 
-    // Hit buffer
+    // Wide hit buffer
     map.addLayer({
       id: "routes-hit",
       type: "line",
@@ -323,6 +328,7 @@ async function loadRoutes() {
     });
   }
 
+  loadAirports(currentRoutes);
   fitToBoundsFromGeoms(currentRoutes.map(r => r.geom));
 }
 
