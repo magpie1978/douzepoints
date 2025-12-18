@@ -33,19 +33,29 @@ const flightListEl = document.getElementById("flightList");
 const sidebarToggle = document.getElementById("sidebarToggle");
 const reloadBtn = document.getElementById("reloadBtn");
 
-// Glass counters
-const journeyNumberEl = document.querySelector("#journeyCounter .glass-number");
-const journeyLabelEl = document.querySelector("#journeyCounter .glass-label");
-const milesNumberEl = document.querySelector("#milesCounter .glass-number");
-const countriesNumberEl = document.querySelector("#countriesCounter .glass-number");
-const airlinesNumberEl = document.querySelector("#airlinesCounter .glass-number");
-const durationNumberEl = document.querySelector("#durationCounter .glass-number");
+// Glass boxes
+const journeyBox = document.getElementById("journeyCounter");
+const milesBox = document.getElementById("milesCounter");
+const countriesBox = document.getElementById("countriesCounter");
+const airlinesBox = document.getElementById("airlinesCounter");
+const durationBox = document.getElementById("durationCounter");
+
+const journeyNumberEl = journeyBox?.querySelector(".glass-number");
+const journeyLabelEl = journeyBox?.querySelector(".glass-label");
+const milesNumberEl = milesBox?.querySelector(".glass-number");
+const countriesNumberEl = countriesBox?.querySelector(".glass-number");
+const airlinesNumberEl = airlinesBox?.querySelector(".glass-number");
+const durationNumberEl = durationBox?.querySelector(".glass-number");
 
 // =====================================================
 // STATE
 // =====================================================
 let currentRoutes = [];
 let isolatedUid = null;
+let mapMode = "routes"; // routes | countries
+
+// for “revert to prior view” after isolate
+let lastRoutesBounds = null;
 
 const selected = {
   years: new Set(),
@@ -58,77 +68,113 @@ const selected = {
 // =====================================================
 function clearSource(id) {
   if (map.getSource(id)) {
-    map.getSource(id).setData({
-      type: "FeatureCollection",
-      features: [],
-    });
+    map.getSource(id).setData({ type: "FeatureCollection", features: [] });
   }
 }
 
-function fitToBoundsFromGeoms(geoms) {
-  if (!geoms.length) return;
+function safeText(el, txt) {
+  if (el) el.textContent = txt;
+}
+
+function formatSecondsToHM(seconds) {
+  const s = Number(seconds) || 0;
+  if (s <= 0) return "0h 00min";
+  const hrs = Math.floor(s / 3600);
+  const mins = Math.floor((s % 3600) / 60);
+  return `${hrs}h ${String(mins).padStart(2, "0")}min`;
+}
+
+function getSidebarLeftPad() {
+  return sidebar?.classList.contains("collapsed")
+    ? 80
+    : (sidebar?.offsetWidth || 260) + 80;
+}
+
+function fitToBoundsFromLineGeoms(geoms) {
+  if (!geoms?.length) return;
 
   const bounds = new mapboxgl.LngLatBounds();
-  geoms.forEach(g => g.coordinates.forEach(c => bounds.extend(c)));
+  geoms.forEach(g => {
+    if (!g?.coordinates?.length) return;
+    g.coordinates.forEach(c => bounds.extend(c));
+  });
 
   map.fitBounds(bounds, {
     padding: {
-      top: 120,
+      top: 140,
       bottom: 80,
-      left: sidebar?.classList.contains("collapsed")
-        ? 80
-        : sidebar.offsetWidth + 80,
+      left: getSidebarLeftPad(),
       right: 80,
     },
-    duration: 600,
+    duration: 650,
   });
 }
 
-function formatDuration(seconds) {
-  if (!seconds || seconds <= 0) return "0h 00min";
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  return `${h}h ${String(m).padStart(2, "0")}min`;
+function storeCurrentMapBoundsAsLastRoutes() {
+  // Save current camera bounds to revert later
+  try {
+    lastRoutesBounds = map.getBounds();
+  } catch {
+    lastRoutesBounds = null;
+  }
+}
+
+function revertToLastRoutesBoundsOrAllRoutes() {
+  if (lastRoutesBounds) {
+    map.fitBounds(lastRoutesBounds, {
+      padding: {
+        top: 140,
+        bottom: 80,
+        left: getSidebarLeftPad(),
+        right: 80,
+      },
+      duration: 650,
+    });
+  } else {
+    fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
+  }
 }
 
 // =====================================================
 // COUNTERS
 // =====================================================
 function updateCounters(routes) {
-  const journeys = routes.length;
-  const miles = routes.reduce((s, r) => s + (r.journey_distance || 0), 0);
-  const countries = new Set(
-    routes.map(r => r.destination_country).filter(Boolean)
-  ).size;
-  const airlines = new Set(
-    routes.map(r => r.airline).filter(Boolean)
-  ).size;
-  const duration = routes.reduce(
-    (s, r) => s + (r.journey_duration_seconds || 0),
+  const rs = (routes || []).filter(Boolean);
+
+  const journeyCount = rs.length;
+  safeText(journeyNumberEl, journeyCount.toLocaleString());
+  safeText(journeyLabelEl, journeyCount === 1 ? "journey" : "journeys");
+
+  const miles = rs.reduce((s, r) => s + (Number(r.journey_distance) || 0), 0);
+  safeText(milesNumberEl, Math.round(miles).toLocaleString());
+
+  const countrySet = new Set(rs.map(r => r.destination_country).filter(Boolean));
+  safeText(countriesNumberEl, countrySet.size.toLocaleString());
+
+  const airlineSet = new Set(rs.map(r => r.airline).filter(Boolean));
+  safeText(airlinesNumberEl, airlineSet.size.toLocaleString());
+
+  const totalSeconds = rs.reduce(
+    (s, r) => s + (Number(r.journey_duration_seconds) || 0),
     0
   );
-
-  journeyNumberEl.textContent = journeys.toLocaleString();
-  journeyLabelEl.textContent = journeys === 1 ? "journey" : "journeys";
-  milesNumberEl.textContent = Math.round(miles).toLocaleString();
-  countriesNumberEl.textContent = countries.toLocaleString();
-  airlinesNumberEl.textContent = airlines.toLocaleString();
-  durationNumberEl.textContent = formatDuration(duration);
+  safeText(durationNumberEl, formatSecondsToHM(totalSeconds));
 }
 
 // =====================================================
 // SIDEBAR
 // =====================================================
 function renderSidebar(routes) {
+  if (!flightListEl) return;
   flightListEl.innerHTML = "";
 
-  routes.forEach(r => {
+  (routes || []).forEach(r => {
     const li = document.createElement("li");
     li.dataset.uid = r.uid;
     li.classList.toggle("active", r.uid === isolatedUid);
 
     li.innerHTML = `
-      <div class="date">${r.journey_date || ""}</div>
+      <div class="date">${r.journey_date?.slice(0, 10) || ""}</div>
       <div class="route">
         <strong>${r.callsign || ""}</strong>
         ${r.origin || ""} → ${r.destination || ""}
@@ -141,34 +187,6 @@ function renderSidebar(routes) {
 }
 
 // =====================================================
-// ISOLATION
-// =====================================================
-function toggleIsolation(uid) {
-  isolatedUid = isolatedUid === uid ? null : uid;
-  applyIsolation();
-}
-
-function applyIsolation() {
-  if (!map.getLayer("routes-line")) return;
-
-  map.setPaintProperty("routes-line", "line-opacity", [
-    "case",
-    ["==", ["get", "uid"], isolatedUid],
-    1,
-    isolatedUid ? 0.12 : 0.85,
-  ]);
-
-  const routes = isolatedUid
-    ? currentRoutes.filter(r => r.uid === isolatedUid)
-    : currentRoutes;
-
-  updateCounters(routes);
-  renderSidebar(routes);
-  loadAirports(routes);
-  fitToBoundsFromGeoms(routes.map(r => r.geom));
-}
-
-// =====================================================
 // AIRPORT MARKERS + TOOLTIPS
 // =====================================================
 const airportPopup = new mapboxgl.Popup({
@@ -177,41 +195,48 @@ const airportPopup = new mapboxgl.Popup({
   offset: 10,
 });
 
-async function loadAirports(routes) {
-  const airportCodes = new Set();
+let airportHoverBound = false;
 
-  routes.forEach(r => {
-    if (r.origin) airportCodes.add(r.origin);
-    if (r.destination) airportCodes.add(r.destination);
+async function loadAirports(routes) {
+  // In countries mode we hide airports entirely
+  if (mapMode !== "routes") {
+    if (map.getLayer("airports-circle")) map.setLayoutProperty("airports-circle", "visibility", "none");
+    clearSource("airports");
+    return;
+  }
+
+  const codes = new Set();
+  (routes || []).forEach(r => {
+    if (r.origin) codes.add(r.origin);
+    if (r.destination) codes.add(r.destination);
   });
 
-  if (!airportCodes.size) {
+  if (!codes.size) {
     clearSource("airports");
+    if (map.getLayer("airports-circle")) map.setLayoutProperty("airports-circle", "visibility", "none");
     return;
   }
 
   const { data, error } = await sb
     .from("journey_locations")
     .select("airport_code, airport, city, country, longitude, latitude")
-    .in("airport_code", [...airportCodes]);
+    .in("airport_code", [...codes]);
 
   if (error) {
-    console.error("Airport load failed:", error);
+    console.error("[airports] load failed:", error);
     return;
   }
 
-  const features = data
-    .filter(a => a.longitude != null && a.latitude != null)
-    .map(a => ({
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: [a.longitude, a.latitude],
-      },
-      properties: a,
-    }));
-
-  const fc = { type: "FeatureCollection", features };
+  const fc = {
+    type: "FeatureCollection",
+    features: (data || [])
+      .filter(a => a.longitude != null && a.latitude != null)
+      .map(a => ({
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [a.longitude, a.latitude] },
+        properties: a,
+      })),
+  };
 
   if (map.getSource("airports")) {
     map.getSource("airports").setData(fc);
@@ -229,15 +254,34 @@ async function loadAirports(routes) {
         "circle-stroke-color": "#000000",
       },
     });
+  }
 
-    // Hover tooltips
+  // ensure visible
+  if (map.getLayer("airports-circle")) {
+    map.setLayoutProperty("airports-circle", "visibility", "visible");
+  }
+
+  // bind hover only once
+  if (!airportHoverBound && map.getLayer("airports-circle")) {
+    airportHoverBound = true;
+
     map.on("mouseenter", "airports-circle", e => {
       map.getCanvas().style.cursor = "pointer";
-      const p = e.features[0].properties;
+      const f = e.features?.[0];
+      if (!f) return;
+
+      const p = f.properties || {};
+      const code = p.airport_code || "";
+      const city = p.city || "";
+      const country = p.country || "";
+
       airportPopup
-        .setLngLat(e.features[0].geometry.coordinates)
+        .setLngLat(f.geometry.coordinates)
         .setHTML(
-          `<strong>${p.airport_code}</strong><br>${p.city}, ${p.country}`
+          `<div style="color:#111;">
+             <strong>${code}</strong><br/>
+             ${city}${city && country ? ", " : ""}${country}
+           </div>`
         )
         .addTo(map);
     });
@@ -250,10 +294,263 @@ async function loadAirports(routes) {
 }
 
 // =====================================================
+// ISOLATION (SIDEBAR OR MAP CLICK)
+// =====================================================
+function toggleIsolation(uid) {
+  const next = isolatedUid === uid ? null : uid;
+
+  // store bounds BEFORE zooming into isolate
+  if (!isolatedUid && next) storeCurrentMapBoundsAsLastRoutes();
+
+  isolatedUid = next;
+  applyIsolation();
+}
+
+function clearIsolation() {
+  if (!isolatedUid) return;
+  isolatedUid = null;
+  applyIsolation();
+}
+
+function applyIsolation() {
+  // routes layer might not exist yet
+  if (map.getLayer("routes-line")) {
+    map.setPaintProperty("routes-line", "line-opacity", [
+      "case",
+      ["==", ["get", "uid"], isolatedUid],
+      1,
+      isolatedUid ? 0.12 : 0.85,
+    ]);
+  }
+
+  const visibleRoutes = isolatedUid
+    ? currentRoutes.filter(r => r.uid === isolatedUid)
+    : currentRoutes;
+
+  // Counters reflect selection
+  updateCounters(visibleRoutes);
+
+  // Sidebar: keep full list but highlight, OR show only the isolated flight.
+  // Your prior behaviour generally shows the list filtered to selection — keep that:
+  renderSidebar(isolatedUid ? visibleRoutes : currentRoutes);
+
+  // Airports follow selection
+  loadAirports(visibleRoutes);
+
+  // Zoom/focus
+  if (mapMode === "routes") {
+    if (isolatedUid && visibleRoutes[0]?.geom) {
+      fitToBoundsFromLineGeoms([visibleRoutes[0].geom]);
+    } else {
+      revertToLastRoutesBoundsOrAllRoutes();
+    }
+  } else {
+    // in countries mode, re-fit to countries
+    fitToVisibleCountries();
+  }
+}
+
+// =====================================================
+// FILTER UI (checkbox dropdowns)
+// =====================================================
+function buildFilterMenu(containerId, values, targetSet) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const list = container.querySelector(".filter-options");
+  const toggle = container.querySelector(".filter-toggle");
+  const menu = container.querySelector(".filter-menu");
+  const selectAll = container.querySelector(".select-all");
+  const clear = container.querySelector(".clear");
+
+  if (!list || !toggle || !menu || !selectAll || !clear) return;
+
+  list.innerHTML = "";
+
+  values.forEach(v => {
+    const label = document.createElement("label");
+    label.innerHTML = `<input type="checkbox" value="${v}"> ${v}`;
+    const cb = label.querySelector("input");
+    cb.checked = targetSet.has(v);
+
+    cb.addEventListener("change", () => {
+      cb.checked ? targetSet.add(v) : targetSet.delete(v);
+      loadRoutes();
+    });
+
+    list.appendChild(label);
+  });
+
+  selectAll.onclick = () => {
+    targetSet.clear();
+    values.forEach(v => targetSet.add(v));
+    list.querySelectorAll("input").forEach(cb => (cb.checked = true));
+    loadRoutes();
+  };
+
+  clear.onclick = () => {
+    targetSet.clear();
+    list.querySelectorAll("input").forEach(cb => (cb.checked = false));
+    loadRoutes();
+  };
+
+  toggle.onclick = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    menu.classList.toggle("open");
+  };
+}
+
+document.addEventListener("click", e => {
+  if (e.target.closest(".filter")) return;
+  document.querySelectorAll(".filter-menu.open").forEach(m => m.classList.remove("open"));
+});
+
+// =====================================================
+// LOAD FILTERS (defaults applied: Year=2025 and Type=Flight)
+// =====================================================
+async function loadFilters() {
+  const { data, error } = await sb
+    .from("journeys_routes_cache")
+    .select("year, airline, journey_type");
+
+  if (error) {
+    console.error("[filters] failed:", error);
+    return;
+  }
+
+  const years = [...new Set(
+    (data || []).map(d => d.year && String(d.year).slice(0, 4)).filter(Boolean)
+  )].sort((a, b) => b.localeCompare(a));
+
+  const airlines = [...new Set((data || []).map(d => d.airline).filter(Boolean))].sort();
+  const types = [...new Set((data || []).map(d => d.journey_type).filter(Boolean))].sort();
+
+  selected.years.clear();
+  selected.types.clear();
+
+  // required defaults
+  if (years.includes("2025")) selected.years.add("2025");
+  if (types.includes("Flight")) selected.types.add("Flight");
+
+  buildFilterMenu("filter-year", years, selected.years);
+  buildFilterMenu("filter-airline", airlines, selected.airlines);
+  buildFilterMenu("filter-type", types, selected.types);
+}
+
+// =====================================================
+// COUNTRIES MODE (Mapbox country boundaries)
+// =====================================================
+function ensureCountriesLayer() {
+  if (map.getSource("countries")) return;
+
+  map.addSource("countries", {
+    type: "vector",
+    url: "mapbox://mapbox.country-boundaries-v1",
+  });
+
+  map.addLayer({
+    id: "countries-fill",
+    type: "fill",
+    source: "countries",
+    "source-layer": "country_boundaries",
+    paint: {
+      "fill-color": "#FFD700",
+      "fill-opacity": 0.75,
+    },
+    // start empty
+    filter: ["in", "name_en", ""],
+  });
+}
+
+function setCountriesFilterFromRoutes(routes) {
+  ensureCountriesLayer();
+  const names = [...new Set((routes || []).map(r => r.destination_country).filter(Boolean))];
+  map.setFilter("countries-fill", ["in", "name_en", ...names]);
+}
+
+function fitToVisibleCountries() {
+  if (!map.getLayer("countries-fill")) return;
+
+  // IMPORTANT: query *rendered* features of the countries-fill layer
+  // (this respects the filter, so bounds match highlighted countries only)
+  const rendered = map.queryRenderedFeatures({ layers: ["countries-fill"] });
+
+  if (!rendered?.length) return;
+
+  const bounds = new mapboxgl.LngLatBounds();
+
+  rendered.forEach(f => {
+    const geom = f.geometry;
+    // GeoJSON-like polygons
+    if (!geom) return;
+
+    // Mapbox can return MultiPolygon / Polygon; coordinates nesting varies.
+    const coords = geom.coordinates;
+
+    // flatten safely
+    const flat = (arr) => arr.flat ? arr.flat(Infinity) : arr;
+    const points = flat(coords);
+
+    // points is now alternating lon/lat values in some cases; safer:
+    // walk original structure as [lng,lat] pairs
+    const walk = (c) => {
+      if (!Array.isArray(c)) return;
+      if (typeof c[0] === "number" && typeof c[1] === "number") {
+        bounds.extend(c);
+        return;
+      }
+      c.forEach(walk);
+    };
+    walk(coords);
+  });
+
+  map.fitBounds(bounds, {
+    padding: {
+      top: 140,
+      bottom: 80,
+      left: getSidebarLeftPad(),
+      right: 80,
+    },
+    duration: 650,
+  });
+}
+
+function applyMapMode() {
+  if (mapMode === "countries") {
+    // hide routes + hit buffer + airports
+    if (map.getLayer("routes-line")) map.setLayoutProperty("routes-line", "visibility", "none");
+    if (map.getLayer("routes-hit")) map.setLayoutProperty("routes-hit", "visibility", "none");
+    if (map.getLayer("airports-circle")) map.setLayoutProperty("airports-circle", "visibility", "none");
+
+    const visibleRoutes = isolatedUid
+      ? currentRoutes.filter(r => r.uid === isolatedUid)
+      : currentRoutes;
+
+    setCountriesFilterFromRoutes(visibleRoutes);
+
+    if (map.getLayer("countries-fill")) map.setLayoutProperty("countries-fill", "visibility", "visible");
+
+    // wait for map to render then fit
+    map.once("idle", () => fitToVisibleCountries());
+  } else {
+    // routes mode
+    if (map.getLayer("countries-fill")) map.setLayoutProperty("countries-fill", "visibility", "none");
+    if (map.getLayer("routes-line")) map.setLayoutProperty("routes-line", "visibility", "visible");
+    if (map.getLayer("routes-hit")) map.setLayoutProperty("routes-hit", "visibility", "visible");
+    if (map.getLayer("airports-circle")) map.setLayoutProperty("airports-circle", "visibility", "visible");
+
+    applyIsolation(); // re-apply focusing and counters
+  }
+}
+
+// =====================================================
 // LOAD ROUTES
 // =====================================================
 async function loadRoutes() {
+  // New query = reset isolation + last bounds
   isolatedUid = null;
+  lastRoutesBounds = null;
 
   let q = sb.from("journeys_routes_cache").select("*");
 
@@ -264,31 +561,50 @@ async function loadRoutes() {
   if (selected.types.size) q = q.in("journey_type", [...selected.types]);
 
   const { data, error } = await q;
+
   if (error) {
-    console.error(error);
+    console.error("[routes] load failed:", error);
+
+    // Hard reset UI so you don't get "silent zeros"
+    currentRoutes = [];
+    updateCounters([]);
+    renderSidebar([]);
+    clearSource("routes");
+    clearSource("airports");
     return;
   }
 
-  currentRoutes = data
+  currentRoutes = (data || [])
     .filter(r => r.geom)
     .sort((a, b) => new Date(b.journey_date) - new Date(a.journey_date));
 
+  // Update UI
   updateCounters(currentRoutes);
   renderSidebar(currentRoutes);
 
-  const features = currentRoutes.map(r => ({
-    type: "Feature",
-    geometry: r.geom,
-    properties: r,
-  }));
+  // Safety
+  if (currentRoutes.length > MAX_ROUTES) {
+    console.warn("[routes] too many routes:", currentRoutes.length);
+    clearSource("routes");
+    clearSource("airports");
+    return;
+  }
 
-  const fc = { type: "FeatureCollection", features };
+  const fc = {
+    type: "FeatureCollection",
+    features: currentRoutes.map(r => ({
+      type: "Feature",
+      geometry: r.geom,
+      properties: r,
+    })),
+  };
 
   if (map.getSource("routes")) {
     map.getSource("routes").setData(fc);
   } else {
     map.addSource("routes", { type: "geojson", data: fc });
 
+    // visible routes
     map.addLayer({
       id: "routes-line",
       type: "line",
@@ -305,31 +621,51 @@ async function loadRoutes() {
       },
     });
 
-    // Wide hit buffer
+    // big invisible hit buffer (so it's easy to click)
     map.addLayer({
       id: "routes-hit",
       type: "line",
       source: "routes",
-      paint: { "line-width": 18, "line-opacity": 0 },
+      paint: {
+        "line-width": 18,
+        "line-opacity": 0,
+      },
     });
 
+    // click route to isolate
     map.on("click", "routes-hit", e => {
-      toggleIsolation(e.features[0].properties.uid);
+      const uid = e.features?.[0]?.properties?.uid;
+      if (uid) toggleIsolation(uid);
     });
 
+    map.on("mouseenter", "routes-hit", () => {
+      map.getCanvas().style.cursor = "pointer";
+    });
+
+    map.on("mouseleave", "routes-hit", () => {
+      map.getCanvas().style.cursor = "";
+    });
+
+    // click away to clear isolate
     map.on("click", e => {
-      const hits = map.queryRenderedFeatures(e.point, {
-        layers: ["routes-hit"],
-      });
-      if (!hits.length && isolatedUid) {
-        isolatedUid = null;
-        applyIsolation();
+      if (!isolatedUid || mapMode !== "routes") return;
+
+      const hits = map.queryRenderedFeatures(e.point, { layers: ["routes-hit"] });
+      if (!hits.length) {
+        clearIsolation();
       }
     });
   }
 
-  loadAirports(currentRoutes);
-  fitToBoundsFromGeoms(currentRoutes.map(r => r.geom));
+  // Airports for current routes
+  await loadAirports(currentRoutes);
+
+  // Fit
+  if (mapMode === "routes") {
+    fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
+  } else {
+    applyMapMode();
+  }
 }
 
 // =====================================================
@@ -343,6 +679,28 @@ map.on("load", async () => {
 reloadBtn?.addEventListener("click", loadRoutes);
 
 sidebarToggle?.addEventListener("click", () => {
-  sidebar.classList.toggle("collapsed");
-  setTimeout(() => map.resize(), 250);
+  sidebar?.classList.toggle("collapsed");
+
+  // if sidebar is collapsed, hide list entirely (your requirement)
+  if (sidebar?.classList.contains("collapsed")) {
+    if (flightListEl) flightListEl.style.display = "none";
+  } else {
+    if (flightListEl) flightListEl.style.display = "";
+  }
+
+  setTimeout(() => {
+    map.resize();
+    // re-fit for current mode
+    if (mapMode === "countries") {
+      fitToVisibleCountries();
+    } else {
+      applyIsolation();
+    }
+  }, 250);
+});
+
+// Countries toggle
+countriesBox?.addEventListener("click", () => {
+  mapMode = mapMode === "routes" ? "countries" : "routes";
+  applyMapMode();
 });
