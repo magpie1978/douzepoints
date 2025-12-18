@@ -140,6 +140,18 @@ function fitToVisibleCountries() {
 }
 
 
+// =====================================================
+// AIRPORT VISIBILITY HELPER
+// =====================================================
+function setAirportVisibility(visible) {
+  if (map.getLayer("airports-circle")) {
+    map.setLayoutProperty(
+      "airports-circle",
+      "visibility",
+      visible ? "visible" : "none"
+    );
+  }
+}
 
 
 
@@ -480,20 +492,52 @@ function updateCountryHighlight() {
   ]);
 }
 
+//function applyMapMode() {
+//  if (mapMode === "countries") {
+//    ensureCountriesLayer();
+//    updateCountryHighlight();
+
+//    if (map.getLayer("routes-line")) map.setLayoutProperty("routes-line", "visibility", "none");
+//    if (map.getLayer("routes-hit")) map.setLayoutProperty("routes-hit", "visibility", "none");
+//    if (map.getLayer("countries-fill")) map.setLayoutProperty("countries-fill", "visibility", "visible");
+//  } else {
+//    if (map.getLayer("countries-fill")) map.setLayoutProperty("countries-fill", "visibility", "none");
+//    if (map.getLayer("routes-line")) map.setLayoutProperty("routes-line", "visibility", "visible");
+//    if (map.getLayer("routes-hit")) map.setLayoutProperty("routes-hit", "visibility", "visible");
+//  }
+//}
+
 function applyMapMode() {
   if (mapMode === "countries") {
-    ensureCountriesLayer();
-    updateCountryHighlight();
+    // Hide routes
+    if (map.getLayer("routes-line")) {
+      map.setLayoutProperty("routes-line", "visibility", "none");
+    }
 
-    if (map.getLayer("routes-line")) map.setLayoutProperty("routes-line", "visibility", "none");
-    if (map.getLayer("routes-hit")) map.setLayoutProperty("routes-hit", "visibility", "none");
-    if (map.getLayer("countries-fill")) map.setLayoutProperty("countries-fill", "visibility", "visible");
+    // Show country fills
+    if (map.getLayer("countries-fill")) {
+      map.setLayoutProperty("countries-fill", "visibility", "visible");
+    }
+
+    // ✅ KEEP airports visible
+    setAirportVisibility(true);
+
   } else {
-    if (map.getLayer("countries-fill")) map.setLayoutProperty("countries-fill", "visibility", "none");
-    if (map.getLayer("routes-line")) map.setLayoutProperty("routes-line", "visibility", "visible");
-    if (map.getLayer("routes-hit")) map.setLayoutProperty("routes-hit", "visibility", "visible");
+    // Show routes
+    if (map.getLayer("routes-line")) {
+      map.setLayoutProperty("routes-line", "visibility", "visible");
+    }
+
+    // Hide country fills
+    if (map.getLayer("countries-fill")) {
+      map.setLayoutProperty("countries-fill", "visibility", "none");
+    }
+
+    // ✅ KEEP airports visible
+    setAirportVisibility(true);
   }
 }
+
 
 // Toggle by clicking the Countries box
 if (countriesBox) {
