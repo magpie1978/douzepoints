@@ -33,7 +33,7 @@ const flightListEl = document.getElementById("flightList");
 const sidebarToggle = document.getElementById("sidebarToggle");
 const reloadBtn = document.getElementById("reloadBtn");
 
-// Glass counters
+// Glass boxes
 const journeyNumberEl = document.querySelector("#journeyCounter .glass-number");
 const journeyLabelEl = document.querySelector("#journeyCounter .glass-label");
 const milesNumberEl = document.querySelector("#milesCounter .glass-number");
@@ -47,27 +47,25 @@ const durationNumberEl = document.querySelector("#durationCounter .glass-number"
 let currentRoutes = [];
 let isolatedUid = null;
 
+const selected = {
+  years: new Set(),
+  airlines: new Set(),
+  types: new Set(),
+};
+
 // =====================================================
 // HELPERS
 // =====================================================
 function clearSource(id) {
   if (map.getSource(id)) {
-    map.getSource(id).setData({
-      type: "FeatureCollection",
-      features: [],
-    });
+    map.getSource(id).setData({ type: "FeatureCollection", features: [] });
   }
 }
 
 function fitToBoundsFromGeoms(geoms) {
   if (!geoms.length) return;
-
   const bounds = new mapboxgl.LngLatBounds();
-  geoms.forEach(g => {
-    if (!g?.coordinates) return;
-    g.coordinates.forEach(c => bounds.extend(c));
-  });
-
+  geoms.forEach(g => g.coordinates.forEach(c => bounds.extend(c)));
   map.fitBounds(bounds, {
     padding: {
       top: 120,
@@ -165,15 +163,102 @@ function applyIsolation() {
 }
 
 // =====================================================
+// FILTER UI
+// =====================================================
+function buildFilterMenu(containerId, values, targetSet) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const list = container.querySelector(".filter-options");
+  list.innerHTML = "";
+
+  values.forEach(v => {
+    const label = document.createElement("label");
+    label.innerHTML = `<input type="checkbox" value="${v}"> ${v}`;
+    const cb = label.querySelector("input");
+    cb.checked = targetSet.has(v);
+
+    cb.addEventListener("change", () => {
+      cb.checked ? targetSet.add(v) : targetSet.delete(v);
+      loadRoutes();
+    });
+
+    list.appendChild(label);
+  });
+
+  container.querySelector(".select-all").onclick = () => {
+    targetSet.clear();
+    values.forEach(v => targetSet.add(v));
+    list.querySelectorAll("input").forEach(cb => (cb.checked = true));
+    loadRoutes();
+  };
+
+  container.querySelector(".clear").onclick = () => {
+    targetSet.clear();
+    list.querySelectorAll("input").forEach(cb => (cb.checked = false));
+    loadRoutes();
+  };
+
+  container.querySelector(".filter-toggle").onclick = e => {
+    e.stopPropagation();
+    container.querySelector(".filter-menu").classList.toggle("open");
+  };
+}
+
+document.addEventListener("click", e => {
+  if (e.target.closest(".filter")) return;
+  document
+    .querySelectorAll(".filter-menu.open")
+    .forEach(m => m.classList.remove("open"));
+});
+
+// =====================================================
+// LOAD FILTERS (defaults restored)
+// =====================================================
+async function loadFilters() {
+  const { data, error } = await sb
+    .from("journeys_routes_cache")
+    .select("year, airline, journey_type");
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const years = [...new Set(
+    data.map(d => d.year && String(d.year).slice(0, 4)).filter(Boolean)
+  )].sort((a, b) => b.localeCompare(a));
+
+  const airlines = [...new Set(data.map(d => d.airline).filter(Boolean))].sort();
+  const types = [...new Set(data.map(d => d.journey_type).filter(Boolean))].sort();
+
+  selected.years.clear();
+  selected.types.clear();
+  selected.airlines.clear();
+
+  if (years.includes("2025")) selected.years.add("2025");
+  if (types.includes("Flight")) selected.types.add("Flight");
+
+  buildFilterMenu("filter-year", years, selected.years);
+  buildFilterMenu("filter-airline", airlines, selected.airlines);
+  buildFilterMenu("filter-type", types, selected.types);
+}
+
+// =====================================================
 // LOAD ROUTES
 // =====================================================
 async function loadRoutes() {
   isolatedUid = null;
 
-  const { data, error } = await sb
-    .from("journeys_routes_cache")
-    .select("*");
+  let q = sb.from("journeys_routes_cache").select("*");
 
+  if (selected.years.size) {
+    q = q.in("year", [...selected.years].map(y => `${y}-01-01`));
+  }
+  if (selected.airlines.size) q = q.in("airline", [...selected.airlines]);
+  if (selected.types.size) q = q.in("journey_type", [...selected.types]);
+
+  const { data, error } = await q;
   if (error) {
     console.error(error);
     return;
@@ -199,7 +284,6 @@ async function loadRoutes() {
   } else {
     map.addSource("routes", { type: "geojson", data: fc });
 
-    // Visible routes
     map.addLayer({
       id: "routes-line",
       type: "line",
@@ -216,37 +300,22 @@ async function loadRoutes() {
       },
     });
 
-    // Invisible hit buffer
+    // Hit buffer
     map.addLayer({
       id: "routes-hit",
       type: "line",
       source: "routes",
-      paint: {
-        "line-width": 18,
-        "line-opacity": 0,
-      },
+      paint: { "line-width": 18, "line-opacity": 0 },
     });
 
-    // Route click → isolate
     map.on("click", "routes-hit", e => {
       toggleIsolation(e.features[0].properties.uid);
     });
 
-    // Cursor feedback
-    map.on("mouseenter", "routes-hit", () => {
-      map.getCanvas().style.cursor = "pointer";
-    });
-
-    map.on("mouseleave", "routes-hit", () => {
-      map.getCanvas().style.cursor = "";
-    });
-
-    // Click empty map → reset
     map.on("click", e => {
       const hits = map.queryRenderedFeatures(e.point, {
         layers: ["routes-hit"],
       });
-
       if (!hits.length && isolatedUid) {
         isolatedUid = null;
         applyIsolation();
@@ -261,6 +330,7 @@ async function loadRoutes() {
 // INIT
 // =====================================================
 map.on("load", async () => {
+  await loadFilters();
   await loadRoutes();
 });
 
