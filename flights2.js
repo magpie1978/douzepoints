@@ -198,6 +198,33 @@ function hideSubCountryBorders() {
   });
 }
 
+// =====================================================
+// REMOVE CITY NAMES
+// =====================================================
+function hideCityLabels() {
+  const layers = map.getStyle().layers;
+
+  layers.forEach(layer => {
+    const id = layer.id || "";
+
+    // Hide city / town / settlement labels
+    if (
+      id.includes("place-city") ||
+      id.includes("place-town") ||
+      id.includes("place-village") ||
+      id.includes("settlement") ||
+      id.includes("place-label") && !id.includes("country")
+    ) {
+      try {
+        map.setLayoutProperty(id, "visibility", "none");
+      } catch (e) {
+        // Some layers may not support layout visibility
+      }
+    }
+  });
+}
+
+
 
 // =====================================================
 // GLASS COUNTER HELPERS
@@ -754,6 +781,7 @@ async function loadRoutes() {
 // =====================================================
 map.on("load", async () => {
   hideSubCountryBorders();
+  hideCityLabels();
   await loadFilters();
   await loadRoutes();
 });
