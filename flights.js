@@ -170,6 +170,34 @@ function updateAllCounters(routes) {
 }
 
 
+// =====================================================
+// GLASS COUNTER HELPERS
+// =====================================================
+function updateJourneyCounter(n) {
+  if (!journeyNumberEl || !journeyLabelEl) return;
+  journeyNumberEl.textContent = n.toLocaleString();
+  journeyLabelEl.textContent = n === 1 ? "JOURNEY" : "JOURNEYS";
+}
+
+function updateMilesCounter(miles) {
+  if (!milesNumberEl) return;
+  milesNumberEl.textContent = Math.round(miles).toLocaleString();
+}
+
+function updateCountriesCounter(n) {
+  if (!countriesNumberEl) return;
+  countriesNumberEl.textContent = n.toLocaleString();
+}
+
+function updateAirlinesCounter(n) {
+  if (!airlinesNumberEl) return;
+  airlinesNumberEl.textContent = n.toLocaleString();
+}
+
+function updateDurationCounter(seconds) {
+  if (!durationNumberEl) return;
+  durationNumberEl.textContent = formatSecondsToHM(seconds);
+}
 
 
 
