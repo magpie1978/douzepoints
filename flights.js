@@ -172,31 +172,7 @@ function updateAllCounters(routes) {
 
 
 
-// =====================================================
-// COUNTERS
-// =====================================================
-function updateCounters(routes) {
-  const rs = (routes || []).filter(Boolean);
 
-  const journeyCount = rs.length;
-  safeText(journeyNumberEl, journeyCount.toLocaleString());
-  safeText(journeyLabelEl, journeyCount === 1 ? "journey" : "journeys");
-
-  const miles = rs.reduce((s, r) => s + (Number(r.journey_distance) || 0), 0);
-  safeText(milesNumberEl, Math.round(miles).toLocaleString());
-
-  const countrySet = new Set(rs.map(r => r.destination_country).filter(Boolean));
-  safeText(countriesNumberEl, countrySet.size.toLocaleString());
-
-  const airlineSet = new Set(rs.map(r => r.airline).filter(Boolean));
-  safeText(airlinesNumberEl, airlineSet.size.toLocaleString());
-
-  const totalSeconds = rs.reduce(
-    (s, r) => s + (Number(r.journey_duration_seconds) || 0),
-    0
-  );
-  safeText(durationNumberEl, formatSecondsToHM(totalSeconds));
-}
 
 // =====================================================
 // SIDEBAR
@@ -595,8 +571,10 @@ function applyMapMode() {
 // =====================================================
 async function loadRoutes() {
   // New query = reset isolation + last bounds
+  const wasIsolated = !!isolatedUid;
   isolatedUid = null;
   lastRoutesBounds = null;
+
 
   let q = sb.from("journeys_routes_cache").select("*");
 
@@ -613,7 +591,7 @@ async function loadRoutes() {
 
     // Hard reset UI so you don't get "silent zeros"
     currentRoutes = [];
-    updateCounters([]);
+    updateAllCounters([]);
     renderSidebar([]);
     clearSource("routes");
     clearSource("airports");
