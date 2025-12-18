@@ -214,6 +214,14 @@ body {
   inset: 0;
 }
 
+.mapboxgl-popup-content {
+  background: #ffffff !important;
+  color: #111111 !important;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12px;
+}
+
 /* =====================================================
    GLASS COUNTERS
 ===================================================== */
