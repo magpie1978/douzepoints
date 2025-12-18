@@ -542,6 +542,7 @@ sidebarToggle?.addEventListener("click", () => {
 
 
 
+
 /* global mapboxgl, supabase */
 
 // =====================================================
@@ -596,7 +597,7 @@ let isolatedUid = null;
 let previousView = null;
 
 const selected = {
-  years: new Set(),     // "YYYY"
+  years: new Set(), // "YYYY"
   airlines: new Set(),
   types: new Set(),
 };
@@ -680,6 +681,27 @@ function updateCountriesCounter(count) {
 }
 
 // =====================================================
+// COUNTER HELPER (AGGREGATE OR SINGLE ROUTE)
+// =====================================================
+function updateCountersForRoutes(routes) {
+  const list = routes || [];
+  const count = list.length;
+
+  updateJourneyCounter(count);
+
+  const totalMiles = list.reduce(
+    (sum, r) => sum + (Number(r?.journey_distance) || 0),
+    0
+  );
+  updateMilesCounter(totalMiles);
+
+  const countryCount = new Set(
+    list.map(r => r?.destination_country).filter(Boolean)
+  ).size;
+  updateCountriesCounter(countryCount);
+}
+
+// =====================================================
 // SIDEBAR
 // =====================================================
 function renderSidebar(routes) {
@@ -737,7 +759,14 @@ function applyIsolation() {
 
   if (isolatedUid) {
     const r = currentRoutes.find(x => x.uid === isolatedUid);
-    if (r?.geom?.coordinates) fitToBoundsFromLineGeoms([r.geom]);
+
+    // Zoom to single route
+    if (r?.geom?.coordinates) {
+      fitToBoundsFromLineGeoms([r.geom]);
+    }
+
+    // ✅ Single-route counters
+    if (r) updateCountersForRoutes([r]);
   } else {
     // Restore previous view if available
     if (previousView) {
@@ -746,6 +775,9 @@ function applyIsolation() {
     } else {
       fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
     }
+
+    // ✅ Aggregate counters
+    updateCountersForRoutes(currentRoutes);
   }
 
   if (flightListEl) {
@@ -950,6 +982,7 @@ async function loadRoutes() {
 
   let q = sb.from("journeys_routes_cache").select("*");
 
+  // ---------------- FILTERS ----------------
   if (selected.years.size) {
     q = q.in("year", [...selected.years].map(y => `${y}-01-01`));
   }
@@ -957,29 +990,28 @@ async function loadRoutes() {
   if (selected.types.size) q = q.in("journey_type", [...selected.types]);
 
   const { data, error } = await q;
+
+  // ---------------- ERROR ----------------
   if (error) {
     console.error(error);
+
     clearSource("routes");
     clearSource("airports");
     renderSidebar([]);
-    updateJourneyCounter(0);
-    updateMilesCounter(0);
-    updateCountriesCounter(0);
+
+    updateCountersForRoutes([]);
     return;
   }
 
+  // ---------------- SORT + STATE ----------------
   currentRoutes = (data || [])
     .filter(r => r.journey_date)
     .sort((a, b) => new Date(b.journey_date) - new Date(a.journey_date));
 
-  updateJourneyCounter(currentRoutes.length);
+  // ---------------- COUNTERS (aggregate) ----------------
+  updateCountersForRoutes(currentRoutes);
 
-  const totalMiles = currentRoutes.reduce((s, r) => s + (Number(r.journey_distance) || 0), 0);
-  updateMilesCounter(totalMiles);
-
-  const countryCount = new Set(currentRoutes.map(r => r.destination_country).filter(Boolean)).size;
-  updateCountriesCounter(countryCount);
-
+  // ---------------- EMPTY ----------------
   if (!currentRoutes.length) {
     clearSource("routes");
     clearSource("airports");
@@ -987,14 +1019,18 @@ async function loadRoutes() {
     return;
   }
 
+  // ---------------- SAFETY ----------------
   if (currentRoutes.length > MAX_ROUTES) {
     console.warn("Too many routes to display:", currentRoutes.length);
+
     clearSource("routes");
     clearSource("airports");
     renderSidebar([]);
+
     return;
   }
 
+  // ---------------- GEOJSON ----------------
   const features = currentRoutes.map(r => ({
     type: "Feature",
     geometry: r.geom,
@@ -1003,6 +1039,7 @@ async function loadRoutes() {
 
   const fc = { type: "FeatureCollection", features };
 
+  // ---------------- MAP LAYER ----------------
   if (map.getSource("routes")) {
     map.getSource("routes").setData(fc);
   } else {
@@ -1057,11 +1094,12 @@ async function loadRoutes() {
     }
   }
 
+  // ---------------- UI SYNC ----------------
   renderSidebar(currentRoutes);
   applyIsolation();
   await loadAirports(currentRoutes);
 
-  // if not isolated, show all. if isolated, applyIsolation already fitBounds to route.
+  // ---------------- FIT MAP ----------------
   if (!isolatedUid) fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
 }
 
@@ -1081,3 +1119,4 @@ sidebarToggle?.addEventListener("click", () => {
   sidebar?.classList.toggle("collapsed");
   setTimeout(() => map.resize(), 250);
 });
+
