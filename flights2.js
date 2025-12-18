@@ -561,8 +561,8 @@ function ensureCountriesLayer() {
     source: "countries",
     "source-layer": "country_boundaries",
     paint: {
-      "fill-color": "#FFD700",
-      "fill-opacity": 0.75,
+      "fill-color": "#C9A24D",
+      "fill-opacity": 0.55,
     },
     // start empty
     filter: ["in", "name_en", ""],
