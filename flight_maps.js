@@ -108,8 +108,11 @@ function formatDuration(seconds) {
 // =====================================================
 let journeyRAF = null;
 let milesRAF = null;
+let airlinesRAF = null;
 let countriesRAF = null;
 let durationRAF = null;
+
+
 
 function setJourneyLabel(n) {
   if (journeyLabelEl) {
@@ -212,6 +215,12 @@ function updateCountersForRoutes(routes) {
     routes.map(r => r.destination_country).filter(Boolean)
   ).size;
   updateCountriesCounter(countryCount);
+
+  // ---- Airlines ----
+  const airlineCount = new Set(
+    routes.map(r => r.airline).filter(Boolean)
+  ).size;
+  updateAirlinesCounter(airlineCount);
 
   // ---- Duration ----
   const totalSeconds = routes.reduce(
