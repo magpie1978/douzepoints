@@ -443,6 +443,20 @@ async function loadRoutes() {
         ],
       },
     });
+
+    // Invisible hit buffer for easy clicking
+    map.addLayer({
+      id: "routes-hit",
+      type: "line",
+      source: "routes",
+      paint: {
+        "line-width": 18,   // 👈 large buffer
+        "line-opacity": 0,
+      },
+    });
+
+
+    
   }
 
   await loadAirports(currentRoutes);
