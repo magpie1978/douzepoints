@@ -147,6 +147,17 @@ body {
   width: 48px;
 }
 
+/* Hide flight list when sidebar is collapsed */
+#sidebar.collapsed #flightList {
+  display: none;
+}
+
+/* Hide scrollbars & padding */
+#sidebar.collapsed {
+  overflow: hidden;
+}
+
+
 #sidebar-header {
   height: 48px;
   display: flex;
