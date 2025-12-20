@@ -37,7 +37,24 @@ const reloadBtn = document.getElementById("reloadBtn");
 const journeyBox = document.getElementById("journeyCounter");
 const milesBox = document.getElementById("milesCounter");
 const countriesBox = document.getElementById("countriesCounter");
+
 const airlinesBox = document.getElementById("airlinesCounter");
+airlinesBox?.addEventListener("click", () => {
+  if (!airlinesPanel) return;
+
+  const isOpen = airlinesPanel.classList.contains("visible");
+
+  if (isOpen) {
+    airlinesPanel.classList.remove("visible");
+    airlinesPanel.classList.add("hidden");
+  } else {
+    renderAirlinesPanel(currentRoutes);
+    airlinesPanel.classList.remove("hidden");
+    airlinesPanel.classList.add("visible");
+  }
+});
+
+
 const durationBox = document.getElementById("durationCounter");
 
 const journeyNumberEl = journeyBox?.querySelector(".glass-number");
@@ -46,6 +63,10 @@ const milesNumberEl = milesBox?.querySelector(".glass-number");
 const countriesNumberEl = countriesBox?.querySelector(".glass-number");
 const airlinesNumberEl = airlinesBox?.querySelector(".glass-number");
 const durationNumberEl = durationBox?.querySelector(".glass-number");
+
+const airlinesPanel = document.getElementById("airlinesPanel");
+const airlinesListEl = document.getElementById("airlinesList");
+
 
 // =====================================================
 // STATE
@@ -169,6 +190,34 @@ function updateAllCounters(routes) {
   updateDurationCounter(totalSeconds);
 }
 
+function getAirlineLogo(airline) {
+  if (!airline) return "";
+  const safe = airline.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return `/airlines/${safe}.png`; // e.g. airlines/britishairways.png
+}
+
+
+// =====================================================
+// POPULATE AIRLIES SLIDE OUT PANEL
+// =====================================================
+function renderAirlinesPanel(routes) {
+  if (!airlinesListEl) return;
+
+  const airlines = [...new Set(
+    routes.map(r => r.airline).filter(Boolean)
+  )].sort();
+
+  airlinesListEl.innerHTML = "";
+
+  airlines.forEach(name => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <img src="${getAirlineLogo(name)}" alt="${name}" />
+      <span>${name}</span>
+    `;
+    airlinesListEl.appendChild(li);
+  });
+}
 
 
 
@@ -688,6 +737,11 @@ async function loadRoutes() {
 
   // Update UI
   updateAllCounters(currentRoutes);
+  
+  if (airlinesPanel?.classList.contains("visible")) {
+  renderAirlinesPanel(currentRoutes);
+  }
+
   renderSidebar(currentRoutes);
 
   // Safety
