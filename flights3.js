@@ -283,12 +283,13 @@ const AIRLINE_LOGO_BASE =
 
 const airlineLogoMap = {
   "Aegean": "Aegean.webp",
-  "Aer Lingus": "AerLingus.webp"
-  "Air Asia": "AirAsia.webp
-  "Alaska Airlines": "Alaska.webp"
-  "American Airlines": "American.webp"
+  "Aer Lingus": "AerLingus.webp",
+  "Air Asia": "AirAsia.webp",
+  "Alaska Airlines": "Alaska.webp",
+  "American Airlines": "American.webp",
   "British Airways": "BritishAirways.webp"
 };
+
 
 // =====================================================
 // TAILFIN IMAGES HELPER
