@@ -276,6 +276,32 @@ function hideCityLabels() {
 
 
 // =====================================================
+// TAILFIN IMAGES
+// =====================================================
+const AIRLINE_LOGO_BASE =
+  "https://raw.githubusercontent.com/magpie1978/douzepoints/main/tailfins/";
+
+const airlineLogoMap = {
+  "Aegean": "Aegean.webp",
+  "Aer Lingus": "AerLingus.webp"
+  "Air Asia": "AirAsia.webp
+  "Alaska Airlines": "Alaska.webp"
+  "American Airlines": "American.webp"
+  "British Airways": "BritishAirways.webp"
+};
+
+// =====================================================
+// TAILFIN IMAGES HELPER
+// =====================================================
+function getAirlineLogo(airline) {
+  if (!airline) return null;
+  const file = airlineLogoMap[airline];
+  return file ? AIRLINE_LOGO_BASE + file : null;
+}
+
+
+
+// =====================================================
 // GLASS COUNTER HELPERS
 // =====================================================
 function updateJourneyCounter(n) {
@@ -319,13 +345,16 @@ function renderSidebar(routes) {
     li.dataset.uid = r.uid;
     li.classList.toggle("active", r.uid === isolatedUid);
 
-    li.innerHTML = `
-      <div class="date">${r.journey_date?.slice(0, 10) || ""}</div>
-      <div class="route">
-        <strong>${r.callsign || ""}</strong>
-        ${r.origin || ""} → ${r.destination || ""}
-      </div>
-    `;
+    const logoUrl = getAirlineLogo(r.airline);
+
+  li.innerHTML = `
+    <div class="date">${r.journey_date?.slice(0, 10) || ""}</div>
+    <div class="route">
+      ${logoUrl ? `<img class="airline-logo" src="${logoUrl}" />` : ""}
+      <strong>${r.callsign || ""}</strong>
+      ${r.origin || ""} → ${r.destination || ""}
+    </div>
+  `;
 
     li.addEventListener("click", () => toggleIsolation(r.uid));
     flightListEl.appendChild(li);
