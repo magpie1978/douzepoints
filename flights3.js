@@ -278,15 +278,12 @@ function hideCityLabels() {
 // =====================================================
 // TAILFIN IMAGES
 // =====================================================
+
 const AIRLINE_LOGO_BASE =
   "https://raw.githubusercontent.com/magpie1978/douzepoints/main/tailfins/";
 
 const airlineLogoMap = {
-  "Aegean": "Aegean.webp",
-  "Aer Lingus": "AerLingus.webp",
-  "Air Asia": "AirAsia.webp",
-  "Alaska Airlines": "Alaska.webp",
-  "American Airlines": "American.webp",
+  "Ryanair": "Ryanair.webp",
   "British Airways": "BritishAirways.webp"
 };
 
