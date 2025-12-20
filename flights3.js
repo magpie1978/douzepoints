@@ -212,7 +212,8 @@ function renderAirlinesPanel(routes) {
   airlines.forEach(name => {
     const li = document.createElement("li");
     li.innerHTML = `
-      <img src="${getAirlineLogo(name)}" alt="${name}" />
+      <img src="https://logo.clearbit.com/ryanair.com" />
+
       <span>${name}</span>
     `;
     airlinesListEl.appendChild(li);
