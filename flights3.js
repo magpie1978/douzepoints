@@ -190,12 +190,6 @@ function updateAllCounters(routes) {
   updateDurationCounter(totalSeconds);
 }
 
-function getAirlineLogo(airline) {
-  if (!airline) return "";
-  const safe = airline.toLowerCase().replace(/[^a-z0-9]/g, "");
-  return `/airlines/${safe}.png`; // e.g. airlines/britishairways.png
-}
-
 
 // =====================================================
 // POPULATE AIRLIES SLIDE OUT PANEL
@@ -293,9 +287,22 @@ const airlineLogoMap = {
 // =====================================================
 function getAirlineLogo(airline) {
   if (!airline) return null;
-  const file = airlineLogoMap[airline];
-  return file ? AIRLINE_LOGO_BASE + file : null;
+
+  // 1️⃣ Explicit mapping (preferred)
+  if (airlineLogoMap[airline]) {
+    return AIRLINE_LOGO_BASE + airlineLogoMap[airline];
+  }
+
+  // 2️⃣ Fallback: auto-normalised filename
+  const safe = airline
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "")
+    .trim();
+
+  return AIRLINE_LOGO_BASE + safe + ".webp";
 }
+
 
 
 
