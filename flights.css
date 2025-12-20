@@ -337,6 +337,24 @@ body {
 
 
 /* =====================================================
+   TAILFINS
+===================================================== */
+function normalizeAirlineName(name) {
+  return name
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_|_$/g, "");
+}
+
+function getAirlineLogoAuto(airline) {
+  if (!airline) return null;
+  const file = normalizeAirlineName(airline) + ".webp";
+  return AIRLINE_LOGO_BASE + file;
+}
+
+
+/* =====================================================
    MAPBOX OVERRIDES
 ===================================================== */
 
