@@ -128,30 +128,30 @@
     </div>
   
     <!-- container for stats pop-out -->
-<div id="statsOverlay" class="stats-overlay hidden">
-  <div class="stats-panel">
+    <div id="statsOverlay" class="stats-overlay hidden">
+      <div class="stats-panel">
 
-    <!-- TOP ROW -->
-    <div class="stats-header">
-      <div class="stats-title">
-        <button id="statsCloseBtn" class="stats-close">×</button>
-        <h2 id="statsTitle">Airlines Flown by Year</h2>
+      <!-- TOP ROW -->
+        <div class="stats-header">
+          <div class="stats-title">
+            <button id="statsCloseBtn" class="stats-close">×</button>
+            <h2 id="statsTitle">Airlines Flown by Year</h2>
+          </div>
+
+          <select id="statsMetricSelect">
+            <option value="flights">Flights</option>
+            <option value="miles">Miles</option>
+            <option value="airlines">Airlines</option>
+          </select>
+        </div>
+
+        <!-- CHART ROW -->
+        <div class="stats-chart">
+          <canvas id="flightsByYearChart"></canvas>
+        </div>
+
       </div>
-
-      <select id="statsMetricSelect">
-        <option value="flights">Flights</option>
-        <option value="miles">Miles</option>
-        <option value="airlines">Airlines</option>
-      </select>
     </div>
-
-    <!-- CHART ROW -->
-    <div class="stats-chart">
-      <canvas id="flightsByYearChart"></canvas>
-    </div>
-
-  </div>
-</div>
   
   
     <!-- App logic -->
