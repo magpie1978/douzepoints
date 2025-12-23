@@ -509,12 +509,13 @@ async function loadAirports(routes) {
           const p = f.properties || {};
 
           airportPopup
-            .setLngLat(f.geometry.coordinates)
-            .setHTML(
-              `<strong>${p.airport_code || ""}</strong><br/>
-               ${p.city || ""}${p.city && p.country ? ", " : ""}${p.country || ""}`
-            )
-            .addTo(map);
+  .setLngLat(f.geometry.coordinates)
+  .setHTML(
+    `<strong>${p.airport_code || ""}</strong><br/>
+     ${p.city || ""}${p.city && p.country ? ", " : ""}${p.country || ""}`
+  )
+  .addTo(map);
+
         });
 
         map.on("mouseleave", "airports-circle", () => {
@@ -571,12 +572,17 @@ async function loadAirports(routes) {
 
       const p = f.properties || {};
 
-      airportPopup
-        .setLngLat(f.geometry.coordinates)
-        .setHTML(
-          `<strong>${p.label || ""}</strong><br/>${p.journey_type || ""}`
-        )
-        .addTo(map);
+      const [lng, lat] = f.geometry.coordinates;
+
+airportPopup
+  .setLngLat([lng, lat])
+  .setHTML(
+    `<strong>${p.label || ""}</strong><br/>
+     ${p.journey_type || ""}<br/>
+     <small>${lat.toFixed(4)}, ${lng.toFixed(4)}</small>`
+  )
+  .addTo(map);
+
     });
 
     map.on("mouseleave", "journey-endpoints-circle", () => {
