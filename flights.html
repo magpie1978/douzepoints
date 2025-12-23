@@ -1,150 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Journeys Map</title>
-
-  <!-- Mapbox -->
-  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet"/>
-  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
-
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- Chart JS -->  
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
-  <!-- App styles -->
-  <link rel="stylesheet" href="flights.css" />
-
+  <head>
+    <meta charset="UTF-8" />
+    <title>Journeys Map</title>
   
-</head>
-
-<body>
-  <!-- ===================================================== -->
-  <!-- TOP BAR -->
-  <!-- ===================================================== -->
-  <div id="top-bar">
-    <div class="filters">
-
-      <div class="filter" id="filter-year">
-        <button class="filter-toggle">Year ▾</button>
-        <div class="filter-menu">
-          <div class="filter-actions">
-            <button class="select-all">Select all</button>
-            <button class="clear">Clear</button>
+    <!-- Mapbox -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet"/>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+    <!-- Chart JS -->  
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  
+    <!-- App styles -->
+    <link rel="stylesheet" href="flights.css" />
+  
+    
+  </head>
+  
+  <body>
+    <!-- ===================================================== -->
+    <!-- TOP BAR -->
+    <!-- ===================================================== -->
+    <div id="top-bar">
+      <div class="filters">
+  
+        <div class="filter" id="filter-year">
+          <button class="filter-toggle">Year ▾</button>
+          <div class="filter-menu">
+            <div class="filter-actions">
+              <button class="select-all">Select all</button>
+              <button class="clear">Clear</button>
+            </div>
+            <div class="filter-options"></div>
           </div>
-          <div class="filter-options"></div>
         </div>
-      </div>
-
-      <div class="filter" id="filter-airline">
-        <button class="filter-toggle">Airline ▾</button>
-        <div class="filter-menu">
-          <div class="filter-actions">
-            <button class="select-all">Select all</button>
-            <button class="clear">Clear</button>
+  
+        <div class="filter" id="filter-airline">
+          <button class="filter-toggle">Airline ▾</button>
+          <div class="filter-menu">
+            <div class="filter-actions">
+              <button class="select-all">Select all</button>
+              <button class="clear">Clear</button>
+            </div>
+            <div class="filter-options"></div>
           </div>
-          <div class="filter-options"></div>
         </div>
-      </div>
-
-      <div class="filter" id="filter-type">
-        <button class="filter-toggle">Type ▾</button>
-        <div class="filter-menu">
-          <div class="filter-actions">
-            <button class="select-all">Select all</button>
-            <button class="clear">Clear</button>
+  
+        <div class="filter" id="filter-type">
+          <button class="filter-toggle">Type ▾</button>
+          <div class="filter-menu">
+            <div class="filter-actions">
+              <button class="select-all">Select all</button>
+              <button class="clear">Clear</button>
+            </div>
+            <div class="filter-options"></div>
           </div>
-          <div class="filter-options"></div>
         </div>
+  
+        <!-- <button id="reloadBtn">Reload</button>-->
+  
+        <button id="statsBtn" class="top-btn">Stats</button>
+  
       </div>
-
-      <!-- <button id="reloadBtn">Reload</button>-->
-
-      <button id="statsBtn" class="top-btn">Stats</button>
-
     </div>
-  </div>
-
-  <!-- ===================================================== -->
-  <!-- MAIN LAYOUT -->
-  <!-- ===================================================== -->
-  <div id="layout">
-
-    <!-- ================= SIDEBAR ================= -->
-    <aside id="sidebar">
-      <div id="sidebar-header">
-        <button id="sidebarToggle">☰</button>
-        <span>Journeys</span>
+  
+    <!-- ===================================================== -->
+    <!-- MAIN LAYOUT -->
+    <!-- ===================================================== -->
+    <div id="layout">
+  
+      <!-- ================= SIDEBAR ================= -->
+      <aside id="sidebar">
+        <div id="sidebar-header">
+          <button id="sidebarToggle">☰</button>
+          <span>Journeys</span>
+        </div>
+  
+        <ul id="flightList"></ul>
+      </aside>
+  
+      <!-- ================= MAP WRAPPER ================= -->
+      <div id="map-wrapper">
+  
+        <!-- ===== GLASS COUNTERS (STACKED) ===== -->
+        <div id="glassCounters">
+  
+          <div id="journeyCounter" class="glass-box">
+            <div class="glass-number">0</div>
+            <div class="glass-label">Journeys</div>
+          </div>
+  
+          <div id="milesCounter" class="glass-box">
+            <div class="glass-number">0</div>
+            <div class="glass-label">Miles</div>
+          </div>
+  
+          <div id="countriesCounter" class="glass-box">
+            <div class="glass-number">0</div>
+            <div class="glass-label">Countries</div>
+          </div>
+  
+          <div class="glass-box" id="airlinesCounter">
+            <div class="glass-number">0</div>
+            <div class="glass-label">Airlines</div>
+          </div>
+  
+          <div id="airlinesPanel" class="glass-box airlines-panel hidden">
+            <div class="airlines-panel-header">Airlines</div>
+            <ul id="airlinesList"></ul>
+          </div>
+  
+          <div id="durationCounter" class="glass-box">
+            <div class="glass-number">0h 00min</div>
+            <div class="glass-label">Duration</div>
+          </div>
+          
+        </div>
+  
+        <!-- ===== MAP ===== -->
+        <div id="map"></div>
+  
       </div>
-
-      <ul id="flightList"></ul>
-    </aside>
-
-    <!-- ================= MAP WRAPPER ================= -->
-    <div id="map-wrapper">
-
-      <!-- ===== GLASS COUNTERS (STACKED) ===== -->
-      <div id="glassCounters">
-
-        <div id="journeyCounter" class="glass-box">
-          <div class="glass-number">0</div>
-          <div class="glass-label">Journeys</div>
-        </div>
-
-        <div id="milesCounter" class="glass-box">
-          <div class="glass-number">0</div>
-          <div class="glass-label">Miles</div>
-        </div>
-
-        <div id="countriesCounter" class="glass-box">
-          <div class="glass-number">0</div>
-          <div class="glass-label">Countries</div>
-        </div>
-
-        <div class="glass-box" id="airlinesCounter">
-          <div class="glass-number">0</div>
-          <div class="glass-label">Airlines</div>
-        </div>
-
-        <div id="airlinesPanel" class="glass-box airlines-panel hidden">
-          <div class="airlines-panel-header">Airlines</div>
-          <ul id="airlinesList"></ul>
-        </div>
-
-        <div id="durationCounter" class="glass-box">
-          <div class="glass-number">0h 00min</div>
-          <div class="glass-label">Duration</div>
-        </div>
-        
-      </div>
-
-      <!-- ===== MAP ===== -->
-      <div id="map"></div>
-
     </div>
-  </div>
-
-  <!-- container for stats pop-out -->
-  <div class="stats-header">
-    <h2 id="statsTitle">Flights by Year</h2>
-
-    <select id="statsMetricSelect">
-      <option value="flights">Flights per year</option>
-      <option value="miles">Miles per year</option>
-      <option value="airlines">Airlines per year</option>
-    </select>
-  </div>
-
-  <canvas id="flightsByYearChart"></canvas>
-
-</div>
-
-
-<!-- App logic -->
-<script src="flights5.js"></script>
-<script src="flights-stats.js"></script>
-</body>
+  
+    <!-- container for stats pop-out -->
+    <div id="statsOverlay" class="stats-overlay hidden">
+      <button id="statsCloseBtn">×</button>
+  
+      <h2 id="statsTitle">Flights by Year</h2>
+  
+      <select id="statsMetricSelect">
+        <option value="flights">Flights</option>
+        <option value="miles">Miles</option>
+        <option value="airlines">Airlines</option>
+      </select>
+  
+      <div class="chart-container">
+        <canvas id="flightsByYearChart"></canvas>
+      </div>
+    </div>
+  
+  
+    <!-- App logic -->
+    <script src="flights5.js"></script>
+    <script src="flights-stats.js"></script>
+  </body>
 </html>
