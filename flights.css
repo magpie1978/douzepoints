@@ -360,3 +360,49 @@ body {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 4px;
 }
+
+
+
+/* =====================================================
+   STATS OVERLAY
+===================================================== */
+.stats-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stats-overlay.hidden {
+  display: none;
+}
+
+.stats-panel {
+  width: 80vw;
+  height: 80vh;
+  background: rgba(20,20,20,0.85);
+  border-radius: 18px;
+  padding: 24px 28px;
+  position: relative;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+}
+
+.stats-panel h2 {
+  margin: 0 0 16px;
+  font-weight: 600;
+}
+
+.stats-close {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  font-size: 20px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
