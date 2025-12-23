@@ -192,6 +192,47 @@ function updateAllCounters(routes) {
 
 
 // =====================================================
+// Non Fliight Markers
+// =====================================================
+function buildNonFlightEndpoints(routes) {
+  const features = [];
+
+  routes.forEach(r => {
+    if (r.journey_type === "Flight") return;
+    if (!r.geom?.coordinates?.length) return;
+
+    const coords = r.geom.coordinates;
+    const start = coords[0];
+    const end = coords[coords.length - 1];
+
+    features.push(
+      {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: start },
+        properties: {
+          kind: "origin",
+          journey_type: r.journey_type,
+          label: r.origin || "Origin",
+        },
+      },
+      {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: end },
+        properties: {
+          kind: "destination",
+          journey_type: r.journey_type,
+          label: r.destination || "Destination",
+        },
+      }
+    );
+  });
+
+  return features;
+}
+
+
+
+// =====================================================
 // POPULATE AIRLIES SLIDE OUT PANEL
 // =====================================================
 function renderAirlinesPanel(routes) {
@@ -377,74 +418,118 @@ const airportPopup = new mapboxgl.Popup({
 
 let airportHoverBound = false;
 
+
+
+// =====================================================
+// LOAD AIRPORTS
+// =====================================================
 async function loadAirports(routes) {
-  // Hide markers only in countries mode
+  // Hide all markers in countries mode
   if (mapMode !== "routes") {
     if (map.getLayer("airports-circle")) {
       map.setLayoutProperty("airports-circle", "visibility", "none");
     }
+    if (map.getLayer("journey-endpoints-circle")) {
+      map.setLayoutProperty("journey-endpoints-circle", "visibility", "none");
+    }
     clearSource("airports");
+    clearSource("journey-endpoints");
     return;
   }
 
-  const codes = new Set();
+  // ----------------------------
+  // 1) FLIGHT AIRPORT MARKERS
+  // ----------------------------
+  const flightCodes = new Set();
 
   (routes || []).forEach(r => {
-    if (r.origin) codes.add(r.origin);
-    if (r.destination) codes.add(r.destination);
+    if (r.journey_type === "Flight") {
+      if (r.origin) flightCodes.add(r.origin);
+      if (r.destination) flightCodes.add(r.destination);
+    }
   });
 
-  if (!codes.size) {
+  if (flightCodes.size) {
+    const { data, error } = await sb
+      .from("journey_locations")
+      .select("airport_code, airport, city, country, longitude, latitude")
+      .in("airport_code", [...flightCodes]);
+
+    if (error) {
+      console.error("[airports] load failed:", error);
+    } else {
+      const airportFC = {
+        type: "FeatureCollection",
+        features: (data || [])
+          .filter(a => a.longitude != null && a.latitude != null)
+          .map(a => ({
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [a.longitude, a.latitude],
+            },
+            properties: a,
+          })),
+      };
+
+      if (map.getSource("airports")) {
+        map.getSource("airports").setData(airportFC);
+      } else {
+        map.addSource("airports", { type: "geojson", data: airportFC });
+
+        map.addLayer({
+          id: "airports-circle",
+          type: "circle",
+          source: "airports",
+          paint: {
+            "circle-radius": 5,
+            "circle-color": "#ffffff",
+            "circle-stroke-width": 1.5,
+            "circle-stroke-color": "#000000",
+          },
+        });
+      }
+
+      map.setLayoutProperty("airports-circle", "visibility", "visible");
+    }
+  } else {
     clearSource("airports");
-    return;
   }
 
-  const { data, error } = await sb
-    .from("journey_locations")
-    .select("airport_code, airport, city, country, longitude, latitude")
-    .in("airport_code", [...codes]);
+  // ----------------------------
+  // 2) NON-FLIGHT ENDPOINTS
+  // ----------------------------
+  const nonFlightFeatures = buildNonFlightEndpoints(routes);
 
-  if (error) {
-    console.error("[airports] load failed:", error);
-    return;
-  }
-
-  const features = (data || [])
-    .filter(a => a.longitude != null && a.latitude != null)
-    .map(a => ({
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: [a.longitude, a.latitude],
-      },
-      properties: a,
-    }));
-
-  const fc = {
+  const nonFlightFC = {
     type: "FeatureCollection",
-    features,
+    features: nonFlightFeatures,
   };
 
-  if (map.getSource("airports")) {
-    map.getSource("airports").setData(fc);
+  if (map.getSource("journey-endpoints")) {
+    map.getSource("journey-endpoints").setData(nonFlightFC);
   } else {
-    map.addSource("airports", { type: "geojson", data: fc });
+    map.addSource("journey-endpoints", {
+      type: "geojson",
+      data: nonFlightFC,
+    });
 
     map.addLayer({
-      id: "airports-circle",
+      id: "journey-endpoints-circle",
       type: "circle",
-      source: "airports",
+      source: "journey-endpoints",
       paint: {
         "circle-radius": 5,
-        "circle-color": "#ffffff",
+        "circle-color": "#FFD700",
         "circle-stroke-width": 1.5,
-        "circle-stroke-color": "#000000",
+        "circle-stroke-color": "#000",
       },
     });
   }
 
-  map.setLayoutProperty("airports-circle", "visibility", "visible");
+  map.setLayoutProperty("journey-endpoints-circle", "visibility", "visible");
 }
+
 
 
 // =====================================================
