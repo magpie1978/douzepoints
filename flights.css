@@ -366,6 +366,10 @@ body {
 /* =====================================================
    STATS OVERLAY
 ===================================================== */
+.hidden {
+  display: none !important;
+}
+
 .stats-overlay {
   position: fixed;
   inset: 0;
