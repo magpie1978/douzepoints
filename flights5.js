@@ -416,7 +416,6 @@ const airportPopup = new mapboxgl.Popup({
   offset: 10,
 });
 
-let airportHoverBound = false;
 
 
 
