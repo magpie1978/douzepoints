@@ -369,56 +369,68 @@ body {
 .stats-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0,0,0,0.65);
   backdrop-filter: blur(6px);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.stats-overlay.hidden {
-  display: none;
+  z-index: 999;
 }
 
 .stats-panel {
-  width: 80vw;
-  height: 80vh;
-  background: rgba(20,20,20,0.85);
-  border-radius: 18px;
-  padding: 24px 28px;
-  position: relative;
-  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  position: absolute;
+  inset: 10%;
+  background: rgba(30,30,30,0.95);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 24px;
 }
 
-.stats-panel h2 {
-  margin: 0 0 16px;
-  font-weight: 600;
+/* ───────── TOP ROW ───────── */
+.stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.stats-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stats-title h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #fff;
 }
 
 .stats-close {
-  position: absolute;
-  top: 16px;
-  right: 18px;
   font-size: 20px;
   background: none;
   border: none;
-  color: #fff;
+  color: #ccc;
   cursor: pointer;
 }
 
-.stats-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
+.stats-close:hover {
+  color: #fff;
 }
 
 #statsMetricSelect {
-  background: rgba(255,255,255,0.08);
+  background: #222;
   color: #fff;
-  border: 1px solid rgba(255,255,255,0.2);
   border-radius: 8px;
   padding: 6px 10px;
+  border: 1px solid #444;
 }
 
+/* ───────── CHART ROW ───────── */
+.stats-chart {
+  flex: 1;                /* ← THIS is the magic */
+  position: relative;
+}
+
+.stats-chart canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
