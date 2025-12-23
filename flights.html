@@ -119,8 +119,6 @@
           <div class="glass-label">Duration</div>
         </div>
         
-        <!-- Future glass boxes go here -->
-        
       </div>
 
       <!-- ===== MAP ===== -->
@@ -130,17 +128,23 @@
   </div>
 
   <!-- container for stats pop-out -->
-  <div id="statsOverlay" class="stats-overlay hidden">
-  <div class="stats-panel">
-    <button id="statsCloseBtn" class="stats-close">✕</button>
-    <h2>Flights by Year</h2>
-    <canvas id="flightsByYearChart"></canvas>
+  <div class="stats-header">
+    <h2 id="statsTitle">Flights by Year</h2>
+
+    <select id="statsMetricSelect">
+      <option value="flights">Flights per year</option>
+      <option value="miles">Miles per year</option>
+      <option value="airlines">Airlines per year</option>
+    </select>
   </div>
+
+  <canvas id="flightsByYearChart"></canvas>
+
 </div>
 
 
-  <!-- App logic -->
-  <script src="flights5.js"></script>
-  <script src="flights-stats.js"></script>
+<!-- App logic -->
+<script src="flights5.js"></script>
+<script src="flights-stats.js"></script>
 </body>
 </html>
