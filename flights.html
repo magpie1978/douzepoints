@@ -11,6 +11,10 @@
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- Chart JS -->  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
   <!-- App styles -->
   <link rel="stylesheet" href="flights.css" />
 </head>
@@ -55,7 +59,10 @@
         </div>
       </div>
 
-      <button id="reloadBtn">Reload</button>
+      <!-- <button id="reloadBtn">Reload</button>-->
+
+      <button id="statsBtn" class="top-btn">Stats</button>
+
     </div>
   </div>
 
@@ -119,6 +126,16 @@
 
     </div>
   </div>
+
+  <!-- container for stats pop-out -->
+  <div id="statsOverlay" class="stats-overlay hidden">
+  <div class="stats-panel">
+    <button id="statsCloseBtn" class="stats-close">✕</button>
+    <h2>Flights by Year</h2>
+    <canvas id="flightsByYearChart"></canvas>
+  </div>
+</div>
+
 
   <!-- App logic -->
   <script src="flights5.js"></script>
