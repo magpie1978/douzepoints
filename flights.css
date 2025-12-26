@@ -218,8 +218,8 @@ body {
 }
 
 .sidebar-logo {
-  width: 100px;
-  min-width: 150px;
+  width: 150px;
+  min-width: 100px;
   height: 150px;
 
   display: flex;
