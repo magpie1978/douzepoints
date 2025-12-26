@@ -33,6 +33,11 @@ async function loadAirports(routes) {
     clearSource("journey-endpoints");
 
     return; // ✅ THIS WAS MISSING
+
+  // ✅ Ensure click-away is bound (binds once)
+  bindAirportClearOnMapClick();
+}
+
   }
 
   // ---------------------------------------------
