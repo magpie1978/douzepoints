@@ -10,3 +10,43 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);  /* Creates a
 
 const MAX_ROUTES = 1000;  /* Safety cap to prevent rendering too many route geometries and killing performance */
 
+
+
+// =====================================================
+// INITIAl STARTUP
+// =====================================================
+map.on("load", async () => {
+  hideSubCountryBorders();
+  hideCityLabels();
+  await loadFilters();
+  await loadRoutes();
+});
+
+reloadBtn?.addEventListener("click", loadRoutes);
+
+sidebarToggle?.addEventListener("click", () => {
+  sidebar?.classList.toggle("collapsed");
+
+  // if sidebar is collapsed, hide list entirely (your requirement)
+  if (sidebar?.classList.contains("collapsed")) {
+    if (flightListEl) flightListEl.style.display = "none";
+  } else {
+    if (flightListEl) flightListEl.style.display = "";
+  }
+
+  setTimeout(() => {
+    map.resize();
+    // re-fit for current mode
+    if (mapMode === "countries") {
+      fitToVisibleCountries();
+    } else {
+      applyIsolation();
+    }
+  }, 250);
+});
+
+// Countries toggle
+countriesBox?.addEventListener("click", () => {
+  mapMode = mapMode === "routes" ? "countries" : "routes";
+  applyMapMode();
+});
