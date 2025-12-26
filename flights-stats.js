@@ -6,7 +6,8 @@ let flightsChart = null;
 async function loadStatsBaseData() {
   const { data, error } = await sb
     .from("journeys_routes_cache")
-    .select("year, journey_type, journey_distance, airline");
+    .select("year, journey_type, journey_distance, airline, destination_country");
+
 
   if (error) {
     console.error("[stats] load failed", error);
@@ -63,6 +64,30 @@ function airlinesPerYear(data) {
 
   return out;
 }
+
+
+function countriesPerYear(data) {
+  const map = {};
+
+  data
+    .filter(r => r.journey_type === "Flight")
+    .forEach(r => {
+      if (!r.destination_country) return;
+
+      const y = String(r.year).slice(0, 4);
+      if (!map[y]) map[y] = new Set();
+      map[y].add(r.destination_country);
+    });
+
+  const out = {};
+  Object.keys(map).forEach(y => {
+    out[y] = map[y].size;
+  });
+
+  return out;
+}
+
+
 
 // =====================================================
 // CHART RENDERER (reused for all metrics)
@@ -143,6 +168,17 @@ async function updateStatsChart() {
     });
   }
 
+if (metric === "countries") {
+  renderStatsChart({
+    title: "Countries Visited by Year",
+    label: "Countries",
+    values: countriesPerYear(baseData),
+    color: "rgba(255,215,0,0.7)",
+  });
+}
+
+  
+  
   if (metric === "airlines") {
     renderStatsChart({
       title: "Airlines Flown by Year",
