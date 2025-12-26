@@ -237,13 +237,24 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
     display: false, // ✅ remove legend entirely
   },
   tooltip: {
-    backgroundColor: "#111",
-    titleColor: "#fff",
-    bodyColor: "#ddd",
+  backgroundColor: "#111",
+  titleColor: "#fff",
+  bodyColor: "#ddd",
+  padding: 10,
+  callbacks: {
+    title(context) {
+      // Airline name (y-axis label)
+      return context[0].label;
+    },
+    label(context) {
+      // Year + flights
+      const year = context.dataset.label;
+      const value = context.parsed.x;
+      return `${year} · ${value} flight${value !== 1 ? "s" : ""}`;
+    },
   },
 },
-
-    },
+        
   });
 }
 
