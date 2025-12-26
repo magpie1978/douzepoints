@@ -88,8 +88,9 @@ function countriesPerYear(data) {
 }
 
 
-function flightsPerYearPerAirline(data) {
+function flightsPerAirlinePerYear(data) {
   const map = {};
+  const yearsSet = new Set();
   const airlinesSet = new Set();
 
   data
@@ -100,22 +101,23 @@ function flightsPerYearPerAirline(data) {
       const year = String(r.year).slice(0, 4);
       const airline = r.airline;
 
+      yearsSet.add(year);
       airlinesSet.add(airline);
 
-      if (!map[year]) map[year] = {};
-      map[year][airline] = (map[year][airline] || 0) + 1;
+      if (!map[airline]) map[airline] = {};
+      map[airline][year] = (map[airline][year] || 0) + 1;
     });
 
-  const years = Object.keys(map).sort();
-  const airlines = Array.from(airlinesSet).sort();
+  const years = Array.from(yearsSet).sort();       // ascending
+  const airlines = Array.from(airlinesSet).sort(); // alphabetical
 
-  const datasets = airlines.map(airline => ({
-    label: airline,
-    data: years.map(y => map[y]?.[airline] || 0),
-    stack: "airlines",
+  const datasets = years.map((year, i) => ({
+    label: year,
+    data: airlines.map(a => map[a]?.[year] || 0),
+    stack: "years",
   }));
 
-  return { years, datasets };
+  return { airlines, years, datasets };
 }
 
 
@@ -174,7 +176,7 @@ function renderStatsChart({ title, label, values, color }) {
 }
 
 
-function renderStackedStatsChart({ title, years, datasets }) {
+function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
   const ctx = document
     .getElementById("flightsByYearChart")
     .getContext("2d");
@@ -187,26 +189,37 @@ function renderStackedStatsChart({ title, years, datasets }) {
   flightsChart = new Chart(ctx, {
     type: "bar",
     data: {
-      labels: years,
+      labels,
       datasets: datasets.map((ds, i) => ({
         ...ds,
-        backgroundColor: `hsl(${(i * 47) % 360}, 65%, 55%)`,
-        borderRadius: 2,
+        backgroundColor: `hsl(${(i * 50) % 360}, 65%, 55%)`,
+        borderRadius: 3,
       })),
     },
     options: {
+      indexAxis: "y",   // 🔥 horizontal bars
       responsive: true,
       maintainAspectRatio: false,
       scales: {
         x: {
           stacked: true,
-          ticks: { color: "#ccc" },
-          grid: { display: false },
+          ticks: { color: "#ccc", precision: 0 },
+          grid: { color: "rgba(255,255,255,0.08)" },
+          title: {
+            display: true,
+            text: "Flights",
+            color: "#ccc",
+          },
         },
         y: {
           stacked: true,
           ticks: { color: "#ccc" },
-          grid: { color: "rgba(255,255,255,0.08)" },
+          grid: { display: false },
+          title: {
+            display: true,
+            text: "Airline",
+            color: "#ccc",
+          },
         },
       },
       plugins: {
@@ -221,6 +234,7 @@ function renderStackedStatsChart({ title, years, datasets }) {
     },
   });
 }
+
 
 
 // =====================================================
@@ -268,13 +282,14 @@ async function updateStatsChart() {
     });
   }
 
-  if (metric === "airlines_stack") {
-    const { years, datasets } = flightsPerYearPerAirline(baseData);
-    renderStackedStatsChart({
-      title: "Flights per Year by Airline",
-      years,
-      datasets,
-    });
+  if (metric === "airlines_years") {
+  const { airlines, datasets } = flightsPerAirlinePerYear(baseData);
+
+  renderHorizontalStackedStatsChart({
+    title: "Flights by Airline (Stacked by Year)",
+    labels: airlines,
+    datasets,
+  });
   }
 }
 
