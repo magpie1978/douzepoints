@@ -141,18 +141,32 @@ async function loadAirports(routes) {
       data: nonFlightFC,
     });
 
-    map.addLayer({
-      id: "journey-endpoints-circle",
-      type: "circle",
-      source: "journey-endpoints",
-      paint: {
-        "circle-radius": 5,
-        "circle-color": "#FFD700",
-        "circle-stroke-width": 1.5,
-        "circle-stroke-color": "#000000",
-      },
-    });
-  }
+map.addLayer({
+  id: "airports-circle",
+  type: "circle",
+  source: "airports",
+  paint: {
+    "circle-radius": 6,
+    "circle-color": "#ffffff",
+    "circle-stroke-width": 1.5,
+    "circle-stroke-color": "#000000",
+  },
+});
+
+// ✅ invisible hit layer
+map.addLayer({
+  id: "airports-hit",
+  type: "circle",
+  source: "airports",
+  paint: {
+    "circle-radius": 18,
+    "circle-color": "rgba(0,0,0,0)",
+  },
+});
+
+// ✅ bring above basemap POIs
+map.moveLayer("airports-hit");
+map.moveLayer("airports-circle");
 
   map.setLayoutProperty("journey-endpoints-circle", "visibility", "visible");
 
