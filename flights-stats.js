@@ -255,7 +255,6 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
   });
 }
 
-
 // =====================================================
 // DROPDOWN HANDLER
 // =====================================================
