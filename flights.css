@@ -335,6 +335,15 @@ body {
   background: #fff;
 }
 
+.airline-logo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;   /* preserves aspect ratio */
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
 
 /* =====================================================
    MAPBOX OVERRIDES
