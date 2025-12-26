@@ -248,6 +248,7 @@ const filtered = baseRoutes.filter(r =>
 
 currentRoutes = filtered;
 window.renderRoutes(filtered, { resetIsolation: true });
+} 
 
 
 // =====================================================
