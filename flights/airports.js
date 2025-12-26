@@ -112,8 +112,9 @@ async function loadAirports(routes) {
 
     filterRoutesByAirport(airportCode);
   });
-}
+      }
     }
+  }
 
   // ---------------------------------------------
   // 2️⃣ NON-FLIGHT ORIGIN / DESTINATION ENDPOINTS
