@@ -1,4 +1,75 @@
 // =====================================================
+// RENDER ROUTES (reusable by airports.js)
+// =====================================================
+function renderRoutes(routes) {
+  if (!routes || !routes.length) {
+    clearSource("routes");
+    clearSource("airports");
+    updateAllCounters([]);
+    return;
+  }
+
+  // Reset isolation when externally rendering
+  isolatedUid = null;
+  lastRoutesBounds = null;
+
+  updateAllCounters(routes);
+
+  if (airlinesPanel?.classList.contains("visible")) {
+    renderAirlinesPanel(routes);
+  }
+
+  renderSidebar(routes);
+
+  const fc = {
+    type: "FeatureCollection",
+    features: routes.map(r => ({
+      type: "Feature",
+      geometry: r.geom,
+      properties: r,
+    })),
+  };
+
+  if (map.getSource("routes")) {
+    map.getSource("routes").setData(fc);
+  } else {
+    map.addSource("routes", { type: "geojson", data: fc });
+
+    map.addLayer({
+      id: "routes-line",
+      type: "line",
+      source: "routes",
+      paint: {
+        "line-width": 1.4,
+        "line-opacity": 0.85,
+        "line-color": [
+          "case",
+          ["==", ["get", "journey_type"], "Flight"], "#FFD700",
+          ["==", ["get", "journey_type"], "Drive"], "#1E90FF",
+          "#E53935",
+        ],
+      },
+    });
+
+    map.addLayer({
+      id: "routes-hit",
+      type: "line",
+      source: "routes",
+      paint: {
+        "line-width": 18,
+        "line-opacity": 0,
+      },
+    });
+
+    map.on("click", "routes-hit", e => {
+      const uid = e.features?.[0]?.properties?.uid;
+      if (u
+
+
+window.renderRoutes = renderRoutes;
+
+      
+// =====================================================
 // LOAD ROUTES
 // =====================================================
 async function loadRoutes() {
@@ -35,8 +106,8 @@ async function loadRoutes() {
     .sort((a, b) => new Date(b.journey_date) - new Date(a.journey_date));
 
   // Update UI
-  updateAllCounters(currentRoutes);
-  
+renderRoutes(currentRoutes);
+
   if (airlinesPanel?.classList.contains("visible")) {
   renderAirlinesPanel(currentRoutes);
   }
