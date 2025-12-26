@@ -180,14 +180,9 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
   const canvas = document.getElementById("flightsByYearChart");
   const ctx = canvas.getContext("2d");
 
-  const rowHeight = 34;
-  const minHeight = 380;
-  canvas.height = Math.max(minHeight, labels.length * rowHeight);
-
-  const scrollEl = document.getElementById("statsChartScroll");
-  if (scrollEl) {
-    canvas.width = scrollEl.clientWidth - 10;
-  }
+  // Force consistent bar sizing (no compression)
+  const rowHeight = 46;
+  canvas.height = labels.length * rowHeight;
 
   const titleEl = document.getElementById("statsTitle");
   if (titleEl) titleEl.textContent = title;
@@ -201,11 +196,11 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
       datasets: datasets.map(ds => ({
         ...ds,
         backgroundColor: "rgba(201,162,77,0.75)",
-        borderRadius: 3,
-        barThickness: 18,
+        borderRadius: 4,
+        barThickness: 22,
         maxBarThickness: 22,
-        categoryPercentage: 0.9,
-        barPercentage: 0.9,
+        categoryPercentage: 1.0,
+        barPercentage: 1.0,
       })),
     },
     options: {
@@ -227,7 +222,7 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
           stacked: true,
           ticks: {
             color: "#ccc",
-            padding: 8,
+            padding: 10,
           },
           grid: { display: false },
           title: {
@@ -238,21 +233,19 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
         },
       },
       plugins: {
-        legend: {
-          display: false, // ✅ removed
-        },
+        legend: { display: false },
         tooltip: {
           backgroundColor: "#111",
           titleColor: "#fff",
           bodyColor: "#ddd",
           padding: 10,
           callbacks: {
-            title(context) {
-              return context[0].label;
+            title(ctx) {
+              return ctx[0].label;
             },
-            label(context) {
-              const year = context.dataset.label;
-              const value = context.parsed.x;
+            label(ctx) {
+              const year = ctx.dataset.label;
+              const value = ctx.parsed.x;
               return `${year} · ${value} flight${value !== 1 ? "s" : ""}`;
             },
           },
