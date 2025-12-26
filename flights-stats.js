@@ -177,9 +177,11 @@ function renderStatsChart({ title, label, values, color }) {
 
 
 function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
-  const ctx = document
-    .getElementById("flightsByYearChart")
-    .getContext("2d");
+  const canvas = document.getElementById("flightsByYearChart");
+  const ctx = canvas.getContext("2d");
+
+  // Dynamic height to enable vertical scrolling
+  canvas.height = labels.length * 28;
 
   const titleEl = document.getElementById("statsTitle");
   if (titleEl) titleEl.textContent = title;
@@ -192,15 +194,14 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
       labels,
       datasets: datasets.map(ds => ({
         ...ds,
-        backgroundColor: "rgba(201,162,77,0.85)", // your gold/yellow
+        backgroundColor: "rgba(201,162,77,0.85)",
         borderRadius: 3,
-        barThickness: 18,        // thicker bars
+        barThickness: 18,
         maxBarThickness: 22,
       })),
-
     },
     options: {
-      indexAxis: "y",   // 🔥 horizontal bars
+      indexAxis: "y",
       responsive: true,
       maintainAspectRatio: false,
       scales: {
