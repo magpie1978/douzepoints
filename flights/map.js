@@ -94,3 +94,21 @@ function storeCurrentMapBoundsAsLastRoutes() {
     lastRoutesBounds = null;
   }
 }
+
+
+
+function revertToLastRoutesBoundsOrAllRoutes() {
+  if (lastRoutesBounds) {
+    map.fitBounds(lastRoutesBounds, {
+      padding: {
+        top: 140,
+        bottom: 80,
+        left: getSidebarLeftPad(),
+        right: 80,
+      },
+      duration: 650,
+    });
+  } else {
+    fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
+  }
+}
