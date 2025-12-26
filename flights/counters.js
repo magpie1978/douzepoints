@@ -1,3 +1,39 @@
+// =====================================================
+// GLASS COUNTER HELPERS
+// =====================================================
+
+// Journeys
+function updateJourneyCounter(n) {
+  if (!journeyNumberEl || !journeyLabelEl) return;
+  journeyNumberEl.textContent = n.toLocaleString();
+  journeyLabelEl.textContent = n === 1 ? "JOURNEY" : "JOURNEYS";
+}
+
+// Miles
+function updateMilesCounter(miles) {
+  if (!milesNumberEl) return;
+  milesNumberEl.textContent = Math.round(miles).toLocaleString();
+}
+
+// Countries
+function updateCountriesCounter(n) {
+  if (!countriesNumberEl) return;
+  countriesNumberEl.textContent = n.toLocaleString();
+}
+
+// Airlines
+function updateAirlinesCounter(n) {
+  if (!airlinesNumberEl) return;
+  airlinesNumberEl.textContent = n.toLocaleString();
+}
+
+// Duration
+function updateDurationCounter(seconds) {
+  if (!durationNumberEl) return;
+  durationNumberEl.textContent = formatSecondsToHM(seconds);
+}
+
+
 // Counter aggregation
 // Calculates and updates stats derived from the currently visible routes.
 function updateAllCounters(routes) {
