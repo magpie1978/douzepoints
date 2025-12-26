@@ -52,3 +52,61 @@ function getSidebarLeftPad() {
     ? 80
     : (sidebar?.offsetWidth || 260) + 80;
 }
+
+
+
+function renderAirlinesPanel(routes) {
+  if (!airlinesListEl) return;
+
+  const airlines = [...new Set(
+    routes.map(r => r.airline).filter(Boolean)
+  )].sort();
+
+  airlinesListEl.innerHTML = "";
+
+  airlines.forEach(name => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <img src="${getAirlineLogo(name)}" alt="${name}" />
+      <span>${name}</span>
+    `;
+    airlinesListEl.appendChild(li);
+  });
+}
+
+
+
+// =====================================================
+// TAILFIN IMAGES
+// =====================================================
+
+//Base GitHub URL
+const AIRLINE_LOGO_BASE = "https://raw.githubusercontent.com/magpie1978/douzepoints/main/tailfins/";
+
+//Explicit airline → logo filename mappings
+const airlineLogoMap = {
+  "Ryanair": "Ryanair.webp",
+  "British Airways": "BritishAirways.webp"
+};
+
+
+// =====================================================
+// TAILFIN IMAGES HELPER
+// =====================================================
+function getAirlineLogo(airline) {
+  if (!airline) return null;
+
+  // 1️⃣ Explicit mapping (preferred)
+  if (airlineLogoMap[airline]) {
+    return AIRLINE_LOGO_BASE + airlineLogoMap[airline];
+  }
+
+  // 2️⃣ Fallback: auto-normalised filename
+  const safe = airline
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "")
+    .trim();
+
+  return AIRLINE_LOGO_BASE + safe + ".webp";
+}
