@@ -168,17 +168,15 @@ async function updateStatsChart() {
     });
   }
 
-if (metric === "countries") {
-  renderStatsChart({
-    title: "Countries Visited by Year",
-    label: "Countries",
-    values: countriesPerYear(baseData),
-    color: "rgba(255,215,0,0.7)",
-  });
-}
+  if (metric === "countries") {
+    renderStatsChart({
+      title: "Countries Visited by Year",
+      label: "Countries",
+      values: countriesPerYear(baseData),
+      color: "rgba(255,215,0,0.7)",
+    });
+  }
 
-  
-  
   if (metric === "airlines") {
     renderStatsChart({
       title: "Airlines Flown by Year",
