@@ -518,7 +518,13 @@ body {
 }
 
 #statsChartScroll {
-  max-height: 420px;        /* controls visible rows */
+  height: 420px;          /* pick what fits your overlay */
   overflow-y: auto;
-  padding-right: 8px;      /* avoids scrollbar overlap */
+  overflow-x: hidden;
+  padding-right: 10px;    /* stops scrollbar overlapping chart */
+}
+
+#flightsByYearChart {
+  display: block;
+  width: 100%;
 }
