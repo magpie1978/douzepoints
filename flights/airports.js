@@ -3,6 +3,8 @@
 // =====================================================
 let journeyEndpointsHoverBound = false;
 let airportHoverBound = false;
+let activeAirportFilter = null;
+
 
 async function loadAirports(routes) {
   // ---------------------------------------------
@@ -77,34 +79,40 @@ async function loadAirports(routes) {
 
       // Hover tooltip (bind once)
       if (!airportHoverBound) {
-        airportHoverBound = true;
+  airportHoverBound = true;
 
-        map.on("mouseenter", "airports-circle", e => {
-          map.getCanvas().style.cursor = "pointer";
-          const f = e.features?.[0];
-          if (!f) return;
+  map.on("mouseenter", "airports-circle", e => {
+    map.getCanvas().style.cursor = "pointer";
+    const f = e.features?.[0];
+    if (!f) return;
 
-          const p = f.properties || {};
+    const p = f.properties || {};
 
-          airportPopup
-  .setLngLat(f.geometry.coordinates)
-  .setHTML(
-    `<strong>${p.airport_code || ""}</strong><br/>
-     ${p.city || ""}${p.city && p.country ? ", " : ""}${p.country || ""}`
-  )
-  .addTo(map);
+    airportPopup
+      .setLngLat(f.geometry.coordinates)
+      .setHTML(
+        `<strong>${p.airport_code || ""}</strong><br/>
+         ${p.city || ""}${p.city && p.country ? ", " : ""}${p.country || ""}`
+      )
+      .addTo(map);
+  });
 
-        });
+  map.on("mouseleave", "airports-circle", () => {
+    map.getCanvas().style.cursor = "";
+    airportPopup.remove();
+  });
 
-        map.on("mouseleave", "airports-circle", () => {
-          map.getCanvas().style.cursor = "";
-          airportPopup.remove();
-        });
-      }
-    }
-  } else {
-    clearSource("airports");
-  }
+  // ✅ NEW: click-to-filter
+  map.on("click", "airports-circle", e => {
+    const f = e.features?.[0];
+    if (!f) return;
+
+    const airportCode = f.properties?.airport_code;
+    if (!airportCode) return;
+
+    filterRoutesByAirport(airportCode);
+  });
+}
 
   // ---------------------------------------------
   // 2️⃣ NON-FLIGHT ORIGIN / DESTINATION ENDPOINTS
@@ -168,6 +176,25 @@ airportPopup
       airportPopup.remove();
     });
   }
+}
+
+function filterRoutesByAirport(airportCode) {
+  if (!currentRoutes || !airportCode) return;
+
+  // Toggle behaviour: click same airport again to reset
+  if (activeAirportFilter === airportCode) {
+    activeAirportFilter = null;
+    renderRoutes(currentRoutes);
+    return;
+  }
+
+  activeAirportFilter = airportCode;
+
+  const filtered = currentRoutes.filter(r =>
+    r.origin === airportCode || r.destination === airportCode
+  );
+
+  renderRoutes(filtered);
 }
 
 
