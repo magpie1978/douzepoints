@@ -31,7 +31,7 @@ const airlineLogoMap = {
   "Emirates": "Emirates.webp",
   "Eurowings": "Eurowings.webp",
   "Finnair": "Finnair.webp",
-  "Gol": "Gol.webp",
+  "GOL": "Gol.webp",
   "Iberia": "Iberia.webp",
   "Jet2.com": "Jet2.webp",
   "Jetstar": "Jetstar.webp",
