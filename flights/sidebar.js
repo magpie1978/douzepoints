@@ -46,17 +46,6 @@ function renderSidebar(routes) {
 
   </div>
 `;
-
-    /*
-  li.innerHTML = `
-    <div class="date">${r.journey_date?.slice(0, 10) || ""}</div>
-    <div class="route">
-      ${logoUrl ? `<img class="airline-logo" src="${logoUrl}" />` : ""}
-      <strong>${r.callsign || ""}</strong>
-      ${r.origin || ""} → ${r.destination || ""}
-    </div>
-  `;
-*/
     li.addEventListener("click", () => toggleIsolation(r.uid));
     flightListEl.appendChild(li);
   });
@@ -109,3 +98,33 @@ function renderAirlinesPanel(routes) {
     airlinesListEl.appendChild(li);
   });
 }
+
+
+
+// =====================================================
+// SIDEBAR TOGGLE (SHOW / HIDE)
+// =====================================================
+sidebarToggle?.addEventListener("click", () => {
+  sidebar?.classList.toggle("collapsed");
+
+  // Hide flight list when collapsed
+  if (sidebar?.classList.contains("collapsed")) {
+    if (flightListEl) flightListEl.style.display = "none";
+  } else {
+    if (flightListEl) flightListEl.style.display = "";
+  }
+
+  // Allow CSS transition to complete before resizing map
+  setTimeout(() => {
+    if (typeof map !== "undefined") {
+      map.resize();
+    }
+
+    // Re-fit map padding depending on mode
+    if (mapMode === "countries") {
+      fitToVisibleCountries();
+    } else {
+      applyIsolation();
+    }
+  }, 250);
+});
