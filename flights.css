@@ -211,12 +211,22 @@ body {
   margin-top: 2px;
 }
 
+/*
 .sidebar-row {
   display: flex;
   align-items: center;
   gap: 12px;
 }
+*/
 
+.sidebar-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 0; /* important so % split is exact */
+}
+
+/*
 .sidebar-logo {
   width: 150px;
   min-width: 100px;
@@ -226,8 +236,29 @@ body {
   align-items: center;
   justify-content: center;
 }
+*/
+
+.sidebar-logo {
+  flex: 0 0 35%;
+  max-width: 35%;
+  height: 100px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*
+.sidebar-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+*/
 
 .sidebar-text {
+  flex: 0 0 65%;
+  max-width: 65%;
   display: flex;
   flex-direction: column;
   gap: 4px;
