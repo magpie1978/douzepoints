@@ -36,7 +36,7 @@ const airlineLogoMap = {
   "Jet2.com": "Jet2.webp",
   "Jetstar": "Jetstar.webp",
   "Lufthansa": "Lufthansa.webp",
-  "Malaysian Airlines": "Malaysian.webp",
+  "Malaysia Airlines": "Malaysian.webp",
   "Norwegian": "Norwegian.webp",
   "Qantas": "Qantas.webp",
   "Qatar Airways": "QatarAirways.webp",
