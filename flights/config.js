@@ -27,7 +27,7 @@ const airlineLogoMap = {
   "Brussels Airlines": "Brussels.webp",
   "Buzz": "BuzzRyanair.webp",
   "Cathay Pacific": "CathayPacific.webp",
-  "Delta": "Delta.webp",
+  "Delta Airlines": "Delta.webp",
   "Emirates": "Emirates.webp",
   "Eurowings": "Eurowings.webp",
   "Finnair": "Finnair.webp",
