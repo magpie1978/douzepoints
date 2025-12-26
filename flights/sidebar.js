@@ -128,3 +128,13 @@ sidebarToggle?.addEventListener("click", () => {
     }
   }, 250);
 });
+
+
+// =====================================================
+// COUNTRIES GLASS BOX TOGGLE
+// =====================================================
+countriesBox?.addEventListener("click", () => {
+  mapMode = mapMode === "routes" ? "countries" : "routes";
+  applyMapMode();
+});
+
