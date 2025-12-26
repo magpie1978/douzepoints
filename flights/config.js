@@ -22,7 +22,7 @@ const airlineLogoMap = {
   "Aegean": "Aegean.webp",
   "Aer Lingus": "AerLingus.webp",
   "AirAsia": "AirAsia.webp",
-  "Alaska Airlines": "Alaska.webp",
+  "Alaska Airways": "Alaska.webp",
   "American Airlines": "American.webp",
   "Brussels Airlines": "Brussels.webp",
   "Buzz": "BuzzRyanair.webp",
