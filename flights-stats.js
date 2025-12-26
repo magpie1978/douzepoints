@@ -180,12 +180,18 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
   const canvas = document.getElementById("flightsByYearChart");
   const ctx = canvas.getContext("2d");
 
-  // Force consistent bar sizing (no compression)
-  const rowHeight = 46;
-  canvas.height = labels.length * rowHeight;
-
   const titleEl = document.getElementById("statsTitle");
   if (titleEl) titleEl.textContent = title;
+
+  // 👉 Make canvas WIDE so X-axis scrolls
+  const minWidth = 900;
+  const pixelsPerFlight = 4; // controls scroll amount
+  const maxFlights = Math.max(
+    ...datasets.flatMap(ds => ds.data)
+  );
+
+  canvas.width = Math.max(minWidth, maxFlights * pixelsPerFlight);
+  canvas.height = 320; // SAME height as other charts
 
   if (flightsChart) flightsChart.destroy();
 
@@ -195,23 +201,19 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
       labels,
       datasets: datasets.map(ds => ({
         ...ds,
-        backgroundColor: "rgba(201,162,77,0.75)",
+        backgroundColor: "rgba(201,162,77,0.7)",
         borderRadius: 4,
-        barThickness: 22,
-        maxBarThickness: 22,
-        categoryPercentage: 1.0,
-        barPercentage: 1.0,
       })),
     },
     options: {
       indexAxis: "y",
-      responsive: false,
+      responsive: false,   // we control size
       maintainAspectRatio: false,
       scales: {
         x: {
           stacked: true,
           ticks: { color: "#ccc", precision: 0 },
-          grid: { color: "rgba(255,255,255,0.04)" },
+          grid: { color: "rgba(255,255,255,0.05)" },
           title: {
             display: true,
             text: "Flights",
@@ -220,10 +222,7 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
         },
         y: {
           stacked: true,
-          ticks: {
-            color: "#ccc",
-            padding: 10,
-          },
+          ticks: { color: "#ccc", padding: 8 },
           grid: { display: false },
           title: {
             display: true,
@@ -238,7 +237,6 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
           backgroundColor: "#111",
           titleColor: "#fff",
           bodyColor: "#ddd",
-          padding: 10,
           callbacks: {
             title(ctx) {
               return ctx[0].label;
@@ -246,7 +244,7 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
             label(ctx) {
               const year = ctx.dataset.label;
               const value = ctx.parsed.x;
-              return `${year} · ${value} flight${value !== 1 ? "s" : ""}`;
+              return `${year}: ${value} flight${value !== 1 ? "s" : ""}`;
             },
           },
         },
