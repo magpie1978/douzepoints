@@ -180,20 +180,17 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
   const canvas = document.getElementById("flightsByYearChart");
   const ctx = canvas.getContext("2d");
 
-  const titleEl = document.getElementById("statsTitle");
-  if (titleEl) titleEl.textContent = title;
-
-  // --- Make the canvas taller than the scroll container ---
-  // Tune these two numbers to taste.
-  const rowHeight = 34;      // bar thickness + spacing
-  const minHeight = 380;     // ensures it still looks good with few airlines
+  const rowHeight = 34;
+  const minHeight = 380;
   canvas.height = Math.max(minHeight, labels.length * rowHeight);
 
-  // Match canvas width to the scroll container width (prevents blurriness)
   const scrollEl = document.getElementById("statsChartScroll");
   if (scrollEl) {
-    canvas.width = scrollEl.clientWidth - 10; // subtract padding/scrollbar
+    canvas.width = scrollEl.clientWidth - 10;
   }
+
+  const titleEl = document.getElementById("statsTitle");
+  if (titleEl) titleEl.textContent = title;
 
   if (flightsChart) flightsChart.destroy();
 
@@ -203,7 +200,7 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
       labels,
       datasets: datasets.map(ds => ({
         ...ds,
-        backgroundColor: "rgba(201,162,77,0.85)", // yellow across the board
+        backgroundColor: "rgba(201,162,77,0.75)",
         borderRadius: 3,
         barThickness: 18,
         maxBarThickness: 22,
@@ -213,48 +210,55 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
     },
     options: {
       indexAxis: "y",
-
-      // ✅ CRITICAL: allow canvas to be taller than viewport
       responsive: false,
       maintainAspectRatio: false,
-
       scales: {
         x: {
           stacked: true,
           ticks: { color: "#ccc", precision: 0 },
-          grid: { color: "rgba(255,255,255,0.08)" },
-          title: { display: true, text: "Flights", color: "#ccc" },
+          grid: { color: "rgba(255,255,255,0.04)" },
+          title: {
+            display: true,
+            text: "Flights",
+            color: "#ccc",
+          },
         },
         y: {
           stacked: true,
-          ticks: { color: "#ccc" },
+          ticks: {
+            color: "#ccc",
+            padding: 8,
+          },
           grid: { display: false },
-          title: { display: true, text: "Airline", color: "#ccc" },
+          title: {
+            display: true,
+            text: "Airline",
+            color: "#ccc",
+          },
         },
       },
       plugins: {
-  legend: {
-    display: false, // ✅ remove legend entirely
-  },
-  tooltip: {
-  backgroundColor: "#111",
-  titleColor: "#fff",
-  bodyColor: "#ddd",
-  padding: 10,
-  callbacks: {
-    title(context) {
-      // Airline name (y-axis label)
-      return context[0].label;
+        legend: {
+          display: false, // ✅ removed
+        },
+        tooltip: {
+          backgroundColor: "#111",
+          titleColor: "#fff",
+          bodyColor: "#ddd",
+          padding: 10,
+          callbacks: {
+            title(context) {
+              return context[0].label;
+            },
+            label(context) {
+              const year = context.dataset.label;
+              const value = context.parsed.x;
+              return `${year} · ${value} flight${value !== 1 ? "s" : ""}`;
+            },
+          },
+        },
+      },
     },
-    label(context) {
-      // Year + flights
-      const year = context.dataset.label;
-      const value = context.parsed.x;
-      return `${year} · ${value} flight${value !== 1 ? "s" : ""}`;
-    },
-  },
-},
-        
   });
 }
 
