@@ -528,3 +528,12 @@ body {
   display: block;
   width: 100%;
 }
+
+#statsOverlay .stats-content {
+  height: 70vh; /* or whatever your overlay uses */
+}
+
+#statsChartScroll {
+  height: calc(70vh - 90px); /* subtract title/dropdown area */
+}
+
