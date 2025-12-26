@@ -17,5 +17,6 @@ const airlineLogoMap = {
   "Ryanair": "Ryanair.webp",
   "British Airways": "BritishAirways.webp",
   "EasyJet": "easyJet.webp",
-  "Wizz Air": "WizzAir.webp"
+  "Wizz Air": "WizzAir.webp",
+  "ITA": "ITA.webp"
 };
