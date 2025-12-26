@@ -170,3 +170,49 @@ airportPopup
   }
 }
 
+
+// =====================================================
+// Non Fliight Markers
+// =====================================================
+
+// For non-flight journeys (drive/train/etc):
+//  Extracts start + end points
+//  Converts them into GeoJSON point features
+//  Adds metadata for tooltips
+//  These are rendered separately from airports.
+// =====================================================
+function buildNonFlightEndpoints(routes) {
+  const features = [];
+
+  routes.forEach(r => {
+    if (r.journey_type === "Flight") return;
+    if (!r.geom?.coordinates?.length) return;
+
+    const coords = r.geom.coordinates;
+    const start = coords[0];
+    const end = coords[coords.length - 1];
+
+    features.push(
+      {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: start },
+        properties: {
+          kind: "origin",
+          journey_type: r.journey_type,
+          label: r.origin || "Origin",
+        },
+      },
+      {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: end },
+        properties: {
+          kind: "destination",
+          journey_type: r.journey_type,
+          label: r.destination || "Destination",
+        },
+      }
+    );
+  });
+
+  return features;
+}
