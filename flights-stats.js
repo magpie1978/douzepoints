@@ -88,6 +88,38 @@ function countriesPerYear(data) {
 }
 
 
+function flightsPerYearPerAirline(data) {
+  const map = {};
+  const airlinesSet = new Set();
+
+  data
+    .filter(r => r.journey_type === "Flight")
+    .forEach(r => {
+      if (!r.airline) return;
+
+      const year = String(r.year).slice(0, 4);
+      const airline = r.airline;
+
+      airlinesSet.add(airline);
+
+      if (!map[year]) map[year] = {};
+      map[year][airline] = (map[year][airline] || 0) + 1;
+    });
+
+  const years = Object.keys(map).sort();
+  const airlines = Array.from(airlinesSet).sort();
+
+  const datasets = airlines.map(airline => ({
+    label: airline,
+    data: years.map(y => map[y]?.[airline] || 0),
+    stack: "airlines",
+  }));
+
+  return { years, datasets };
+}
+
+
+
 
 // =====================================================
 // CHART RENDERER (reused for all metrics)
@@ -141,6 +173,56 @@ function renderStatsChart({ title, label, values, color }) {
   });
 }
 
+
+function renderStackedStatsChart({ title, years, datasets }) {
+  const ctx = document
+    .getElementById("flightsByYearChart")
+    .getContext("2d");
+
+  const titleEl = document.getElementById("statsTitle");
+  if (titleEl) titleEl.textContent = title;
+
+  if (flightsChart) flightsChart.destroy();
+
+  flightsChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: years,
+      datasets: datasets.map((ds, i) => ({
+        ...ds,
+        backgroundColor: `hsl(${(i * 47) % 360}, 65%, 55%)`,
+        borderRadius: 2,
+      })),
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          stacked: true,
+          ticks: { color: "#ccc" },
+          grid: { display: false },
+        },
+        y: {
+          stacked: true,
+          ticks: { color: "#ccc" },
+          grid: { color: "rgba(255,255,255,0.08)" },
+        },
+      },
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: { color: "#ccc" },
+        },
+        tooltip: {
+          backgroundColor: "#111",
+        },
+      },
+    },
+  });
+}
+
+
 // =====================================================
 // DROPDOWN HANDLER
 // =====================================================
@@ -183,6 +265,15 @@ async function updateStatsChart() {
       label: "Airlines",
       values: airlinesPerYear(baseData),
       color: "rgba(160,220,160,0.7)",
+    });
+  }
+
+  if (metric === "airlines_stack") {
+    const { years, datasets } = flightsPerYearPerAirline(baseData);
+    renderStackedStatsChart({
+      title: "Flights per Year by Airline",
+      years,
+      datasets,
     });
   }
 }
