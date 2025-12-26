@@ -47,6 +47,7 @@ const airlineLogoMap = {
   "Turkish Airlines": "TurkishAirlines.webp",
   "Virgin Atlantic": "VirginAtlantic.webp",
   "Virgin Australia": "VirginAustralia.webp",
+  "Virgin Blue": "VirginAustralia.webp",
   "Volotea": "Volotea.webp",
   "WestJet": "WestJet.webp",
   "Vueling": "Vueling.webp"
