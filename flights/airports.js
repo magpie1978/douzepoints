@@ -216,3 +216,13 @@ function buildNonFlightEndpoints(routes) {
 
   return features;
 }
+
+
+// =====================================================
+// AIRPORT MARKERS + TOOLTIPS
+// =====================================================
+const airportPopup = new mapboxgl.Popup({
+  closeButton: false,
+  closeOnClick: false,
+  offset: 10,
+});
