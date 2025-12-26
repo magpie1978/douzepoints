@@ -12,6 +12,42 @@ function renderSidebar(routes) {
 
     const logoUrl = getAirlineLogo(r.airline);
 
+    li.innerHTML = `
+  <div class="sidebar-row">
+    
+    <!-- LEFT: LOGO -->
+    <div class="sidebar-logo">
+      ${logoUrl ? `
+        <img
+          class="airline-logo"
+          src="${logoUrl}"
+          alt="${r.airline}"
+          width="100"
+          height="100"
+          onerror="this.style.display='none'"
+        />
+      ` : ""}
+    </div>
+
+    <!-- RIGHT: TEXT -->
+    <div class="sidebar-text">
+      <div class="sidebar-callsign">
+        <strong>${r.callsign || ""}</strong>
+      </div>
+
+      <div class="sidebar-route">
+        ${r.origin || ""} → ${r.destination || ""}
+      </div>
+
+      <div class="sidebar-date">
+        ${r.journey_date?.slice(0, 10) || ""}
+      </div>
+    </div>
+
+  </div>
+`;
+
+    /*
   li.innerHTML = `
     <div class="date">${r.journey_date?.slice(0, 10) || ""}</div>
     <div class="route">
@@ -20,7 +56,7 @@ function renderSidebar(routes) {
       ${r.origin || ""} → ${r.destination || ""}
     </div>
   `;
-
+*/
     li.addEventListener("click", () => toggleIsolation(r.uid));
     flightListEl.appendChild(li);
   });
