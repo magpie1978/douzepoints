@@ -18,7 +18,7 @@ const airlineLogoMap = {
   "British Airways": "BritishAirways.webp",
   "EasyJet": "easyJet.webp",
   "Wizz Air": "WizzAir.webp",
-  "ITA": "ITA.webp",
+  "ITA Airways": "ITA.webp",
   "Aegean": "Aegean.webp",
   "Aer Lingus": "AerLingus.webp",
   "AirAsia": "AirAsia.webp",
