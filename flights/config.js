@@ -33,7 +33,7 @@ const airlineLogoMap = {
   "Finnair": "Finnair.webp",
   "Gol": "Gol.webp",
   "Iberia": "Iberia.webp",
-  "Jet2": "Jet2.webp",
+  "Jet2.com": "Jet2.webp",
   "Jetstar": "Jetstar.webp",
   "Lufthansa": "Lufthansa.webp",
   "Malaysian Airlines": "Malaysian.webp",
