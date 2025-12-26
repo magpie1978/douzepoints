@@ -25,3 +25,30 @@ function renderSidebar(routes) {
     flightListEl.appendChild(li);
   });
 }
+
+
+
+// Airlines Slide Out Container
+airlinesBox?.addEventListener("click", () => {
+  if (!airlinesPanel) return;
+  const isOpen = airlinesPanel.classList.contains("visible");
+  if (isOpen) {
+    airlinesPanel.classList.remove("visible");
+    airlinesPanel.classList.add("hidden");
+  } else {
+    renderAirlinesPanel(currentRoutes);
+    airlinesPanel.classList.remove("hidden");
+    airlinesPanel.classList.add("visible");
+  }
+});
+
+
+
+// Sidebar-aware padding
+// Calculates map padding based on whether the sidebar is collapsed.
+// Critical for correct fitBounds() behaviour.
+function getSidebarLeftPad() {
+  return sidebar?.classList.contains("collapsed")
+    ? 80
+    : (sidebar?.offsetWidth || 260) + 80;
+}
