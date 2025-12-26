@@ -1,23 +1,21 @@
 // =====================================================
-// AIRPORTS.JS (PATCHED)
-// - Fixes broken braces / misplaced layer code
-// - Adds airports-hit layer (big click target)
-// - Click airport => show all flights to/from that airport
-// - Uses window.allRoutes as base dataset
+// AIRPORTS.JS (FINAL PATCHED VERSION)
 // =====================================================
 
 let journeyEndpointsHoverBound = false;
 let airportHoverBound = false;
 let airportClickBound = false;
+let airportClearClickBound = false;
+
 window.activeAirportFilter = null;
-
-
 
 // =====================================================
 // LOAD AIRPORT MARKERS
 // =====================================================
 async function loadAirports(routes) {
+  // --------------------------------------------------
   // Hide everything if not in routes mode
+  // --------------------------------------------------
   if (mapMode !== "routes") {
     if (map.getLayer("airports-circle")) {
       map.setLayoutProperty("airports-circle", "visibility", "none");
@@ -28,21 +26,14 @@ async function loadAirports(routes) {
     if (map.getLayer("journey-endpoints-circle")) {
       map.setLayoutProperty("journey-endpoints-circle", "visibility", "none");
     }
-
     clearSource("airports");
     clearSource("journey-endpoints");
-
-    return; // ✅ THIS WAS MISSING
-
-  // ✅ Ensure click-away is bound (binds once)
-  bindAirportClearOnMapClick();
-}
-
+    return;
   }
 
-  // ---------------------------------------------
+  // --------------------------------------------------
   // 1️⃣ FLIGHT AIRPORT MARKERS
-  // ---------------------------------------------
+  // --------------------------------------------------
   const flightCodes = new Set();
 
   (routes || []).forEach(r => {
@@ -90,7 +81,7 @@ async function loadAirports(routes) {
           },
         });
 
-        // Invisible hit layer (bigger click target)
+        // Invisible hit layer (large click target)
         map.addLayer({
           id: "airports-hit",
           type: "circle",
@@ -109,7 +100,7 @@ async function loadAirports(routes) {
       map.setLayoutProperty("airports-circle", "visibility", "visible");
       map.setLayoutProperty("airports-hit", "visibility", "visible");
 
-      // Hover tooltip (bind once) - keep on the visible circle
+      // ---------------- Hover tooltip ----------------
       if (!airportHoverBound) {
         airportHoverBound = true;
 
@@ -134,7 +125,7 @@ async function loadAirports(routes) {
         });
       }
 
-      // Click (bind once) - bind to HIT layer
+      // ---------------- Click airport ----------------
       if (!airportClickBound) {
         airportClickBound = true;
 
@@ -153,13 +144,17 @@ async function loadAirports(routes) {
     }
   } else {
     clearSource("airports");
-    if (map.getLayer("airports-circle")) map.setLayoutProperty("airports-circle", "visibility", "none");
-    if (map.getLayer("airports-hit")) map.setLayoutProperty("airports-hit", "visibility", "none");
+    if (map.getLayer("airports-circle")) {
+      map.setLayoutProperty("airports-circle", "visibility", "none");
+    }
+    if (map.getLayer("airports-hit")) {
+      map.setLayoutProperty("airports-hit", "visibility", "none");
+    }
   }
 
-  // ---------------------------------------------
+  // --------------------------------------------------
   // 2️⃣ NON-FLIGHT ORIGIN / DESTINATION ENDPOINTS
-  // ---------------------------------------------
+  // --------------------------------------------------
   const nonFlightFeatures = buildNonFlightEndpoints(routes);
 
   const nonFlightFC = {
@@ -187,7 +182,6 @@ async function loadAirports(routes) {
 
   map.setLayoutProperty("journey-endpoints-circle", "visibility", "visible");
 
-  // Hover tooltip for non-flight endpoints (bind once)
   if (!journeyEndpointsHoverBound) {
     journeyEndpointsHoverBound = true;
 
@@ -214,6 +208,11 @@ async function loadAirports(routes) {
       airportPopup.remove();
     });
   }
+
+  // --------------------------------------------------
+  // ✅ Ensure click-away handler is bound
+  // --------------------------------------------------
+  bindAirportClearOnMapClick();
 }
 
 
@@ -229,41 +228,78 @@ function filterRoutesByAirport(airportCode) {
   if (!airportCode || !baseRoutes.length) return;
 
   // Toggle off
-if (window.activeAirportFilter === airportCode) {
-  window.activeAirportFilter = null;
+  if (window.activeAirportFilter === airportCode) {
+    window.activeAirportFilter = null;
+    isolatedUid = null;
 
-  // 🔥 Clear isolation here too
+    const all = baseRoutes.slice();
+    currentRoutes = all;
+    window.renderRoutes(all, { resetIsolation: true });
+
+    if (map.getLayer("routes-line")) {
+      map.setPaintProperty("routes-line", "line-opacity", 0.85);
+    }
+    return;
+  }
+
+  // Toggle on
+  window.activeAirportFilter = airportCode;
   isolatedUid = null;
-  lastNonIsolatedView = null;
 
-  const all = baseRoutes.slice();
-  currentRoutes = all;
-  window.renderRoutes(all, { resetIsolation: true });
+  const filtered = baseRoutes.filter(r =>
+    r.journey_type === "Flight" &&
+    (r.origin === airportCode || r.destination === airportCode)
+  );
+
+  currentRoutes = filtered;
+  window.renderRoutes(filtered, { resetIsolation: true });
+
   if (map.getLayer("routes-line")) {
-  map.setPaintProperty("routes-line", "line-opacity", 0.85);
+    map.setPaintProperty("routes-line", "line-opacity", 0.85);
+  }
 }
-  return;
+
+
+// =====================================================
+// CLEAR AIRPORT FILTER BY CLICKING EMPTY MAP
+// =====================================================
+function bindAirportClearOnMapClick() {
+  if (airportClearClickBound) return;
+  airportClearClickBound = true;
+
+  map.on("click", e => {
+    if (!window.activeAirportFilter) return;
+    if (mapMode !== "routes") return;
+
+    // Ignore clicks on routes
+    const routeHits = map.queryRenderedFeatures(e.point, {
+      layers: ["routes-hit"],
+    });
+    if (routeHits.length) return;
+
+    // Ignore clicks on airports
+    const airportHits = map.queryRenderedFeatures(e.point, {
+      layers: ["airports-hit"],
+    });
+    if (airportHits.length) return;
+
+    // Clear filter
+    window.activeAirportFilter = null;
+    isolatedUid = null;
+
+    const all =
+      Array.isArray(window.allRoutes) && window.allRoutes.length
+        ? window.allRoutes.slice()
+        : currentRoutes.slice();
+
+    currentRoutes = all;
+    window.renderRoutes(all, { resetIsolation: true });
+
+    if (map.getLayer("routes-line")) {
+      map.setPaintProperty("routes-line", "line-opacity", 0.85);
+    }
+  });
 }
-
-window.activeAirportFilter = airportCode;
-
-// 🔥 CRITICAL: fully clear route isolation
-isolatedUid = null;
-lastNonIsolatedView = null;
-
-const filtered = baseRoutes.filter(r =>
-  r.journey_type === "Flight" &&
-  (r.origin === airportCode || r.destination === airportCode)
-);
-
-currentRoutes = filtered;
-window.renderRoutes(filtered, { resetIsolation: true });
-
-  // 🔥 Force all filtered routes to be equally visible
-if (map.getLayer("routes-line")) {
-  map.setPaintProperty("routes-line", "line-opacity", 0.85);
-}
-} 
 
 
 // =====================================================
@@ -304,55 +340,6 @@ function buildNonFlightEndpoints(routes) {
 
   return features;
 }
-
-
-// =====================================================
-// CLEAR AIRPORT FILTER
-// =====================================================
-let airportClearClickBound = false;
-
-function bindAirportClearOnMapClick() {
-  if (airportClearClickBound) return;
-  airportClearClickBound = true;
-
-  map.on("click", e => {
-    // Only act if an airport filter is active
-    if (!window.activeAirportFilter) return;
-    if (mapMode !== "routes") return;
-
-    // Did we click a route?
-    const routeHits = map.queryRenderedFeatures(e.point, {
-      layers: ["routes-hit"]
-    });
-
-    if (routeHits.length) return;
-
-    // Did we click an airport?
-    const airportHits = map.queryRenderedFeatures(e.point, {
-      layers: ["airports-hit"]
-    });
-
-    if (airportHits.length) return;
-
-    // ✅ Clicked empty map → clear airport filter
-    window.activeAirportFilter = null;
-    isolatedUid = null;
-
-    const all =
-      Array.isArray(window.allRoutes) && window.allRoutes.length
-        ? window.allRoutes.slice()
-        : currentRoutes.slice();
-
-    currentRoutes = all;
-    window.renderRoutes(all, { resetIsolation: true });
-
-    // Restore default route opacity
-    if (map.getLayer("routes-line")) {
-      map.setPaintProperty("routes-line", "line-opacity", 0.85);
-    }
-  });
-}
-
 
 
 // =====================================================
