@@ -180,11 +180,20 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
   const canvas = document.getElementById("flightsByYearChart");
   const ctx = canvas.getContext("2d");
 
-  // Dynamic height to enable vertical scrolling
-  canvas.height = labels.length * 28;
-
   const titleEl = document.getElementById("statsTitle");
   if (titleEl) titleEl.textContent = title;
+
+  // --- Make the canvas taller than the scroll container ---
+  // Tune these two numbers to taste.
+  const rowHeight = 34;      // bar thickness + spacing
+  const minHeight = 380;     // ensures it still looks good with few airlines
+  canvas.height = Math.max(minHeight, labels.length * rowHeight);
+
+  // Match canvas width to the scroll container width (prevents blurriness)
+  const scrollEl = document.getElementById("statsChartScroll");
+  if (scrollEl) {
+    canvas.width = scrollEl.clientWidth - 10; // subtract padding/scrollbar
+  }
 
   if (flightsChart) flightsChart.destroy();
 
@@ -194,36 +203,33 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
       labels,
       datasets: datasets.map(ds => ({
         ...ds,
-        backgroundColor: "rgba(201,162,77,0.85)",
+        backgroundColor: "rgba(201,162,77,0.85)", // yellow across the board
         borderRadius: 3,
         barThickness: 18,
         maxBarThickness: 22,
+        categoryPercentage: 0.9,
+        barPercentage: 0.9,
       })),
     },
     options: {
       indexAxis: "y",
-      responsive: true,
+
+      // ✅ CRITICAL: allow canvas to be taller than viewport
+      responsive: false,
       maintainAspectRatio: false,
+
       scales: {
         x: {
           stacked: true,
           ticks: { color: "#ccc", precision: 0 },
           grid: { color: "rgba(255,255,255,0.08)" },
-          title: {
-            display: true,
-            text: "Flights",
-            color: "#ccc",
-          },
+          title: { display: true, text: "Flights", color: "#ccc" },
         },
         y: {
           stacked: true,
           ticks: { color: "#ccc" },
           grid: { display: false },
-          title: {
-            display: true,
-            text: "Airline",
-            color: "#ccc",
-          },
+          title: { display: true, text: "Airline", color: "#ccc" },
         },
       },
       plugins: {
@@ -238,7 +244,6 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
     },
   });
 }
-
 
 
 // =====================================================
