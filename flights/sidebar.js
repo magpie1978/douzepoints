@@ -74,22 +74,6 @@ function renderAirlinesPanel(routes) {
   });
 }
 
-
-
-// =====================================================
-// TAILFIN IMAGES
-// =====================================================
-
-//Base GitHub URL
-//const AIRLINE_LOGO_BASE = "https://raw.githubusercontent.com/magpie1978/douzepoints/main/tailfins/";
-
-//Explicit airline → logo filename mappings
-const airlineLogoMap = {
-  "Ryanair": "Ryanair.webp",
-  "British Airways": "BritishAirways.webp"
-};
-
-
 // =====================================================
 // TAILFIN IMAGES HELPER
 // =====================================================
