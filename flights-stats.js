@@ -190,11 +190,14 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
     type: "bar",
     data: {
       labels,
-      datasets: datasets.map((ds, i) => ({
+      datasets: datasets.map(ds => ({
         ...ds,
-        backgroundColor: `hsl(${(i * 50) % 360}, 65%, 55%)`,
+        backgroundColor: "rgba(201,162,77,0.85)", // your gold/yellow
         borderRadius: 3,
+        barThickness: 18,        // thicker bars
+        maxBarThickness: 22,
       })),
+
     },
     options: {
       indexAxis: "y",   // 🔥 horizontal bars
