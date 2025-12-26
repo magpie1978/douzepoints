@@ -1,83 +1,10 @@
 // =====================================================
-// RENDER ROUTES (reusable by airports.js)
-// =====================================================
-function renderRoutes(routes) {
-  if (!routes || !routes.length) {
-    clearSource("routes");
-    clearSource("airports");
-    updateAllCounters([]);
-    return;
-  }
-
-  // Reset isolation when externally rendering
-  isolatedUid = null;
-  lastRoutesBounds = null;
-
-  updateAllCounters(routes);
-
-  if (airlinesPanel?.classList.contains("visible")) {
-    renderAirlinesPanel(routes);
-  }
-
-  renderSidebar(routes);
-
-  const fc = {
-    type: "FeatureCollection",
-    features: routes.map(r => ({
-      type: "Feature",
-      geometry: r.geom,
-      properties: r,
-    })),
-  };
-
-  if (map.getSource("routes")) {
-    map.getSource("routes").setData(fc);
-  } else {
-    map.addSource("routes", { type: "geojson", data: fc });
-
-    map.addLayer({
-      id: "routes-line",
-      type: "line",
-      source: "routes",
-      paint: {
-        "line-width": 1.4,
-        "line-opacity": 0.85,
-        "line-color": [
-          "case",
-          ["==", ["get", "journey_type"], "Flight"], "#FFD700",
-          ["==", ["get", "journey_type"], "Drive"], "#1E90FF",
-          "#E53935",
-        ],
-      },
-    });
-
-    map.addLayer({
-      id: "routes-hit",
-      type: "line",
-      source: "routes",
-      paint: {
-        "line-width": 18,
-        "line-opacity": 0,
-      },
-    });
-
-    map.on("click", "routes-hit", e => {
-      const uid = e.features?.[0]?.properties?.uid;
-      if (u
-
-
-window.renderRoutes = renderRoutes;
-
-      
-// =====================================================
 // LOAD ROUTES
 // =====================================================
 async function loadRoutes() {
-  // New query = reset isolation + last bounds
-  const wasIsolated = !!isolatedUid;
+  // Reset isolation + last bounds
   isolatedUid = null;
   lastRoutesBounds = null;
-
 
   let q = sb.from("journeys_routes_cache").select("*");
 
@@ -91,8 +18,6 @@ async function loadRoutes() {
 
   if (error) {
     console.error("[routes] load failed:", error);
-
-    // Hard reset UI so you don't get "silent zeros"
     currentRoutes = [];
     updateAllCounters([]);
     renderSidebar([]);
@@ -105,38 +30,57 @@ async function loadRoutes() {
     .filter(r => r.geom)
     .sort((a, b) => new Date(b.journey_date) - new Date(a.journey_date));
 
-  // Update UI
-renderRoutes(currentRoutes);
+  // 🔒 Preserve full unfiltered set for airport filtering
+  window.allRoutes = currentRoutes.slice();
 
-  if (airlinesPanel?.classList.contains("visible")) {
-  renderAirlinesPanel(currentRoutes);
-  }
+  renderRoutes(currentRoutes, { resetIsolation: true });
+}
 
-  renderSidebar(currentRoutes);
 
-  // Safety
-  if (currentRoutes.length > MAX_ROUTES) {
-    console.warn("[routes] too many routes:", currentRoutes.length);
+// =====================================================
+// RENDER ROUTES (REUSABLE PIPELINE)
+// =====================================================
+function renderRoutes(routes, { resetIsolation = true } = {}) {
+  if (!routes || !routes.length) {
     clearSource("routes");
     clearSource("airports");
+    updateAllCounters([]);
+    renderSidebar([]);
     return;
   }
 
+  if (resetIsolation) {
+    isolatedUid = null;
+    lastRoutesBounds = null;
+  }
+
+  currentRoutes = routes.slice();
+
+  // ---------------- UI ----------------
+  updateAllCounters(routes);
+  renderSidebar(routes);
+
+  if (airlinesPanel?.classList.contains("visible")) {
+    renderAirlinesPanel(routes);
+  }
+
+  // ---------------- GEOJSON ----------------
   const fc = {
     type: "FeatureCollection",
-    features: currentRoutes.map(r => ({
+    features: routes.map(r => ({
       type: "Feature",
       geometry: r.geom,
       properties: r,
     })),
   };
 
+  // ---------------- MAP ----------------
   if (map.getSource("routes")) {
     map.getSource("routes").setData(fc);
   } else {
     map.addSource("routes", { type: "geojson", data: fc });
 
-    // visible routes
+    // Visible routes
     map.addLayer({
       id: "routes-line",
       type: "line",
@@ -153,7 +97,7 @@ renderRoutes(currentRoutes);
       },
     });
 
-    // big invisible hit buffer (so it's easy to click)
+    // Invisible hit layer
     map.addLayer({
       id: "routes-hit",
       type: "line",
@@ -164,7 +108,7 @@ renderRoutes(currentRoutes);
       },
     });
 
-    // click route to isolate
+    // Click route → isolate
     map.on("click", "routes-hit", e => {
       const uid = e.features?.[0]?.properties?.uid;
       if (uid) toggleIsolation(uid);
@@ -178,27 +122,27 @@ renderRoutes(currentRoutes);
       map.getCanvas().style.cursor = "";
     });
 
-    // click away to clear isolate
+    // Click background → clear isolate
     map.on("click", e => {
       if (!isolatedUid || mapMode !== "routes") return;
-
       const hits = map.queryRenderedFeatures(e.point, { layers: ["routes-hit"] });
-      if (!hits.length) {
-        clearIsolation();
-      }
+      if (!hits.length) clearIsolation();
     });
   }
 
-  // Airports for current routes
-  await loadAirports(currentRoutes);
+  // ---------------- AIRPORTS ----------------
+  loadAirports(routes);
 
-  // Fit
+  // ---------------- FIT ----------------
   if (mapMode === "routes") {
-    fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
+    fitToBoundsFromLineGeoms(routes.map(r => r.geom));
   } else {
     applyMapMode();
   }
 }
+
+// 🌍 Expose globally for airports.js
+window.renderRoutes = renderRoutes;
 
 
 // =====================================================
@@ -206,7 +150,6 @@ renderRoutes(currentRoutes);
 // =====================================================
 function toggleIsolation(uid) {
   if (!isolatedUid && uid) {
-    // 🔐 Store current map state BEFORE isolating
     const center = map.getCenter();
     lastNonIsolatedView = {
       center: [center.lng, center.lat],
@@ -219,7 +162,6 @@ function toggleIsolation(uid) {
   isolatedUid = isolatedUid === uid ? null : uid;
   applyIsolation();
 }
-
 
 function clearIsolation() {
   if (!isolatedUid) return;
@@ -241,12 +183,9 @@ function applyIsolation() {
     const r = currentRoutes.find(x => x.uid === isolatedUid);
     if (r) {
       fitToBoundsFromLineGeoms([r.geom]);
-
-      // ✅ Update counters for single flight
       updateAllCounters([r]);
     }
   } else {
-    // ✅ Restore counters for all filtered routes
     updateAllCounters(currentRoutes);
 
     if (lastNonIsolatedView) {
