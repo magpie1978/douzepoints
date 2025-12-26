@@ -7,14 +7,16 @@ const SUPABASE_URL = "https://jxmyetsjqkrluxqtevxy.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4bXlldHNqcWtybHV4cXRldnh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMzI2NjYsImV4cCI6MjA4MDYwODY2Nn0.YoXEtsY_Zh1Eeuj0kl11AOaj01VrZzGGKoPhJyQP-iU";
 
-mapboxgl.accessToken =
-  "pk.eyJ1IjoiY2hyaXMtZHVuaWdhbiIsImEiOiJjbWo4dDRtbGowM25lM2VzYWV0eHhocHp5In0.kO8gJyPmFLqQhz-kTTDyIQ";
+mapboxgl.accessToken ="pk.eyJ1IjoiY2hyaXMtZHVuaWdhbiIsImEiOiJjbWo4dDRtbGowM25lM2VzYWV0eHhocHp5In0.kO8gJyPmFLqQhz-kTTDyIQ";  /* Mapbox API token for rendering maps and vector tiles */
 
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-const MAX_ROUTES = 1000;
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);  /* Creates a Supabase client instance used throughout the file for queries */
+
+const MAX_ROUTES = 1000;  /* Safety cap to prevent rendering too many route geometries and killing performance */
+
+
 
 // =====================================================
-// MAP INIT
+// MAP INIT - Initialises the Mapbox map: Dark theme, UK-centric starting view, Moderate zoom
 // =====================================================
 const map = new mapboxgl.Map({
   container: "map",
@@ -23,10 +25,12 @@ const map = new mapboxgl.Map({
   zoom: 4,
 });
 
-map.addControl(new mapboxgl.NavigationControl(), "top-right");
+map.addControl(new mapboxgl.NavigationControl(), "top-right");  /* Adds zoom + rotation controls to the map UI */
+
+
 
 // =====================================================
-// DOM ELEMENTS
+// DOM ELEMENTS   -   Caches references to frequently accessed DOM elements: Sidebar, Flight list, Buttons, “Glass counter” UI boxes.  This avoids repeated DOM queries later.
 // =====================================================
 const sidebar = document.getElementById("sidebar");
 const flightListEl = document.getElementById("flightList");
@@ -37,13 +41,24 @@ const reloadBtn = document.getElementById("reloadBtn");
 const journeyBox = document.getElementById("journeyCounter");
 const milesBox = document.getElementById("milesCounter");
 const countriesBox = document.getElementById("countriesCounter");
-
 const airlinesBox = document.getElementById("airlinesCounter");
+const durationBox = document.getElementById("durationCounter");
+
+// Numbers insode glass boxes
+const journeyNumberEl = journeyBox?.querySelector(".glass-number");
+const journeyLabelEl = journeyBox?.querySelector(".glass-label");
+const milesNumberEl = milesBox?.querySelector(".glass-number");
+const countriesNumberEl = countriesBox?.querySelector(".glass-number");
+const airlinesNumberEl = airlinesBox?.querySelector(".glass-number");
+const durationNumberEl = durationBox?.querySelector(".glass-number");
+const airlinesPanel = document.getElementById("airlinesPanel");
+const airlinesListEl = document.getElementById("airlinesList");
+
+
+// Airlines Slide Out Container
 airlinesBox?.addEventListener("click", () => {
   if (!airlinesPanel) return;
-
   const isOpen = airlinesPanel.classList.contains("visible");
-
   if (isOpen) {
     airlinesPanel.classList.remove("visible");
     airlinesPanel.classList.add("hidden");
@@ -55,50 +70,47 @@ airlinesBox?.addEventListener("click", () => {
 });
 
 
-const durationBox = document.getElementById("durationCounter");
-
-const journeyNumberEl = journeyBox?.querySelector(".glass-number");
-const journeyLabelEl = journeyBox?.querySelector(".glass-label");
-const milesNumberEl = milesBox?.querySelector(".glass-number");
-const countriesNumberEl = countriesBox?.querySelector(".glass-number");
-const airlinesNumberEl = airlinesBox?.querySelector(".glass-number");
-const durationNumberEl = durationBox?.querySelector(".glass-number");
-
-const airlinesPanel = document.getElementById("airlinesPanel");
-const airlinesListEl = document.getElementById("airlinesList");
 
 
-// =====================================================
+// =====================================================================
 // STATE
-// =====================================================
-let currentRoutes = [];
-let isolatedUid = null;
-let mapMode = "routes"; // routes | countries
-let lastNonIsolatedView = null;
+// =====================================================================
+let currentRoutes = [];          // Holds the currently loaded + filtered routes from Supabase.
+let isolatedUid = null;          // Stores the UID of the currently “isolated” route (clicked in map or sidebar).
+let mapMode = "routes";          // defaults map to routes 
+let lastNonIsolatedView = null;  // Used to restore map position after: Route isolation or Mode switching
+let lastRoutesBounds = null;     // for “revert to prior view” after isolate
 
-
-// for “revert to prior view” after isolate
-let lastRoutesBounds = null;
-
+// Holds active filter selections  -  Using Set avoids duplicates and makes add/remove trivial
 const selected = {
   years: new Set(),
   airlines: new Set(),
   types: new Set(),
 };
 
+
+
 // =====================================================
 // HELPERS
 // =====================================================
+
+
+// SOURCE CLEANING
+//  Safely clears a GeoJSON source without removing the layer.  Used to “empty” map layers when filters change
 function clearSource(id) {
   if (map.getSource(id)) {
     map.getSource(id).setData({ type: "FeatureCollection", features: [] });
   }
 }
 
+// DOM safety helper
+// Small defensive helper to avoid null-reference errors
 function safeText(el, txt) {
   if (el) el.textContent = txt;
 }
 
+// Duration Formatting
+// Converts raw seconds → Xh YYmin format
 function formatSecondsToHM(seconds) {
   const s = Number(seconds) || 0;
   if (s <= 0) return "0h 00min";
@@ -107,12 +119,17 @@ function formatSecondsToHM(seconds) {
   return `${hrs}h ${String(mins).padStart(2, "0")}min`;
 }
 
+// Sidebar-aware padding
+// Calculates map padding based on whether the sidebar is collapsed.
+// Critical for correct fitBounds() behaviour.
 function getSidebarLeftPad() {
   return sidebar?.classList.contains("collapsed")
     ? 80
     : (sidebar?.offsetWidth || 260) + 80;
 }
 
+// Fit map to route geometries
+// Builds a bounding box from all route coordinates.  Fits the map view with UI-aware padding.  Used after loading routes or isolating one.
 function fitToBoundsFromLineGeoms(geoms) {
   if (!geoms?.length) return;
 
@@ -133,6 +150,8 @@ function fitToBoundsFromLineGeoms(geoms) {
   });
 }
 
+// View restoration helpers
+// These support reverting map view after isolation or mode switching
 function storeCurrentMapBoundsAsLastRoutes() {
   // Save current camera bounds to revert later
   try {
@@ -158,8 +177,10 @@ function revertToLastRoutesBoundsOrAllRoutes() {
   }
 }
 
-
+// Counter aggregation
+// Calculates and updates stats derived from the currently visible routes.
 function updateAllCounters(routes) {
+  
   // Journeys
   updateJourneyCounter(routes.length);
 
@@ -193,6 +214,13 @@ function updateAllCounters(routes) {
 
 // =====================================================
 // Non Fliight Markers
+// =====================================================
+
+// For non-flight journeys (drive/train/etc):
+//  Extracts start + end points
+//  Converts them into GeoJSON point features
+//  Adds metadata for tooltips
+//  These are rendered separately from airports.
 // =====================================================
 function buildNonFlightEndpoints(routes) {
   const features = [];
@@ -235,6 +263,12 @@ function buildNonFlightEndpoints(routes) {
 // =====================================================
 // POPULATE AIRLIES SLIDE OUT PANEL
 // =====================================================
+
+// Extracts unique airline names
+// Sorts alphabetically
+// Renders logo + name list items
+//  Uses getAirlineLogo() for logo resolution.
+
 function renderAirlinesPanel(routes) {
   if (!airlinesListEl) return;
 
@@ -258,8 +292,10 @@ function renderAirlinesPanel(routes) {
 
 
 // =====================================================
-// REMOVE ADMINISTRATIVE BORDERs
+// MAP STYLING CLEANUP
 // =====================================================
+
+// Remove Country Borders
 function hideSubCountryBorders() {
   const layers = map.getStyle().layers;
 
@@ -282,9 +318,8 @@ function hideSubCountryBorders() {
   });
 }
 
-// =====================================================
-// REMOVE CITY NAMES
-// =====================================================
+
+// Remove City Names
 function hideCityLabels() {
   const layers = map.getStyle().layers;
 
@@ -314,9 +349,10 @@ function hideCityLabels() {
 // TAILFIN IMAGES
 // =====================================================
 
-const AIRLINE_LOGO_BASE =
-  "https://raw.githubusercontent.com/magpie1978/douzepoints/main/tailfins/";
+//Base GitHub URL
+const AIRLINE_LOGO_BASE = "https://raw.githubusercontent.com/magpie1978/douzepoints/main/tailfins/";
 
+//Explicit airline → logo filename mappings
 const airlineLogoMap = {
   "Ryanair": "Ryanair.webp",
   "British Airways": "BritishAirways.webp"
@@ -350,27 +386,33 @@ function getAirlineLogo(airline) {
 // =====================================================
 // GLASS COUNTER HELPERS
 // =====================================================
+
+// Journeys
 function updateJourneyCounter(n) {
   if (!journeyNumberEl || !journeyLabelEl) return;
   journeyNumberEl.textContent = n.toLocaleString();
   journeyLabelEl.textContent = n === 1 ? "JOURNEY" : "JOURNEYS";
 }
 
+// Miles
 function updateMilesCounter(miles) {
   if (!milesNumberEl) return;
   milesNumberEl.textContent = Math.round(miles).toLocaleString();
 }
 
+// Countries
 function updateCountriesCounter(n) {
   if (!countriesNumberEl) return;
   countriesNumberEl.textContent = n.toLocaleString();
 }
 
+// Airlines
 function updateAirlinesCounter(n) {
   if (!airlinesNumberEl) return;
   airlinesNumberEl.textContent = n.toLocaleString();
 }
 
+// Duration
 function updateDurationCounter(seconds) {
   if (!durationNumberEl) return;
   durationNumberEl.textContent = formatSecondsToHM(seconds);
@@ -407,6 +449,7 @@ function renderSidebar(routes) {
   });
 }
 
+
 // =====================================================
 // AIRPORT MARKERS + TOOLTIPS
 // =====================================================
@@ -415,7 +458,6 @@ const airportPopup = new mapboxgl.Popup({
   closeOnClick: false,
   offset: 10,
 });
-
 
 
 
@@ -595,7 +637,7 @@ airportPopup
 
 
 // =====================================================
-// ISOLATION (SIDEBAR OR MAP CLICK)
+// ISOLATION LOGIC (SIDEBAR OR MAP CLICK)
 // =====================================================
 function toggleIsolation(uid) {
   if (!isolatedUid && uid) {
@@ -716,6 +758,7 @@ document.addEventListener("click", e => {
   document.querySelectorAll(".filter-menu.open").forEach(m => m.classList.remove("open"));
 });
 
+
 // =====================================================
 // LOAD FILTERS (defaults applied: Year=2025 and Type=Flight)
 // =====================================================
@@ -747,6 +790,7 @@ async function loadFilters() {
   buildFilterMenu("filter-airline", airlines, selected.airlines);
   buildFilterMenu("filter-type", types, selected.types);
 }
+
 
 // =====================================================
 // COUNTRIES MODE (Mapbox country boundaries)
@@ -986,7 +1030,7 @@ async function loadRoutes() {
 }
 
 // =====================================================
-// INIT
+// INITIAl STARTUP
 // =====================================================
 map.on("load", async () => {
   hideSubCountryBorders();
