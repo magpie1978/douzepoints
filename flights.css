@@ -533,7 +533,21 @@ body {
   height: 70vh; /* or whatever your overlay uses */
 }
 
+
+/* Existing vertical space holder */
 #statsChartScroll {
-  height: calc(70vh - 90px); /* subtract title/dropdown area */
+  height: 420px;              /* matches overlay */
+  overflow-y: hidden;
+}
+
+/* NEW: horizontal scroll for wide charts */
+#statsChartScrollX {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+#statsChartScrollX canvas {
+  display: block;
 }
 
