@@ -211,6 +211,44 @@ body {
   margin-top: 2px;
 }
 
+.sidebar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-logo {
+  width: 100px;
+  min-width: 100px;
+  height: 100px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-callsign {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sidebar-route {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.sidebar-date {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+
 /* =====================================================
    MAP WRAPPER
 ===================================================== */
