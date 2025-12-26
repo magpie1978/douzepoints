@@ -128,3 +128,68 @@ async function loadRoutes() {
     applyMapMode();
   }
 }
+
+
+// =====================================================
+// ISOLATION LOGIC (SIDEBAR OR MAP CLICK)
+// =====================================================
+function toggleIsolation(uid) {
+  if (!isolatedUid && uid) {
+    // 🔐 Store current map state BEFORE isolating
+    const center = map.getCenter();
+    lastNonIsolatedView = {
+      center: [center.lng, center.lat],
+      zoom: map.getZoom(),
+      bearing: map.getBearing(),
+      pitch: map.getPitch(),
+    };
+  }
+
+  isolatedUid = isolatedUid === uid ? null : uid;
+  applyIsolation();
+}
+
+
+function clearIsolation() {
+  if (!isolatedUid) return;
+  isolatedUid = null;
+  applyIsolation();
+}
+
+function applyIsolation() {
+  if (!map.getLayer("routes-line")) return;
+
+  map.setPaintProperty("routes-line", "line-opacity", [
+    "case",
+    ["==", ["get", "uid"], isolatedUid],
+    1.0,
+    isolatedUid ? 0.12 : 0.85,
+  ]);
+
+  if (isolatedUid) {
+    const r = currentRoutes.find(x => x.uid === isolatedUid);
+    if (r) {
+      fitToBoundsFromLineGeoms([r.geom]);
+
+      // ✅ Update counters for single flight
+      updateAllCounters([r]);
+    }
+  } else {
+    // ✅ Restore counters for all filtered routes
+    updateAllCounters(currentRoutes);
+
+    if (lastNonIsolatedView) {
+      map.easeTo({
+        center: lastNonIsolatedView.center,
+        zoom: lastNonIsolatedView.zoom,
+        bearing: lastNonIsolatedView.bearing,
+        pitch: lastNonIsolatedView.pitch,
+        duration: 600,
+      });
+    }
+  }
+
+  [...flightListEl.children].forEach(li => {
+    li.classList.toggle("active", li.dataset.uid === isolatedUid);
+  });
+}
