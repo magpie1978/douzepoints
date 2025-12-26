@@ -232,6 +232,9 @@ if (window.activeAirportFilter === airportCode) {
   const all = baseRoutes.slice();
   currentRoutes = all;
   window.renderRoutes(all, { resetIsolation: true });
+  if (map.getLayer("routes-line")) {
+  map.setPaintProperty("routes-line", "line-opacity", 0.85);
+}
   return;
 }
 
@@ -248,6 +251,11 @@ const filtered = baseRoutes.filter(r =>
 
 currentRoutes = filtered;
 window.renderRoutes(filtered, { resetIsolation: true });
+
+  // 🔥 Force all filtered routes to be equally visible
+if (map.getLayer("routes-line")) {
+  map.setPaintProperty("routes-line", "line-opacity", 0.85);
+}
 } 
 
 
