@@ -1,3 +1,4 @@
+
 // =====================================================
 // LOAD AIRPORTS
 // =====================================================
@@ -77,7 +78,7 @@ async function loadAirports(routes) {
           },
         });
       }
-    }
+
       map.setLayoutProperty("airports-circle", "visibility", "visible");
 
       // ---------------------------------------------
