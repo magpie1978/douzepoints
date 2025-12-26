@@ -15,5 +15,7 @@ const AIRLINE_LOGO_BASE = "/tailfins/";
 
 const airlineLogoMap = {
   "Ryanair": "Ryanair.webp",
-  "British Airways": "BritishAirways.webp"
+  "British Airways": "BritishAirways.webp",
+  "EasyJet": "easyJet.webp",
+  "WizzAir": "WizzAir.webp"
 };
