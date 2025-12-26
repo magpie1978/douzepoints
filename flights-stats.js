@@ -233,14 +233,16 @@ function renderHorizontalStackedStatsChart({ title, labels, datasets }) {
         },
       },
       plugins: {
-        legend: {
-          position: "bottom",
-          labels: { color: "#ccc" },
-        },
-        tooltip: {
-          backgroundColor: "#111",
-        },
-      },
+  legend: {
+    display: false, // ✅ remove legend entirely
+  },
+  tooltip: {
+    backgroundColor: "#111",
+    titleColor: "#fff",
+    bodyColor: "#ddd",
+  },
+},
+
     },
   });
 }
