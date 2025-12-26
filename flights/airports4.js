@@ -28,11 +28,11 @@ async function loadAirports(routes) {
     if (map.getLayer("journey-endpoints-circle")) {
       map.setLayoutProperty("journey-endpoints-circle", "visibility", "none");
     }
+
     clearSource("airports");
     clearSource("journey-endpoints");
-    return;
 
-    bindAirportClearOnMapClick();
+    return; // ✅ THIS WAS MISSING
   }
 
   // ---------------------------------------------
