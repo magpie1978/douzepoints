@@ -516,3 +516,9 @@ body {
   width: 100% !important;
   height: 100% !important;
 }
+
+#statsChartScroll {
+  max-height: 420px;        /* controls visible rows */
+  overflow-y: auto;
+  padding-right: 8px;      /* avoids scrollbar overlap */
+}
