@@ -3,35 +3,36 @@
 // =====================================================
 // CONFIG
 // =====================================================
-const SUPABASE_URL = "https://jxmyetsjqkrluxqtevxy.supabase.co";
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4bXlldHNqcWtybHV4cXRldnh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMzI2NjYsImV4cCI6MjA4MDYwODY2Nn0.YoXEtsY_Zh1Eeuj0kl11AOaj01VrZzGGKoPhJyQP-iU";
+// const SUPABASE_URL = "https://jxmyetsjqkrluxqtevxy.supabase.co";
+//const SUPABASE_ANON_KEY =
+//  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4bXlldHNqcWtybHV4cXRldnh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMzI2NjYsImV4cCI6MjA4MDYwODY2Nn0.YoXEtsY_Zh1Eeuj0kl11AOaj01VrZzGGKoPhJyQP-iU";
 
-mapboxgl.accessToken ="pk.eyJ1IjoiY2hyaXMtZHVuaWdhbiIsImEiOiJjbWo4dDRtbGowM25lM2VzYWV0eHhocHp5In0.kO8gJyPmFLqQhz-kTTDyIQ";  /* Mapbox API token for rendering maps and vector tiles */
+//mapboxgl.accessToken ="pk.eyJ1IjoiY2hyaXMtZHVuaWdhbiIsImEiOiJjbWo4dDRtbGowM25lM2VzYWV0eHhocHp5In0.kO8gJyPmFLqQhz-kTTDyIQ";  /* Mapbox API token for rendering maps and vector tiles */
 
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);  /* Creates a Supabase client instance used throughout the file for queries */
+//const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);  /* Creates a Supabase client instance used throughout the file for queries */
 
-const MAX_ROUTES = 1000;  /* Safety cap to prevent rendering too many route geometries and killing performance */
+//const MAX_ROUTES = 1000;  /* Safety cap to prevent rendering too many route geometries and killing performance */
 
 
 
 // =====================================================
 // MAP INIT - Initialises the Mapbox map: Dark theme, UK-centric starting view, Moderate zoom
 // =====================================================
-const map = new mapboxgl.Map({
-  container: "map",
-  style: "mapbox://styles/mapbox/dark-v11",
-  center: [-1.5, 53.5],
-  zoom: 4,
-});
+//const map = new mapboxgl.Map({
+//  container: "map",
+//  style: "mapbox://styles/mapbox/dark-v11",
+//  center: [-1.5, 53.5],
+//  zoom: 4,
+//});
 
-map.addControl(new mapboxgl.NavigationControl(), "top-right");  /* Adds zoom + rotation controls to the map UI */
+//map.addControl(new mapboxgl.NavigationControl(), "top-right");  /* Adds zoom + rotation controls to the map UI */
 
 
 
 // =====================================================
 // DOM ELEMENTS   -   Caches references to frequently accessed DOM elements: Sidebar, Flight list, Buttons, “Glass counter” UI boxes.  This avoids repeated DOM queries later.
 // =====================================================
+/*
 const sidebar = document.getElementById("sidebar");
 const flightListEl = document.getElementById("flightList");
 const sidebarToggle = document.getElementById("sidebarToggle");
@@ -53,9 +54,10 @@ const airlinesNumberEl = airlinesBox?.querySelector(".glass-number");
 const durationNumberEl = durationBox?.querySelector(".glass-number");
 const airlinesPanel = document.getElementById("airlinesPanel");
 const airlinesListEl = document.getElementById("airlinesList");
-
+*/
 
 // Airlines Slide Out Container
+/*
 airlinesBox?.addEventListener("click", () => {
   if (!airlinesPanel) return;
   const isOpen = airlinesPanel.classList.contains("visible");
@@ -68,13 +70,14 @@ airlinesBox?.addEventListener("click", () => {
     airlinesPanel.classList.add("visible");
   }
 });
-
+*/
 
 
 
 // =====================================================================
 // STATE
 // =====================================================================
+/*
 let currentRoutes = [];          // Holds the currently loaded + filtered routes from Supabase.
 let isolatedUid = null;          // Stores the UID of the currently “isolated” route (clicked in map or sidebar).
 let mapMode = "routes";          // defaults map to routes 
@@ -87,7 +90,7 @@ const selected = {
   airlines: new Set(),
   types: new Set(),
 };
-
+*/
 
 
 // =====================================================
@@ -97,7 +100,7 @@ const selected = {
 
 // SOURCE CLEANING
 //  Safely clears a GeoJSON source without removing the layer.  Used to “empty” map layers when filters change
-function clearSource(id) {
+/*function clearSource(id) {
   if (map.getSource(id)) {
     map.getSource(id).setData({ type: "FeatureCollection", features: [] });
   }
@@ -118,18 +121,21 @@ function formatSecondsToHM(seconds) {
   const mins = Math.floor((s % 3600) / 60);
   return `${hrs}h ${String(mins).padStart(2, "0")}min`;
 }
-
+*/
 // Sidebar-aware padding
 // Calculates map padding based on whether the sidebar is collapsed.
 // Critical for correct fitBounds() behaviour.
+/*
 function getSidebarLeftPad() {
   return sidebar?.classList.contains("collapsed")
     ? 80
     : (sidebar?.offsetWidth || 260) + 80;
 }
+*/
 
 // Fit map to route geometries
 // Builds a bounding box from all route coordinates.  Fits the map view with UI-aware padding.  Used after loading routes or isolating one.
+/*
 function fitToBoundsFromLineGeoms(geoms) {
   if (!geoms?.length) return;
 
@@ -161,6 +167,7 @@ function storeCurrentMapBoundsAsLastRoutes() {
   }
 }
 
+
 function revertToLastRoutesBoundsOrAllRoutes() {
   if (lastRoutesBounds) {
     map.fitBounds(lastRoutesBounds, {
@@ -179,37 +186,37 @@ function revertToLastRoutesBoundsOrAllRoutes() {
 
 // Counter aggregation
 // Calculates and updates stats derived from the currently visible routes.
-function updateAllCounters(routes) {
+//function updateAllCounters(routes) {
   
   // Journeys
-  updateJourneyCounter(routes.length);
+//  updateJourneyCounter(routes.length);
 
   // Miles
-  const totalMiles = routes.reduce(
-    (sum, r) => sum + (Number(r.journey_distance) || 0),
-    0
-  );
-  updateMilesCounter(totalMiles);
+//  const totalMiles = routes.reduce(
+//    (sum, r) => sum + (Number(r.journey_distance) || 0),
+//    0
+//  );
+//  updateMilesCounter(totalMiles);
 
   // Countries
-  const countrySet = new Set(
-    routes.map(r => r.destination_country).filter(Boolean)
-  );
-  updateCountriesCounter(countrySet.size);
+//  const countrySet = new Set(
+//    routes.map(r => r.destination_country).filter(Boolean)
+//  );
+//  updateCountriesCounter(countrySet.size);
 
   // Airlines
-  const airlineSet = new Set(
-    routes.map(r => r.airline).filter(Boolean)
-  );
-  updateAirlinesCounter(airlineSet.size);
+//  const airlineSet = new Set(
+//    routes.map(r => r.airline).filter(Boolean)
+//  );
+//  updateAirlinesCounter(airlineSet.size);
 
   // Duration
-  const totalSeconds = routes.reduce(
-    (sum, r) => sum + (Number(r.journey_duration_seconds) || 0),
-    0
-  );
-  updateDurationCounter(totalSeconds);
-}
+//  const totalSeconds = routes.reduce(
+//    (sum, r) => sum + (Number(r.journey_duration_seconds) || 0),
+//    0
+//  );
+//  updateDurationCounter(totalSeconds);
+//}
 
 
 // =====================================================
@@ -222,6 +229,7 @@ function updateAllCounters(routes) {
 //  Adds metadata for tooltips
 //  These are rendered separately from airports.
 // =====================================================
+/*
 function buildNonFlightEndpoints(routes) {
   const features = [];
 
@@ -257,7 +265,7 @@ function buildNonFlightEndpoints(routes) {
 
   return features;
 }
-
+*/
 
 
 // =====================================================
@@ -296,52 +304,52 @@ function renderAirlinesPanel(routes) {
 // =====================================================
 
 // Remove Country Borders
-function hideSubCountryBorders() {
-  const layers = map.getStyle().layers;
+//function hideSubCountryBorders() {
+//  const layers = map.getStyle().layers;
 
-  layers.forEach(layer => {
-    const id = layer.id;
+//  layers.forEach(layer => {
+//    const id = layer.id;
 
     // Hide admin-1 and admin-2 borders (states / regions)
-    if (
-      id.includes("admin-1") ||
-      id.includes("admin-2") ||
-      id.includes("boundary-state") ||
-      id.includes("boundary-province")
-    ) {
-      try {
-        map.setLayoutProperty(id, "visibility", "none");
-      } catch (e) {
+//    if (
+//      id.includes("admin-1") ||
+//      id.includes("admin-2") ||
+//      id.includes("boundary-state") ||
+//      id.includes("boundary-province")
+//    ) {
+//      try {
+//        map.setLayoutProperty(id, "visibility", "none");
+//      } catch (e) {
         // layer might not support layout visibility
-      }
-    }
-  });
-}
+//      }
+//    }
+//  });
+//}
 
 
 // Remove City Names
-function hideCityLabels() {
-  const layers = map.getStyle().layers;
+//function hideCityLabels() {
+//  const layers = map.getStyle().layers;
 
-  layers.forEach(layer => {
-    const id = layer.id || "";
+//  layers.forEach(layer => {
+//    const id = layer.id || "";
 
     // Hide city / town / settlement labels
-    if (
-      id.includes("place-city") ||
-      id.includes("place-town") ||
-      id.includes("place-village") ||
-      id.includes("settlement") ||
-      id.includes("place-label") && !id.includes("country")
-    ) {
-      try {
-        map.setLayoutProperty(id, "visibility", "none");
-      } catch (e) {
+//    if (
+//      id.includes("place-city") ||
+//      id.includes("place-town") ||
+//      id.includes("place-village") ||
+//      id.includes("settlement") ||
+//      id.includes("place-label") && !id.includes("country")
+//    ) {
+//      try {
+//        map.setLayoutProperty(id, "visibility", "none");
+//      } catch (e) {
         // Some layers may not support layout visibility
-      }
-    }
-  });
-}
+//      }
+//    }
+//  });
+//}
 
 
 
@@ -388,6 +396,7 @@ function getAirlineLogo(airline) {
 // =====================================================
 
 // Journeys
+/*
 function updateJourneyCounter(n) {
   if (!journeyNumberEl || !journeyLabelEl) return;
   journeyNumberEl.textContent = n.toLocaleString();
@@ -417,13 +426,14 @@ function updateDurationCounter(seconds) {
   if (!durationNumberEl) return;
   durationNumberEl.textContent = formatSecondsToHM(seconds);
 }
-
+*/
 
 
 
 // =====================================================
 // SIDEBAR
 // =====================================================
+/*
 function renderSidebar(routes) {
   if (!flightListEl) return;
   flightListEl.innerHTML = "";
@@ -448,22 +458,24 @@ function renderSidebar(routes) {
     flightListEl.appendChild(li);
   });
 }
-
+*/
 
 // =====================================================
 // AIRPORT MARKERS + TOOLTIPS
 // =====================================================
+/*
 const airportPopup = new mapboxgl.Popup({
   closeButton: false,
   closeOnClick: false,
   offset: 10,
 });
-
+*/
 
 
 // =====================================================
 // LOAD AIRPORTS
 // =====================================================
+/*
 let journeyEndpointsHoverBound = false;
 let airportHoverBound = false;
 
@@ -632,13 +644,14 @@ airportPopup
     });
   }
 }
-
+*/
 
 
 
 // =====================================================
 // ISOLATION LOGIC (SIDEBAR OR MAP CLICK)
 // =====================================================
+/*
 function toggleIsolation(uid) {
   if (!isolatedUid && uid) {
     // 🔐 Store current map state BEFORE isolating
@@ -699,12 +712,14 @@ function applyIsolation() {
     li.classList.toggle("active", li.dataset.uid === isolatedUid);
   });
 }
-
+*/
 
 
 // =====================================================
 // FILTER UI (checkbox dropdowns)
 // =====================================================
+
+/*
 function buildFilterMenu(containerId, values, targetSet) {
   const container = document.getElementById(containerId);
   if (!container) return;
@@ -790,11 +805,12 @@ async function loadFilters() {
   buildFilterMenu("filter-airline", airlines, selected.airlines);
   buildFilterMenu("filter-type", types, selected.types);
 }
-
+*/
 
 // =====================================================
 // COUNTRIES MODE (Mapbox country boundaries)
 // =====================================================
+/*
 function ensureCountriesLayer() {
   if (map.getSource("countries")) return;
 
@@ -901,6 +917,8 @@ function applyMapMode() {
 // =====================================================
 // LOAD ROUTES
 // =====================================================
+
+/*
 async function loadRoutes() {
   // New query = reset isolation + last bounds
   const wasIsolated = !!isolatedUid;
@@ -1028,10 +1046,13 @@ async function loadRoutes() {
     applyMapMode();
   }
 }
+*/
 
 // =====================================================
 // INITIAl STARTUP
 // =====================================================
+
+/*
 map.on("load", async () => {
   hideSubCountryBorders();
   hideCityLabels();
@@ -1067,3 +1088,4 @@ countriesBox?.addEventListener("click", () => {
   mapMode = mapMode === "routes" ? "countries" : "routes";
   applyMapMode();
 });
+*/
