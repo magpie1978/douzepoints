@@ -81,7 +81,7 @@ function renderAirlinesPanel(routes) {
 // =====================================================
 
 //Base GitHub URL
-const AIRLINE_LOGO_BASE = "https://raw.githubusercontent.com/magpie1978/douzepoints/main/tailfins/";
+//const AIRLINE_LOGO_BASE = "https://raw.githubusercontent.com/magpie1978/douzepoints/main/tailfins/";
 
 //Explicit airline → logo filename mappings
 const airlineLogoMap = {
