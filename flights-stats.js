@@ -319,17 +319,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
 statsMetricSelect?.addEventListener("change", updateStatsChart);
 
-
-// =====================================================
-// SCROLL DOWN BETWEEN MAPS AND STATS SECTIONS
-// =====================================================
-const scrollBtn = document.getElementById("scrollToStats");
-const statsSection = document.getElementById("statsSection");
-
-scrollBtn?.addEventListener("click", () => {
-  statsSection?.scrollIntoView({
-    behavior: "smooth",
-    block: "start",
-  });
-});
-
