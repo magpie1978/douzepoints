@@ -611,20 +611,28 @@ body {
 
 
 /* =====================================================
-   STATS SECTION (BELOW MAP)
+   STATS SECTION (BELOW ENTIRE LAYOUT)
 ===================================================== */
 
 #statsSection {
+  width: 100%;
   background: #0f0f0f;
   border-top: 1px solid #222;
-  padding: 24px;
+  padding: 32px 24px;
 }
 
+/* Inner container aligns with map width */
+.stats-inner {
+  max-width: 1600px;   /* tweak to taste */
+  margin: 0 auto;
+}
+
+/* Header row */
 #statsSection .stats-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 #statsSection h2 {
@@ -633,16 +641,8 @@ body {
   font-weight: 600;
 }
 
-#statsMetricSelect {
-  background: #222;
-  color: #fff;
-  border-radius: 8px;
-  padding: 6px 10px;
-  border: 1px solid #444;
-}
-
+/* Chart container */
 #statsSection .stats-chart {
   height: 420px;
   position: relative;
 }
-
