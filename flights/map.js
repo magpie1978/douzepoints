@@ -227,6 +227,5 @@ function applyMapMode() {
   revertToLastRoutesBoundsOrAllRoutes();
 
   applyIsolation(); // re-apply focusing and counters
-}
 
 }
