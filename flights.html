@@ -62,7 +62,7 @@
           </div>
         </div>
   
-        <button id="statsBtn" class="top-btn">Stats</button>
+        <!--<button id="statsBtn" class="top-btn">Stats</button>-->
   
       </div>
     </div>
@@ -123,14 +123,37 @@
         <!-- ===== MAP ===== -->
         <div id="map"></div>
 
-      </div>  <!-- end of map wrappe -->
+
+        <!-- ===== STATS SECTION (BELOW MAP) ===== -->
+        <section id="statsSection">
+          <div class="stats-header">
+            <h2 id="statsTitle">Flights by Year</h2>
+            <select id="statsMetricSelect">
+              <option value="flights">Flights</option>
+              <option value="miles">Miles</option>
+              <option value="airlines">Airlines</option>
+              <option value="countries">Countries Visited</option>
+              <option value="airlines_years">Flights by Airline & Year</option>
+            </select>
+          </div>
+  
+          <div class="stats-chart">
+            <div id="statsChartScroll">
+              <div id="statsChartScrollX">
+                <canvas id="flightsByYearChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>  <!-- end of map wrapper -->
     </div>  <!-- end of main layout -->
   
-    <!-- container for stats pop-out -->
+    <!-- container for stats pop-out -
     <div id="statsOverlay" class="stats-overlay hidden">
       <div class="stats-panel">
 
-      <!-- TOP ROW -->
+      <!-- TOP ROW -
         <div class="stats-header">
           <div class="stats-title">
             <button id="statsCloseBtn" class="stats-close">×</button>
@@ -147,7 +170,7 @@
           
         </div>
 
-        <!-- CHART ROW -->
+        <!-- CHART ROW -
         <div class="stats-chart">
           <div id="statsChartScroll">
             <div id="statsChartScrollX">
@@ -157,7 +180,7 @@
         </div>
       </div>
     </div>
-  
+    -->
   
     <!-- App logic -->
     <!-- <script src="flights5.js"></script> -->
