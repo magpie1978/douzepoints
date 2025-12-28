@@ -4,6 +4,12 @@
 if (typeof window.lastRoutesBounds === "undefined") {
   window.lastRoutesBounds = null;
 }
+if (typeof window.lastRoutesView === "undefined") {
+  window.lastRoutesView = null; // { center, zoom, bearing, pitch }
+}
+if (typeof window._prevMapMode === "undefined") {
+  window._prevMapMode = "routes";
+}
 
 // =====================================================
 // MAP INIT - Dark theme, UK-centric starting view
@@ -21,7 +27,6 @@ map.addControl(new mapboxgl.NavigationControl(), "top-right");
 // BASE MAP CLEANUP
 // =====================================================
 
-// Remove sub-country borders
 function hideSubCountryBorders() {
   const layers = map.getStyle().layers || [];
   layers.forEach(layer => {
@@ -32,14 +37,11 @@ function hideSubCountryBorders() {
       id.includes("boundary-state") ||
       id.includes("boundary-province")
     ) {
-      try {
-        map.setLayoutProperty(id, "visibility", "none");
-      } catch {}
+      try { map.setLayoutProperty(id, "visibility", "none"); } catch {}
     }
   });
 }
 
-// Remove city labels
 function hideCityLabels() {
   const layers = map.getStyle().layers || [];
   layers.forEach(layer => {
@@ -51,9 +53,7 @@ function hideCityLabels() {
       id.includes("settlement") ||
       (id.includes("place-label") && !id.includes("country"))
     ) {
-      try {
-        map.setLayoutProperty(id, "visibility", "none");
-      } catch {}
+      try { map.setLayoutProperty(id, "visibility", "none"); } catch {}
     }
   });
 }
@@ -82,9 +82,21 @@ function fitToBoundsFromLineGeoms(geoms) {
 }
 
 // =====================================================
-// VIEW RESTORATION
+// VIEW RESTORATION (robust camera snapshot + restore)
 // =====================================================
-function storeCurrentMapBoundsAsLastRoutes() {
+function storeCurrentMapViewAsLastRoutes() {
+  try {
+    window.lastRoutesView = {
+      center: map.getCenter(),
+      zoom: map.getZoom(),
+      bearing: map.getBearing(),
+      pitch: map.getPitch(),
+    };
+  } catch {
+    window.lastRoutesView = null;
+  }
+
+  // Keep bounds as a fallback
   try {
     window.lastRoutesBounds = map.getBounds();
   } catch {
@@ -92,7 +104,21 @@ function storeCurrentMapBoundsAsLastRoutes() {
   }
 }
 
-function revertToLastRoutesBoundsOrAllRoutes() {
+function restoreLastRoutesViewOrBoundsOrAllRoutes() {
+  // Stop any in-flight camera animation from the countries fitBounds
+  try { map.stop(); } catch {}
+
+  if (window.lastRoutesView) {
+    map.easeTo({
+      center: window.lastRoutesView.center,
+      zoom: window.lastRoutesView.zoom,
+      bearing: window.lastRoutesView.bearing,
+      pitch: window.lastRoutesView.pitch,
+      duration: 650,
+    });
+    return;
+  }
+
   if (window.lastRoutesBounds) {
     map.fitBounds(window.lastRoutesBounds, {
       padding: {
@@ -103,7 +129,10 @@ function revertToLastRoutesBoundsOrAllRoutes() {
       },
       duration: 650,
     });
-  } else if (Array.isArray(currentRoutes)) {
+    return;
+  }
+
+  if (Array.isArray(currentRoutes)) {
     fitToBoundsFromLineGeoms(currentRoutes.map(r => r.geom));
   }
 }
@@ -172,13 +201,17 @@ function fitToVisibleCountries() {
 }
 
 // =====================================================
-// MAP MODE SWITCHING (FINAL FIX)
+// MAP MODE SWITCHING (FIXED FOR YOUR BUG)
 // =====================================================
 function applyMapMode() {
-  if (mapMode === "countries") {
+  const prev = window._prevMapMode;
 
-    // 🔐 Snapshot routes camera BEFORE switching
-    storeCurrentMapBoundsAsLastRoutes();
+  if (mapMode === "countries") {
+    // Only snapshot when actually switching into countries mode
+    // (prevents overwriting the saved routes view)
+    if (prev !== "countries") {
+      storeCurrentMapViewAsLastRoutes();
+    }
 
     if (map.getLayer("routes-line")) map.setLayoutProperty("routes-line", "visibility", "none");
     if (map.getLayer("routes-hit")) map.setLayoutProperty("routes-hit", "visibility", "none");
@@ -194,11 +227,11 @@ function applyMapMode() {
       map.setLayoutProperty("countries-fill", "visibility", "visible");
     }
 
+    // Fit after render completes
     map.once("idle", fitToVisibleCountries);
 
   } else {
     // ROUTES MODE
-
     if (map.getLayer("countries-fill")) {
       map.setLayoutProperty("countries-fill", "visibility", "none");
     }
@@ -206,12 +239,16 @@ function applyMapMode() {
     if (map.getLayer("routes-hit")) map.setLayoutProperty("routes-hit", "visibility", "visible");
     if (map.getLayer("airports-circle")) map.setLayoutProperty("airports-circle", "visibility", "visible");
 
-    // 🔁 Restore previous routes camera view
-    revertToLastRoutesBoundsOrAllRoutes();
+    // Restore AFTER the map has settled the layer visibility changes
+    map.once("idle", () => {
+      restoreLastRoutesViewOrBoundsOrAllRoutes();
 
-    // 🎯 Re-apply isolation STYLING ONLY (no zoom)
-    if (isolatedUid && typeof highlightIsolatedRoute === "function") {
-      highlightIsolatedRoute(isolatedUid);
-    }
+      // Re-apply isolation styling only (no zoom)
+      if (isolatedUid && typeof highlightIsolatedRoute === "function") {
+        highlightIsolatedRoute(isolatedUid);
+      }
+    });
   }
+
+  window._prevMapMode = mapMode;
 }
