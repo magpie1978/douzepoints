@@ -312,17 +312,9 @@ async function updateStatsChart() {
 // =====================================================
 // STATS OVERLAY CONTROLS (unchanged, just extended)
 // =====================================================
-const statsBtn = document.getElementById("statsBtn");
-const statsOverlay = document.getElementById("statsOverlay");
-const statsCloseBtn = document.getElementById("statsCloseBtn");
-
-statsBtn?.addEventListener("click", async () => {
-  statsOverlay.classList.remove("hidden");
-  await updateStatsChart(); // default chart
+document.addEventListener("DOMContentLoaded", () => {
+  updateStatsChart();
 });
 
-statsCloseBtn?.addEventListener("click", () => {
-  statsOverlay.classList.add("hidden");
-});
 
 statsMetricSelect?.addEventListener("change", updateStatsChart);
