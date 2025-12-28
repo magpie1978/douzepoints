@@ -741,16 +741,3 @@ body {
 .top-btn:hover {
   background: #eee;
 }
-
-/* =====================================================
-   SIDEBAR – JOURNEY TYPE LABEL
-===================================================== */
-
-.sidebar-journey-type {
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 2px;
-}
-
