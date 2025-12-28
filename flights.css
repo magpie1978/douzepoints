@@ -341,14 +341,14 @@ body {
 ===================================================== */
 
 #glassCounters {
-  position: absolute;
-  top: 70px;
-  left: 16px;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  z-index: 10;
-  pointer-events: none;
+  flex-direction: row;
+  justify-content: center;   /* 👈 centres the boxes horizontally */
+  align-items: stretch;
+  gap: 14px;                 /* space between glass boxes */
+  width: 100%;
+  padding: 12px 16px;
+  box-sizing: border-box;
 }
 
 .glass-box {
