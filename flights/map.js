@@ -212,7 +212,13 @@ function applyMapMode() {
     if (map.getLayer("routes-hit")) map.setLayoutProperty("routes-hit", "visibility", "visible");
     if (map.getLayer("airports-circle")) map.setLayoutProperty("airports-circle", "visibility", "visible");
 
+    // Restore previous routes camera
     revertToLastRoutesBoundsOrAllRoutes();
-    applyIsolation();
+
+    // Re-apply isolation visuals ONLY (no re-fit)
+    if (isolatedUid) {
+      highlightIsolatedRoute(isolatedUid);
+    }
+
   }
 }
