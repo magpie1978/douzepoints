@@ -196,13 +196,19 @@ function fitToVisibleCountries() {
 function applyMapMode() {
   if (mapMode === "countries") {
 
-    // 🔐 SAVE current routes view BEFORE switching modes
+    // 🔐 Save current routes view BEFORE switching modes
     storeCurrentMapBoundsAsLastRoutes();
-    
+
     // hide routes + hit buffer + airports
-    if (map.getLayer("routes-line")) map.setLayoutProperty("routes-line", "visibility", "none");
-    if (map.getLayer("routes-hit")) map.setLayoutProperty("routes-hit", "visibility", "none");
-    if (map.getLayer("airports-circle")) map.setLayoutProperty("airports-circle", "visibility", "none");
+    if (map.getLayer("routes-line")) {
+      map.setLayoutProperty("routes-line", "visibility", "none");
+    }
+    if (map.getLayer("routes-hit")) {
+      map.setLayoutProperty("routes-hit", "visibility", "none");
+    }
+    if (map.getLayer("airports-circle")) {
+      map.setLayoutProperty("airports-circle", "visibility", "none");
+    }
 
     const visibleRoutes = isolatedUid
       ? currentRoutes.filter(r => r.uid === isolatedUid)
@@ -210,22 +216,31 @@ function applyMapMode() {
 
     setCountriesFilterFromRoutes(visibleRoutes);
 
-    if (map.getLayer("countries-fill")) map.setLayoutProperty("countries-fill", "visibility", "visible");
+    if (map.getLayer("countries-fill")) {
+      map.setLayoutProperty("countries-fill", "visibility", "visible");
+    }
 
     // wait for map to render then fit
     map.once("idle", () => fitToVisibleCountries());
- } else {
-  // routes mode
-  if (map.getLayer("countries-fill")) {
-    map.setLayoutProperty("countries-fill", "visibility", "none");
+
+  } else {
+    // routes mode
+    if (map.getLayer("countries-fill")) {
+      map.setLayoutProperty("countries-fill", "visibility", "none");
+    }
+    if (map.getLayer("routes-line")) {
+      map.setLayoutProperty("routes-line", "visibility", "visible");
+    }
+    if (map.getLayer("routes-hit")) {
+      map.setLayoutProperty("routes-hit", "visibility", "visible");
+    }
+    if (map.getLayer("airports-circle")) {
+      map.setLayoutProperty("airports-circle", "visibility", "visible");
+    }
+
+    // 🔁 Restore previous routes camera view
+    revertToLastRoutesBoundsOrAllRoutes();
+
+    applyIsolation(); // re-apply focusing and counters
   }
-  if (map.getLayer("routes-line")) map.setLayoutProperty("routes-line", "visibility", "visible");
-  if (map.getLayer("routes-hit")) map.setLayoutProperty("routes-hit", "visibility", "visible");
-  if (map.getLayer("airports-circle")) map.setLayoutProperty("airports-circle", "visibility", "visible");
-
-  // 🔁 Restore previous routes camera view
-  revertToLastRoutesBoundsOrAllRoutes();
-
-  applyIsolation(); // re-apply focusing and counters
-
 }
