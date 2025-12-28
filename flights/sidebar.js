@@ -7,12 +7,12 @@ function renderSidebar(routes) {
     li.dataset.uid = r.uid;
     li.classList.toggle("active", r.uid === isolatedUid);
 
-    const logoUrl = getAirlineLogo(r.airline);
+    const logoUrl = getJourneyIcon(r);
 
     li.innerHTML = `
-  <div class="sidebar-row">
-    
-    <!-- LEFT: LOGO -->
+      <div class="sidebar-row">
+
+        <!-- LEFT: LOGO -->
         <div class="sidebar-logo">
           ${logoUrl ? `
             <img
@@ -27,13 +27,13 @@ function renderSidebar(routes) {
         </div>
 
         <!-- RIGHT: TEXT -->
-        
-        <!-- Journey type -->
-        <div class="sidebar-journey-type">
-          ${r.journey_type || ""}
-        </div>
-        
         <div class="sidebar-text">
+
+          <div class="sidebar-type">
+            ${r.journey_type?.slice(0, 10) || ""}
+          </div>
+
+          
           <div class="sidebar-route">
             <strong>${r.origin || ""} → ${r.destination || ""}</strong>
           </div>
@@ -41,9 +41,12 @@ function renderSidebar(routes) {
           <div class="sidebar-date">
             ${r.journey_date?.slice(0, 10) || ""}
           </div>
+
+          
         </div>
       </div>
     `;
+
     li.addEventListener("click", () => toggleIsolation(r.uid));
     flightListEl.appendChild(li);
   });
