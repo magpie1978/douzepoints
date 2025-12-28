@@ -16,36 +16,31 @@ function renderSidebar(routes) {
   <div class="sidebar-row">
     
     <!-- LEFT: LOGO -->
-    <div class="sidebar-logo">
-      ${logoUrl ? `
-        <img
-          class="airline-logo"
-          src="${logoUrl}"
-          alt="${r.airline}"
-          width="100"
-          height="100"
-          onerror="this.style.display='none'"
-        />
-      ` : ""}
-    </div>
+        <div class="sidebar-logo">
+          ${logoUrl ? `
+            <img
+              class="airline-logo"
+              src="${logoUrl}"
+              alt="${r.airline || r.journey_type}"
+              width="100"
+              height="100"
+              onerror="this.style.display='none'"
+            />
+          ` : ""}
+        </div>
 
-    <!-- RIGHT: TEXT -->
-    <div class="sidebar-text">
-      <div class="sidebar-callsign">
-        <strong>${r.callsign || ""}</strong>
+        <!-- RIGHT: TEXT -->
+        <div class="sidebar-text">
+          <div class="sidebar-route">
+            <strong>${r.origin || ""} → ${r.destination || ""}</strong>
+          </div>
+
+          <div class="sidebar-date">
+            ${r.journey_date?.slice(0, 10) || ""}
+          </div>
+        </div>
       </div>
-
-      <div class="sidebar-route">
-        ${r.origin || ""} → ${r.destination || ""}
-      </div>
-
-      <div class="sidebar-date">
-        ${r.journey_date?.slice(0, 10) || ""}
-      </div>
-    </div>
-
-  </div>
-`;
+    `;
     li.addEventListener("click", () => toggleIsolation(r.uid));
     flightListEl.appendChild(li);
   });
