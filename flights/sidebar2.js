@@ -2,24 +2,12 @@
 // SIDEBAR
 // =====================================================
 
-// Non-flight journey type icons
-const journeyTypeIconMap = {
-  Bus:   "/flights/logos/bus.svg",
-  Train: "/flights/logos/train.svg",
-  Drive: "/flights/logos/drive.svg",
-  Walk:  "/flights/logos/walk.svg",
-  Boat:  "/flights/logos/boat.svg",
-};
-
 // Resolve correct icon for sidebar
 function getJourneyIcon(route) {
   // Flights → airline tailfin
   if (route.journey_type === "Flight") {
     return getAirlineLogo(route.airline);
   }
-
-  // Non-flights → journey type icon
-  return journeyTypeIconMap[route.journey_type] || null;
 }
 
 
@@ -53,16 +41,16 @@ function renderSidebar(routes) {
 
         <!-- RIGHT: TEXT -->
         <div class="sidebar-text">
-          <div class="sidebar-callsign">
-            <strong>${r.callsign || ""}</strong>
-          </div>
-
           <div class="sidebar-route">
-            ${r.origin || ""} → ${r.destination || ""}
+            <strong>${r.origin || ""} → ${r.destination || ""}</strong>
           </div>
 
           <div class="sidebar-date">
             ${r.journey_date?.slice(0, 10) || ""}
+          </div>
+
+          <div class="sidebar-callsign">
+            ${r.callsign || ""}
           </div>
         </div>
 
