@@ -1,5 +1,5 @@
 // =====================================================
-// AIRPORTS4.JS (FINAL VERSION WITH AIRPORT BAR SUPPORT)
+// AIRPORTS5.JS (FINAL VERSION WITH AIRPORT BAR SUPPORT)
 // =====================================================
 
 let journeyEndpointsHoverBound = false;
