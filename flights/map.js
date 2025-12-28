@@ -252,3 +252,24 @@ function applyMapMode() {
 
   window._prevMapMode = mapMode;
 }
+
+
+
+
+// =====================================================
+// AIRPORT SELECTION HOOKS (called from other files)
+// =====================================================
+
+window.onAirportSelected = function (airportProps) {
+  // Hide global stats, show airport summary
+  if (window.showAirportSummary) {
+    window.showAirportSummary(airportProps);
+  }
+};
+
+window.onAirportCleared = function () {
+  // Restore global stats bar
+  if (window.hideAirportSummary) {
+    window.hideAirportSummary();
+  }
+};
