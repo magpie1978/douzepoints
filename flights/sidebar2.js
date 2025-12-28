@@ -44,8 +44,9 @@ function renderSidebar(routes) {
         
         <div class="sidebar-text">
 
-          <div class="sidebar-type">
-            ${r.type}
+          <!-- Journey type -->
+          <div class="sidebar-journey-type">
+            ${r.journey_type || ""}
           </div>
 
           <div class="sidebar-route">
