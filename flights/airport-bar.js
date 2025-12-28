@@ -26,3 +26,36 @@ function hideAirportSummary() {
   document.getElementById("airportSummaryBar").classList.add("hidden");
   document.getElementById("glassBar").style.display = "";
 }
+
+
+
+
+
+
+map.on("click", "airports-circle", e => {
+  const airport = e.features[0].properties;
+
+  showAirportSummary({
+    code: airport.airport_code,
+    city: airport.city,
+    outboundFlights: airport.outbound_flights,
+    outboundCountries: airport.outbound_countries,
+    inboundFlights: airport.inbound_flights,
+    inboundCountries: airport.inbound_countries,
+    airlines: airport.airlines,
+    duration: airport.total_duration
+  });
+});
+
+
+
+
+
+
+
+
+map.on("click", e => {
+  if (!e.features?.length) {
+    hideAirportSummary();
+  }
+});
