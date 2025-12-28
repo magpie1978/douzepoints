@@ -1,5 +1,3 @@
-let lastRoutesBounds = null;
-
 // =====================================================
 // MAP INIT - Initialises the Mapbox map: Dark theme, UK-centric starting view, Moderate zoom
 // =====================================================
