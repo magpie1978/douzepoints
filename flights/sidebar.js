@@ -1,6 +1,3 @@
-// =====================================================
-// SIDEBAR
-// =====================================================
 function renderSidebar(routes) {
   if (!flightListEl) return;
   flightListEl.innerHTML = "";
