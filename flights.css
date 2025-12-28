@@ -220,14 +220,6 @@ body {
   margin-top: 2px;
 }
 
-/*
-.sidebar-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-*/
-
 .sidebar-row {
   display: flex;
   align-items: center;
@@ -235,17 +227,6 @@ body {
   gap: 0; /* important so % split is exact */
 }
 
-/*
-.sidebar-logo {
-  width: 150px;
-  min-width: 100px;
-  height: 150px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-*/
 
 .sidebar-logo {
   flex: 0 0 45%;
@@ -257,13 +238,6 @@ body {
   justify-content: center;
 }
 
-/*
-.sidebar-text {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-*/
 
 .sidebar-text {
   flex: 0 0 55%;
@@ -301,13 +275,6 @@ body {
   flex-direction: column;
 }
 
-/*
-#map-wrapper {
-  position: relative;
-  flex: 1;
-}
-*/
-
 
 .glass-bar {
   width: 100%;
@@ -341,12 +308,6 @@ body {
   flex: 1;
 }
 
-/*
-#map {
-  position: absolute;
-  inset: 0;
-}
-*/
 
 .mapboxgl-popup-content {
   background: #ffffff !important;
@@ -502,24 +463,6 @@ body {
   display: none !important;
 }
 
-/*
-.stats-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.65);
-  backdrop-filter: blur(6px);
-  z-index: 999;
-}
-
-.stats-panel {
-  position: absolute;
-  inset: 10%;
-  background: rgba(30,30,30,0.95);
-  border-radius: 14px;
-  display: flex;
-  flex-direction: column;
-  padding: 20px 24px;
-}
 
 /* ───────── TOP ROW ───────── */
 .stats-header {
@@ -541,19 +484,6 @@ body {
   color: #fff;
 }
 
-/*
-.stats-close {
-  font-size: 20px;
-  background: none;
-  border: none;
-  color: #ccc;
-  cursor: pointer;
-}
-
-.stats-close:hover {
-  color: #fff;
-}
-*/
 
 #statsMetricSelect {
   background: #222;
