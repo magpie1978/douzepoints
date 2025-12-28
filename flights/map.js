@@ -1,3 +1,5 @@
+let lastRoutesBounds = null;
+
 // =====================================================
 // MAP INIT - Initialises the Mapbox map: Dark theme, UK-centric starting view, Moderate zoom
 // =====================================================
@@ -9,7 +11,6 @@ const map = new mapboxgl.Map({
 });
 
 map.addControl(new mapboxgl.NavigationControl(), "top-right");  /* Adds zoom + rotation controls to the map UI */
-
 
 
 // Remove Country Borders
@@ -194,6 +195,10 @@ function fitToVisibleCountries() {
 
 function applyMapMode() {
   if (mapMode === "countries") {
+
+    // 🔐 SAVE current routes view BEFORE switching modes
+    storeCurrentMapBoundsAsLastRoutes();
+    
     // hide routes + hit buffer + airports
     if (map.getLayer("routes-line")) map.setLayoutProperty("routes-line", "visibility", "none");
     if (map.getLayer("routes-hit")) map.setLayoutProperty("routes-hit", "visibility", "none");
@@ -209,13 +214,19 @@ function applyMapMode() {
 
     // wait for map to render then fit
     map.once("idle", () => fitToVisibleCountries());
-  } else {
-    // routes mode
-    if (map.getLayer("countries-fill")) map.setLayoutProperty("countries-fill", "visibility", "none");
-    if (map.getLayer("routes-line")) map.setLayoutProperty("routes-line", "visibility", "visible");
-    if (map.getLayer("routes-hit")) map.setLayoutProperty("routes-hit", "visibility", "visible");
-    if (map.getLayer("airports-circle")) map.setLayoutProperty("airports-circle", "visibility", "visible");
-
-    applyIsolation(); // re-apply focusing and counters
+ } else {
+  // routes mode
+  if (map.getLayer("countries-fill")) {
+    map.setLayoutProperty("countries-fill", "visibility", "none");
   }
+  if (map.getLayer("routes-line")) map.setLayoutProperty("routes-line", "visibility", "visible");
+  if (map.getLayer("routes-hit")) map.setLayoutProperty("routes-hit", "visibility", "visible");
+  if (map.getLayer("airports-circle")) map.setLayoutProperty("airports-circle", "visibility", "visible");
+
+  // 🔁 Restore previous routes camera view
+  revertToLastRoutesBoundsOrAllRoutes();
+
+  applyIsolation(); // re-apply focusing and counters
+}
+
 }
