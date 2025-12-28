@@ -321,11 +321,12 @@ body {
 /* New horizontal glass bar */
 #glassBar {
   display: flex;
-  gap: 12px;
-  padding: 12px 16px;
+  justify-content: center;   /* 🔥 THIS WAS MISSING */
   align-items: stretch;
-  background: transparent;
-  z-index: 5;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 16px;
+  box-sizing: border-box;
 }
 
 /* Glass boxes adapt horizontally */
