@@ -646,3 +646,53 @@ body {
   height: 420px;
   position: relative;
 }
+
+/* =====================================================
+   SCROLL-DOWN BANNER
+===================================================== */
+
+#scrollBanner {
+  width: 100%;
+  background: linear-gradient(to bottom, #111, #0f0f0f);
+  border-top: 1px solid #222;
+  border-bottom: 1px solid #222;
+  padding: 18px 0;
+  display: flex;
+  justify-content: center;
+}
+
+#scrollToStats {
+  background: none;
+  border: none;
+  color: #ddd;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+#scrollToStats:hover {
+  color: #fff;
+}
+
+.scroll-arrow {
+  font-size: 22px;
+  line-height: 1;
+  animation: bounceDown 1.6s infinite;
+}
+
+/* Subtle bounce */
+@keyframes bounceDown {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+}
