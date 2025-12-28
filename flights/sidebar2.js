@@ -48,12 +48,7 @@ function renderSidebar(routes) {
           <div class="sidebar-date">
             ${r.journey_date?.slice(0, 10) || ""}
           </div>
-
-          <div class="sidebar-callsign">
-            ${r.callsign || ""}
-          </div>
         </div>
-
       </div>
     `;
 
