@@ -575,11 +575,11 @@ body {
 }
 
 #statsChartScroll {
-  height: 420px;          /* pick what fits your overlay */
-  overflow-y: auto;
+  height: 420px;
+  overflow-y: auto;   /* ✅ allow chart to breathe */
   overflow-x: hidden;
-  padding-right: 10px;    /* stops scrollbar overlapping chart */
 }
+
 
 #flightsByYearChart {
   display: block;
