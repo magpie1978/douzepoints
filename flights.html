@@ -125,75 +125,8 @@
 
       </div>  <!-- end of map wrapper -->
     </div>  <!-- end of main layout -->
-
-    
-    <!-- ===================================================== -->
-    <!-- SCROLL-DOWN BANNER -->
-    <!-- ===================================================== -->
-    <div id="scrollBanner">
-      <button id="scrollToStats" aria-label="Scroll to statistics">
-        <span class="scroll-text">View journey statistics</span>
-        <span class="scroll-arrow">↓</span>
-      </button>
-    </div>
-
-
-    <!-- ===== STATS SECTION (BELOW MAP) ===== -->
-      <section id="statsSection">
-        <div class="stats-header">
-          <h2 id="statsTitle">Flights by Year</h2>
-          <select id="statsMetricSelect">
-            <option value="flights">Flights</option>
-            <option value="miles">Miles</option>
-            <option value="airlines">Airlines</option>
-            <option value="countries">Countries Visited</option>
-            <option value="airlines_years">Flights by Airline & Year</option>
-          </select>
-        </div>
-  
-        <div class="stats-chart">
-          <div id="statsChartScroll">
-            <div id="statsChartScrollX">
-              <canvas id="flightsByYearChart"></canvas>
-            </div>
-          </div>
-        </div>
-      </section>
-    <!-- container for stats pop-out -
-    <div id="statsOverlay" class="stats-overlay hidden">
-      <div class="stats-panel">
-
-      <!-- TOP ROW -
-        <div class="stats-header">
-          <div class="stats-title">
-            <button id="statsCloseBtn" class="stats-close">×</button>
-            <h2 id="statsTitle">Airlines Flown by Year</h2>
-          </div>
-
-          <select id="statsMetricSelect">
-            <option value="flights">Flights</option>
-            <option value="miles">Miles</option>
-            <option value="airlines">Airlines</option>
-            <option value="countries">Countries Visited</option>
-            <option value="airlines_years">Flights by Airline & Year</option>
-          </select>
-          
-        </div>
-
-        <!-- CHART ROW -
-        <div class="stats-chart">
-          <div id="statsChartScroll">
-            <div id="statsChartScrollX">
-              <canvas id="flightsByYearChart"></canvas>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    -->
-  
+ 
     <!-- App logic -->
-    <!-- <script src="flights5.js"></script> -->
     <script src="flights/config.js"></script>
     <script src="flights/logos.js"></script>
     <script src="flights/state.js"></script>
@@ -205,8 +138,6 @@
     <script src="flights/routes2.js"></script>
     <script src="flights/airports4.js"></script>
     <script src="flights/init.js"></script>
-
-    <!--<script src="flights/charts.js"></script>-->
     <script src="flights-stats.js"></script>
     
   </body>
