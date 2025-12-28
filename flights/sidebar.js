@@ -30,6 +30,12 @@ function renderSidebar(routes) {
         </div>
 
         <!-- RIGHT: TEXT -->
+        
+        <!-- Journey type -->
+        <div class="sidebar-journey-type">
+          ${r.journey_type || ""}
+        </div>
+        
         <div class="sidebar-text">
           <div class="sidebar-route">
             <strong>${r.origin || ""} → ${r.destination || ""}</strong>
