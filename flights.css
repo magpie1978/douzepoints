@@ -308,7 +308,17 @@ body {
 }
 */
 
-/* New horizontal glass bar */
+
+.glass-bar {
+  width: 100%;
+  display: flex;
+  justify-content: center;   /* THIS is what you want */
+  padding: 16px 24px;
+  box-sizing: border-box;
+}
+
+
+/* New horizontal glass bar 
 #glassBar {
   display: flex;
   gap: 12px;
@@ -317,12 +327,12 @@ body {
   background: transparent;
   z-index: 5;
 }
+/*
 
 /* Glass boxes adapt horizontally */
 #glassBar .glass-box {
   min-width: 140px;
   flex: 0 0 auto;
-  justify-content: center;   /* 👈 centres the boxes horizontally */
 }
 
 
