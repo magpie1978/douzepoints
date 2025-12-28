@@ -83,10 +83,10 @@
         <ul id="flightList"></ul>
       </aside>
   
-      <!-- ================= MAP WRAPPER ================= -->
+    <!-- ================= MAP WRAPPER ================= 
       <div id="map-wrapper">
   
-        <!-- ===== GLASS COUNTERS (STACKED) ===== -->
+        <!-- ===== GLASS COUNTERS (STACKED) ===== -
         <div id="glassCounters">
   
           <div id="journeyCounter" class="glass-box">
@@ -120,7 +120,51 @@
           </div>
           
         </div>
-  
+        -->
+
+      <div id="map-wrapper">
+
+        <!-- ===== GLASS BAR (ABOVE MAP) ===== -->
+        <div id="glassBar">
+      
+          <div id="journeyCounter" class="glass-box">
+            <div class="glass-number">0</div>
+            <div class="glass-label">Journeys</div>
+          </div>
+      
+          <div id="milesCounter" class="glass-box">
+            <div class="glass-number">0</div>
+            <div class="glass-label">Miles</div>
+          </div>
+      
+          <div id="countriesCounter" class="glass-box">
+            <div class="glass-number">0</div>
+            <div class="glass-label">Countries</div>
+          </div>
+      
+          <div class="glass-box" id="airlinesCounter">
+            <div class="glass-number">0</div>
+            <div class="glass-label">Airlines</div>
+          </div>
+      
+          <div id="durationCounter" class="glass-box">
+            <div class="glass-number">0h 00min</div>
+            <div class="glass-label">Duration</div>
+          </div>
+      
+          <!-- Airlines slide-out stays logically here -->
+          <div id="airlinesPanel" class="glass-box airlines-panel hidden">
+            <div class="airlines-panel-header">Airlines</div>
+            <ul id="airlinesList"></ul>
+          </div>
+      
+        </div>
+
+  <!-- ===== MAP ===== -->
+  <div id="map"></div>
+
+</div>
+
         <!-- ===== MAP ===== -->
         <div id="map"></div>
   
