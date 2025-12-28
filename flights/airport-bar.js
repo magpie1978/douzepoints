@@ -1,3 +1,10 @@
+window.showAirportSummary = showAirportSummary;
+window.hideAirportSummary = hideAirportSummary;
+
+
+
+
+
 function showAirportSummary(data) {
   document.getElementById("airportCode").textContent = data.code;
   document.getElementById("airportName").textContent = data.city;
