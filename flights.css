@@ -502,6 +502,7 @@ body {
   display: none !important;
 }
 
+/*
 .stats-overlay {
   position: fixed;
   inset: 0;
@@ -540,6 +541,7 @@ body {
   color: #fff;
 }
 
+/*
 .stats-close {
   font-size: 20px;
   background: none;
@@ -551,6 +553,7 @@ body {
 .stats-close:hover {
   color: #fff;
 }
+*/
 
 #statsMetricSelect {
   background: #222;
@@ -603,5 +606,43 @@ body {
 
 #statsChartScrollX canvas {
   display: block;
+}
+
+
+
+/* =====================================================
+   STATS SECTION (BELOW MAP)
+===================================================== */
+
+#statsSection {
+  background: #0f0f0f;
+  border-top: 1px solid #222;
+  padding: 24px;
+}
+
+#statsSection .stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+#statsSection h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+#statsMetricSelect {
+  background: #222;
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  border: 1px solid #444;
+}
+
+#statsSection .stats-chart {
+  height: 420px;
+  position: relative;
 }
 
