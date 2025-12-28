@@ -40,7 +40,14 @@ function renderSidebar(routes) {
         </div>
 
         <!-- RIGHT: TEXT -->
+
+        
         <div class="sidebar-text">
+
+          <div class="sidebar-type">
+            ${r.type}
+          </div>
+
           <div class="sidebar-route">
             <strong>${r.origin || ""} → ${r.destination || ""}</strong>
           </div>
