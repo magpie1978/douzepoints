@@ -318,7 +318,7 @@ body {
 }
 
 
-/* New horizontal glass bar 
+/* New horizontal glass bar */
 #glassBar {
   display: flex;
   gap: 12px;
@@ -327,7 +327,6 @@ body {
   background: transparent;
   z-index: 5;
 }
-/*
 
 /* Glass boxes adapt horizontally */
 #glassBar .glass-box {
