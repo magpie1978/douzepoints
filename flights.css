@@ -708,3 +708,36 @@ body {
     opacity: 1;
   }
 }
+
+
+/* =====================================================
+   TOP BAR ACTIONS (RIGHT SIDE)
+===================================================== */
+
+
+
+.filters {
+  flex: 1; /* pushes actions to the right */
+}
+
+/* Right-side container */
+.top-actions {
+  display: flex;
+  align-items: center;
+}
+
+/* Button style (matches existing top buttons) */
+.top-btn {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 14px;
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.top-btn:hover {
+  background: #eee;
+}
