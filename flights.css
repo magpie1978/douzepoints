@@ -247,6 +247,11 @@ body {
   gap: 4px;
 }
 
+.sidebar-journey-type {
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .sidebar-callsign {
   font-size: 14px;
   font-weight: 600;
