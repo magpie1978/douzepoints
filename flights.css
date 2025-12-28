@@ -295,10 +295,10 @@ body {
 
 /* Wrapper already sits to the right of the sidebar */
 #map-wrapper {
+  flex: 1;
+  min-height: calc(100vh - 52px); /* top bar height */
   display: flex;
   flex-direction: column;
-  flex: 1;
-  position: relative;
 }
 
 /*
@@ -652,13 +652,25 @@ body {
 ===================================================== */
 
 #scrollBanner {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+
   width: 100%;
-  background: linear-gradient(to bottom, #111, #0f0f0f);
-  border-top: 1px solid #222;
-  border-bottom: 1px solid #222;
-  padding: 18px 0;
+  height: 72px;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.55) 40%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+
   display: flex;
+  align-items: center;
   justify-content: center;
+
+  border-top: 1px solid #222;
 }
 
 #scrollToStats {
