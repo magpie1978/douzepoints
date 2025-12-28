@@ -313,6 +313,7 @@ body {
 #glassBar .glass-box {
   min-width: 140px;
   flex: 0 0 auto;
+  justify-content: center;   /* 👈 centres the boxes horizontally */
 }
 
 
