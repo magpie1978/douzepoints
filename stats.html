@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Journey Statistics</title>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Shared styles -->
+  <link rel="stylesheet" href="flights.css" />
+
+  <style>
+    /* Page-specific layout */
+    body {
+      background: #0f0f0f;
+    }
+
+    #statsPage {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 32px 24px 48px;
+    }
+
+    .stats-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .stats-header h1 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 600;
+    }
+
+    .stats-chart {
+      height: 420px;
+      position: relative;
+    }
+
+    #statsChartScroll {
+      height: 420px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main id="statsPage">
+
+    <div class="stats-header">
+      <h1 id="statsTitle">Flights by Year</h1>
+
+      <select id="statsMetricSelect">
+        <option value="flights">Flights</option>
+        <option value="miles">Miles</option>
+        <option value="airlines">Airlines</option>
+        <option value="countries">Countries Visited</option>
+        <option value="airlines_years">Flights by Airline & Year</option>
+      </select>
+    </div>
+
+    <div class="stats-chart">
+      <div id="statsChartScroll">
+        <div id="statsChartScrollX">
+          <canvas id="flightsByYearChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Stats logic -->
+  <script src="flights/config.js"></script>
+  <script src="flights-stats.js"></script>
+
+</body>
+</html>
