@@ -141,13 +141,13 @@
 
     /* Airline scroll area */
     .airline-chart-scroll {
-      flex: 1 1 auto;
-      min-height: 0;
-      overflow-y: auto;     /* ✅ actual scrolling */
-      padding-right: 10px;  /* room for scrollbar */
-      position: relative;
+      flex: 1;                 /* fill the panel vertically */
+      overflow-y: auto;        /* enable scrolling */
+      overflow-x: hidden;
+      max-height: 100%;        /* IMPORTANT */
+      padding-right: 8px;      /* space for scrollbar */
     }
-
+    
     .airline-chart-scroll::-webkit-scrollbar { width: 10px; }
     .airline-chart-scroll::-webkit-scrollbar-thumb {
       background: rgba(255,255,255,0.18);
