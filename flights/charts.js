@@ -32,6 +32,22 @@ async function loadStatsBaseData() {
 
 
 // =====================================================
+// SET CANVAS HEIGHT
+// =====================================================
+async function loadStatsBaseData() {
+function setAirlineCanvasHeight(canvas, airlineCount) {
+  const ROW_HEIGHT = 28;     // px per airline row (tweak if desired)
+  const MIN_ROWS = 20;
+
+  const rows = Math.max(airlineCount, MIN_ROWS);
+  canvas.style.height = `${rows * ROW_HEIGHT}px`;
+}
+
+
+
+
+
+// =====================================================
 // AGGREGATORS — YEAR BASED
 // =====================================================
 function flightsPerYear(data) {
@@ -237,9 +253,10 @@ function renderAirlineYearChart(data, mode = "flights") {
   const canvas = document.getElementById("airlineYearChart");
   if (!canvas) return;
 
+  setAirlineCanvasHeight(canvas, data.airlines.length);
+
   const ctx = canvas.getContext("2d");
   const labels = data.airlines.map(a => a.airline);
-
   const datasets = data.years.map(year => ({
     label: year,
     data: data.airlines.map(a =>
