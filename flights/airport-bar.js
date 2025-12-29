@@ -1,32 +1,10 @@
-/*function showAirportSummary(data) {
-  document.getElementById("airportCode").textContent = data.code;
-  document.getElementById("airportName").textContent = data.city;
-
-  document.getElementById("outboundFlights").textContent =
-    `${data.outboundFlights} flights`;
-  document.getElementById("outboundCountries").textContent =
-    data.outboundCountries;
-
-  document.getElementById("inboundFlights").textContent =
-    `${data.inboundFlights} flights`;
-  document.getElementById("inboundCountries").textContent =
-    data.inboundCountries;
-
-  document.getElementById("airportAirlines").textContent =
-    data.airlines;
-
-  document.getElementById("airportDuration").textContent =
-    data.duration;
-
-  document.getElementById("glassBar").style.display = "none";
-  document.getElementById("airportSummaryBar").classList.remove("hidden");
+function getRouteDurationMinutes(r) {
+  if (typeof r.journey_duration_seconds === "number") {
+    return Math.round(r.journey_duration_seconds / 60);
+  }
+  return 0;
 }
 
-function hideAirportSummary() {
-  document.getElementById("airportSummaryBar").classList.add("hidden");
-  document.getElementById("glassBar").style.display = "";
-}
-*/
 
 function showAirportSummary(airport) {
   const airportCode = airport.code;
@@ -68,12 +46,15 @@ function showAirportSummary(airport) {
   // Total duration (minutes)
   // -------------------------
   const totalMinutes = [...departures, ...arrivals].reduce(
-    (sum, r) => sum + (r.duration_minutes || 0),
-    0
-  );
+  (sum, r) => sum + getRouteDurationMinutes(r),
+  0
+);
 
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
+const hours = Math.floor(totalMinutes / 60);
+const minutes = totalMinutes % 60;
+
+document.getElementById("airportDuration").textContent =
+  `${hours}h ${minutes}m`;
 
   // -------------------------
   // Update UI
