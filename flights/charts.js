@@ -85,6 +85,38 @@ function milesPerYear(data) {
     return out;
   }
 
+  function flightsPerAirlinePerYear(data) {
+    const map = {};
+    const yearsSet = new Set();
+  
+    data
+      .filter(r => r.journey_type === "Flight" && r.airline && r.year)
+      .forEach(r => {
+        const year = String(r.year).slice(0, 4);
+        yearsSet.add(year);
+  
+        if (!map[r.airline]) map[r.airline] = {};
+        map[r.airline][year] = (map[r.airline][year] || 0) + 1;
+      });
+  
+    const years = [...yearsSet].sort();
+  
+    // Total flights per airline
+    const totals = Object.entries(map).map(([airline, yearsObj]) => ({
+      airline,
+      total: Object.values(yearsObj).reduce((a, b) => a + b, 0),
+      years: yearsObj,
+    }));
+  
+    // Top 10 airlines
+    const top10 = totals
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 10);
+  
+    return { airlines: top10, years };
+  }
+
+
 
 
 // =====================================================
@@ -145,29 +177,97 @@ function renderYearChart(values, label) {
   });
 }
 
+
+
+// =====================================================
+// CHART RENDERER
+// =====================================================
+let airlineYearChart = null;
+
+function renderAirlineYearChart(data) {
+  const canvas = document.getElementById("airlineYearChart");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+
+  const labels = data.airlines.map(a => a.airline);
+
+  const datasets = data.years.map((year, i) => ({
+    label: year,
+    data: data.airlines.map(a => a.years[year] || 0),
+    backgroundColor: `hsl(${210 + i * 18}, 65%, 55%)`,
+    borderRadius: 4,
+  }));
+
+  if (airlineYearChart) airlineYearChart.destroy();
+
+  airlineYearChart = new Chart(ctx, {
+    type: "bar",
+    data: { labels, datasets },
+    options: {
+      indexAxis: "y",
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          stacked: true,
+          ticks: { color: "#ccc" },
+          grid: { color: "rgba(255,255,255,0.08)" },
+        },
+        y: {
+          stacked: true,
+          ticks: { color: "#ccc" },
+          grid: { display: false },
+        },
+      },
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: { color: "#ccc" },
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx =>
+              `${ctx.dataset.label}: ${ctx.raw} flights`,
+          },
+        },
+      },
+    },
+  });
+}
+
+
+
+
+
 // =====================================================
 // INIT + DROPDOWN HANDLING
 // =====================================================
 document.addEventListener("DOMContentLoaded", async () => {
   baseStatsData = await loadStatsBaseData();
 
-  // Default = Flights
+  // Existing chart
   renderYearChart(
     flightsPerYear(baseStatsData),
     "Flights"
   );
 
+  // NEW airline chart
+  const airlineData = flightsPerAirlinePerYear(baseStatsData);
+  renderAirlineYearChart(airlineData);
+
   const selector = document.getElementById("metricSelector");
 
   selector.addEventListener("change", () => {
-  if (selector.value === "miles") {
-    renderYearChart(milesPerYear(baseStatsData), "Miles");
-  } else if (selector.value === "airlines") {
-    renderYearChart(airlinesPerYear(baseStatsData), "Airlines");
-  } else if (selector.value === "countries") {
-    renderYearChart(countriesPerYear(baseStatsData), "Countries");
-  } else {
-    renderYearChart(flightsPerYear(baseStatsData), "Flights");
-  }
-});
+    if (selector.value === "miles") {
+      renderYearChart(milesPerYear(baseStatsData), "Miles");
+    } else if (selector.value === "airlines") {
+      renderYearChart(airlinesPerYear(baseStatsData), "Airlines");
+    } else if (selector.value === "countries") {
+      renderYearChart(countriesPerYear(baseStatsData), "Countries");
+    } else {
+      renderYearChart(flightsPerYear(baseStatsData), "Flights");
+    }
   });
+});
+
