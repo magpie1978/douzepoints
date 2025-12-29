@@ -5,9 +5,9 @@ let baseStatsData = [];
 // LOAD BASE DATA
 // =====================================================
 async function loadStatsBaseData() {
-  const { data, error } = await sb
-    .from("journeys_routes_cache")
-    .select("year, journey_type, journey_distance");
+const { data, error } = await sb
+  .from("journeys_routes_cache")
+  .select("year, journey_type, journey_distance, airline");
 
   if (error) {
     console.error("[stats] load failed", error);
