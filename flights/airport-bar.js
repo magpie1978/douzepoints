@@ -5,6 +5,16 @@ function getRouteDurationMinutes(r) {
   return 0;
 }
 
+function plural(n, word) {
+  return `${n} ${word}${n === 1 ? "" : "s"}`;
+}
+
+outboundText.textContent =
+  `${plural(departures.length, "flight")} to ${plural(departureCountries.size, "country")}`;
+
+inboundText.textContent =
+  `${plural(arrivals.length, "flight")} from ${plural(arrivalCountries.size, "country")}`;
+
 
 function showAirportSummary(airport) {
   const airportCode = airport.code;
