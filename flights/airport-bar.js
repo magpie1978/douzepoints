@@ -49,10 +49,11 @@ function showAirportSummary(airport) {
   );
 
   const arrivalCountries = new Set(
-    arrivals
-      .map(r => r.origin_country)
-      .filter(Boolean)
-  );
+  arrivals
+    .map(r => r.origin_country || r.destination_country)
+    .filter(Boolean)
+);
+
 
   // --------------------------------------------------
   // Airlines (both directions)
