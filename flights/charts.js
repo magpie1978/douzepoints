@@ -46,6 +46,26 @@ function milesPerYear(data) {
   return out;
 }
 
+  function airlinesPerYear(data) {
+    const out = {};
+  
+    data
+      .filter(r => r.journey_type === "Flight" && r.airline)
+      .forEach(r => {
+        const y = String(r.year).slice(0, 4);
+        if (!out[y]) out[y] = new Set();
+        out[y].add(r.airline);
+      });
+  
+    // Convert sets → counts
+    Object.keys(out).forEach(y => {
+      out[y] = out[y].size;
+    });
+  
+    return out;
+  }
+
+
 // =====================================================
 // CHART RENDERER
 // =====================================================
@@ -119,16 +139,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   const selector = document.getElementById("metricSelector");
 
   selector.addEventListener("change", () => {
-    if (selector.value === "miles") {
-      renderYearChart(
-        milesPerYear(baseStatsData),
-        "Miles"
-      );
-    } else {
-      renderYearChart(
-        flightsPerYear(baseStatsData),
-        "Flights"
-      );
-    }
-  });
+  if (selector.value === "miles") {
+    renderYearChart(
+      milesPerYear(baseStatsData),
+      "Miles"
+    );
+  } else if (selector.value === "airlines") {
+    renderYearChart(
+      airlinesPerYear(baseStatsData),
+      "Airlines"
+    );
+  } else {
+    renderYearChart(
+      flightsPerYear(baseStatsData),
+      "Flights"
+    );
+  }
 });
