@@ -195,6 +195,18 @@ function renderAirlineYearChart(data) {
   const canvas = document.getElementById("airlineYearChart");
   if (!canvas) return;
 
+  // --------------------------------------------------
+  // 🔑 FORCE CANVAS HEIGHT (ENABLE SCROLLING)
+  // --------------------------------------------------
+  const BAR_HEIGHT = 42; // px per airline (tweak if desired)
+  const canvasHeight = data.airlines.length * BAR_HEIGHT;
+
+  canvas.height = canvasHeight;
+  canvas.style.height = `${canvasHeight}px`;
+
+  // --------------------------------------------------
+  // Chart setup
+  // --------------------------------------------------
   const ctx = canvas.getContext("2d");
   const labels = data.airlines.map(a => a.airline);
 
@@ -244,6 +256,7 @@ function renderAirlineYearChart(data) {
     plugins: [airlineTotalsPlugin],
   });
 }
+
 
 // =====================================================
 // INIT + DROPDOWN HANDLING
