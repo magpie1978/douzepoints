@@ -170,3 +170,17 @@ statsCloseBtn?.addEventListener("click", () => {
 });
 
 statsMetricSelect?.addEventListener("change", updateStatsChart);
+
+
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const baseData = await loadStatsBaseData();
+
+  renderStatsChart({
+    title: "Flights by Year",
+    label: "Flights",
+    values: flightsPerYear(baseData),
+    color: "rgba(201,162,77,0.7)",
+  });
+});
+
