@@ -1,17 +1,13 @@
-let flightsChart = null;
+let yearChart = null;
+let baseStatsData = [];
 
 // =====================================================
 // LOAD BASE DATA
 // =====================================================
 async function loadStatsBaseData() {
-  if (typeof sb === "undefined") {
-    console.error("[stats] Supabase client (sb) not found");
-    return [];
-  }
-
   const { data, error } = await sb
     .from("journeys_routes_cache")
-    .select("year, journey_type, journey_distance, airline");
+    .select("year, journey_type, journey_distance");
 
   if (error) {
     console.error("[stats] load failed", error);
@@ -22,7 +18,7 @@ async function loadStatsBaseData() {
 }
 
 // =====================================================
-// METRIC BUILDERS
+// AGGREGATORS
 // =====================================================
 function flightsPerYear(data) {
   const out = {};
@@ -37,30 +33,43 @@ function flightsPerYear(data) {
   return out;
 }
 
+function milesPerYear(data) {
+  const out = {};
+
+  data
+    .filter(r => r.journey_type === "Flight")
+    .forEach(r => {
+      const y = String(r.year).slice(0, 4);
+      out[y] = (out[y] || 0) + (r.journey_distance || 0);
+    });
+
+  return out;
+}
+
 // =====================================================
-// CHART RENDERER (TOP-LEFT PANEL ONLY)
+// CHART RENDERER
 // =====================================================
-function renderFlightsByYearChart(values) {
+function renderYearChart(values, label) {
   const canvas = document.getElementById("flightsByYearChart");
-  if (!canvas) {
-    console.error("[stats] flightsByYearChart canvas not found");
-    return;
-  }
+  const title = document.getElementById("chartTitle");
+  if (!canvas) return;
 
   const ctx = canvas.getContext("2d");
 
   const years = Object.keys(values).sort();
-  const data = years.map(y => values[y]);
+  const data = years.map(y => Math.round(values[y]));
 
-  if (flightsChart) flightsChart.destroy();
+  title.textContent = `${label} by Year`;
 
-  flightsChart = new Chart(ctx, {
+  if (yearChart) yearChart.destroy();
+
+  yearChart = new Chart(ctx, {
     type: "bar",
     data: {
       labels: years,
       datasets: [
         {
-          label: "Flights",
+          label,
           data,
           backgroundColor: "rgba(201,162,77,0.7)",
           borderRadius: 6,
@@ -82,16 +91,44 @@ function renderFlightsByYearChart(values) {
       },
       plugins: {
         legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx =>
+              label === "Miles"
+                ? `${ctx.raw.toLocaleString()} miles`
+                : `${ctx.raw} flights`,
+          },
+        },
       },
     },
   });
 }
 
 // =====================================================
-// INIT
+// INIT + DROPDOWN HANDLING
 // =====================================================
 document.addEventListener("DOMContentLoaded", async () => {
-  const baseData = await loadStatsBaseData();
-  const values = flightsPerYear(baseData);
-  renderFlightsByYearChart(values);
+  baseStatsData = await loadStatsBaseData();
+
+  // Default = Flights
+  renderYearChart(
+    flightsPerYear(baseStatsData),
+    "Flights"
+  );
+
+  const selector = document.getElementById("metricSelector");
+
+  selector.addEventListener("change", () => {
+    if (selector.value === "miles") {
+      renderYearChart(
+        milesPerYear(baseStatsData),
+        "Miles"
+      );
+    } else {
+      renderYearChart(
+        flightsPerYear(baseStatsData),
+        "Flights"
+      );
+    }
+  });
 });
