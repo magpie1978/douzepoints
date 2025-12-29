@@ -103,8 +103,11 @@ function flightsPerAirlinePerYear(data) {
 const airlineTotalsPlugin = {
   id: "airlineTotals",
   afterDatasetsDraw(chart, args, pluginOptions) {
-    const { ctx, scales } = chart;
-    const meta = chart.getDatasetMeta(0);
+    const { ctx } = chart;
+
+    // Use LAST dataset to get bar end (stacked)
+    const lastDatasetIndex = chart.data.datasets.length - 1;
+    const meta = chart.getDatasetMeta(lastDatasetIndex);
 
     ctx.save();
     ctx.fillStyle = "#ddd";
@@ -115,12 +118,18 @@ const airlineTotalsPlugin = {
     meta.data.forEach((bar, index) => {
       const total = pluginOptions.totals[index];
       if (!total) return;
-      ctx.fillText(total, scales.x.right + 8, bar.y);
+
+      ctx.fillText(
+        total,
+        bar.x + 8, // ✅ just after bar end
+        bar.y
+      );
     });
 
     ctx.restore();
   },
 };
+
 
 // =====================================================
 // RENDERER: TOP-LEFT (YEAR METRICS)
