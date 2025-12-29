@@ -27,6 +27,22 @@ function showAirportSummary(airport) {
   // Only flights
   const flightRoutes = routes.filter(r => r.journey_type === "Flight");
 
+
+  
+  // =====================================================
+  // Build a lookup from airport/location → country
+  // =====================================================
+  const locationCountryByCode = new Map();
+
+  routes.forEach(r => {
+    if (r.origin_code && r.origin_country) {
+      locationCountryByCode.set(r.origin_code, r.origin_country);
+    }
+    if (r.destination_code && r.destination_country) {
+      locationCountryByCode.set(r.destination_code, r.destination_country);
+    }
+  });
+
   // -------------------------
   // Departures (↗)
   // -------------------------
@@ -48,31 +64,48 @@ function showAirportSummary(airport) {
   // -------------------------
 // Departures (↗)
 // -------------------------
-const departures = flightRoutes.filter(r => r.origin === airportCode);
+//const departures = flightRoutes.filter(r => r.origin === airportCode);
 
-const departureCountries = new Set(
-  departures
-    .map(r =>
-      r.destination_country ||
-      r.destination_country_code
-    )
-    .filter(Boolean)
-);
+//const departureCountries = new Set(
+//  departures
+//    .map(r =>
+//      r.destination_country ||
+//      r.destination_country_code
+//    )
+//    .filter(Boolean)
+//);
 
 // -------------------------
 // Arrivals (↘)
 // -------------------------
-const arrivals = flightRoutes.filter(r => r.destination === airportCode);
+//const arrivals = flightRoutes.filter(r => r.destination === airportCode);
 
-const arrivalCountries = new Set(
-  arrivals
-    .map(r =>
-      r.origin_country ||
-      r.origin_country_code
-    )
+//const arrivalCountries = new Set(
+//  arrivals
+//    .map(r =>
+//      r.origin_country ||
+//      r.origin_country_code
+//    )
+//    .filter(Boolean)
+//);
+
+  // -------------------------
+// Departures (↗)
+// -------------------------
+  const departureCountries = new Set(
+  departures
+    .map(r => locationCountryByCode.get(r.destination_code))
     .filter(Boolean)
 );
 
+  // -------------------------
+// Arrivals (↗)
+// -------------------------
+  const arrivalCountries = new Set(
+  arrivals
+    .map(r => locationCountryByCode.get(r.origin_code))
+    .filter(Boolean)
+);
 
 
   
@@ -97,11 +130,26 @@ const arrivalCountries = new Set(
   // -------------------------
   // Update UI
   // -------------------------
+
+
+  outboundText.textContent =
+  `${plural(departures.length, "flight")} to ${plural(departureCountries.size, "country")}`;
+
+inboundText.textContent =
+  `${plural(arrivals.length, "flight")} from ${plural(arrivalCountries.size, "country")}`;
+
+
+
+
+
+
+  
   document.getElementById("airportCode").textContent = airportCode;
   document.getElementById("airportName").textContent = airport.city || "";
 
   document.getElementById("outboundFlights").textContent =
     `${plural(departures.length, "flight")} to ${plural(departureCountries.size, "country")}`;
+
 
   document.getElementById("inboundFlights").textContent =
     `${plural(arrivals.length, "flight")} from ${plural(arrivalCountries.size, "country")}`;
