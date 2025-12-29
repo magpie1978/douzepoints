@@ -74,9 +74,8 @@
       grid-template-columns: 1fr 1fr;
       grid-template-rows: 1fr 1fr;
       gap: 24px;
-      height: calc(100vh - 120px); /* adjust if needed */
+      height: calc(100vh - 120px);
     }
-
 
     .stats-panel {
       background: rgba(255, 255, 255, 0.04);
@@ -84,9 +83,11 @@
       padding: 16px 18px;
       display: flex;
       flex-direction: column;
+      min-height: 0; /* 🔑 enables scrolling children */
     }
 
-    .stats-panel h2 {
+    .stats-panel h2,
+    .stats-panel h3 {
       margin: 0 0 12px;
       font-size: 18px;
       font-weight: 600;
@@ -97,16 +98,10 @@
       flex: 1;
     }
 
-    /* Placeholder panels */
-    .stats-placeholder {
-      color: #777;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px dashed #333;
-      border-radius: 12px;
-      height: 100%;
+    /* RIGHT PANEL spans full height */
+    .right-panel {
+      grid-column: 2;
+      grid-row: 1 / span 2;
     }
 
     .stats-select {
@@ -118,18 +113,33 @@
       font-size: 13px;
     }
 
-    .chart-scroll {
-      height: 360px;
-      overflow-y: auto;
-    }
-
+    /* Airline scroll */
     .airline-chart-scroll {
-      height: 360px;              /* controls visible area */
-      overflow-y: auto;           /* enables scrollbar */
-      padding-right: 8px;         /* room for scrollbar */
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 8px;
     }
 
+    .airline-chart-scroll::-webkit-scrollbar {
+      width: 8px;
+    }
 
+    .airline-chart-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.2);
+      border-radius: 4px;
+    }
+
+    /* Placeholder panel */
+    .stats-placeholder {
+      color: #777;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed #333;
+      border-radius: 12px;
+      height: 100%;
+    }
   </style>
 </head>
 
@@ -150,40 +160,31 @@
 
     <div class="stats-grid">
 
-      <!-- TOP LEFT: Flights per year -->
+      <!-- TOP LEFT -->
       <section class="stats-panel">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h2 id="chartTitle">Flights by Year</h2>
-      
-          <select id="metricSelector">
+
+          <select id="metricSelector" class="stats-select">
             <option value="flights">Flights</option>
             <option value="miles">Miles</option>
             <option value="airlines">Airlines</option>
             <option value="countries">Countries</option>
           </select>
         </div>
-      
+
         <canvas id="flightsByYearChart"></canvas>
       </section>
 
-      <!-- TOP RIGHT -->
-      <section class="stats-panel">
-        <div class="stats-card">
-          <h3>Flights per Airline by Year</h3>
-          <div class="airline-chart-scroll">
-            <canvas id="airlineYearChart"></canvas>
-          </div>
+      <!-- RIGHT SIDE (merged) -->
+      <section class="stats-panel right-panel">
+        <h3>Flights per Airline by Year</h3>
+        <div class="airline-chart-scroll">
+          <canvas id="airlineYearChart"></canvas>
         </div>
       </section>
 
       <!-- BOTTOM LEFT -->
-      <section class="stats-panel">
-        <div class="stats-placeholder">
-          (Reserved for next chart)
-        </div>
-      </section>
-
-      <!-- BOTTOM RIGHT -->
       <section class="stats-panel">
         <div class="stats-placeholder">
           (Reserved for next chart)
