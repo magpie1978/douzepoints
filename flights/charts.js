@@ -204,38 +204,73 @@ function renderAirlineYearChart(data) {
 
   if (airlineYearChart) airlineYearChart.destroy();
 
-  airlineYearChart = new Chart(ctx, {
-    type: "bar",
-    data: { labels, datasets },
-    options: {
-      indexAxis: "y",
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: {
-          stacked: true,
-          ticks: { color: "#ccc" },
-          grid: { color: "rgba(255,255,255,0.08)" },
-        },
-        y: {
-          stacked: true,
-          ticks: { color: "#ccc" },
-          grid: { display: false },
-        },
+airlineYearChart = new Chart(ctx, {
+  type: "bar",
+  data: { labels, datasets },
+  options: {
+    indexAxis: "y",
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        stacked: true,
+        ticks: { color: "#ccc" },
+        grid: { color: "rgba(255,255,255,0.08)" },
       },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: ctx =>
-              `${ctx.dataset.label}: ${ctx.raw} flights`,
-          },
-        },
+      y: {
+        stacked: true,
+        ticks: { color: "#ccc" },
+        grid: { display: false },
       },
     },
-  });
-}
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx =>
+            `${ctx.dataset.label}: ${ctx.raw} flights`,
+        },
+      },
+      airlineTotals: {
+        totals: data.airlines.map(a => a.total),
+      },
+    },
+  },
+  plugins: [airlineTotalsPlugin],
+});
 
+
+
+
+// ==============================================================
+// ADD TOTAL FLIGHTS LABEL TO FLIGHTS PER AIRLINE PER YEAR CHART
+// ==============================================================
+const airlineTotalsPlugin = {
+  id: "airlineTotals",
+  afterDatasetsDraw(chart, args, pluginOptions) {
+    const { ctx, scales } = chart;
+    const meta = chart.getDatasetMeta(0); // first dataset only
+
+    ctx.save();
+    ctx.fillStyle = "#ddd";
+    ctx.font = "12px sans-serif";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+
+    meta.data.forEach((bar, index) => {
+      const total = pluginOptions.totals[index];
+      if (!total) return;
+
+      ctx.fillText(
+        total,
+        scales.x.right + 8,   // right of bars
+        bar.y
+      );
+    });
+
+    ctx.restore();
+  }
+};
 
 
 
