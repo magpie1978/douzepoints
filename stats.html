@@ -205,15 +205,26 @@
         </div>
       </section>
 
+      
+
       <!-- RIGHT SIDE (merged full height) -->
       <section class="stats-panel right-panel">
-        <h3>Flights per Airline by Year</h3>
-
+        <div class="panel-head">
+          <h3 id="airlineChartTitle">Flights per Airline by Year</h3>
+      
+          <select id="airlineMetricSelector" class="stats-select">
+            <option value="flights">Flights</option>
+            <option value="miles">Miles</option>
+          </select>
+        </div>
+      
         <div class="airline-chart-scroll" id="airlineScroll">
           <canvas id="airlineYearChart"></canvas>
         </div>
       </section>
 
+
+      
       <!-- BOTTOM LEFT -->
       <section class="stats-panel">
         <div class="stats-placeholder">
