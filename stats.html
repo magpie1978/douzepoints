@@ -14,9 +14,14 @@
   <link rel="stylesheet" href="flights.css" />
 
   <style>
+    html, body {
+      height: 100%;
+    }
+
     body {
       background: #0f0f0f;
       margin: 0;
+      overflow: hidden; /* page scroll handled inside panels */
     }
 
     /* ==============================
@@ -45,10 +50,7 @@
       text-decoration: none;
       font-size: 14px;
     }
-
-    .back-link:hover {
-      color: #fff;
-    }
+    .back-link:hover { color: #fff; }
 
     .stats-header-title {
       position: absolute;
@@ -58,6 +60,7 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: #aaa;
+      pointer-events: none;
     }
 
     /* ==============================
@@ -67,14 +70,17 @@
       max-width: 1800px;
       margin: 0 auto;
       padding: 24px;
+      height: calc(100vh - 56px); /* full viewport minus header */
+      box-sizing: border-box;
     }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1.15fr; /* a bit more room on the right */
       grid-template-rows: 1fr 1fr;
       gap: 24px;
-      height: calc(100vh - 120px);
+      height: 100%;
+      min-height: 0;
     }
 
     .stats-panel {
@@ -83,7 +89,8 @@
       padding: 16px 18px;
       display: flex;
       flex-direction: column;
-      min-height: 0; /* 🔑 enables scrolling children */
+      min-height: 0;      /* 🔑 needed so children can scroll */
+      overflow: hidden;   /* prevents chart bleed */
     }
 
     .stats-panel h2,
@@ -94,8 +101,36 @@
       color: #fff;
     }
 
-    .stats-panel canvas {
-      flex: 1;
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex: 0 0 auto;
+    }
+
+    .stats-select {
+      background: #1a1a1a;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    /* Chart fill wrapper so axis labels don't get clipped */
+    .chart-fill {
+      flex: 1 1 auto;
+      min-height: 0;
+      position: relative;
+      padding-bottom: 10px; /* ✅ room for x-axis labels */
+    }
+
+    .chart-fill canvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
     }
 
     /* RIGHT PANEL spans full height */
@@ -104,29 +139,28 @@
       grid-row: 1 / span 2;
     }
 
-    .stats-select {
-      background: #1a1a1a;
-      color: #fff;
-      border: 1px solid #333;
-      border-radius: 8px;
-      padding: 6px 10px;
-      font-size: 13px;
-    }
-
-    /* Airline scroll */
+    /* Airline scroll area */
     .airline-chart-scroll {
-      flex: 1;
-      overflow-y: auto;
-      padding-right: 8px;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;     /* ✅ actual scrolling */
+      padding-right: 10px;  /* room for scrollbar */
+      position: relative;
     }
 
-    .airline-chart-scroll::-webkit-scrollbar {
-      width: 8px;
-    }
-
+    .airline-chart-scroll::-webkit-scrollbar { width: 10px; }
     .airline-chart-scroll::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,0.2);
-      border-radius: 4px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 6px;
+    }
+    .airline-chart-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(255,255,255,0.25);
+    }
+
+    /* This canvas MUST be allowed to be taller than viewport */
+    #airlineYearChart {
+      width: 100% !important;
+      display: block;
     }
 
     /* Placeholder panel */
@@ -145,24 +179,17 @@
 
 <body>
 
-  <!-- ==============================
-       HEADER
-  ============================== -->
   <header id="statsHeader">
     <a href="flights.html" class="back-link">← Back to map</a>
     <div class="stats-header-title">Journey Statistics</div>
   </header>
 
-  <!-- ==============================
-       MAIN GRID
-  ============================== -->
   <main id="statsPage">
-
     <div class="stats-grid">
 
       <!-- TOP LEFT -->
       <section class="stats-panel">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div class="panel-head">
           <h2 id="chartTitle">Flights by Year</h2>
 
           <select id="metricSelector" class="stats-select">
@@ -173,13 +200,16 @@
           </select>
         </div>
 
-        <canvas id="flightsByYearChart"></canvas>
+        <div class="chart-fill">
+          <canvas id="flightsByYearChart"></canvas>
+        </div>
       </section>
 
-      <!-- RIGHT SIDE (merged) -->
+      <!-- RIGHT SIDE (merged full height) -->
       <section class="stats-panel right-panel">
         <h3>Flights per Airline by Year</h3>
-        <div class="airline-chart-scroll">
+
+        <div class="airline-chart-scroll" id="airlineScroll">
           <canvas id="airlineYearChart"></canvas>
         </div>
       </section>
@@ -192,12 +222,8 @@
       </section>
 
     </div>
-
   </main>
 
-  <!-- ==============================
-       LOGIC
-  ============================== -->
   <script src="flights/config.js"></script>
   <script src="flights/charts.js"></script>
 
