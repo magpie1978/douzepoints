@@ -1,7 +1,6 @@
 // =====================================================
 // AIRPORT BAR HELPERS
 // =====================================================
-
 function plural(n, word) {
   return `${n} ${word}${n === 1 ? "" : "s"}`;
 }
@@ -27,97 +26,39 @@ function showAirportSummary(airport) {
   // Only flights
   const flightRoutes = routes.filter(r => r.journey_type === "Flight");
 
-
-  
-  // =====================================================
-  // Build a lookup from airport/location → country
-  // =====================================================
-  const locationCountryByCode = new Map();
-
-  routes.forEach(r => {
-    if (r.origin_code && r.origin_country) {
-      locationCountryByCode.set(r.origin_code, r.origin_country);
-    }
-    if (r.destination_code && r.destination_country) {
-      locationCountryByCode.set(r.destination_code, r.destination_country);
-    }
-  });
-
   // -------------------------
   // Departures (↗)
   // -------------------------
-  //const departures = flightRoutes.filter(r => r.origin === airportCode);
-  //const departureCountries = new Set(
-  //  departures.map(r => r.destination_country).filter(Boolean)
-  //);
+  const departures = flightRoutes.filter(
+    r => r.origin_code === airportCode
+  );
+
+  const departureCountries = new Set(
+    departures.map(r => r.destination_country).filter(Boolean)
+  );
 
   // -------------------------
   // Arrivals (↘)
   // -------------------------
-  //const arrivals = flightRoutes.filter(r => r.destination === airportCode);
-  //const arrivalCountries = new Set(
-  //  arrivals.map(r => r.origin_country).filter(Boolean)
-  //);
+  const arrivals = flightRoutes.filter(
+    r => r.destination_code === airportCode
+  );
 
-
-
-  // -------------------------
-// Departures (↗)
-// -------------------------
-//const departures = flightRoutes.filter(r => r.origin === airportCode);
-
-//const departureCountries = new Set(
-//  departures
-//    .map(r =>
-//      r.destination_country ||
-//      r.destination_country_code
-//    )
-//    .filter(Boolean)
-//);
-
-// -------------------------
-// Arrivals (↘)
-// -------------------------
-//const arrivals = flightRoutes.filter(r => r.destination === airportCode);
-
-//const arrivalCountries = new Set(
-//  arrivals
-//    .map(r =>
-//      r.origin_country ||
-//      r.origin_country_code
-//    )
-//    .filter(Boolean)
-//);
-
-  // -------------------------
-// Departures (↗)
-// -------------------------
-  const departureCountries = new Set(
-  departures
-    .map(r => locationCountryByCode.get(r.destination_code))
-    .filter(Boolean)
-);
-
-  // -------------------------
-// Arrivals (↗)
-// -------------------------
   const arrivalCountries = new Set(
-  arrivals
-    .map(r => locationCountryByCode.get(r.origin_code))
-    .filter(Boolean)
-);
+    arrivals.map(r => r.origin_country).filter(Boolean)
+  );
 
-
-  
   // -------------------------
   // Airlines (both directions)
   // -------------------------
   const airlines = new Set(
-    [...departures, ...arrivals].map(r => r.airline).filter(Boolean)
+    [...departures, ...arrivals]
+      .map(r => r.airline)
+      .filter(Boolean)
   );
 
   // -------------------------
-  // Total duration (minutes)
+  // Total duration
   // -------------------------
   const totalMinutes = [...departures, ...arrivals].reduce(
     (sum, r) => sum + getRouteDurationMinutes(r),
@@ -130,26 +71,11 @@ function showAirportSummary(airport) {
   // -------------------------
   // Update UI
   // -------------------------
-
-
-  outboundText.textContent =
-  `${plural(departures.length, "flight")} to ${plural(departureCountries.size, "country")}`;
-
-inboundText.textContent =
-  `${plural(arrivals.length, "flight")} from ${plural(arrivalCountries.size, "country")}`;
-
-
-
-
-
-
-  
   document.getElementById("airportCode").textContent = airportCode;
   document.getElementById("airportName").textContent = airport.city || "";
 
   document.getElementById("outboundFlights").textContent =
     `${plural(departures.length, "flight")} to ${plural(departureCountries.size, "country")}`;
-
 
   document.getElementById("inboundFlights").textContent =
     `${plural(arrivals.length, "flight")} from ${plural(arrivalCountries.size, "country")}`;
@@ -174,7 +100,7 @@ function hideAirportSummary() {
 }
 
 // =====================================================
-// EXPOSE GLOBAL API (called from airports4.js)
+// EXPOSE GLOBAL API
 // =====================================================
 window.showAirportSummary = showAirportSummary;
 window.hideAirportSummary = hideAirportSummary;
