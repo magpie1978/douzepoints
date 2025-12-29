@@ -92,7 +92,7 @@ function flightsPerAirlinePerYear(data) {
   }));
 
   return {
-    airlines: totals.sort((a, b) => b.total - a.total).slice(0, 20),
+    airlines: totals.sort((a, b) => b.total - a.total).slice(0, 200),
     years,
   };
 }
