@@ -106,6 +106,16 @@
       border-radius: 12px;
       height: 100%;
     }
+
+    .stats-select {
+      background: #1a1a1a;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+    }
+
   </style>
 </head>
 
@@ -128,7 +138,15 @@
 
       <!-- TOP LEFT: Flights per year -->
       <section class="stats-panel">
-        <h2>Flights by Year</h2>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h2 id="chartTitle">Flights by Year</h2>
+      
+          <select id="metricSelector" class="stats-select">
+            <option value="flights">Flights</option>
+            <option value="miles">Miles</option>
+          </select>
+        </div>
+      
         <canvas id="flightsByYearChart"></canvas>
       </section>
 
