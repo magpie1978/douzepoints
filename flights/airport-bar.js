@@ -18,20 +18,27 @@ function showAirportSummary(airport) {
   const flightRoutes = routes.filter(r => r.journey_type === "Flight");
 
   // -------------------------
-  // Departures
-  // -------------------------
-  const departures = flightRoutes.filter(r => r.origin === airportCode);
-  const departureCountries = new Set(
-    departures.map(r => r.destination_country).filter(Boolean)
-  );
+// Departures (↗)
+// -------------------------
+const departures = flightRoutes.filter(r => r.origin === airportCode);
 
-  // -------------------------
-  // Arrivals
-  // -------------------------
-  const arrivals = flightRoutes.filter(r => r.destination === airportCode);
-  const arrivalCountries = new Set(
-    arrivals.map(r => r.origin_country).filter(Boolean)
-  );
+const departureCountries = new Set(
+  departures
+    .map(r => r.destination_country)
+    .filter(Boolean)
+);
+
+// -------------------------
+// Arrivals (↘)
+// -------------------------
+const arrivals = flightRoutes.filter(r => r.destination === airportCode);
+
+const arrivalCountries = new Set(
+  arrivals
+    .map(r => r.origin_country)
+    .filter(Boolean)
+);
+
 
   // -------------------------
   // Airlines (both directions)
