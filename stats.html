@@ -121,6 +121,12 @@
       overflow-y: auto;
     }
 
+    .airline-chart-scroll {
+      height: 360px;              /* controls visible area */
+      overflow-y: auto;           /* enables scrollbar */
+      padding-right: 8px;         /* room for scrollbar */
+    }
+
 
   </style>
 </head>
@@ -160,9 +166,9 @@
 
       <!-- TOP RIGHT -->
       <section class="stats-panel">
-        <div class="stats-tile">
-          <h2>Flights per Airline by Year</h2>
-          <div class="chart-scroll">
+        <div class="stats-card">
+          <h3>Flights per Airline by Year</h3>
+          <div class="airline-chart-scroll">
             <canvas id="airlineYearChart"></canvas>
           </div>
         </div>
