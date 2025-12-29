@@ -153,6 +153,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderYearChart(
       flightsPerYear(baseStatsData),
       "Flights"
-    );
-  }
+);
+    }
+  });
 });
