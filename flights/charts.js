@@ -7,7 +7,7 @@ let baseStatsData = [];
 async function loadStatsBaseData() {
 const { data, error } = await sb
   .from("journeys_routes_cache")
-  .select("year, journey_type, journey_distance, airline");
+  .select("year, journey_type, journey_distance, airline, destination_country")
 
   if (error) {
     console.error("[stats] load failed", error);
@@ -64,6 +64,27 @@ function milesPerYear(data) {
   
     return out;
   }
+
+  function countriesPerYear(data) {
+    const out = {};
+  
+    data
+      .filter(r => r.journey_type === "Flight" && r.destination_country)
+      .forEach(r => {
+        const year = String(r.year).slice(0, 4);
+  
+        if (!out[year]) out[year] = new Set();
+        out[year].add(r.destination_country);
+      });
+  
+    // Convert Set sizes → numbers
+    Object.keys(out).forEach(y => {
+      out[y] = out[y].size;
+    });
+  
+    return out;
+  }
+
 
 
 // =====================================================
@@ -140,20 +161,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   selector.addEventListener("change", () => {
   if (selector.value === "miles") {
-    renderYearChart(
-      milesPerYear(baseStatsData),
-      "Miles"
-    );
+    renderYearChart(milesPerYear(baseStatsData), "Miles");
   } else if (selector.value === "airlines") {
-    renderYearChart(
-      airlinesPerYear(baseStatsData),
-      "Airlines"
-    );
+    renderYearChart(airlinesPerYear(baseStatsData), "Airlines");
+  } else if (selector.value === "countries") {
+    renderYearChart(countriesPerYear(baseStatsData), "Countries");
   } else {
-    renderYearChart(
-      flightsPerYear(baseStatsData),
-      "Flights"
-);
-    }
-  });
+    renderYearChart(flightsPerYear(baseStatsData), "Flights");
+  }
 });
