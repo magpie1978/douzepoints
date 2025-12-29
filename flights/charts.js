@@ -192,12 +192,15 @@ function renderAirlineYearChart(data) {
 
   const labels = data.airlines.map(a => a.airline);
 
-  const datasets = data.years.map((year, i) => ({
+  const datasets = data.years.map(year => ({
     label: year,
     data: data.airlines.map(a => a.years[year] || 0),
-    backgroundColor: `hsl(${210 + i * 18}, 65%, 55%)`,
+    backgroundColor: "rgba(201,162,77,0.7)",
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.35)",
     borderRadius: 4,
   }));
+
 
   if (airlineYearChart) airlineYearChart.destroy();
 
@@ -221,10 +224,7 @@ function renderAirlineYearChart(data) {
         },
       },
       plugins: {
-        legend: {
-          position: "bottom",
-          labels: { color: "#ccc" },
-        },
+        legend: { display: false },
         tooltip: {
           callbacks: {
             label: ctx =>
