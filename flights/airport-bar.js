@@ -1,4 +1,4 @@
-function showAirportSummary(data) {
+/*function showAirportSummary(data) {
   document.getElementById("airportCode").textContent = data.code;
   document.getElementById("airportName").textContent = data.city;
 
@@ -25,6 +25,81 @@ function showAirportSummary(data) {
 function hideAirportSummary() {
   document.getElementById("airportSummaryBar").classList.add("hidden");
   document.getElementById("glassBar").style.display = "";
+}
+*/
+
+function showAirportSummary(airport) {
+  const airportCode = airport.code;
+
+  const routes =
+    Array.isArray(window.allRoutes) && window.allRoutes.length
+      ? window.allRoutes
+      : [];
+
+  // Only flights
+  const flightRoutes = routes.filter(r => r.journey_type === "Flight");
+
+  // -------------------------
+  // Departures
+  // -------------------------
+  const departures = flightRoutes.filter(r => r.origin === airportCode);
+  const departureCountries = new Set(
+    departures.map(r => r.destination_country).filter(Boolean)
+  );
+
+  // -------------------------
+  // Arrivals
+  // -------------------------
+  const arrivals = flightRoutes.filter(r => r.destination === airportCode);
+  const arrivalCountries = new Set(
+    arrivals.map(r => r.origin_country).filter(Boolean)
+  );
+
+  // -------------------------
+  // Airlines (both directions)
+  // -------------------------
+  const airlines = new Set(
+    [...departures, ...arrivals]
+      .map(r => r.airline)
+      .filter(Boolean)
+  );
+
+  // -------------------------
+  // Total duration (minutes)
+  // -------------------------
+  const totalMinutes = [...departures, ...arrivals].reduce(
+    (sum, r) => sum + (r.duration_minutes || 0),
+    0
+  );
+
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  // -------------------------
+  // Update UI
+  // -------------------------
+  document.getElementById("airportCode").textContent = airportCode;
+  document.getElementById("airportName").textContent = airport.city || "";
+
+  document.getElementById("outboundFlights").textContent =
+    `${departures.length} flights`;
+  document.getElementById("outboundCountries").textContent =
+    departureCountries.size;
+
+  document.getElementById("inboundFlights").textContent =
+    `${arrivals.length} flights`;
+  document.getElementById("inboundCountries").textContent =
+    arrivalCountries.size;
+
+  document.getElementById("airportAirlines").textContent =
+    airlines.size;
+
+  document.getElementById("airportDuration").textContent =
+    `${hours}h ${minutes}m`;
+
+  // Toggle bars
+  document.getElementById("glassBar").style.display = "none";
+  document.getElementById("airportSummaryBar").classList.remove("hidden");
 }
 
 
