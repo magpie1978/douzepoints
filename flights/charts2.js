@@ -70,6 +70,22 @@ function airlineTotals(data, metric) {
     .sort((a, b) => b.total - a.total);
 }
 
+
+function milesPerAirline(data) {
+  const map = {};
+
+  data
+    .filter(r => r.journey_type === "Flight" && r.airline && r.journey_distance)
+    .forEach(r => {
+      if (!map[r.airline]) map[r.airline] = 0;
+      map[r.airline] += r.journey_distance;
+    });
+
+  return Object.entries(map)
+    .map(([airline, total]) => ({ airline, total }))
+    .sort((a, b) => b.total - a.total);
+}
+
 // =====================================================
 // LEFT CHART RENDERER
 // =====================================================
@@ -128,10 +144,9 @@ function renderAirlineChart(data, metric) {
 
   const ctx = canvas.getContext("2d");
 
-  const BAR_HEIGHT = 36;        // 👈 row height INCLUDING gap
-  const VISIBLE_BARS = 20;      // 👈 bars visible before scroll
+  const BAR_HEIGHT = 36;
+  const VISIBLE_BARS = 20;
 
-  // 🔑 Force canvas taller than container → enables scrolling
   canvas.height = data.length * BAR_HEIGHT;
 
   const labels = data.map(d => d.airline);
@@ -147,17 +162,15 @@ function renderAirlineChart(data, metric) {
         data: values,
         backgroundColor: "rgba(201,162,77,0.7)",
         borderRadius: 6,
-
-        // ✅ Thickness + spacing
         barThickness: 22,
         maxBarThickness: 24,
-        categoryPercentage: 0.8, // space per airline row
-        barPercentage: 0.7,      // space filled by bar
+        categoryPercentage: 0.8,
+        barPercentage: 0.7,
       }],
     },
     options: {
       indexAxis: "y",
-      responsive: false,        // 🔴 IMPORTANT: prevents auto-squash
+      responsive: false,
       maintainAspectRatio: false,
       animation: false,
 
@@ -196,6 +209,25 @@ function renderAirlineChart(data, metric) {
 }
 
 
+const airlineMetricSelector =
+  document.getElementById("airlineMetricSelector");
+
+function updateAirlineChart(metric) {
+  const data =
+    metric === "miles"
+      ? milesPerAirline(baseStatsData)
+      : flightsPerAirline(baseStatsData);
+
+  renderAirlineChart(data, metric);
+}
+
+airlineMetricSelector.addEventListener("change", e => {
+  updateAirlineChart(e.target.value);
+});
+
+
+
+updateAirlineChart("flights");
 
 
 
