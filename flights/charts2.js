@@ -8,7 +8,7 @@ let airlineYearChart = null;
 let baseStatsData = [];
 
 // =====================================================
-// LOAD BASE DATA
+// LOAD BASE DATA 
 // =====================================================
 async function loadStatsBaseData() {
   const { data, error } = await sb
