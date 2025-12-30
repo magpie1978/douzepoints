@@ -74,15 +74,15 @@
       box-sizing: border-box;
     }
 
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.15fr; /* a bit more room on the right */
+    .stats-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
       grid-template-rows: 1fr 1fr;
-      gap: 24px;
-      height: 100%;
-      min-height: 0;
+      gap:24px;
+      height: calc(100vh - 120px);
+      align-items: stretch;
     }
-
+    
     .stats-panel {
       background: rgba(255, 255, 255, 0.04);
       border-radius: 16px;
@@ -91,6 +91,20 @@
       flex-direction: column;
       min-height: 0;      /* 🔑 needed so children can scroll */
       overflow: hidden;   /* prevents chart bleed */
+    }
+
+
+    /* Right-hand panel spans both rows */
+    .stats-panel--right {
+      grid-column: 2;
+      grid-row: 1 / span 2;   /* 👈 double height */
+      min-height: 0;          /* 👈 IMPORTANT for scroll children */
+    }
+    
+    /* Make the right panel a proper flex column so the scroll area can size */
+    .stats-panel--right {
+      display: flex;
+      flex-direction: column;
     }
 
     .stats-panel h2,
@@ -140,10 +154,12 @@
     }
 
     /* Airline scroll area */
-    .airline-chart-scroll {
-      height: 520px;          /* visible area */
+    .airline-chart-scroll{
+      flex: 1;                /* fills remaining height in the double panel */
+      min-height: 0;          /* 👈 CRITICAL for overflow to work in flex */
       overflow-y: auto;       /* scrollbar */
-      padding-right: 10px;    /* space for scrollbar */
+      padding-right: 10px;    /* room for scrollbar */
+      margin-top: 12px;
     }
         
     .airline-chart-scroll::-webkit-scrollbar { width: 10px; }
@@ -205,17 +221,17 @@
 
       
 
-      <!-- RIGHT SIDE (merged full height) -->
-      <section class="stats-panel">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <h2>Flights per Airline by Year</h2>
+      <!-- RIGHT (double height) -->
+      <section class="stats-panel stats-panel--right">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+          <h2 style="margin:0;">Flights per Airline by Year</h2>
+      
           <select id="airlineMetricSelector" class="stats-select">
             <option value="flights">Flights</option>
             <option value="miles">Miles</option>
           </select>
         </div>
       
-        <!-- 🔑 SCROLL CONTAINER -->
         <div class="airline-chart-scroll">
           <canvas id="airlineYearChart"></canvas>
         </div>
