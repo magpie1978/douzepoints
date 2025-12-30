@@ -128,11 +128,11 @@ function renderAirlineChart(data, metric) {
 
   const ctx = canvas.getContext("2d");
 
-  const VISIBLE = 20;
-  const barHeight = 26;
+  const BAR_HEIGHT = 30;     // 👈 thicker bars
+  const VISIBLE_BARS = 20;   // 👈 how many show before scroll
 
-  // canvas must be taller than container for scrollbar
-  canvas.height = data.length * barHeight;
+  // 🔑 Make canvas taller than container
+  canvas.height = data.length * BAR_HEIGHT;
 
   const labels = data.map(d => d.airline);
   const values = data.map(d => Math.round(d.total));
@@ -143,19 +143,19 @@ function renderAirlineChart(data, metric) {
     type: "bar",
     data: {
       labels,
-      datasets: [
-        {
-          data: values,
-          backgroundColor: "rgba(201,162,77,0.7)",
-          borderRadius: 4,
-          barThickness: 18,
-        },
-      ],
+      datasets: [{
+        data: values,
+        backgroundColor: "rgba(201,162,77,0.7)",
+        borderRadius: 6,
+        barThickness: 20,      // 👈 fixed thickness
+        maxBarThickness: 22,
+      }],
     },
     options: {
       indexAxis: "y",
       responsive: true,
       maintainAspectRatio: false,
+      animation: false,
       plugins: {
         legend: { display: false },
         tooltip: {
@@ -181,6 +181,7 @@ function renderAirlineChart(data, metric) {
           ticks: {
             color: "#ccc",
             font: { size: 11 },
+            padding: 6,          // 👈 spacing between bars
           },
           grid: { display: false },
         },
