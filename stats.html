@@ -103,8 +103,11 @@
     
     /* Make the right panel a proper flex column so the scroll area can size */
     .stats-panel--right {
+      grid-column: 2;
+      grid-row: 1 / span 2;
       display: flex;
       flex-direction: column;
+      min-height: 0;
     }
 
     .stats-panel h2,
@@ -154,11 +157,11 @@
     }
 
     /* Airline scroll area */
-    .airline-chart-scroll{
-      flex: 1;                /* fills remaining height in the double panel */
-      min-height: 0;          /* 👈 CRITICAL for overflow to work in flex */
-      overflow-y: auto;       /* scrollbar */
-      padding-right: 10px;    /* room for scrollbar */
+    .airline-chart-scroll {
+      flex: 1;
+      min-height: 0;            /* REQUIRED for flex scrolling */
+      overflow-y: auto;         /* show scrollbar */
+      padding-right: 12px;
       margin-top: 12px;
     }
         
