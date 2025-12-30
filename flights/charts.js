@@ -223,6 +223,8 @@ function renderAirlineChart(metric) {
     borderWidth: 1,
     borderColor: "rgba(0,0,0,0.35)",
     borderRadius: 4,
+    barThickness: 18,
+    maxBarThickness: 22,
   }));
     
 
