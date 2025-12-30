@@ -1,7 +1,7 @@
 /* global Chart, sb */
 
 // =====================================================
-// GLOBAL STATE
+// GLOBAL STATE 
 // =====================================================
 let yearChart = null;
 let airlineChart = null;
