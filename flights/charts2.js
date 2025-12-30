@@ -120,7 +120,7 @@ function renderYearChart(values, label) {
 }
 
 // =====================================================
-// RIGHT CHART RENDERER (SCROLL SAFE)
+// RIGHT CHART RENDERER 
 // =====================================================
 function renderAirlineChart(data, metric) {
   const canvas = document.getElementById("airlineYearChart");
@@ -128,18 +128,18 @@ function renderAirlineChart(data, metric) {
 
   const ctx = canvas.getContext("2d");
 
-  const BAR_HEIGHT = 28;     // bar thickness + gap
-  const VISIBLE_BARS = 20;
+  const BAR_HEIGHT = 36;        // 👈 row height INCLUDING gap
+  const VISIBLE_BARS = 20;      // 👈 bars visible before scroll
 
-  // 🔑 force canvas taller than container → enables scrollbar
+  // 🔑 Force canvas taller than container → enables scrolling
   canvas.height = data.length * BAR_HEIGHT;
 
   const labels = data.map(d => d.airline);
   const values = data.map(d => Math.round(d.total));
 
-  if (airlineChart) airlineChart.destroy();
+  if (window.airlineChart) window.airlineChart.destroy();
 
-  airlineChart = new Chart(ctx, {
+  window.airlineChart = new Chart(ctx, {
     type: "bar",
     data: {
       labels,
@@ -148,24 +148,24 @@ function renderAirlineChart(data, metric) {
         backgroundColor: "rgba(201,162,77,0.7)",
         borderRadius: 6,
 
-        // ✅ THESE create the visual spacing
-        barThickness: 18,
-        maxBarThickness: 20,
-        categoryPercentage: 0.75, // size of each airline "row"
-        barPercentage: 0.85,      // how much of that row is filled
+        // ✅ Thickness + spacing
+        barThickness: 22,
+        maxBarThickness: 24,
+        categoryPercentage: 0.8, // space per airline row
+        barPercentage: 0.7,      // space filled by bar
       }],
     },
     options: {
       indexAxis: "y",
-      responsive: true,
+      responsive: false,        // 🔴 IMPORTANT: prevents auto-squash
       maintainAspectRatio: false,
       animation: false,
 
       plugins: {
         legend: { display: false },
         tooltip: {
-          titleFont: { size: 11 },
-          bodyFont: { size: 11 },
+          titleFont: { size: 12 },
+          bodyFont: { size: 12 },
           callbacks: {
             label: ctx =>
               metric === "miles"
@@ -179,14 +179,14 @@ function renderAirlineChart(data, metric) {
         x: {
           ticks: {
             color: "#ccc",
-            font: { size: 11 },
+            font: { size: 12 },
           },
           grid: { color: "rgba(255,255,255,0.08)" },
         },
         y: {
           ticks: {
             color: "#ccc",
-            font: { size: 11 },
+            font: { size: 12 },
           },
           grid: { display: false },
         },
@@ -194,6 +194,10 @@ function renderAirlineChart(data, metric) {
     },
   });
 }
+
+
+
+
 
 // =====================================================
 // INIT
