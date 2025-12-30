@@ -206,50 +206,42 @@ function renderAirlineChart(metric) {
   const canvas = document.getElementById("airlineYearChart");
   if (!canvas) return;
 
-  // 🔴 Destroy FIRST
+  // Destroy existing chart first
   if (airlineYearChart) {
     airlineYearChart.destroy();
     airlineYearChart = null;
   }
 
-  const data = perAirlinePerYear(baseStatsData, metric);
-  const allAirlines = data.airlines;
+  // Build data ONCE
+  const chartData = perAirlinePerYear(baseStatsData, metric);
+  const allAirlines = chartData.airlines;
 
-  // 🔑 Resize canvas BEFORE creating chart
+  // Resize canvas BEFORE rendering
   setAirlineCanvasHeight(canvas, allAirlines.length);
 
-  // 🔑 Force browser layout flush
-  canvas.offsetHeight; // <-- critical line
+  // Force browser reflow so Chart.js sees correct height
+  canvas.offsetHeight;
 
   const ctx = canvas.getContext("2d");
-  const data = perAirlinePerYear(baseStatsData, metric);
 
-  const allAirlines = data.airlines;
-  
-  // 🔑 make canvas tall enough for ALL airlines
-  setAirlineCanvasHeight(canvas, allAirlines.length);
-  
   const labels = allAirlines.map(a => a.airline);
-  
-  const datasets = data.years.map(year => ({
+
+  const datasets = chartData.years.map(year => ({
     data: allAirlines.map(a => a.years[year] || 0),
     backgroundColor: "rgba(201,162,77,0.7)",
     borderWidth: 1,
     borderColor: "rgba(0,0,0,0.35)",
     borderRadius: 4,
-    barThickness: 24,
+    barThickness: 24,        // thicker bars
     maxBarThickness: 28,
   }));
-    
-
-  if (airlineYearChart) airlineYearChart.destroy();
 
   airlineYearChart = new Chart(ctx, {
     type: "bar",
     data: { labels, datasets },
     options: {
       indexAxis: "y",
-      responsive: false,
+      responsive: false,          // REQUIRED for scroll
       maintainAspectRatio: false,
       scales: {
         x: {
@@ -273,6 +265,7 @@ function renderAirlineChart(metric) {
     plugins: [airlineTotalsPlugin],
   });
 }
+
 
 // =====================================================
 // INIT
