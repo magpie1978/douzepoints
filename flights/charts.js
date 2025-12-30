@@ -117,15 +117,14 @@ function perAirlinePerYear(data, metric = "flights") {
 // CANVAS HEIGHT (SCROLL SUPPORT)
 // =====================================================
 function setAirlineCanvasHeight(canvas, airlineCount) {
-  const ROW_HEIGHT = 38;     // 👈 thicker bars
-  const VISIBLE_ROWS = 20;   // 👈 show top 20 on load
+  const ROW_HEIGHT = 34;      // thicker bars
+  const VISIBLE_ROWS = 20;
 
   const visibleHeight = VISIBLE_ROWS * ROW_HEIGHT;
   const fullHeight = airlineCount * ROW_HEIGHT;
 
-  canvas.style.height = `${Math.max(fullHeight, visibleHeight)}px`;
+  canvas.style.height = `${fullHeight}px`;
 }
-
 
 
 
@@ -223,8 +222,8 @@ function renderAirlineChart(metric) {
     borderWidth: 1,
     borderColor: "rgba(0,0,0,0.35)",
     borderRadius: 4,
-    barThickness: 18,
-    maxBarThickness: 22,
+    barThickness: 24,
+    maxBarThickness: 28,
   }));
     
 
@@ -235,7 +234,7 @@ function renderAirlineChart(metric) {
     data: { labels, datasets },
     options: {
       indexAxis: "y",
-      responsive: true,
+      responsive: false,
       maintainAspectRatio: false,
       scales: {
         x: {
