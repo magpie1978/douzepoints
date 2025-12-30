@@ -117,13 +117,15 @@ function perAirlinePerYear(data, metric = "flights") {
 // CANVAS HEIGHT (SCROLL SUPPORT)
 // =====================================================
 function setAirlineCanvasHeight(canvas, airlineCount) {
-  const ROW = 34;          // thicker rows
-  const MIN_VISIBLE = 20;  // show ~20 airlines worth of height before scroll
-  const visibleHeight = MIN_VISIBLE * ROW;
+  const ROW_HEIGHT = 38;     // 👈 thicker bars
+  const VISIBLE_ROWS = 20;   // 👈 show top 20 on load
 
-  const fullHeight = Math.max(visibleHeight, airlineCount * ROW);
-  canvas.style.height = `${fullHeight}px`;
+  const visibleHeight = VISIBLE_ROWS * ROW_HEIGHT;
+  const fullHeight = airlineCount * ROW_HEIGHT;
+
+  canvas.style.height = `${Math.max(fullHeight, visibleHeight)}px`;
 }
+
 
 
 
