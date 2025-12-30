@@ -128,10 +128,10 @@ function renderAirlineChart(data, metric) {
 
   const ctx = canvas.getContext("2d");
 
-  const BAR_HEIGHT = 30;     // 👈 thicker bars
-  const VISIBLE_BARS = 20;   // 👈 how many show before scroll
+  const BAR_HEIGHT = 28;     // bar thickness + gap
+  const VISIBLE_BARS = 20;
 
-  // 🔑 Make canvas taller than container
+  // 🔑 force canvas taller than container → enables scrollbar
   canvas.height = data.length * BAR_HEIGHT;
 
   const labels = data.map(d => d.airline);
@@ -147,8 +147,12 @@ function renderAirlineChart(data, metric) {
         data: values,
         backgroundColor: "rgba(201,162,77,0.7)",
         borderRadius: 6,
-        barThickness: 20,      // 👈 fixed thickness
-        maxBarThickness: 22,
+
+        // ✅ THESE create the visual spacing
+        barThickness: 18,
+        maxBarThickness: 20,
+        categoryPercentage: 0.75, // size of each airline "row"
+        barPercentage: 0.85,      // how much of that row is filled
       }],
     },
     options: {
@@ -156,6 +160,7 @@ function renderAirlineChart(data, metric) {
       responsive: true,
       maintainAspectRatio: false,
       animation: false,
+
       plugins: {
         legend: { display: false },
         tooltip: {
@@ -169,6 +174,7 @@ function renderAirlineChart(data, metric) {
           },
         },
       },
+
       scales: {
         x: {
           ticks: {
@@ -181,7 +187,6 @@ function renderAirlineChart(data, metric) {
           ticks: {
             color: "#ccc",
             font: { size: 11 },
-            padding: 12,          // 👈 spacing between bars
           },
           grid: { display: false },
         },
