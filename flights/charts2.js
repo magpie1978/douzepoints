@@ -181,7 +181,7 @@ function renderAirlineChart(data, metric) {
           ticks: {
             color: "#ccc",
             font: { size: 11 },
-            padding: 6,          // 👈 spacing between bars
+            padding: 12,          // 👈 spacing between bars
           },
           grid: { display: false },
         },
