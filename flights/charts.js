@@ -206,6 +206,21 @@ function renderAirlineChart(metric) {
   const canvas = document.getElementById("airlineYearChart");
   if (!canvas) return;
 
+  // 🔴 Destroy FIRST
+  if (airlineYearChart) {
+    airlineYearChart.destroy();
+    airlineYearChart = null;
+  }
+
+  const data = perAirlinePerYear(baseStatsData, metric);
+  const allAirlines = data.airlines;
+
+  // 🔑 Resize canvas BEFORE creating chart
+  setAirlineCanvasHeight(canvas, allAirlines.length);
+
+  // 🔑 Force browser layout flush
+  canvas.offsetHeight; // <-- critical line
+
   const ctx = canvas.getContext("2d");
   const data = perAirlinePerYear(baseStatsData, metric);
 
