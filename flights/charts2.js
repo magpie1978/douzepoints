@@ -217,8 +217,30 @@ function renderAirlineChart(metric) {
       responsive: false,
       maintainAspectRatio: false,
       scales: {
-        x: { stacked: true, ticks: { color: "#ccc" }, grid: { color: "rgba(255,255,255,0.08)" } },
-        y: { stacked: true, ticks: { color: "#ccc" }, grid: { display: false } },
+  x: {
+    stacked: true,
+    ticks: {
+      color: "#ccc",
+      font: {
+        size: 11,
+        weight: "normal",
+      },
+    },
+    grid: { color: "rgba(255,255,255,0.08)" },
+  },
+  y: {
+    stacked: true,
+    ticks: {
+      color: "#ccc",
+      font: {
+        size: 11,
+        weight: "normal",
+      },
+    },
+    grid: { display: false },
+  },
+},
+
       },
       plugins: {
         legend: { display: false },
