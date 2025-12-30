@@ -210,17 +210,21 @@ function renderAirlineChart(metric) {
   const ctx = canvas.getContext("2d");
   const data = perAirlinePerYear(baseStatsData, metric);
 
-  const visible = data.airlines.slice(0, 20);
-  setAirlineCanvasHeight(canvas, visible.length);
-
-  const labels = visible.map(a => a.airline);
+  const allAirlines = data.airlines;
+  
+  // 🔑 make canvas tall enough for ALL airlines
+  setAirlineCanvasHeight(canvas, allAirlines.length);
+  
+  const labels = allAirlines.map(a => a.airline);
+  
   const datasets = data.years.map(year => ({
-    data: visible.map(a => a.years[year] || 0),
+    data: allAirlines.map(a => a.years[year] || 0),
     backgroundColor: "rgba(201,162,77,0.7)",
     borderWidth: 1,
     borderColor: "rgba(0,0,0,0.35)",
     borderRadius: 4,
   }));
+    
 
   if (airlineYearChart) airlineYearChart.destroy();
 
@@ -246,7 +250,7 @@ function renderAirlineChart(metric) {
       plugins: {
         legend: { display: false },
         airlineTotals: {
-          totals: visible.map(a => a.total),
+          totals: allAirlines.map(a => a.total),
         },
       },
     },
