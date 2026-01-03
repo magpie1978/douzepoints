@@ -10,7 +10,7 @@ let baseStatsData = [];
 // 🔒 LOCK GLOBAL FONTS (prevents redraw distortion)
 Chart.defaults.font.family =
   "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto";
-Chart.defaults.font.size = 11;
+Chart.defaults.font.size = 22;
 Chart.defaults.font.weight = "400";
 Chart.defaults.color = "#ccc";
 
