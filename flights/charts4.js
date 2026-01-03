@@ -151,13 +151,12 @@ const airlineTotalsPlugin = {
     const totals = pluginOptions?.totals || [];
     const format = pluginOptions?.format || (v => v);
 
-    // use the LAST dataset meta so we get correct y positions
     const meta = chart.getDatasetMeta(chart.data.datasets.length - 1);
     if (!meta?.data?.length) return;
 
     ctx.save();
     ctx.fillStyle = "#ccc";
-    ctx.font = "22px system-ui";
+    ctx.font = "22px system-ui"; // as you requested
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
 
@@ -165,8 +164,15 @@ const airlineTotalsPlugin = {
       const total = totals[i];
       if (total == null) return;
 
-      // bar.x is end of the stacked bar for the last dataset
-      ctx.fillText(String(format(total)), bar.x + 8, bar.y);
+      const rounded = typeof total === "number"
+        ? Math.round(total)
+        : total;
+
+      ctx.fillText(
+        String(format(rounded)),
+        bar.x + 8,
+        bar.y
+      );
     });
 
     ctx.restore();
