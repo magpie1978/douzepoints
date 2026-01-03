@@ -222,7 +222,7 @@ const datasets = years.map((year, yearIndex) => {
 
     // ✅ ONLY round the final stacked segment
     borderRadius: isLast
-      ? { topRight: 6, bottomRight: 6 }
+      ? { topRight: 10, bottomRight: 10 }
       : 0,
 
     barPercentage: 0.7,
