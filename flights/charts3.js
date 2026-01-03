@@ -26,7 +26,7 @@ const barValueLabelPlugin = {
     const meta = chart.getDatasetMeta(0);
 
     ctx.save();
-    ctx.font = "11px system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto";
+    ctx.font = "24px system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto";
     ctx.fillStyle = "#ccc";
     ctx.textBaseline = "middle";
 
