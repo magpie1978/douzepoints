@@ -21,7 +21,7 @@ Chart.defaults.color = "#ccc";
 async function loadStatsBaseData() {
   const { data, error } = await sb
     .from("journeys_routes_cache")
-    .select("year, journey_type, journey_distance");
+    .select("year, journey_type, journey_distance, airline, country");
 
   if (error) {
     console.error("[stats] load failed", error);
@@ -53,6 +53,36 @@ function milesPerYear(data) {
       out[y] = (out[y] || 0) + (r.journey_distance || 0);
     });
   return out;
+}
+
+function airlinesPerYear(data) {
+  const map = {};
+  data
+    .filter(r => r.journey_type === "Flight" && r.airline)
+    .forEach(r => {
+      const y = String(r.year).slice(0, 4);
+      map[y] ??= new Set();
+      map[y].add(r.airline);
+    });
+
+  return Object.fromEntries(
+    Object.entries(map).map(([year, set]) => [year, set.size])
+  );
+}
+
+function countriesPerYear(data) {
+  const map = {};
+  data
+    .filter(r => r.journey_type === "Flight" && r.country)
+    .forEach(r => {
+      const y = String(r.year).slice(0, 4);
+      map[y] ??= new Set();
+      map[y].add(r.country);
+    });
+
+  return Object.fromEntries(
+    Object.entries(map).map(([year, set]) => [year, set.size])
+  );
 }
 
 // =====================================================
@@ -104,22 +134,34 @@ function renderYearChart(values) {
 }
 
 // =====================================================
-// INIT + DROPDOWNS (LEFT ONLY)
+// INIT + DROPDOWN HANDLING
 // =====================================================
 document.addEventListener("DOMContentLoaded", async () => {
   baseStatsData = await loadStatsBaseData();
 
-  // Default: Flights per Year
+  // Default view
   renderYearChart(flightsPerYear(baseStatsData));
 
-  // Metric selector (Flights / Miles)
   document
     .getElementById("metricSelector")
     .addEventListener("change", e => {
-      renderYearChart(
-        e.target.value === "miles"
-          ? milesPerYear(baseStatsData)
-          : flightsPerYear(baseStatsData)
-      );
+      const metric = e.target.value;
+
+      switch (metric) {
+        case "miles":
+          renderYearChart(milesPerYear(baseStatsData));
+          break;
+
+        case "airlines":
+          renderYearChart(airlinesPerYear(baseStatsData));
+          break;
+
+        case "countries":
+          renderYearChart(countriesPerYear(baseStatsData));
+          break;
+
+        default:
+          renderYearChart(flightsPerYear(baseStatsData));
+      }
     });
 });
