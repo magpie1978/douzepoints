@@ -197,19 +197,27 @@ function renderAirlineChart(grouped, metric) {
 
   const labels = grouped.airlines.map(a => a.airline);
 
-  const datasets = grouped.years.map((year, i) => ({
-    label: year,
-    data: grouped.airlines.map(a => Math.round(a.years[year] || 0)),
-    backgroundColor: "rgba(201,162,77,0.7)",
-    borderColor: "rgba(201,162,77,0.28)",
-    borderWidth: 1,
-    borderRadius:
-      i === grouped.years.length - 1
-        ? { topRight: 12, bottomRight: 12 }
+  const datasets = grouped.years.map((year, i) => {
+    const isLast = i === grouped.years.length - 1;
+  
+    return {
+      label: year,
+      data: grouped.airlines.map(a => Math.round(a.years[year] || 0)),
+  
+      backgroundColor: "rgba(201,162,77,0.7)",
+  
+      // 🔑 CRITICAL FIXES
+      borderSkipped: false,          // <-- REQUIRED
+      borderWidth: 0,
+  
+      borderRadius: isLast
+        ? { topRight: 6, bottomRight: 6 }
         : 0,
-    barPercentage: 0.7,
-    categoryPercentage: 0.8,
-  }));
+  
+      barPercentage: 0.7,
+      categoryPercentage: 0.8,
+    };
+  });
 
   airlineChart = new Chart(ctx, {
     type: "bar",
