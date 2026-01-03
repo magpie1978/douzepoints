@@ -284,7 +284,7 @@ const datasets = years.map((year, yearIndex) => {
               : String(Math.round(v)),
         },
       },
-
+    },
       scales: {
         x: {
           stacked: true,
