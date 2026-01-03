@@ -55,7 +55,7 @@ function milesPerYear(data) {
 }
 
 // =====================================================
-// AGGREGATORS — RIGHT CHART (BY AIRLINE + YEAR)
+// AGGREGATORS — RIGHT CHART (AIRLINE × YEAR)
 // =====================================================
 function aggregateAirlineByYear(data, metric) {
   const map = {};
@@ -80,9 +80,7 @@ function aggregateAirlineByYear(data, metric) {
   airlines.sort((a, b) => b.total - a.total);
 
   const allYears = Array.from(
-    new Set(
-      airlines.flatMap(a => Object.keys(a.years))
-    )
+    new Set(airlines.flatMap(a => Object.keys(a.years)))
   ).sort();
 
   return { airlines, years: allYears };
@@ -136,7 +134,37 @@ function renderYearChart(values) {
 }
 
 // =====================================================
-// RIGHT CHART RENDERER (STACKED BY YEAR)
+// TOTALS PLUGIN (RIGHT CHART)
+// =====================================================
+const airlineTotalsPlugin = {
+  id: "airlineTotals",
+  afterDatasetsDraw(chart, args, pluginOptions) {
+    const { ctx, scales } = chart;
+    const meta = chart.getDatasetMeta(chart.data.datasets.length - 1);
+
+    ctx.save();
+    ctx.fillStyle = "#ccc";
+    ctx.font = "11px system-ui";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+
+    meta.data.forEach((bar, index) => {
+      const total = pluginOptions.totals[index];
+      if (!total) return;
+
+      ctx.fillText(
+        pluginOptions.format(total),
+        bar.x + 8,
+        bar.y
+      );
+    });
+
+    ctx.restore();
+  },
+};
+
+// =====================================================
+// RIGHT CHART RENDERER (STACKED + SCROLL)
 // =====================================================
 function renderAirlineChart(data, metric) {
   const canvas = document.getElementById("airlineYearChart");
@@ -148,11 +176,8 @@ function renderAirlineChart(data, metric) {
   const dpr = window.devicePixelRatio || 1;
   const cssHeight = data.airlines.length * ROW_HEIGHT;
 
-  // CSS height enables scrolling
   canvas.style.width = "100%";
   canvas.style.height = `${cssHeight}px`;
-
-  // HiDPI-safe canvas sizing
   canvas.width = canvas.parentElement.clientWidth * dpr;
   canvas.height = cssHeight * dpr;
 
@@ -166,7 +191,9 @@ function renderAirlineChart(data, metric) {
     data: data.airlines.map(a =>
       Math.round(a.years[year] || 0)
     ),
-    backgroundColor: "rgba(201,162,77,0.7)", // ✅ SAME COLOUR
+    backgroundColor: "rgba(201,162,77,0.7)",
+    borderColor: "rgba(201,162,77,0.35)", // 👈 faint separator
+    borderWidth: 1,
     borderRadius: 6,
     barPercentage: 0.7,
     categoryPercentage: 0.8,
@@ -179,18 +206,29 @@ function renderAirlineChart(data, metric) {
       indexAxis: "y",
       responsive: false,
       maintainAspectRatio: false,
-      animation: false,
+      animation: {
+        duration: 450,
+        easing: "easeOutQuart",
+      },
       plugins: {
         legend: { display: false },
         tooltip: {
-          titleFont: { size: 11 },
-          bodyFont: { size: 11 },
+          titleFont: { size: 24 },
+          bodyFont: { size: 24 },
           callbacks: {
+            title: items => items[0].dataset.label,
             label: ctx =>
               metric === "miles"
                 ? `${Number(ctx.raw).toLocaleString()} miles`
                 : `${ctx.raw} flights`,
           },
+        },
+        airlineTotals: {
+          totals: data.airlines.map(a => a.total),
+          format: v =>
+            metric === "miles"
+              ? `${Number(v).toLocaleString()}`
+              : v,
         },
       },
       scales: {
@@ -212,6 +250,7 @@ function renderAirlineChart(data, metric) {
         },
       },
     },
+    plugins: [airlineTotalsPlugin],
   });
 }
 
@@ -221,34 +260,7 @@ function renderAirlineChart(data, metric) {
 document.addEventListener("DOMContentLoaded", async () => {
   baseStatsData = await loadStatsBaseData();
 
-  // LEFT DEFAULT
   renderYearChart(flightsPerYear(baseStatsData));
 
-  // RIGHT DEFAULT
   renderAirlineChart(
-    aggregateAirlineByYear(baseStatsData, "flights"),
-    "flights"
-  );
-
-  // LEFT DROPDOWN
-  document
-    .getElementById("metricSelector")
-    .addEventListener("change", e => {
-      renderYearChart(
-        e.target.value === "miles"
-          ? milesPerYear(baseStatsData)
-          : flightsPerYear(baseStatsData)
-      );
-    });
-
-  // RIGHT DROPDOWN
-  document
-    .getElementById("airlineMetricSelector")
-    .addEventListener("change", e => {
-      const metric = e.target.value;
-      renderAirlineChart(
-        aggregateAirlineByYear(baseStatsData, metric),
-        metric
-      );
-    });
-});
+    aggregateAirlineByYear(baseStatsData
