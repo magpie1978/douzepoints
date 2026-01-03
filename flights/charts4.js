@@ -235,8 +235,8 @@ function renderAirlineChart(grouped, metric) {
       plugins: {
         legend: { display: false },
         tooltip: {
-          titleFont: { size: 11 },
-          bodyFont: { size: 11 },
+          titleFont: { size: 22 },
+          bodyFont: { size: 22 },
           callbacks: {
             // title = year
             title: items => items?.[0]?.dataset?.label || "",
@@ -261,7 +261,7 @@ function renderAirlineChart(grouped, metric) {
       scales: {
         x: {
           stacked: true,
-          ticks: { font: { size: 11 }, color: "#ccc" },
+          ticks: { font: { size: 22 }, color: "#ccc" },
           grid: { color: "rgba(255,255,255,0.08)" },
         },
         y: {
@@ -270,7 +270,7 @@ function renderAirlineChart(grouped, metric) {
           ticks: {
             autoSkip: false,
             padding: 12,
-            font: { size: 11 },
+            font: { size: 22 },
             color: "#ccc",
           },
           grid: { display: false },
