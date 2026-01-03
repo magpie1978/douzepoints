@@ -136,6 +136,53 @@ function flightsPerYearPerAirline(data, topN = 8) {
   return { years, datasets };
 }
 
+function flightsPerAirlinePerYear(data, topN = 8) {
+  const map = {};
+  const airlineTotals = {};
+
+  data
+    .filter(r => r.journey_type === "Flight" && r.airline)
+    .forEach(r => {
+      const year = String(r.year).slice(0, 4);
+
+      map[r.airline] ??= {};
+      map[r.airline][year] = (map[r.airline][year] || 0) + 1;
+
+      airlineTotals[r.airline] =
+        (airlineTotals[r.airline] || 0) + 1;
+    });
+
+  // Top airlines by total flights
+  const topAirlines = Object.entries(airlineTotals)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, topN)
+    .map(([airline]) => airline);
+
+  // All years, ascending
+  const years = [
+    ...new Set(
+      Object.values(map)
+        .flatMap(obj => Object.keys(obj))
+    ),
+  ].sort();
+
+  const datasets = years.map(year => ({
+    label: year,
+    data: topAirlines.map(a => map[a]?.[year] || 0),
+    backgroundColor: "rgba(201,162,77,0.7)",
+    borderColor: "rgba(201,162,77,0.25)",
+    borderWidth: 1,
+    borderRadius: year === years[years.length - 1]
+      ? { topRight: 6, bottomRight: 6 }
+      : 0,
+    barPercentage: 0.75,
+    categoryPercentage: 0.8,
+  }));
+
+  return { airlines: topAirlines, years, datasets };
+}
+
+
 
 // =====================================================
 // TRANSFORM → CUMULATIVE
@@ -273,6 +320,72 @@ function renderFlightsPerYearPerAirline(data) {
 
 
 
+let airlineYearHorizontalChart = null;
+
+function renderFlightsPerAirlineByYear(data) {
+  const canvas = document.getElementById("flightsPerAirlineYearChart");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+
+  if (airlineYearHorizontalChart) {
+    airlineYearHorizontalChart.destroy();
+  }
+
+  airlineYearHorizontalChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: data.airlines,
+      datasets: data.datasets,
+    },
+    options: {
+      indexAxis: "y",
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 400, easing: "easeOutQuart" },
+
+      scales: {
+        x: {
+          stacked: true,
+          ticks: { font: { size: 11 } },
+          grid: { color: "rgba(255,255,255,0.08)" },
+        },
+        y: {
+          stacked: true,
+          ticks: {
+            font: { size: 11 },
+            padding: 10,
+          },
+          grid: { display: false },
+        },
+      },
+
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: {
+            color: "#ccc",
+            font: { size: 11 },
+            boxWidth: 12,
+          },
+        },
+        tooltip: {
+          callbacks: {
+            title: items =>
+              `${items[0].label}`,
+            label: ctx =>
+              `${ctx.dataset.label}: ${ctx.raw} flights`,
+          },
+        },
+      },
+    },
+  });
+}
+
+
+
+
+
 // =====================================================
 // METRIC DISPATCH
 // =====================================================
@@ -329,10 +442,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   const metricSelect = document.getElementById("metricSelector");
   const btnYear = document.getElementById("btnYear");
   const btnAllTime = document.getElementById("btnAllTime");
+  
   const perYearAirlineData = flightsPerYearPerAirline(baseStatsData, 8);
-
   renderFlightsPerYearPerAirline(perYearAirlineData);
 
+
+  const airlineYearData = flightsPerAirlinePerYear(baseStatsData, 8);
+  renderFlightsPerAirlineByYear(airlineYearData);
   
   function refresh() {
     renderYearChart(
