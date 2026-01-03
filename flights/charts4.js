@@ -157,7 +157,7 @@ const airlineTotalsPlugin = {
 
     ctx.save();
     ctx.fillStyle = "#ccc";
-    ctx.font = "11px system-ui";
+    ctx.font = "22px system-ui";
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
 
