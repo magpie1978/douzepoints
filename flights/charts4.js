@@ -89,7 +89,7 @@ function aggregateAirlineByYear(data, metric) {
 }
 
 // =====================================================
-// LEFT CHART RENDERER
+// LEFT CHART RENDERER (HOVER TOOLTIP)
 // =====================================================
 function renderYearChart(values) {
   const canvas = document.getElementById("flightsByYearChart");
@@ -136,7 +136,7 @@ function renderYearChart(values) {
 }
 
 // =====================================================
-// RIGHT CHART RENDERER (STACKED + TOOLTIP SAFE)
+// RIGHT CHART RENDERER (CLICK TOOLTIP)
 // =====================================================
 function renderAirlineChart(baseData, metric) {
   const canvas = document.getElementById("airlineYearChart");
@@ -171,22 +171,13 @@ function renderAirlineChart(baseData, metric) {
       data: airlines.map(a => Math.round(a.years[year] || 0)),
       backgroundColor: "rgba(201,162,77,0.7)",
 
-      // 🔑 TOOLTIP HIT RELIABILITY
-      hitRadius: 10,
-      hoverRadius: 10,
-
-      // subtle year separators
       borderColor: "rgba(255,255,255,0.18)",
       borderWidth: i === 0 ? 0 : 1,
       borderSkipped: false,
 
-      // rounded only on final stacked segment
       borderRadius: isLast
         ? { topRight: 6, bottomRight: 6 }
         : 0,
-
-      hoverBackgroundColor: "rgba(201,162,77,0.95)",
-      hoverBorderColor: "rgba(255,255,255,0.35)",
 
       barPercentage: 0.7,
       categoryPercentage: 0.8,
@@ -201,29 +192,17 @@ function renderAirlineChart(baseData, metric) {
       responsive: false,
       maintainAspectRatio: false,
 
-      animation: {
-        duration: 400,
-        easing: "easeOutCubic",
-      },
-
-      // 🔑 GUARANTEED SEGMENT TOOLTIP
       interaction: {
-        mode: "index",
-        axis: "y",
-        intersect: false,
+        mode: "nearest",
+        intersect: true,
       },
 
       plugins: {
         legend: { display: false },
 
+        // ❌ Disable hover tooltips
         tooltip: {
-          enabled: true,
-          mode: "index",
-          intersect: false,
-          padding: 8,
-          titleFont: { size: 11 },
-          bodyFont: { size: 11 },
-
+          enabled: false,
           callbacks: {
             title: items => items[0].dataset.label,
             label: ctx =>
@@ -270,6 +249,40 @@ function renderAirlineChart(baseData, metric) {
       },
     }],
   });
+
+  // =====================================================
+  // CLICK-TO-SHOW TOOLTIP (PINNED)
+  // =====================================================
+  canvas.onclick = evt => {
+    const points = airlineChart.getElementsAtEventForMode(
+      evt,
+      "nearest",
+      { intersect: true },
+      true
+    );
+
+    // Click empty space → clear tooltip
+    if (!points.length) {
+      airlineChart.tooltip.setActiveElements([], { x: 0, y: 0 });
+      airlineChart.update();
+      return;
+    }
+
+    const point = points[0];
+
+    airlineChart.tooltip.setActiveElements(
+      [{
+        datasetIndex: point.datasetIndex,
+        index: point.index,
+      }],
+      {
+        x: evt.offsetX,
+        y: evt.offsetY,
+      }
+    );
+
+    airlineChart.update();
+  };
 }
 
 // =====================================================
@@ -281,8 +294,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderYearChart(flightsPerYear(baseStatsData));
   renderAirlineChart(baseStatsData, "flights");
 
-  document
-    .getElementById("metricSelector")
+  document.getElementById("metricSelector")
     .addEventListener("change", e => {
       renderYearChart(
         e.target.value === "miles"
@@ -291,8 +303,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
     });
 
-  document
-    .getElementById("airlineMetricSelector")
+  document.getElementById("airlineMetricSelector")
     .addEventListener("change", e => {
       renderAirlineChart(baseStatsData, e.target.value);
     });
