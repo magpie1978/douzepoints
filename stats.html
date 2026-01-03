@@ -144,12 +144,19 @@
     }
 
 
-    /* Airline scroll area */
+    /* Airline scroll area *
     .airline-chart-scroll {
-      height: calc(20 * 36px);   /* 👈 exactly 20 visible bars */
+      height: calc(20 * 36px);  
       overflow-y: auto;
       padding-right: 12px;
-    }        
+    }       
+    */
+    
+    .airline-chart-scroll {
+      height: 760px; /* ~20 rows x ~38px */
+      overflow-y: auto;
+    }
+
 
     .airline-chart-scroll::-webkit-scrollbar {
       width: 10px;
@@ -181,6 +188,12 @@
       border-radius: 12px;
       height: 100%;
     }
+
+    /* IMPORTANT: prevent canvas being stretched (causes fuzzy/distorted text) */
+    .airline-chart-scroll canvas {
+      height: auto !important;
+    }
+
   </style>
 </head>
 
