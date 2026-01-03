@@ -15,17 +15,6 @@ Chart.defaults.color = "#ccc";
 
 
 // =====================================================
-// GLOBAL CHART.JS FONT NORMALISATION
-// =====================================================
-//Chart.defaults.font.family =
-//  "'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
-
-//Chart.defaults.font.size = 11;   // 👈 FORCE GLOBAL SIZE MATCH
-//Chart.defaults.font.weight = "400";
-//Chart.defaults.color = "#ccc";
-
-
-// =====================================================
 // LOAD BASE DATA
 // =====================================================
 async function loadStatsBaseData() {
@@ -198,8 +187,8 @@ function renderAirlineChart(data, metric) {
       plugins: {
         legend: { display: false },
         tooltip: {
-          titleFont: { size: 11 },
-          bodyFont: { size: 11 },
+          titleFont: { size: 20 },  //was 11
+          bodyFont: { size: 20 },  //was 11
           callbacks: {
             label: ctx =>
               metric === "miles"
@@ -211,7 +200,7 @@ function renderAirlineChart(data, metric) {
 
       scales: {
         x: {
-          ticks: { font: { size: 11 }, color: "#ccc" },
+          ticks: { font: { size: 20 }, color: "#ccc" },  //was 11
           grid: { color: "rgba(255,255,255,0.08)" },
         },
 
@@ -221,7 +210,7 @@ function renderAirlineChart(data, metric) {
             autoSkip: false,
             padding: 12,
             font: {
-              size: 11,
+              size: 20,  //was 11
               lineHeight: 1.25,
             },
             color: "#ccc",
