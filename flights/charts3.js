@@ -136,30 +136,28 @@ function renderAirlineChart(data, metric) {
   const canvas = document.getElementById("airlineYearChart");
   if (!canvas) return;
 
-  // destroy first so Chart.js releases context sizing
   if (airlineChart) {
     airlineChart.destroy();
     airlineChart = null;
   }
 
-  const BAR_HEIGHT = 36;   // thicker bars
-  const GAP_ROWS  = 10;    // visual separation between rows (pixels)
+  const ROW_HEIGHT = 38;     // visually matches left chart bar height
+  const VISIBLE_ROWS = 20;
   const dpr = window.devicePixelRatio || 1;
 
-  // CSS pixel height we want (controls scrolling)
-  const cssHeight = data.length * BAR_HEIGHT + (data.length - 1) * (GAP_ROWS * 0.25);
+  const cssHeight = data.length * ROW_HEIGHT;
 
-  // Set CSS size (prevents stretching)
+  // CSS sizing (controls scrolling)
   canvas.style.width = "100%";
   canvas.style.height = `${cssHeight}px`;
 
-  // Set internal bitmap size (crisp text)
-  const parentWidth = canvas.parentElement ? canvas.parentElement.clientWidth : canvas.clientWidth;
-  canvas.width  = Math.floor(parentWidth * dpr);
-  canvas.height = Math.floor(cssHeight * dpr);
+  // Internal bitmap sizing (keeps fonts crisp)
+  const parentWidth = canvas.parentElement.clientWidth;
+  canvas.width  = parentWidth * dpr;
+  canvas.height = cssHeight * dpr;
 
   const ctx = canvas.getContext("2d");
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // draw in CSS pixels
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   const labels = data.map(d => d.airline);
   const values = data.map(d => Math.round(d.total));
@@ -172,15 +170,15 @@ function renderAirlineChart(data, metric) {
         data: values,
         backgroundColor: "rgba(201,162,77,0.7)",
         borderRadius: 6,
-        barThickness: 22,
-        maxBarThickness: 24,
-        categoryPercentage: 0.9,
-        barPercentage: 0.75, // slightly thinner inside category → creates vertical “gaps”
+
+        // 🔑 MATCH LEFT CHART SPACING
+        categoryPercentage: 0.8,
+        barPercentage: 0.7,
       }],
     },
     options: {
       indexAxis: "y",
-      responsive: false,          // we fully control sizing
+      responsive: false,
       maintainAspectRatio: false,
       animation: false,
 
@@ -200,17 +198,22 @@ function renderAirlineChart(data, metric) {
 
       scales: {
         x: {
-          ticks: { color: "#ccc", font: { size: 11 } },
+          ticks: { font: { size: 11 }, color: "#ccc" },
           grid: { color: "rgba(255,255,255,0.08)" },
         },
         y: {
-          ticks: { color: "#ccc", font: { size: 11 }, padding: 14 },
+          ticks: {
+            font: { size: 11 },
+            color: "#ccc",
+            padding: 12, // 👈 matches left chart visual spacing
+          },
           grid: { display: false },
         },
       },
     },
   });
 }
+
 
 
 // =====================================================
