@@ -210,22 +210,26 @@ function renderAirlineChart(grouped, metric) {
 
   const labels = airlines.map(a => a.airline);
 
-  const datasets = years.map(year => ({
-    label: year,
-    data: airlines.map(a => Math.round(a.years?.[year] || 0)),
-    backgroundColor: "rgba(201,162,77,0.7)",
+const datasets = years.map((year, yearIndex) => {
+  const isLast = yearIndex === years.length - 1;
 
-    // faint separators between year segments
+  return {
+    label: year,
+    data: airlines.map(a => Math.round(a.years[year] || 0)),
+    backgroundColor: "rgba(201,162,77,0.7)",
     borderColor: "rgba(201,162,77,0.28)",
     borderWidth: 1,
 
-    borderRadius: {
-      topRight: 6,
-      bottomRight: 6,
-    },
+    // ✅ ONLY round the final stacked segment
+    borderRadius: isLast
+      ? { topRight: 6, bottomRight: 6 }
+      : 0,
+
     barPercentage: 0.7,
     categoryPercentage: 0.8,
-  }));
+  };
+});
+
 
   airlineChart = new Chart(ctx, {
     type: "bar",
