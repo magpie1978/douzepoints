@@ -7,45 +7,12 @@ let yearChart = null;
 let airlineChart = null;
 let baseStatsData = [];
 
-// 👇 LOCK GLOBAL DEFAULT FONTS (IMPORTANT)
-Chart.defaults.font.family = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto";
-Chart.defaults.font.size = 12;
+// 🔒 LOCK GLOBAL DEFAULT FONTS
+Chart.defaults.font.family =
+  "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto";
+Chart.defaults.font.size = 11;
 Chart.defaults.font.weight = "400";
 Chart.defaults.color = "#ccc";
-
-
-// =====================================================
-// BAR VALUE LABEL PLUGIN (RIGHT-HAND CHART)
-// =====================================================
-const barValueLabelPlugin = {
-  id: "barValueLabel",
-
-  afterDatasetsDraw(chart, args, pluginOptions) {
-    const { ctx } = chart;
-    const dataset = chart.data.datasets[0];
-    const meta = chart.getDatasetMeta(0);
-
-    ctx.save();
-    ctx.font = "24px system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto";
-    ctx.fillStyle = "#ccc";
-    ctx.textBaseline = "middle";
-
-    meta.data.forEach((bar, index) => {
-      const value = dataset.data[index];
-      if (value == null) return;
-
-      const label =
-        pluginOptions.metric === "miles"
-          ? value.toLocaleString()
-          : value.toString();
-
-      ctx.fillText(label, bar.x + 8, bar.y);
-    });
-
-    ctx.restore();
-  },
-};
-
 
 // =====================================================
 // LOAD BASE DATA
@@ -88,35 +55,37 @@ function milesPerYear(data) {
 }
 
 // =====================================================
-// AGGREGATORS — RIGHT CHART
+// AGGREGATORS — RIGHT CHART (BY AIRLINE + YEAR)
 // =====================================================
-function airlineByYear(data, metric) {
+function aggregateAirlineByYear(data, metric) {
   const map = {};
-  const years = new Set();
 
   data
-    .filter(r => r.journey_type === "Flight" && r.airline && r.year)
+    .filter(r => r.journey_type === "Flight" && r.airline)
     .forEach(r => {
       const year = String(r.year).slice(0, 4);
-      years.add(year);
+      const value =
+        metric === "miles" ? (r.journey_distance || 0) : 1;
 
       if (!map[r.airline]) map[r.airline] = {};
-      map[r.airline][year] =
-        (map[r.airline][year] || 0) +
-        (metric === "miles" ? (r.journey_distance || 0) : 1);
+      map[r.airline][year] = (map[r.airline][year] || 0) + value;
     });
 
-  const sortedYears = [...years].sort();
+  const airlines = Object.entries(map).map(([airline, years]) => ({
+    airline,
+    years,
+    total: Object.values(years).reduce((a, b) => a + b, 0),
+  }));
 
-  const airlines = Object.entries(map)
-    .map(([airline, yearsObj]) => ({
-      airline,
-      years: yearsObj,
-      total: Object.values(yearsObj).reduce((a, b) => a + b, 0),
-    }))
-    .sort((a, b) => b.total - a.total);
+  airlines.sort((a, b) => b.total - a.total);
 
-  return { airlines, years: sortedYears };
+  const allYears = Array.from(
+    new Set(
+      airlines.flatMap(a => Object.keys(a.years))
+    )
+  ).sort();
+
+  return { airlines, years: allYears };
 }
 
 // =====================================================
@@ -156,7 +125,7 @@ function renderYearChart(values) {
         x: {
           ticks: { font: { size: 11 } },
           grid: { display: false },
-        },        
+        },
         y: {
           ticks: { font: { size: 11 } },
           grid: { color: "rgba(255,255,255,0.08)" },
@@ -167,9 +136,9 @@ function renderYearChart(values) {
 }
 
 // =====================================================
-// RIGHT CHART RENDERER (SCROLLABLE, STABLE FONTS)
+// RIGHT CHART RENDERER (STACKED BY YEAR)
 // =====================================================
-function renderAirlineChart(grouped, metric) {
+function renderAirlineChart(data, metric) {
   const canvas = document.getElementById("airlineYearChart");
   if (!canvas) return;
 
@@ -177,33 +146,30 @@ function renderAirlineChart(grouped, metric) {
 
   const ROW_HEIGHT = 38;
   const dpr = window.devicePixelRatio || 1;
+  const cssHeight = data.airlines.length * ROW_HEIGHT;
 
-  const cssHeight = grouped.airlines.length * ROW_HEIGHT;
+  // CSS height enables scrolling
   canvas.style.width = "100%";
   canvas.style.height = `${cssHeight}px`;
 
-  const parentWidth = canvas.parentElement.clientWidth;
-  canvas.width = parentWidth * dpr;
+  // HiDPI-safe canvas sizing
+  canvas.width = canvas.parentElement.clientWidth * dpr;
   canvas.height = cssHeight * dpr;
 
   const ctx = canvas.getContext("2d");
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  const labels = grouped.airlines.map(a => a.airline);
+  const labels = data.airlines.map(a => a.airline);
 
-  const datasets = grouped.years.map((year, i) => ({
+  const datasets = data.years.map(year => ({
     label: year,
-    data: grouped.airlines.map(a => Math.round(a.years[year] || 0)),
-    backgroundColor: yearTint("rgba(201,162,77,0.7)", i, grouped.years.length),
-    borderRadius: {
-      topLeft: 8,
-      bottomLeft: 8,
-      topRight: 8,
-      bottomRight: 8,
-    },
-    borderSkipped: false,
-    categoryPercentage: 0.8,
+    data: data.airlines.map(a =>
+      Math.round(a.years[year] || 0)
+    ),
+    backgroundColor: "rgba(201,162,77,0.7)", // ✅ SAME COLOUR
+    borderRadius: 6,
     barPercentage: 0.7,
+    categoryPercentage: 0.8,
   }));
 
   airlineChart = new Chart(ctx, {
@@ -214,21 +180,19 @@ function renderAirlineChart(grouped, metric) {
       responsive: false,
       maintainAspectRatio: false,
       animation: false,
-
       plugins: {
-        legend: { display: false }, // clean look
+        legend: { display: false },
         tooltip: {
           titleFont: { size: 11 },
           bodyFont: { size: 11 },
           callbacks: {
             label: ctx =>
               metric === "miles"
-                ? `${ctx.dataset.label}: ${Number(ctx.raw).toLocaleString()} miles`
-                : `${ctx.dataset.label}: ${ctx.raw} flights`,
+                ? `${Number(ctx.raw).toLocaleString()} miles`
+                : `${ctx.raw} flights`,
           },
         },
       },
-
       scales: {
         x: {
           stacked: true,
@@ -251,9 +215,6 @@ function renderAirlineChart(grouped, metric) {
   });
 }
 
-
-
-
 // =====================================================
 // INIT + DROPDOWNS
 // =====================================================
@@ -265,7 +226,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // RIGHT DEFAULT
   renderAirlineChart(
-    flightsPerAirline(baseStatsData),
+    aggregateAirlineByYear(baseStatsData, "flights"),
     "flights"
   );
 
@@ -282,13 +243,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // RIGHT DROPDOWN
   document
-  .getElementById("airlineMetricSelector")
-  .addEventListener("change", e => {
-    const metric = e.target.value;
-    renderAirlineChart(
-  airlineByYear(baseStatsData, "flights"),
-  "flights"
-);
-
-  });
+    .getElementById("airlineMetricSelector")
+    .addEventListener("change", e => {
+      const metric = e.target.value;
+      renderAirlineChart(
+        aggregateAirlineByYear(baseStatsData, metric),
+        metric
+      );
+    });
 });
