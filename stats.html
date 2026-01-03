@@ -201,8 +201,11 @@
       <!-- TOP LEFT -->
       <section class="stats-panel">
         <div class="panel-head">
-          <h2 id="chartTitle">Flights by Year</h2>
-
+          <div class="toggle-group">
+            <button id="btnYear" class="toggle-btn active">Year</button>
+            <button id="btnAllTime" class="toggle-btn">All Time</button>
+          </div>
+        
           <select id="metricSelector" class="stats-select">
             <option value="flights">Flights</option>
             <option value="miles">Miles</option>
