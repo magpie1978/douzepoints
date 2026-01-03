@@ -361,14 +361,14 @@ function renderFlightsPerAirlineByYear(data) {
       },
 
       plugins: {
-        legend: {
-          position: "bottom",
-          labels: {
-            color: "#ccc",
-            font: { size: 11 },
-            boxWidth: 12,
-          },
-        },
+        //legend: {
+        //  position: "bottom",
+        //  labels: {
+        //    color: "#ccc",
+        //    font: { size: 11 },
+        //    boxWidth: 12,
+        //  },
+        //},
         tooltip: {
           callbacks: {
             title: items =>
