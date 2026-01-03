@@ -200,7 +200,17 @@ function renderAirlineChart(data, metric) {
       datasets: [{
         data: values,
         backgroundColor: "rgba(201,162,77,0.7)",
-        borderRadius: 6,
+      
+        // 🔑 MATCH LEFT-HAND BAR ROUNDING VISUALLY
+        borderRadius: {
+          topLeft: 8,
+          bottomLeft: 8,
+          topRight: 8,
+          bottomRight: 8,
+        },
+      
+        borderSkipped: false,   // IMPORTANT for full rounding
+      
         categoryPercentage: 0.8,
         barPercentage: 0.7,
       }],
