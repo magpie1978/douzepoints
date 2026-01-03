@@ -10,7 +10,7 @@ let baseStatsData = [];
 // 🔒 LOCK GLOBAL DEFAULT FONTS
 Chart.defaults.font.family =
   "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto";
-Chart.defaults.font.size = 11;
+Chart.defaults.font.size = 12;
 Chart.defaults.font.weight = "400";
 Chart.defaults.color = "#ccc";
 
@@ -235,8 +235,8 @@ function renderAirlineChart(grouped, metric) {
       plugins: {
         legend: { display: false },
         tooltip: {
-          titleFont: { size: 22 },
-          bodyFont: { size: 22 },
+          titleFont: { size: 24 },
+          bodyFont: { size: 24 },
           callbacks: {
             // title = year
             title: items => items?.[0]?.dataset?.label || "",
@@ -261,7 +261,7 @@ function renderAirlineChart(grouped, metric) {
       scales: {
         x: {
           stacked: true,
-          ticks: { font: { size: 22 }, color: "#ccc" },
+          ticks: { font: { size: 24 }, color: "#ccc" },
           grid: { color: "rgba(255,255,255,0.08)" },
         },
         y: {
@@ -270,7 +270,7 @@ function renderAirlineChart(grouped, metric) {
           ticks: {
             autoSkip: false,
             padding: 12,
-            font: { size: 22 },
+            font: { size: 24 },
             color: "#ccc",
           },
           grid: { display: false },
