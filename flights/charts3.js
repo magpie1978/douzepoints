@@ -201,14 +201,33 @@ function renderAirlineChart(data, metric) {
           ticks: { font: { size: 11 }, color: "#ccc" },
           grid: { color: "rgba(255,255,255,0.08)" },
         },
+
         y: {
           ticks: {
-            font: { size: 11 },
+            autoSkip: false,          // 🔑 prevents Chart.js shrinking labels
             color: "#ccc",
-            padding: 12, // 👈 matches left chart visual spacing
+            padding: 12,
+        
+            font: {
+              size: 11,               // matches left chart
+              family: "'Inter', system-ui, -apple-system, sans-serif",
+              weight: "400",
+              lineHeight: 1.2,
+            },
           },
           grid: { display: false },
         },
+
+        
+        //y: {
+        //  ticks: {
+        //    font: { size: 11 },
+        //    color: "#ccc",
+        //    padding: 12, // 👈 matches left chart visual spacing
+        //  },
+        //  grid: { display: false },
+        //},
+        
       },
     },
   });
