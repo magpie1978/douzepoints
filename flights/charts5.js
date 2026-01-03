@@ -5,6 +5,7 @@
 // =====================================================
 let yearChart = null;
 let baseStatsData = [];
+let viewMode = "year"; // "year" | "alltime"
 
 // -----------------------------------------------------
 // GLOBAL FONT LOCK
@@ -21,7 +22,7 @@ Chart.defaults.color = "#ccc";
 async function loadStatsBaseData() {
   const { data, error } = await sb
     .from("journeys_routes_cache")
-    .select("year, journey_type, journey_distance, airline, destination_country");
+    .select("year, journey_type, journey_distance, airline");
 
   if (error) {
     console.error("[stats] load failed", error);
@@ -31,64 +32,57 @@ async function loadStatsBaseData() {
 }
 
 // =====================================================
-// AGGREGATORS — LEFT CHART
+// AGGREGATORS — PER YEAR
 // =====================================================
 function flightsPerYear(data) {
   const out = {};
-  data
-    .filter(r => r.journey_type === "Flight")
-    .forEach(r => {
-      const y = String(r.year).slice(0, 4);
-      out[y] = (out[y] || 0) + 1;
-    });
+  data.filter(r => r.journey_type === "Flight").forEach(r => {
+    const y = String(r.year).slice(0, 4);
+    out[y] = (out[y] || 0) + 1;
+  });
   return out;
 }
 
 function milesPerYear(data) {
   const out = {};
-  data
-    .filter(r => r.journey_type === "Flight")
-    .forEach(r => {
-      const y = String(r.year).slice(0, 4);
-      out[y] = (out[y] || 0) + (r.journey_distance || 0);
-    });
+  data.filter(r => r.journey_type === "Flight").forEach(r => {
+    const y = String(r.year).slice(0, 4);
+    out[y] = (out[y] || 0) + (r.journey_distance || 0);
+  });
   return out;
 }
 
 function airlinesPerYear(data) {
   const map = {};
-  data
-    .filter(r => r.journey_type === "Flight" && r.airline)
-    .forEach(r => {
-      const y = String(r.year).slice(0, 4);
-      map[y] ??= new Set();
-      map[y].add(r.airline);
-    });
-
+  data.filter(r => r.journey_type === "Flight" && r.airline).forEach(r => {
+    const y = String(r.year).slice(0, 4);
+    map[y] ??= new Set();
+    map[y].add(r.airline);
+  });
   return Object.fromEntries(
-    Object.entries(map).map(([year, set]) => [year, set.size])
-  );
-}
-
-function countriesPerYear(data) {
-  const map = {};
-  data
-    .filter(r => r.journey_type === "Flight" && r.destination_country)
-    .forEach(r => {
-      const y = String(r.year).slice(0, 4);
-      map[y] ??= new Set();
-      map[y].add(r.destination_country);
-    });
-
-  return Object.fromEntries(
-    Object.entries(map).map(([year, set]) => [year, set.size])
+    Object.entries(map).map(([y, set]) => [y, set.size])
   );
 }
 
 // =====================================================
-// LEFT CHART RENDERER
+// TRANSFORM → CUMULATIVE
 // =====================================================
-function renderYearChart(values) {
+function cumulative(valuesByYear) {
+  let running = 0;
+  const out = {};
+  Object.keys(valuesByYear)
+    .sort()
+    .forEach(y => {
+      running += valuesByYear[y];
+      out[y] = running;
+    });
+  return out;
+}
+
+// =====================================================
+// CHART RENDERER
+// =====================================================
+function renderYearChart(values, metric) {
   const canvas = document.getElementById("flightsByYearChart");
   if (!canvas) return;
 
@@ -98,14 +92,21 @@ function renderYearChart(values) {
 
   if (yearChart) yearChart.destroy();
 
+  const isAllTime = viewMode === "alltime";
+
   yearChart = new Chart(ctx, {
-    type: "bar",
+    type: isAllTime ? "line" : "bar",
     data: {
       labels,
       datasets: [{
         data,
+        tension: 0.3,
+        fill: false,
         backgroundColor: "rgba(201,162,77,0.7)",
-        borderRadius: 6,
+        borderColor: "rgba(201,162,77,0.9)",
+        borderWidth: isAllTime ? 3 : 0,
+        pointRadius: isAllTime ? 3 : 0,
+        borderRadius: isAllTime ? 0 : 6,
       }],
     },
     options: {
@@ -115,8 +116,13 @@ function renderYearChart(values) {
       plugins: {
         legend: { display: false },
         tooltip: {
-          titleFont: { size: 11 },
-          bodyFont: { size: 11 },
+          callbacks: {
+            label: ctx => {
+              const v = ctx.raw;
+              if (metric === "miles") return `${v.toLocaleString()} miles`;
+              return `${v.toLocaleString()}`;
+            },
+          },
         },
       },
       scales: {
@@ -134,34 +140,60 @@ function renderYearChart(values) {
 }
 
 // =====================================================
-// INIT + DROPDOWN HANDLING
+// METRIC DISPATCH
+// =====================================================
+function getMetricValues(metric) {
+  let yearly;
+
+  switch (metric) {
+    case "miles":
+      yearly = milesPerYear(baseStatsData);
+      break;
+    case "airlines":
+      yearly = airlinesPerYear(baseStatsData);
+      break;
+    default:
+      yearly = flightsPerYear(baseStatsData);
+  }
+
+  return viewMode === "alltime"
+    ? cumulative(yearly)
+    : yearly;
+}
+
+// =====================================================
+// INIT + EVENTS
 // =====================================================
 document.addEventListener("DOMContentLoaded", async () => {
   baseStatsData = await loadStatsBaseData();
 
-  // Default view
-  renderYearChart(flightsPerYear(baseStatsData));
+  const metricSelect = document.getElementById("metricSelector");
+  const btnYear = document.getElementById("btnYear");
+  const btnAllTime = document.getElementById("btnAllTime");
 
-  document
-    .getElementById("metricSelector")
-    .addEventListener("change", e => {
-      const metric = e.target.value;
+  function refresh() {
+    renderYearChart(
+      getMetricValues(metricSelect.value),
+      metricSelect.value
+    );
+  }
 
-      switch (metric) {
-        case "miles":
-          renderYearChart(milesPerYear(baseStatsData));
-          break;
+  // Defaults
+  refresh();
 
-        case "airlines":
-          renderYearChart(airlinesPerYear(baseStatsData));
-          break;
+  metricSelect.addEventListener("change", refresh);
 
-        case "countries":
-          renderYearChart(countriesPerYear(baseStatsData));
-          break;
+  btnYear.addEventListener("click", () => {
+    viewMode = "year";
+    btnYear.classList.add("active");
+    btnAllTime.classList.remove("active");
+    refresh();
+  });
 
-        default:
-          renderYearChart(flightsPerYear(baseStatsData));
-      }
-    });
+  btnAllTime.addEventListener("click", () => {
+    viewMode = "alltime";
+    btnAllTime.classList.add("active");
+    btnYear.classList.remove("active");
+    refresh();
+  });
 });
