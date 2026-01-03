@@ -9,19 +9,20 @@ let baseStatsData = [];
 
 // 👇 LOCK GLOBAL DEFAULT FONTS (IMPORTANT)
 Chart.defaults.font.family = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto";
-Chart.defaults.font.size = 11;
+Chart.defaults.font.size = 12;
+Chart.defaults.font.weight = "400";
 Chart.defaults.color = "#ccc";
 
 
 // =====================================================
 // GLOBAL CHART.JS FONT NORMALISATION
 // =====================================================
-Chart.defaults.font.family =
-  "'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+//Chart.defaults.font.family =
+//  "'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
 
-Chart.defaults.font.size = 11;   // 👈 FORCE GLOBAL SIZE MATCH
-Chart.defaults.font.weight = "400";
-Chart.defaults.color = "#ccc";
+//Chart.defaults.font.size = 11;   // 👈 FORCE GLOBAL SIZE MATCH
+//Chart.defaults.font.weight = "400";
+//Chart.defaults.color = "#ccc";
 
 
 // =====================================================
@@ -227,17 +228,6 @@ function renderAirlineChart(data, metric) {
           },
           grid: { display: false },
         },
-
-        
-        //y: {
-        //  ticks: {
-        //    font: { size: 11 },
-        //    color: "#ccc",
-        //    padding: 12, // 👈 matches left chart visual spacing
-        //  },
-        //  grid: { display: false },
-        //},
-        
       },
     },
   });
