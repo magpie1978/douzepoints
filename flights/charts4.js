@@ -10,7 +10,7 @@ let baseStatsData = [];
 // 🔒 LOCK GLOBAL FONTS (prevents redraw distortion)
 Chart.defaults.font.family =
   "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto";
-Chart.defaults.font.size = 22;
+Chart.defaults.font.size = 11;
 Chart.defaults.font.weight = "400";
 Chart.defaults.color = "#ccc";
 
@@ -220,15 +220,19 @@ function renderAirlineChart(baseData, metric) {
           ticks: { font: { size: 22 } },
           grid: { color: "rgba(255,255,255,0.08)" },
         },
-        y: {
-          stacked: true,
-          ticks: {
-            autoSkip: false,
-            padding: 12,
-            font: { size: 22 },
-          },
-          grid: { display: false },
-        },
+y: {
+  stacked: true,
+  offset: true,          // 👈 gives labels breathing room
+  ticks: {
+    autoSkip: false,
+    padding: 16,         // 👈 prevents clipping
+    font: {
+      size: 22,
+      lineHeight: 1.2,   // 👈 stabilises tall labels
+    },
+  },
+  grid: { display: false },
+},
       },
     },
     plugins: [{
