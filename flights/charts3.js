@@ -187,8 +187,8 @@ function renderAirlineChart(data, metric) {
       plugins: {
         legend: { display: false },
         tooltip: {
-          titleFont: { size: 20 },  //was 11
-          bodyFont: { size: 20 },  //was 11
+          titleFont: { size: 26 },  //was 11
+          bodyFont: { size: 26 },  //was 11
           callbacks: {
             label: ctx =>
               metric === "miles"
@@ -200,7 +200,7 @@ function renderAirlineChart(data, metric) {
 
       scales: {
         x: {
-          ticks: { font: { size: 20 }, color: "#ccc" },  //was 11
+          ticks: { font: { size: 26 }, color: "#ccc" },  //was 11
           grid: { color: "rgba(255,255,255,0.08)" },
         },
 
@@ -210,7 +210,7 @@ function renderAirlineChart(data, metric) {
             autoSkip: false,
             padding: 12,
             font: {
-              size: 20,  //was 11
+              size: 26,  //was 11
               lineHeight: 1.25,
             },
             color: "#ccc",
