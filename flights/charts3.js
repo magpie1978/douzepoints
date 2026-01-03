@@ -15,6 +15,39 @@ Chart.defaults.color = "#ccc";
 
 
 // =====================================================
+// BAR VALUE LABEL PLUGIN (RIGHT-HAND CHART)
+// =====================================================
+const barValueLabelPlugin = {
+  id: "barValueLabel",
+
+  afterDatasetsDraw(chart, args, pluginOptions) {
+    const { ctx } = chart;
+    const dataset = chart.data.datasets[0];
+    const meta = chart.getDatasetMeta(0);
+
+    ctx.save();
+    ctx.font = "11px system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto";
+    ctx.fillStyle = "#ccc";
+    ctx.textBaseline = "middle";
+
+    meta.data.forEach((bar, index) => {
+      const value = dataset.data[index];
+      if (value == null) return;
+
+      const label =
+        pluginOptions.metric === "miles"
+          ? value.toLocaleString()
+          : value.toString();
+
+      ctx.fillText(label, bar.x + 8, bar.y);
+    });
+
+    ctx.restore();
+  },
+};
+
+
+// =====================================================
 // LOAD BASE DATA
 // =====================================================
 async function loadStatsBaseData() {
@@ -143,17 +176,13 @@ function renderAirlineChart(data, metric) {
     airlineChart = null;
   }
 
-  const ROW_HEIGHT = 38;     // visually matches left chart bar height
-  const VISIBLE_ROWS = 20;
+  const ROW_HEIGHT = 38;
   const dpr = window.devicePixelRatio || 1;
-
   const cssHeight = data.length * ROW_HEIGHT;
 
-  // CSS sizing (controls scrolling)
   canvas.style.width = "100%";
   canvas.style.height = `${cssHeight}px`;
 
-  // Internal bitmap sizing (keeps fonts crisp)
   const parentWidth = canvas.parentElement.clientWidth;
   canvas.width  = parentWidth * dpr;
   canvas.height = cssHeight * dpr;
@@ -172,8 +201,6 @@ function renderAirlineChart(data, metric) {
         data: values,
         backgroundColor: "rgba(201,162,77,0.7)",
         borderRadius: 6,
-
-        // 🔑 MATCH LEFT CHART SPACING
         categoryPercentage: 0.8,
         barPercentage: 0.7,
       }],
@@ -186,9 +213,15 @@ function renderAirlineChart(data, metric) {
 
       plugins: {
         legend: { display: false },
+
+        // ✅ PASS METRIC INTO LABEL PLUGIN
+        barValueLabel: {
+          metric,
+        },
+
         tooltip: {
-          titleFont: { size: 26 },  //was 11
-          bodyFont: { size: 26 },  //was 11
+          titleFont: { size: 11 },
+          bodyFont: { size: 11 },
           callbacks: {
             label: ctx =>
               metric === "miles"
@@ -200,27 +233,27 @@ function renderAirlineChart(data, metric) {
 
       scales: {
         x: {
-          ticks: { font: { size: 26 }, color: "#ccc" },  //was 11
+          ticks: { font: { size: 11 }, color: "#ccc" },
           grid: { color: "rgba(255,255,255,0.08)" },
         },
-
         y: {
           offset: true,
           ticks: {
             autoSkip: false,
             padding: 12,
-            font: {
-              size: 26,  //was 11
-              lineHeight: 1.25,
-            },
+            font: { size: 11 },
             color: "#ccc",
           },
           grid: { display: false },
         },
       },
     },
+
+    // ✅ REGISTER PLUGIN HERE
+    plugins: [barValueLabelPlugin],
   });
 }
+
 
 
 
