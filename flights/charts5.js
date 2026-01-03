@@ -22,7 +22,7 @@ Chart.defaults.color = "#ccc";
 async function loadStatsBaseData() {
   const { data, error } = await sb
     .from("journeys_routes_cache")
-    .select("year, journey_type, journey_distance, airline");
+    .select("year, journey_type, journey_distance, airline, destination_country");
 
   if (error) {
     console.error("[stats] load failed", error);
@@ -52,17 +52,51 @@ function milesPerYear(data) {
   return out;
 }
 
-function airlinesPerYear(data) {
+
+function airlinesPerYearSets(data) {
   const map = {};
-  data.filter(r => r.journey_type === "Flight" && r.airline).forEach(r => {
-    const y = String(r.year).slice(0, 4);
-    map[y] ??= new Set();
-    map[y].add(r.airline);
-  });
-  return Object.fromEntries(
-    Object.entries(map).map(([y, set]) => [y, set.size])
-  );
+
+  data
+    .filter(r => r.journey_type === "Flight" && r.airline)
+    .forEach(r => {
+      const y = String(r.year).slice(0, 4);
+      map[y] ??= new Set();
+      map[y].add(r.airline);
+    });
+
+  return map;
 }
+
+
+function cumulativeDistinctSets(perYearSets) {
+  const seen = new Set();
+  const out = {};
+
+  Object.keys(perYearSets)
+    .sort()
+    .forEach(year => {
+      perYearSets[year].forEach(v => seen.add(v));
+      out[year] = seen.size;
+    });
+
+  return out;
+}
+
+
+function countriesPerYearSets(data) {
+  const map = {};
+
+  data
+    .filter(r => r.journey_type === "Flight" && r.destination_country)
+    .forEach(r => {
+      const y = String(r.year).slice(0, 4);
+      map[y] ??= new Set();
+      map[y].add(r.destination_country);
+    });
+
+  return map;
+}
+
 
 // =====================================================
 // TRANSFORM → CUMULATIVE
@@ -148,18 +182,43 @@ function getMetricValues(metric) {
   switch (metric) {
     case "miles":
       yearly = milesPerYear(baseStatsData);
-      break;
-    case "airlines":
-      yearly = airlinesPerYear(baseStatsData);
-      break;
+      return viewMode === "alltime"
+        ? cumulative(yearly)
+        : yearly;
+
+    case "airlines": {
+      const airlineSets = airlinesPerYearSets(baseStatsData);
+
+      if (viewMode === "alltime") {
+        return cumulativeDistinctSets(airlineSets);
+      }
+
+      // Year mode → size of set per year
+      return Object.fromEntries(
+        Object.entries(airlineSets).map(([y, set]) => [y, set.size])
+      );
+    }
+
+    case "countries": {
+      const countrySets = countriesPerYearSets(baseStatsData);
+
+      if (viewMode === "alltime") {
+        return cumulativeDistinctSets(countrySets);
+      }
+
+      return Object.fromEntries(
+        Object.entries(countrySets).map(([y, set]) => [y, set.size])
+      );
+    }
+
     default:
       yearly = flightsPerYear(baseStatsData);
+      return viewMode === "alltime"
+        ? cumulative(yearly)
+        : yearly;
   }
-
-  return viewMode === "alltime"
-    ? cumulative(yearly)
-    : yearly;
 }
+
 
 // =====================================================
 // INIT + EVENTS
