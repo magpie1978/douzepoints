@@ -176,7 +176,7 @@ function renderAirlineChart(baseData, metric) {
       borderSkipped: false,
 
       borderRadius: isLast
-        ? { topRight: 6, bottomRight: 6 }
+        ? { topRight: 12, bottomRight: 12 }
         : 0,
 
       barPercentage: 0.7,
@@ -217,7 +217,7 @@ function renderAirlineChart(baseData, metric) {
       scales: {
         x: {
           stacked: true,
-          ticks: { font: { size: 11 } },
+          ticks: { font: { size: 22 } },
           grid: { color: "rgba(255,255,255,0.08)" },
         },
         y: {
@@ -225,7 +225,7 @@ function renderAirlineChart(baseData, metric) {
           ticks: {
             autoSkip: false,
             padding: 12,
-            font: { size: 11 },
+            font: { size: 22 },
           },
           grid: { display: false },
         },
