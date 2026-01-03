@@ -7,6 +7,11 @@ let yearChart = null;
 let airlineChart = null;
 let baseStatsData = [];
 
+// 👇 LOCK GLOBAL DEFAULT FONTS (IMPORTANT)
+Chart.defaults.font.family = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = "#ccc";
+
 // =====================================================
 // LOAD BASE DATA
 // =====================================================
@@ -103,14 +108,20 @@ function renderYearChart(values) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          titleFont: { size: 11 },
+          bodyFont: { size: 11 },
+        },
+      },
       scales: {
         x: {
-          ticks: { color: "#ccc", font: { size: 11 } },
+          ticks: { font: { size: 11 } },
           grid: { display: false },
         },
         y: {
-          ticks: { color: "#ccc", font: { size: 11 } },
+          ticks: { font: { size: 11 } },
           grid: { color: "rgba(255,255,255,0.08)" },
         },
       },
@@ -119,7 +130,7 @@ function renderYearChart(values) {
 }
 
 // =====================================================
-// RIGHT CHART RENDERER (SCROLLABLE)
+// RIGHT CHART RENDERER (SCROLLABLE, STABLE FONTS)
 // =====================================================
 function renderAirlineChart(data, metric) {
   const canvas = document.getElementById("airlineYearChart");
@@ -130,7 +141,7 @@ function renderAirlineChart(data, metric) {
   const BAR_HEIGHT = 36;
   const VISIBLE_BARS = 20;
 
-  // 👇 Make canvas taller than container to enable scroll
+  // 👇 Fixed pixel height to force scroll
   canvas.height = data.length * BAR_HEIGHT;
 
   const labels = data.map(d => d.airline);
@@ -148,15 +159,18 @@ function renderAirlineChart(data, metric) {
         borderRadius: 6,
         barThickness: 22,
         maxBarThickness: 24,
-        categoryPercentage: 0.85,
-        barPercentage: 0.8,
+        categoryPercentage: 0.9,
+        barPercentage: 0.85,
       }],
     },
     options: {
       indexAxis: "y",
+
+      // 🔑 DO NOT LET CHART.JS RESCALE FONTS
       responsive: false,
       maintainAspectRatio: false,
       animation: false,
+
       plugins: {
         legend: { display: false },
         tooltip: {
@@ -172,14 +186,15 @@ function renderAirlineChart(data, metric) {
       },
       scales: {
         x: {
-          ticks: { color: "#ccc", font: { size: 11 } },
+          ticks: {
+            font: { size: 11 },
+          },
           grid: { color: "rgba(255,255,255,0.08)" },
         },
         y: {
           ticks: {
-            color: "#ccc",
             font: { size: 11 },
-            padding: 14, // 👈 spacing between bars
+            padding: 14,
           },
           grid: { display: false },
         },
@@ -207,9 +222,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   document
     .getElementById("metricSelector")
     .addEventListener("change", e => {
-      const v = e.target.value;
       renderYearChart(
-        v === "miles"
+        e.target.value === "miles"
           ? milesPerYear(baseStatsData)
           : flightsPerYear(baseStatsData)
       );
