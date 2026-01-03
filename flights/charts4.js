@@ -116,16 +116,30 @@ function renderYearChart(values, metricLabel) {
       plugins: {
         legend: { display: false },
         tooltip: {
+          enabled: true,
+          mode: "nearest",        // 👈 ensures segment-level detection
+          intersect: true,        // 👈 only trigger on hovered segment
           titleFont: { size: 11 },
           bodyFont: { size: 11 },
+        
           callbacks: {
-            label: c =>
-              metricLabel === "miles"
-                ? `${Number(c.raw).toLocaleString()} miles`
-                : `${c.raw} flights`,
+            // Title = Year (dataset label)
+            title: items => {
+              if (!items.length) return "";
+              return items[0].dataset.label;
+            },
+        
+            // Body = value for THIS segment
+            label: ctx => {
+              const value = ctx.raw || 0;
+        
+              return metric === "miles"
+                ? `${Number(value).toLocaleString()} miles`
+                : `${value} flights`;
+            },
           },
         },
-      },
+
       scales: {
         x: {
           ticks: { font: { size: 11 } },
