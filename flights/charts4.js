@@ -219,7 +219,10 @@ function renderAirlineChart(grouped, metric) {
     borderColor: "rgba(201,162,77,0.28)",
     borderWidth: 1,
 
-    borderRadius: 6,
+    borderRadius: {
+      topRight: 6,
+      bottomRight: 6,
+    },
     barPercentage: 0.7,
     categoryPercentage: 0.8,
   }));
