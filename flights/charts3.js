@@ -203,17 +203,21 @@ function renderAirlineChart(data, metric) {
         },
 
         y: {
+          offset: true,          // 👈 critical for spacing
           ticks: {
-            autoSkip: false,          // 🔑 prevents Chart.js shrinking labels
-            color: "#ccc",
+            autoSkip: false,     // 👈 prevents shrink logic
+            maxRotation: 0,
+            minRotation: 0,
             padding: 12,
         
             font: {
-              size: 11,               // matches left chart
-              family: "'Inter', system-ui, -apple-system, sans-serif",
+              size: 11,          // 👈 EXACT match to left chart
+              family: Chart.defaults.font.family,
               weight: "400",
-              lineHeight: 1.2,
+              lineHeight: 1.25,
             },
+        
+            color: "#ccc",
           },
           grid: { display: false },
         },
