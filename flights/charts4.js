@@ -7,7 +7,7 @@ let yearChart = null;
 let airlineChart = null;
 let baseStatsData = [];
 
-// 🔒 LOCK GLOBAL FONTS (prevents distortion on redraw)
+// 🔒 LOCK GLOBAL FONTS (prevents redraw distortion)
 Chart.defaults.font.family =
   "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto";
 Chart.defaults.font.size = 11;
@@ -136,7 +136,7 @@ function renderYearChart(values) {
 }
 
 // =====================================================
-// RIGHT CHART RENDERER (CLICK TOOLTIP)
+// RIGHT CHART RENDERER (CLICK TOOLTIP, STACKED)
 // =====================================================
 function renderAirlineChart(baseData, metric) {
   const canvas = document.getElementById("airlineYearChart");
@@ -192,15 +192,16 @@ function renderAirlineChart(baseData, metric) {
       responsive: false,
       maintainAspectRatio: false,
 
+      // 🔑 IMPORTANT: no hover interaction
       interaction: {
         mode: "nearest",
-        intersect: true,
+        intersect: false,
       },
 
       plugins: {
         legend: { display: false },
 
-        // ❌ Disable hover tooltips
+        // ❌ disable hover tooltips
         tooltip: {
           enabled: false,
           callbacks: {
@@ -251,34 +252,31 @@ function renderAirlineChart(baseData, metric) {
   });
 
   // =====================================================
-  // CLICK-TO-SHOW TOOLTIP (PINNED)
+  // CLICK-TO-SHOW TOOLTIP (RELIABLE)
   // =====================================================
   canvas.onclick = evt => {
     const points = airlineChart.getElementsAtEventForMode(
       evt,
-      "nearest",
-      { intersect: true },
+      "index",                // 🔑 row-based resolution
+      { intersect: false },
       true
     );
 
-    // Click empty space → clear tooltip
+    // Clear tooltip if clicking empty space
     if (!points.length) {
       airlineChart.tooltip.setActiveElements([], { x: 0, y: 0 });
       airlineChart.update();
       return;
     }
 
-    const point = points[0];
+    const { datasetIndex, index } = points[0];
+
+    // Correct positioning (handles DPR + scroll)
+    const pos = Chart.helpers.getRelativePosition(evt, airlineChart);
 
     airlineChart.tooltip.setActiveElements(
-      [{
-        datasetIndex: point.datasetIndex,
-        index: point.index,
-      }],
-      {
-        x: evt.offsetX,
-        y: evt.offsetY,
-      }
+      [{ datasetIndex, index }],
+      pos
     );
 
     airlineChart.update();
@@ -294,7 +292,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderYearChart(flightsPerYear(baseStatsData));
   renderAirlineChart(baseStatsData, "flights");
 
-  document.getElementById("metricSelector")
+  document
+    .getElementById("metricSelector")
     .addEventListener("change", e => {
       renderYearChart(
         e.target.value === "miles"
@@ -303,7 +302,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
     });
 
-  document.getElementById("airlineMetricSelector")
+  document
+    .getElementById("airlineMetricSelector")
     .addEventListener("change", e => {
       renderAirlineChart(baseStatsData, e.target.value);
     });
