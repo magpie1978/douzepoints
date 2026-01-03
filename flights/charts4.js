@@ -272,8 +272,9 @@ function renderAirlineChart(baseData, metric) {
     const { datasetIndex, index } = points[0];
 
     // Correct positioning (handles DPR + scroll)
-    const pos = Chart.helpers.getRelativePosition(evt, airlineChart);
-
+    const element = airlineChart.getDatasetMeta(datasetIndex).data[index];
+    const pos = element.tooltipPosition();
+    
     airlineChart.tooltip.setActiveElements(
       [{ datasetIndex, index }],
       pos
