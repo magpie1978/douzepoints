@@ -298,14 +298,7 @@ function renderFlightsPerYearPerAirline(data) {
       },
 
       plugins: {
-        legend: {
-          position: "bottom",
-          labels: {
-            color: "#ccc",
-            font: { size: 11 },
-            boxWidth: 12,
-          },
-        },
+        legend: { display: false },
         tooltip: {
           callbacks: {
             title: items => `Year ${items[0].label}`,
@@ -361,14 +354,7 @@ function renderFlightsPerAirlineByYear(data) {
       },
 
       plugins: {
-        //legend: {
-        //  position: "bottom",
-        //  labels: {
-        //    color: "#ccc",
-        //    font: { size: 11 },
-        //    boxWidth: 12,
-        //  },
-        //},
+        legend: { display: false },
         tooltip: {
           callbacks: {
             title: items =>
