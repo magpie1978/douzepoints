@@ -12,6 +12,18 @@ Chart.defaults.font.family = "system-ui, -apple-system, BlinkMacSystemFont, 'Seg
 Chart.defaults.font.size = 11;
 Chart.defaults.color = "#ccc";
 
+
+// =====================================================
+// GLOBAL CHART.JS FONT NORMALISATION
+// =====================================================
+Chart.defaults.font.family =
+  "'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+
+Chart.defaults.font.size = 11;   // 👈 FORCE GLOBAL SIZE MATCH
+Chart.defaults.font.weight = "400";
+Chart.defaults.color = "#ccc";
+
+
 // =====================================================
 // LOAD BASE DATA
 // =====================================================
@@ -119,7 +131,7 @@ function renderYearChart(values) {
         x: {
           ticks: { font: { size: 11 } },
           grid: { display: false },
-        },
+        },        
         y: {
           ticks: { font: { size: 11 } },
           grid: { color: "rgba(255,255,255,0.08)" },
@@ -203,20 +215,14 @@ function renderAirlineChart(data, metric) {
         },
 
         y: {
-          offset: true,          // 👈 critical for spacing
+          offset: true,
           ticks: {
-            autoSkip: false,     // 👈 prevents shrink logic
-            maxRotation: 0,
-            minRotation: 0,
+            autoSkip: false,
             padding: 12,
-        
             font: {
-              size: 11,          // 👈 EXACT match to left chart
-              family: Chart.defaults.font.family,
-              weight: "400",
+              size: 11,
               lineHeight: 1.25,
             },
-        
             color: "#ccc",
           },
           grid: { display: false },
