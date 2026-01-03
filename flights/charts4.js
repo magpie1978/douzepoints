@@ -205,7 +205,7 @@ function renderAirlineChart(grouped, metric) {
     borderWidth: 1,
     borderRadius:
       i === grouped.years.length - 1
-        ? { topRight: 6, bottomRight: 6 }
+        ? { topRight: 12, bottomRight: 12 }
         : 0,
     barPercentage: 0.7,
     categoryPercentage: 0.8,
@@ -228,8 +228,8 @@ function renderAirlineChart(grouped, metric) {
           enabled: true,
           mode: "nearest",
           intersect: true,
-          titleFont: { size: 11 },
-          bodyFont: { size: 11 },
+          titleFont: { size: 22 },
+          bodyFont: { size: 22 },
           callbacks: {
             title: items => items[0]?.dataset?.label || "",
             label: c =>
@@ -249,7 +249,7 @@ function renderAirlineChart(grouped, metric) {
       scales: {
         x: {
           stacked: true,
-          ticks: { font: { size: 11 }, color: "#ccc" },
+          ticks: { font: { size: 22 }, color: "#ccc" },
           grid: { color: "rgba(255,255,255,0.08)" },
         },
         y: {
@@ -258,7 +258,7 @@ function renderAirlineChart(grouped, metric) {
           ticks: {
             autoSkip: false,
             padding: 12,
-            font: { size: 11 },
+            font: { size: 22 },
             color: "#ccc",
           },
           grid: { display: false },
