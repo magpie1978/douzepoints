@@ -222,17 +222,29 @@ function renderAirlineChart(baseData, metric) {
         },
 y: {
   stacked: true,
-  offset: true,          // 👈 gives labels breathing room
+  offset: true,
+
   ticks: {
-    autoSkip: false,
-    padding: 16,         // 👈 prevents clipping
+    autoSkip: false,          // 🔑 stop Chart.js shrinking text
+    maxTicksLimit: Infinity,  // 🔑 force full-size labels
+    padding: 18,
+
     font: {
-      size: 22,
-      lineHeight: 1.2,   // 👈 stabilises tall labels
+      size: 22,               // 👈 airline labels at 22px
+      lineHeight: 1.2,
+      family:
+        "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto",
+      weight: "400",
     },
+
+    color: "#ccc",
   },
-  grid: { display: false },
+
+  grid: {
+    display: false,
+  },
 },
+
       },
     },
     plugins: [{
