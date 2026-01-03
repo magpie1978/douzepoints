@@ -21,7 +21,7 @@ Chart.defaults.color = "#ccc";
 async function loadStatsBaseData() {
   const { data, error } = await sb
     .from("journeys_routes_cache")
-    .select("year, journey_type, journey_distance, airline, country");
+    .select("year, journey_type, journey_distance, airline, destination_country");
 
   if (error) {
     console.error("[stats] load failed", error);
@@ -73,11 +73,11 @@ function airlinesPerYear(data) {
 function countriesPerYear(data) {
   const map = {};
   data
-    .filter(r => r.journey_type === "Flight" && r.country)
+    .filter(r => r.journey_type === "Flight" && r.destination_country)
     .forEach(r => {
       const y = String(r.year).slice(0, 4);
       map[y] ??= new Set();
-      map[y].add(r.country);
+      map[y].add(r.destination_country);
     });
 
   return Object.fromEntries(
