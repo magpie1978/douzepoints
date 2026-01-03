@@ -74,13 +74,12 @@
       box-sizing: border-box;
     }
 
-    .stats-grid{
-      display:grid;
+    .stats-grid {
+      display: grid;
       grid-template-columns: 1fr 1fr;
       grid-template-rows: 1fr 1fr;
-      gap:24px;
-      height: calc(100vh - 120px);
-      align-items: stretch;
+      gap: 24px;
+      height: 100%;
     }
     
     .stats-panel {
@@ -97,10 +96,11 @@
     /* Right-hand panel spans both rows */
     .stats-panel--right {
       grid-column: 2;
-      grid-row: 1 / span 2;
+      grid-row: 1 / span 2;   /* 👈 occupies full right-hand side */
       display: flex;
       flex-direction: column;
-      min-height: 0;
+      min-height: 0;         /* 🔑 required so children can scroll */
+      overflow-y: auto;
     }
 
     .stats-panel h2,
@@ -131,7 +131,7 @@
 
     /* Chart fill wrapper so axis labels don't get clipped */
     .chart-fill {
-      flex: 1 1 auto;
+      flex: 1;
       min-height: 0;
       position: relative;
       padding-bottom: 10px; /* ✅ room for x-axis labels */
@@ -222,8 +222,9 @@
       
 
       <!-- RIGHT (double height) -->
-      <section class="stats-panel">
+      <section class="stats-panel stats-panel--right">
         <h2>Flights per Airline by Year</h2>
+      
         <div class="chart-fill">
           <canvas id="flightsPerAirlineYearChart"></canvas>
         </div>
