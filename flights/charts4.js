@@ -7,7 +7,7 @@ let yearChart = null;
 let airlineChart = null;
 let baseStatsData = [];
 
-// 🔒 GLOBAL FONT LOCK (prevents dropdown distortion)
+// 🔒 LOCK GLOBAL FONTS (prevents distortion on redraw)
 Chart.defaults.font.family =
   "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto";
 Chart.defaults.font.size = 11;
@@ -55,7 +55,7 @@ function milesPerYear(data) {
 }
 
 // =====================================================
-// RIGHT CHART AGGREGATION (BY AIRLINE + YEAR)
+// RIGHT CHART AGGREGATION (AIRLINE + YEAR)
 // =====================================================
 function aggregateAirlineByYear(data, metric) {
   const map = {};
@@ -136,7 +136,7 @@ function renderYearChart(values) {
 }
 
 // =====================================================
-// RIGHT CHART RENDERER (STACKED, SCROLLABLE)
+// RIGHT CHART RENDERER (STACKED + TOOLTIP SAFE)
 // =====================================================
 function renderAirlineChart(baseData, metric) {
   const canvas = document.getElementById("airlineYearChart");
@@ -171,6 +171,10 @@ function renderAirlineChart(baseData, metric) {
       data: airlines.map(a => Math.round(a.years[year] || 0)),
       backgroundColor: "rgba(201,162,77,0.7)",
 
+      // 🔑 TOOLTIP HIT RELIABILITY
+      hitRadius: 10,
+      hoverRadius: 10,
+
       // subtle year separators
       borderColor: "rgba(255,255,255,0.18)",
       borderWidth: i === 0 ? 0 : 1,
@@ -196,23 +200,30 @@ function renderAirlineChart(baseData, metric) {
       indexAxis: "y",
       responsive: false,
       maintainAspectRatio: false,
+
       animation: {
         duration: 400,
         easing: "easeOutCubic",
       },
 
+      // 🔑 GUARANTEED SEGMENT TOOLTIP
       interaction: {
-        mode: "nearest",
-        intersect: true,
+        mode: "index",
+        axis: "y",
+        intersect: false,
       },
 
       plugins: {
         legend: { display: false },
 
         tooltip: {
+          enabled: true,
+          mode: "index",
+          intersect: false,
+          padding: 8,
           titleFont: { size: 11 },
           bodyFont: { size: 11 },
-          padding: 8,
+
           callbacks: {
             title: items => items[0].dataset.label,
             label: ctx =>
@@ -270,7 +281,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderYearChart(flightsPerYear(baseStatsData));
   renderAirlineChart(baseStatsData, "flights");
 
-  document.getElementById("metricSelector")
+  document
+    .getElementById("metricSelector")
     .addEventListener("change", e => {
       renderYearChart(
         e.target.value === "miles"
@@ -279,7 +291,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
     });
 
-  document.getElementById("airlineMetricSelector")
+  document
+    .getElementById("airlineMetricSelector")
     .addEventListener("change", e => {
       renderAirlineChart(baseStatsData, e.target.value);
     });
