@@ -31,6 +31,36 @@ async function loadStatsBaseData() {
   return data || [];
 }
 
+
+
+// -----------------------------------------------------
+// YEAR NORMALISATION HELPER
+// -----------------------------------------------------
+// Centralised helper to derive a consistent 4-digit year key
+// from route records.
+//
+// Why this exists:
+// - `r.year` may arrive as a number, string, or date-like value
+// - Year extraction logic was previously duplicated across
+//   multiple aggregators (`String(r.year).slice(0, 4)`)
+// - Centralising prevents subtle bugs and makes future
+//   changes (e.g. Date objects) trivial
+//
+// Usage:
+//   const y = yearKey(r);
+//   if (!y) return;   // safely ignore malformed rows
+//
+// IMPORTANT:
+// - Do NOT reintroduce inline year slicing elsewhere
+// - All year-based grouping should use this helper
+//
+function yearKey(r) {
+  if (!r?.year) return null;
+  return String(r.year).slice(0, 4);
+}
+
+
+
 // =====================================================
 // AGGREGATORS — PER YEAR
 // =====================================================
