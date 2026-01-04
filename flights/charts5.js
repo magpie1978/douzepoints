@@ -137,50 +137,50 @@ function flightsPerYearPerAirline(data, topN = 8) {
 }
 
 
-// SECOND REMOVAL //
-//function flightsPerAirlinePerYear(data) {
-//  const map = {};
-//  const airlineTotals = {};
 
-//  data
-//    .filter(r => r.journey_type === "Flight" && r.airline)
-//    .forEach(r => {
-//      const year = String(r.year).slice(0, 4);
+function flightsPerAirlinePerYear(data) {
+  const map = {};
+  const airlineTotals = {};
 
-//      map[r.airline] ??= {};
-//      map[r.airline][year] = (map[r.airline][year] || 0) + 1;
+  data
+    .filter(r => r.journey_type === "Flight" && r.airline)
+    .forEach(r => {
+      const year = String(r.year).slice(0, 4);
 
-//      airlineTotals[r.airline] =
-//        (airlineTotals[r.airline] || 0) + 1;
-//    });
+      map[r.airline] ??= {};
+      map[r.airline][year] = (map[r.airline][year] || 0) + 1;
+
+      airlineTotals[r.airline] =
+        (airlineTotals[r.airline] || 0) + 1;
+    });
 
   // 🔑 ALL airlines, sorted by total desc
-//  const airlines = Object.entries(airlineTotals)
-//    .sort((a, b) => b[1] - a[1])
-//    .map(([airline]) => airline);
+  const airlines = Object.entries(airlineTotals)
+    .sort((a, b) => b[1] - a[1])
+    .map(([airline]) => airline);
 
-//  const years = [
-//    ...new Set(
-//      Object.values(map).flatMap(obj => Object.keys(obj))
-//    ),
-//  ].sort();
+  const years = [
+    ...new Set(
+      Object.values(map).flatMap(obj => Object.keys(obj))
+    ),
+  ].sort();
 
-//  const datasets = years.map(year => ({
-//    label: year,
-//    data: airlines.map(a => map[a]?.[year] || 0),
-//    backgroundColor: "rgba(201,162,77,0.7)",
-//    borderColor: "rgba(201,162,77,0.25)",
-//    borderWidth: 1,
-//    borderRadius:
-//      year === years[years.length - 1]
-//        ? { topRight: 6, bottomRight: 6 }
-//        : 0,
-//    barPercentage: 0.75,
-//    categoryPercentage: 0.8,
-//  }));
+  const datasets = years.map(year => ({
+    label: year,
+    data: airlines.map(a => map[a]?.[year] || 0),
+    backgroundColor: "rgba(201,162,77,0.7)",
+    borderColor: "rgba(201,162,77,0.25)",
+    borderWidth: 1,
+    borderRadius:
+      year === years[years.length - 1]
+        ? { topRight: 6, bottomRight: 6 }
+        : 0,
+    barPercentage: 0.75,
+    categoryPercentage: 0.8,
+  }));
 
-//  return { airlines, years, datasets };
-//}
+  return { airlines, years, datasets };
+}
 
 
 
