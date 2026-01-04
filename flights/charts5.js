@@ -7,6 +7,7 @@ let yearChart = null;
 let baseStatsData = [];
 let viewMode = "year"; // "year" | "alltime"
 
+
 // -----------------------------------------------------
 // GLOBAL FONT LOCK
 // -----------------------------------------------------
@@ -15,6 +16,7 @@ Chart.defaults.font.family =
 Chart.defaults.font.size = 12;
 Chart.defaults.font.weight = "400";
 Chart.defaults.color = "#ccc";
+
 
 // =====================================================
 // LOAD BASE DATA
@@ -36,24 +38,7 @@ async function loadStatsBaseData() {
 // -----------------------------------------------------
 // YEAR NORMALISATION HELPER
 // -----------------------------------------------------
-// Centralised helper to derive a consistent 4-digit year key
-// from route records.
-//
-// Why this exists:
-// - `r.year` may arrive as a number, string, or date-like value
-// - Year extraction logic was previously duplicated across
-//   multiple aggregators (`String(r.year).slice(0, 4)`)
-// - Centralising prevents subtle bugs and makes future
-//   changes (e.g. Date objects) trivial
-//
-// Usage:
-//   const y = yearKey(r);
-//   if (!y) return;   // safely ignore malformed rows
-//
-// IMPORTANT:
-// - Do NOT reintroduce inline year slicing elsewhere
-// - All year-based grouping should use this helper
-//
+// Centralised helper to derive a consistent 4-digit year key from route records.
 function yearKey(r) {
   if (!r?.year) return null;
   return String(r.year).slice(0, 4);
@@ -61,17 +46,6 @@ function yearKey(r) {
 
 
 
-// =====================================================
-// AGGREGATORS — PER YEAR
-// =====================================================
-//function flightsPerYear(data) {
-//  const out = {};
-//  data.filter(r => r.journey_type === "Flight").forEach(r => {
-//    const y = String(r.year).slice(0, 4);
-//    out[y] = (out[y] || 0) + 1;
-//  });
-//  return out;
-//}
 
 
 function flightsPerYear(data) {
@@ -86,10 +60,6 @@ function flightsPerYear(data) {
 
 
 
-
-
-
-
 function milesPerYear(data) {
   const out = {};
   data.filter(r => r.journey_type === "Flight").forEach(r => {
@@ -99,6 +69,7 @@ function milesPerYear(data) {
   });
   return out;
 }
+
 
 
 function airlinesPerYearSets(data) {
@@ -117,6 +88,7 @@ function airlinesPerYearSets(data) {
 }
 
 
+
 function cumulativeDistinctSets(perYearSets) {
   const seen = new Set();
   const out = {};
@@ -130,6 +102,7 @@ function cumulativeDistinctSets(perYearSets) {
 
   return out;
 }
+
 
 
 function countriesPerYearSets(data) {
@@ -190,6 +163,7 @@ function flightsPerYearPerAirline(data, topN = 8) {
 
 
 
+
 function flightsPerAirlinePerYear(data) {
   const map = {};
   const airlineTotals = {};
@@ -237,6 +211,7 @@ function flightsPerAirlinePerYear(data) {
 
 
 
+
 // =====================================================
 // TRANSFORM → CUMULATIVE
 // =====================================================
@@ -251,6 +226,7 @@ function cumulative(valuesByYear) {
     });
   return out;
 }
+
 
 // =====================================================
 // CHART RENDERER
@@ -311,6 +287,7 @@ function renderYearChart(values, metric) {
     },
   });
 }
+
 
 
 
@@ -436,6 +413,7 @@ function renderFlightsPerAirlineByYear(data) {
 }
 
 
+
 // =====================================================
 // METRIC DISPATCH
 // =====================================================
@@ -481,6 +459,7 @@ function getMetricValues(metric) {
         : yearly;
   }
 }
+
 
 
 // =====================================================
