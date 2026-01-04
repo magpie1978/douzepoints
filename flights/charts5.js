@@ -93,7 +93,8 @@ function flightsPerYear(data) {
 function milesPerYear(data) {
   const out = {};
   data.filter(r => r.journey_type === "Flight").forEach(r => {
-    const y = String(r.year).slice(0, 4);
+    const y = yearKey(r);
+    if (!y) return;          // ⛔ skip invalid/missing years
     out[y] = (out[y] || 0) + (r.journey_distance || 0);
   });
   return out;
@@ -106,7 +107,8 @@ function airlinesPerYearSets(data) {
   data
     .filter(r => r.journey_type === "Flight" && r.airline)
     .forEach(r => {
-      const y = String(r.year).slice(0, 4);
+    const y = yearKey(r);
+    if (!y) return;          // ⛔ skip invalid/missing years
       map[y] ??= new Set();
       map[y].add(r.airline);
     });
@@ -136,7 +138,8 @@ function countriesPerYearSets(data) {
   data
     .filter(r => r.journey_type === "Flight" && r.destination_country)
     .forEach(r => {
-      const y = String(r.year).slice(0, 4);
+    const y = yearKey(r);
+    if (!y) return;          // ⛔ skip invalid/missing years
       map[y] ??= new Set();
       map[y].add(r.destination_country);
     });
@@ -153,7 +156,8 @@ function flightsPerYearPerAirline(data, topN = 8) {
   data
     .filter(r => r.journey_type === "Flight" && r.airline)
     .forEach(r => {
-      const year = String(r.year).slice(0, 4);
+    const y = yearKey(r);
+    if (!y) return;          // ⛔ skip invalid/missing years
 
       map[year] ??= {};
       map[year][r.airline] = (map[year][r.airline] || 0) + 1;
@@ -193,7 +197,8 @@ function flightsPerAirlinePerYear(data) {
   data
     .filter(r => r.journey_type === "Flight" && r.airline)
     .forEach(r => {
-      const year = String(r.year).slice(0, 4);
+    const y = yearKey(r);
+    if (!y) return;          // ⛔ skip invalid/missing years
 
       map[r.airline] ??= {};
       map[r.airline][year] = (map[r.airline][year] || 0) + 1;
