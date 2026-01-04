@@ -136,7 +136,7 @@ function flightsPerYearPerAirline(data, topN = 8) {
   return { years, datasets };
 }
 
-function flightsPerAirlinePerYear(data, topN = 8) {
+function flightsPerAirlinePerYear(data) {
   const map = {};
   const airlineTotals = {};
 
@@ -152,34 +152,32 @@ function flightsPerAirlinePerYear(data, topN = 8) {
         (airlineTotals[r.airline] || 0) + 1;
     });
 
-  // Top airlines by total flights
-  const topAirlines = Object.entries(airlineTotals)
+  // 🔑 ALL airlines, sorted by total desc
+  const airlines = Object.entries(airlineTotals)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, topN)
     .map(([airline]) => airline);
 
-  // All years, ascending
   const years = [
     ...new Set(
-      Object.values(map)
-        .flatMap(obj => Object.keys(obj))
+      Object.values(map).flatMap(obj => Object.keys(obj))
     ),
   ].sort();
 
   const datasets = years.map(year => ({
     label: year,
-    data: topAirlines.map(a => map[a]?.[year] || 0),
+    data: airlines.map(a => map[a]?.[year] || 0),
     backgroundColor: "rgba(201,162,77,0.7)",
     borderColor: "rgba(201,162,77,0.25)",
     borderWidth: 1,
-    borderRadius: year === years[years.length - 1]
-      ? { topRight: 6, bottomRight: 6 }
-      : 0,
+    borderRadius:
+      year === years[years.length - 1]
+        ? { topRight: 6, bottomRight: 6 }
+        : 0,
     barPercentage: 0.75,
     categoryPercentage: 0.8,
   }));
 
-  return { airlines: topAirlines, years, datasets };
+  return { airlines, years, datasets };
 }
 
 
@@ -480,11 +478,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnYear = document.getElementById("btnYear");
   const btnAllTime = document.getElementById("btnAllTime");
   
-  const perYearAirlineData = flightsPerYearPerAirline(baseStatsData, 8);
+  const perYearAirlineData = flightsPerYearPerAirline(baseStatsData);
   renderFlightsPerYearPerAirline(perYearAirlineData);
 
 
-  const airlineYearData = flightsPerAirlinePerYear(baseStatsData, 8);
+  const airlineYearData = flightsPerAirlinePerYear(baseStatsData);
   renderFlightsPerAirlineByYear(airlineYearData);
   
   function refresh() {
