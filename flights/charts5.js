@@ -64,14 +64,31 @@ function yearKey(r) {
 // =====================================================
 // AGGREGATORS — PER YEAR
 // =====================================================
+//function flightsPerYear(data) {
+//  const out = {};
+//  data.filter(r => r.journey_type === "Flight").forEach(r => {
+//    const y = String(r.year).slice(0, 4);
+//    out[y] = (out[y] || 0) + 1;
+//  });
+//  return out;
+//}
+
+
 function flightsPerYear(data) {
   const out = {};
   data.filter(r => r.journey_type === "Flight").forEach(r => {
-    //const y = String(r.year).slice(0, 4);
-    out[y] = (out[y] || 0) + 1;
-  });
+    const y = yearKey(r);
+    if (!y) return;          // ⛔ skip invalid/missing years
+      out[y] = (out[y] || 0) + 1;
+    });
   return out;
 }
+
+
+
+
+
+
 
 function milesPerYear(data) {
   const out = {};
