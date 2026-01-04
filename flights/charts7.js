@@ -221,30 +221,75 @@ function renderAirlineChart(data) {
   if (!canvas) return;
 
   const ROW_HEIGHT = 36;
-  canvas.height = data.airlines.length * ROW_HEIGHT;
-  canvas.style.height = `${canvas.height}px`;
+  const dpr = window.devicePixelRatio || 1;
+
+  const cssHeight = data.airlines.length * ROW_HEIGHT;
+  const cssWidth = canvas.parentElement.clientWidth;
+
+  // 1️⃣ CSS size (layout & scroll)
+  canvas.style.height = `${cssHeight}px`;
+  canvas.style.width = "100%";
+
+  // 2️⃣ Internal bitmap size (sharpness)
+  canvas.width = cssWidth * dpr;
+  canvas.height = cssHeight * dpr;
+
+  const ctx = canvas.getContext("2d");
+
+  // 3️⃣ Scale drawing context
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   if (airlineYearChart) airlineYearChart.destroy();
 
-  airlineYearChart = new Chart(canvas.getContext("2d"), {
+  airlineYearChart = new Chart(ctx, {
     type: "bar",
     data: {
       labels: data.airlines,
-      datasets: data.datasets
+      datasets: data.datasets,
     },
     options: {
-      indexAxis: "y",
-      responsive: false,
+      responsive: false,          // 🔑 REQUIRED
       maintainAspectRatio: false,
       animation: false,
+      indexAxis: "y",
+
       scales: {
-        x: { stacked: true },
-        y: { stacked: true, autoSkip: false }
+        x: {
+          stacked: true,
+          ticks: {
+            color: "#ccc",
+            font: { size: 12 },
+          },
+          grid: {
+            color: "rgba(255,255,255,0.08)",
+          },
+        },
+        y: {
+          stacked: true,
+          autoSkip: false,
+          ticks: {
+            color: "#ccc",
+            font: { size: 22 },   // airline labels
+            padding: 12,
+          },
+          grid: { display: false },
+        },
       },
-      plugins: { legend: { display: false } }
-    }
+
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: items => items[0].label,
+            label: ctx =>
+              `${ctx.dataset.label}: ${ctx.raw.toLocaleString()}`,
+          },
+        },
+      },
+    },
   });
 }
+
 
 // =====================================================
 // INIT
