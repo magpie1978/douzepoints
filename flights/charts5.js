@@ -263,6 +263,46 @@ function renderYearChart(values, metric) {
 
 let airlineYearStackedChart = null;
 
+function renderFlightsPerAirlineByYear(data) {
+  const canvas = document.getElementById("flightsPerAirlineYearChart");
+  if (!canvas) return;
+
+  const ROW_HEIGHT = 36;
+  const height = data.airlines.length * ROW_HEIGHT;
+
+  canvas.style.height = `${height}px`;
+  canvas.height = height;
+
+  const ctx = canvas.getContext("2d");
+
+  if (airlineYearHorizontalChart) {
+    airlineYearHorizontalChart.destroy();
+  }
+
+  airlineYearHorizontalChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: data.airlines,
+      datasets: data.datasets,
+    },
+    options: {
+      indexAxis: "y",
+      responsive: false,
+      maintainAspectRatio: false,
+      animation: false,
+      scales: {
+        x: { stacked: true },
+        y: { stacked: true },
+      },
+      plugins: {
+        legend: { display: false },
+      },
+    },
+  });
+}
+
+
+
 function renderFlightsPerYearPerAirline(data) {
   const canvas = document.getElementById("flightsPerYearAirlineChart");
   if (!canvas) return;
@@ -367,30 +407,6 @@ function renderFlightsPerAirlineByYear(data) {
     },
   });
 }
-
-
-
-// =====================================================
-// SCROLL BAR
-// =====================================================
-const ROW_HEIGHT = 36;            // height per airline
-const canvasHeight = airlines.length * ROW_HEIGHT;
-
-canvas.style.height = `${canvasHeight}px`;
-canvas.height = canvasHeight;
-
-new Chart(ctx, {
-  type: "bar",
-  data,
-  options: {
-    indexAxis: "y",
-    responsive: false,            // 🔑 REQUIRED
-    maintainAspectRatio: false,
-    animation: false,
-    ...
-  }
-});
-
 
 
 
