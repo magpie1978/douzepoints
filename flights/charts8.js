@@ -98,7 +98,7 @@ function countriesPerYearSets(data) {
 }
 
 
-function flightsPerYearPerAirline(data) {
+function flightsPerYearPerAirline(data, topN = 8) {
   const map = {};
   const airlineTotals = {};
 
@@ -136,7 +136,7 @@ function flightsPerYearPerAirline(data) {
   return { years, datasets };
 }
 
-function flightsPerAirlinePerYear(data) {
+function flightsPerAirlinePerYear(data, topN = 8) {
   const map = {};
   const airlineTotals = {};
 
