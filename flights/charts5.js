@@ -359,6 +359,17 @@ function renderFlightsPerAirlineByYear(data) {
   const canvas = document.getElementById("flightsPerAirlineYearChart");
   if (!canvas) return;
 
+  // ----------------------------
+  // SCROLL + SIZE CONFIG
+  // ----------------------------
+  const ROW_HEIGHT = 36;               // visual height per airline
+  const totalRows = data.airlines.length;
+  const totalHeight = totalRows * ROW_HEIGHT;
+
+  // Make canvas taller than container
+  canvas.style.height = `${totalHeight}px`;
+  canvas.height = totalHeight;
+
   const ctx = canvas.getContext("2d");
 
   if (airlineYearHorizontalChart) {
@@ -372,15 +383,17 @@ function renderFlightsPerAirlineByYear(data) {
       datasets: data.datasets,
     },
     options: {
-      indexAxis: "y",
-      responsive: true,
+      // 🔑 CRITICAL FOR SCROLL
+      responsive: false,
       maintainAspectRatio: false,
-      animation: { duration: 400, easing: "easeOutQuart" },
+      animation: false,
+
+      indexAxis: "y",
 
       scales: {
         x: {
           stacked: true,
-          ticks: { font: { size: 11 } },
+          ticks: { font: { size: 11 }, color: "#ccc" },
           grid: { color: "rgba(255,255,255,0.08)" },
         },
         y: {
@@ -388,6 +401,8 @@ function renderFlightsPerAirlineByYear(data) {
           ticks: {
             font: { size: 11 },
             padding: 10,
+            autoSkip: false,   // 🔑 show every airline
+            color: "#ccc",
           },
           grid: { display: false },
         },
@@ -397,8 +412,7 @@ function renderFlightsPerAirlineByYear(data) {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            title: items =>
-              `${items[0].label}`,
+            title: items => items[0].label,
             label: ctx =>
               `${ctx.dataset.label}: ${ctx.raw} flights`,
           },
@@ -407,7 +421,6 @@ function renderFlightsPerAirlineByYear(data) {
     },
   });
 }
-
 
 
 // =====================================================
