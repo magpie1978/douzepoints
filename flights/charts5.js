@@ -261,43 +261,45 @@ function renderYearChart(values, metric) {
 
 let airlineYearStackedChart = null;
 
-function renderFlightsPerAirlineByYear(data) {
-  const canvas = document.getElementById("flightsPerAirlineYearChart");
-  if (!canvas) return;
+// FUNCTION REMOVED 4 JAN AS DUPLICATED //
 
-  const ROW_HEIGHT = 36;
-  const height = data.airlines.length * ROW_HEIGHT;
+//function renderFlightsPerAirlineByYear(data) {
+//  const canvas = document.getElementById("flightsPerAirlineYearChart");
+//  if (!canvas) return;
 
-  canvas.style.height = `${height}px`;
-  canvas.height = height;
+//  const ROW_HEIGHT = 36;
+//  const height = data.airlines.length * ROW_HEIGHT;
 
-  const ctx = canvas.getContext("2d");
+//  canvas.style.height = `${height}px`;
+//  canvas.height = height;
 
-  if (airlineYearHorizontalChart) {
-    airlineYearHorizontalChart.destroy();
-  }
+//  const ctx = canvas.getContext("2d");
 
-  airlineYearHorizontalChart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: data.airlines,
-      datasets: data.datasets,
-    },
-    options: {
-      indexAxis: "y",
-      responsive: false,
-      maintainAspectRatio: false,
-      animation: false,
-      scales: {
-        x: { stacked: true },
-        y: { stacked: true },
-      },
-      plugins: {
-        legend: { display: false },
-      },
-    },
-  });
-}
+//  if (airlineYearHorizontalChart) {
+//    airlineYearHorizontalChart.destroy();
+//  }
+
+//  airlineYearHorizontalChart = new Chart(ctx, {
+//    type: "bar",
+//    data: {
+//      labels: data.airlines,
+//      datasets: data.datasets,
+//    },
+//    options: {
+//      indexAxis: "y",
+//      responsive: false,
+//      maintainAspectRatio: false,
+//      animation: false,
+//      scales: {
+//        x: { stacked: true },
+//        y: { stacked: true },
+//      },
+//      plugins: {
+//        legend: { display: false },
+//      },
+//    },
+//  });
+//}
 
 
 
