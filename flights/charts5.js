@@ -98,44 +98,44 @@ function countriesPerYearSets(data) {
 }
 
 
-// REMOVED 4 JAN //
-//function flightsPerYearPerAirline(data, topN = 8) {
-//  const map = {};
-//  const airlineTotals = {};
 
-//  data
-//    .filter(r => r.journey_type === "Flight" && r.airline)
-//    .forEach(r => {
-//      const year = String(r.year).slice(0, 4);
+function flightsPerYearPerAirline(data, topN = 8) {
+  const map = {};
+  const airlineTotals = {};
 
-//      map[year] ??= {};
-//      map[year][r.airline] = (map[year][r.airline] || 0) + 1;
+  data
+    .filter(r => r.journey_type === "Flight" && r.airline)
+    .forEach(r => {
+      const year = String(r.year).slice(0, 4);
 
-//      airlineTotals[r.airline] =
-//        (airlineTotals[r.airline] || 0) + 1;
-//    });
+      map[year] ??= {};
+      map[year][r.airline] = (map[year][r.airline] || 0) + 1;
+
+      airlineTotals[r.airline] =
+        (airlineTotals[r.airline] || 0) + 1;
+    });
 
   // Top airlines by total flights
-//  const topAirlines = Object.entries(airlineTotals)
-//    .sort((a, b) => b[1] - a[1])
-//    .slice(0, topN)
-//    .map(([airline]) => airline);
+  const topAirlines = Object.entries(airlineTotals)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, topN)
+    .map(([airline]) => airline);
 
-//  const years = Object.keys(map).sort();
+  const years = Object.keys(map).sort();
 
-//  const datasets = topAirlines.map(airline => ({
-//    label: airline,
-//    data: years.map(y => map[y]?.[airline] || 0),
-//    backgroundColor: "rgba(201,162,77,0.7)",
-//    borderColor: "rgba(201,162,77,0.25)",
-//    borderWidth: 1,
-//    borderRadius: 4,
-//    barPercentage: 0.8,
-//    categoryPercentage: 0.8,
-//  }));
+  const datasets = topAirlines.map(airline => ({
+    label: airline,
+    data: years.map(y => map[y]?.[airline] || 0),
+    backgroundColor: "rgba(201,162,77,0.7)",
+    borderColor: "rgba(201,162,77,0.25)",
+    borderWidth: 1,
+    borderRadius: 4,
+    barPercentage: 0.8,
+    categoryPercentage: 0.8,
+  }));
 
-//  return { years, datasets };
-//}
+  return { years, datasets };
+}
 
 
 
