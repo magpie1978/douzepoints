@@ -370,6 +370,28 @@ function renderFlightsPerAirlineByYear(data) {
 
 
 
+// =====================================================
+// SCROLL BAR
+// =====================================================
+const ROW_HEIGHT = 36;            // height per airline
+const canvasHeight = airlines.length * ROW_HEIGHT;
+
+canvas.style.height = `${canvasHeight}px`;
+canvas.height = canvasHeight;
+
+new Chart(ctx, {
+  type: "bar",
+  data,
+  options: {
+    indexAxis: "y",
+    responsive: false,            // 🔑 REQUIRED
+    maintainAspectRatio: false,
+    animation: false,
+    ...
+  }
+});
+
+
 
 
 // =====================================================
