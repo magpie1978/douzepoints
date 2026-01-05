@@ -14,27 +14,23 @@ const AIRLINE_LOGO_BASE = "/flights/tailfins/";
 /*const AIRLINE_LOGO_BASE = "https://raw.githubusercontent.com/magpie1978/douzepoints/main/tailfins/"; */
 
 const airlineLogoMap = {
-  "Ryanair": "Ryanair.webp",
-  "Bamboo Airlines": "BambooAirlines.webp",
-  "British Airways": "BritishAirways.webp",
-  "EasyJet": "easyJet.webp",
-  "Wizz Air": "WizzAir.webp",
-  "ITA Airways": "ITA.webp",
   "Aegean": "Aegean.webp",
   "Aer Lingus": "AerLingus.webp",
   "Air Asia": "AirAsia.webp",
-  "Air Serbia": "AirSerbia.webp",
   "Alaska Airways": "Alaska.webp",
   "American Airlines": "American.webp",
+  "British Airways": "BritishAirways.webp",
   "Brussels Airlines": "Brussels.webp",
   "Buzz": "BuzzRyanair.webp",
   "Cathay Pacific": "CathayPacific.webp",
   "Delta Airlines": "Delta.webp",
+  "EasyJet": "easyJet.webp",
   "Emirates": "Emirates.webp",
   "Eurowings": "Eurowings.webp",
   "Finnair": "Finnair.webp",
   "GOL": "Gol.webp",
   "Iberia": "Iberia.webp",
+  "ITA Airways": "ITA.webp",
   "Jet2.com": "Jet2.webp",
   "Jetstar": "Jetstar.webp",
   "Lufthansa": "Lufthansa.webp",
@@ -42,6 +38,7 @@ const airlineLogoMap = {
   "Norwegian": "Norwegian.webp",
   "Qantas": "Qantas.webp",
   "Qatar Airways": "QatarAirways.webp",
+  "Ryanair": "Ryanair.webp",
   "SAS": "SAS.webp",
   "Singapore Airlines": "SingaporeAirlines.webp",
   "Swiss": "Swiss.webp",
@@ -53,4 +50,5 @@ const airlineLogoMap = {
   "Volotea": "Volotea.webp",
   "WestJet": "WestJet.webp",
   "Vueling": "Vueling.webp"
+  "Wizz Air": "WizzAir.webp"
 };
