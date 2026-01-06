@@ -12,7 +12,6 @@
 
 .carousel-video-item {
   cursor: pointer;
-  /* background-color: #1a1a1a; */
   background-color: #181a24;
   padding: 10px;
   border-radius: 8px;
@@ -70,7 +69,7 @@
   justify-content: flex-end;
   align-items: center;
   padding-right: 10px;
-  width: 30%; /* Adjust width as needed */
+  width: 30%;
   box-sizing: border-box;
 }
 
@@ -117,9 +116,9 @@
 
 /* DNQ special styling */
 .score-circle.dnq {
-  color: #e50914;       /* Eurovision red */
-  border-color: #e50914; /* Red border */
-  font-size: 10px;       /* Slightly smaller text for DNQ */
+  color: #e50914;
+  border-color: #e50914;
+  font-size: 10px;
 }
 
 
@@ -128,8 +127,8 @@
   }
 
 .video-title-text a {
-  text-decoration: none; /* Remove underline */
-  color: inherit;         /* Inherit color from surrounding text */
+  text-decoration: none;
+  color: inherit;
 }
 
 .modal {
