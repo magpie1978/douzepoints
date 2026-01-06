@@ -136,23 +136,3 @@ document.addEventListener("click", (e) => {
     GDriveCloseModal(e);
   }
 });
-
-
-
-
-/* -------------------------------------------------------------
-   6. ESC KEY TO CLOSE MODAL (ROBUST)
-------------------------------------------------------------- */
-
-window.addEventListener(
-  "keydown",
-  (e) => {
-    if (e.key !== "Escape") return;
-
-    const modal = document.getElementById("videoModal");
-    if (!modal || !modal.classList.contains("show")) return;
-
-    GDriveCloseModal(e);
-  },
-  true // 👈 capture phase (CRITICAL)
-);
