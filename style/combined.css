@@ -152,6 +152,7 @@ h4 {
    VIDEO MODAL – FADE ANIMATION
 ===================================================== */
 
+
 #videoModal {
   position: fixed;
   inset: 0;
@@ -171,6 +172,11 @@ h4 {
     opacity 1000ms ease,
     visibility 0s linear 1250ms;
 }
+
+
+
+
+
 
 /* Visible state */
 #videoModal.show {
@@ -210,14 +216,19 @@ h4 {
   max-height: 85vh;
   background: #000;
   border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
+  /*display: flex;*/
+  /*align-items: center;*/
+  /*justify-content: center;*/
+ /* padding: 0;*/
   overflow: hidden;
   position: relative;  /* NEW */
-  
 }
+
+
+
+
+
+
 #videoModal.show .modal-content {
   transform: scale(1);
 }
@@ -226,7 +237,7 @@ h4 {
 /* =====================================================
    ENSURE VIDEO & IFRAME FILL THE CONTAINER
 ===================================================== */
-#videoModal video,
+/*#videoModal video,
 #videoModal iframe {
   width: 100%;
   height: 100%;
@@ -234,8 +245,17 @@ h4 {
   background: #000;
   object-fit: contain;
 }
+*/
 
-
+/* Video / iframe fill frame */
+#videoModal video,
+#videoModal iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: none;
+  background: #000;
+}
 
 
 /* Accessibility: reduce motion */
@@ -253,11 +273,11 @@ h4 {
 /* =====================================================
    VIDEO CLOSE BUTTON
 ===================================================== */
+/*
 #videoModal .close-btn {
   position: absolute;
-  top: -18px;    /* 👈 slightly above the frame */
-  right: -18px; /* 👈 slightly outside the frame */
-
+  top: -18px;    
+  right: -18px; 
   width: 36px;
   height: 36px;
 
@@ -273,6 +293,27 @@ h4 {
   z-index: 20;
 
   transition: background 150ms ease;
+}
+*/
+
+#videoModal .close-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  font-size: 22px;
+  line-height: 34px;
+  text-align: center;
+
+  cursor: pointer;
+  z-index: 20;
+  border: none;
 }
 
 #videoModal .close-btn:hover {
