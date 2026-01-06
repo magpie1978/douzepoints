@@ -537,7 +537,24 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
   }
 
 
+  // ------------------------------------------------------------
+  // ERROR TRAPPING (TEMP)
+  // ------------------------------------------------------------
+  const { error } = await supabase
+    .from("watch_history")
+    .upsert({
+      user_id: user.id,
+      video_lookup: videoId,
+      seconds_watched: current,
+      updated_at: new Date().toISOString()
+    });
 
+  if (error) {
+    console.error("[watch_history insert failed]", error);
+  }
+
+
+  
   
   // ------------------------------------------------------------
   // EXPORTS
