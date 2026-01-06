@@ -206,19 +206,17 @@ h4 {
 #videoModal .modal-content {
   width: 92vw;
   max-width: 1400px;
-
   height: 80vh;
   max-height: 85vh;
-
   background: #000;
   border-radius: 12px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  padding: 0; /* 👈 remove wasted space */
+  padding: 0;
   overflow: hidden;
+  position: relative;  /* NEW */
+  
 }
 #videoModal.show .modal-content {
   transform: scale(1);
@@ -246,4 +244,37 @@ h4 {
   #videoModal .modal-content {
     transition: none;
   }
+}
+
+
+
+
+
+/* =====================================================
+   VIDEO CLOSE BUTTON
+===================================================== */
+#videoModal .close-btn {
+  position: absolute;
+  top: -18px;    /* 👈 slightly above the frame */
+  right: -18px; /* 👈 slightly outside the frame */
+
+  width: 36px;
+  height: 36px;
+
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 36px;
+  text-align: center;
+
+  cursor: pointer;
+  z-index: 20;
+
+  transition: background 150ms ease;
+}
+
+#videoModal .close-btn:hover {
+  background: rgba(0, 0, 0, 0.95);
 }
