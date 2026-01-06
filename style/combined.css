@@ -168,8 +168,8 @@ h4 {
   pointer-events: none;
 
   transition:
-    opacity 250ms ease,
-    visibility 0s linear 250ms;
+    opacity 1250ms ease,
+    visibility 0s linear 1250ms;
 }
 
 /* Visible state */
@@ -179,14 +179,14 @@ h4 {
   pointer-events: auto;
 
   transition:
-    opacity 250ms ease,
+    opacity 1250ms ease,
     visibility 0s linear 0s;
 }
 
 /* Optional: subtle zoom on modal content */
 #videoModal .modal-content {
   transform: scale(0.96);
-  transition: transform 250ms ease;
+  transition: transform 1250ms ease;
 }
 
 #videoModal.show .modal-content {
