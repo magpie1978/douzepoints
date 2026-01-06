@@ -183,15 +183,62 @@ h4 {
     visibility 0s linear 0s;
 }
 
-/* Optional: subtle zoom on modal content */
+
+
+/* =========================================================
+   REMOVED AND REPLACED WITH LARGE PLAYER LAYOUT CODE BELOW
+========================================================= */
+/* Optional: subtle zoom on modal content 
 #videoModal .modal-content {
   transform: scale(0.96);
   transition: transform 1000ms ease;
 }
+*/
 
+
+
+
+
+/* =====================================================
+   VIDEO MODAL – LARGE PLAYER LAYOUT
+===================================================== */
+
+#videoModal .modal-content {
+  width: 92vw;
+  max-width: 1400px;
+
+  height: 80vh;
+  max-height: 85vh;
+
+  background: #000;
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0; /* 👈 remove wasted space */
+  overflow: hidden;
+}
 #videoModal.show .modal-content {
   transform: scale(1);
 }
+
+
+/* =====================================================
+   ENSURE VIDEO & IFRAME FILL THE CONTAINER
+===================================================== */
+#videoModal video,
+#videoModal iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #000;
+  object-fit: contain;
+}
+
+
+
 
 /* Accessibility: reduce motion */
 @media (prefers-reduced-motion: reduce) {
