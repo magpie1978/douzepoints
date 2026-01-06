@@ -1,22 +1,45 @@
-<!-- modal.html -->
+<!-- modal.html 
 <div id="videoModal" class="modal">
 
-    <!-- Close Button (ALWAYS inside the modal so it hides correctly) -->
+    <!-- Close Button (ALWAYS inside the modal so it hides correctly) -
     <span class="close-button" onclick="GDriveCloseModal(event)">×</span>
 
     <div class="modal-content">
 
-        <!-- Standard MP4 Video -->
+        <!-- Standard MP4 Video -
         <video id="modalVideo" controls playsinline></video>
 
-        <!-- Google Drive Iframe Preview -->
+        <!-- Google Drive Iframe Preview -
         <iframe id="modalIframe" allowfullscreen></iframe>
 
     </div>
 </div>
+-->
 
+
+<!-- modal.html -->
+<div id="videoModal" class="modal">
+
+  <div class="modal-content">
+
+    <!-- Close button now anchored to video frame -->
+    <button class="close-button" aria-label="Close video" onclick="GDriveCloseModal(event)">×</button>
+
+    <!-- MP4 -->
+    <video id="modalVideo" controls playsinline></video>
+
+    <!-- Google Drive -->
+    <iframe id="modalIframe" allowfullscreen></iframe>
+
+  </div>
+</div>
+
+
+
+
+<!--
 <style>
-/* ----------- MODAL CONTAINER ----------- */
+----------- MODAL CONTAINER ----------- 
 .modal {
   display: none;                     /* fully hidden by default */
   position: fixed;
@@ -69,3 +92,4 @@
   display: none;    /* both hidden until open() picks which one */
 }
 </style>
+-->
