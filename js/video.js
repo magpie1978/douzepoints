@@ -520,19 +520,33 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
         });
     });
   
-    videoEl.addEventListener("ended", async () => {
-      const session = (await supabase.auth.getSession()).data.session;
-      const user = session?.user;
-      if (!user) return;
-  
-      await supabase
-        .from("watch_history")
-        .upsert({
-          user_id: user.id,
-          video_lookup: videoId,
-          completed: true,
-          updated_at: new Date().toISOString()
-        });
+      videoEl.addEventListener("timeupdate", async () => {
+        if (!window.supabaseClient) return;
+      
+        const current = Math.floor(videoEl.currentTime);
+      
+        if (current - lastSavedSecond < 10) return;
+        lastSavedSecond = current;
+      
+        const session = (await supabase.auth.getSession()).data.session;
+        const user = session?.user;
+        if (!user) return;
+      
+        const { error } = await supabase
+          .from("watch_history")
+          .upsert({
+            user_id: user.id,
+            video_lookup: videoId,
+            seconds_watched: current,
+            updated_at: new Date().toISOString()
+          });
+      
+        if (error) {
+          console.error("[watch_history INSERT ERROR]", error);
+        } else {
+          console.log("[watch_history SAVED]", videoId, current);
+        }
+      });
     });
   }
 
