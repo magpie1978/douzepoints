@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   1. PRELOAD modal.html INTO #modal-container
+   1. PRELOAD modal.html INTO #modal-container 
 ------------------------------------------------------------- */
 
 window.modalReady = new Promise((resolve) => {
