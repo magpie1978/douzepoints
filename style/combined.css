@@ -142,3 +142,61 @@ h4 {
   color: #e50914;
   text-decoration: none;
 }
+
+
+
+
+
+
+/* =====================================================
+   VIDEO MODAL – FADE ANIMATION
+===================================================== */
+
+#videoModal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0, 0, 0, 0.85);
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    opacity 250ms ease,
+    visibility 0s linear 250ms;
+}
+
+/* Visible state */
+#videoModal.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+
+  transition:
+    opacity 250ms ease,
+    visibility 0s linear 0s;
+}
+
+/* Optional: subtle zoom on modal content */
+#videoModal .modal-content {
+  transform: scale(0.96);
+  transition: transform 250ms ease;
+}
+
+#videoModal.show .modal-content {
+  transform: scale(1);
+}
+
+/* Accessibility: reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  #videoModal,
+  #videoModal .modal-content {
+    transition: none;
+  }
+}
