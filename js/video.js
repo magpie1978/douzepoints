@@ -545,4 +545,5 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
   window.renderVideos = renderVideos;
   window.scrollCarousel = scrollCarousel;
   window.ensureFavoritesLoaded = ensureFavoritesLoaded;
+  window.attachWatchTracking = attachWatchTracking;
 })();
