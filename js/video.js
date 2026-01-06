@@ -482,73 +482,65 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
 // -------------------------------------------------------------
 // WATCH TRACKING
 // -------------------------------------------------------------
-  function attachWatchTracking(videoEl, entry) {
-    if (!videoEl || !entry?.Video_Lookup) return;
-  
-    const videoId = entry.Video_Lookup;
-    let lastSavedSecond = 0;
-  
-    // Remove any previous handlers (IMPORTANT)
-    videoEl.onplay = null;
-    videoEl.ontimeupdate = null;
-    videoEl.onended = null;
-  
-    videoEl.addEventListener("play", () => {
-      // Optional: console.log("▶ play", videoId);
-    });
-  
-    videoEl.addEventListener("timeupdate", async () => {
-      if (!window.supabaseClient) return;
-  
-      const current = Math.floor(videoEl.currentTime);
-  
-      // Save every 10 seconds
-      if (current - lastSavedSecond < 10) return;
-      lastSavedSecond = current;
-  
-      const session = (await supabase.auth.getSession()).data.session;
-      const user = session?.user;
-      if (!user) return;
-  
-      await supabase
-        .from("watch_history")
-        .upsert({
-          user_id: user.id,
-          video_lookup: videoId,
-          seconds_watched: current,
-          updated_at: new Date().toISOString()
-        });
-    });
-  
-      videoEl.addEventListener("timeupdate", async () => {
-        if (!window.supabaseClient) return;
-      
-        const current = Math.floor(videoEl.currentTime);
-      
-        if (current - lastSavedSecond < 10) return;
-        lastSavedSecond = current;
-      
-        const session = (await supabase.auth.getSession()).data.session;
-        const user = session?.user;
-        if (!user) return;
-      
-        const { error } = await supabase
-          .from("watch_history")
-          .upsert({
-            user_id: user.id,
-            video_lookup: videoId,
-            seconds_watched: current,
-            updated_at: new Date().toISOString()
-          });
-      
-        if (error) {
-          console.error("[watch_history INSERT ERROR]", error);
-        } else {
-          console.log("[watch_history SAVED]", videoId, current);
-        }
+function attachWatchTracking(videoEl, entry) {
+  if (!videoEl || !entry?.Video_Lookup) return;
+
+  const videoId = entry.Video_Lookup;
+  let lastSavedSecond = 0;
+
+  // Remove any previous inline handlers
+  videoEl.onplay = null;
+  videoEl.ontimeupdate = null;
+  videoEl.onended = null;
+
+  videoEl.addEventListener("play", () => {
+    console.log("[watch] play", videoId);
+  });
+
+  videoEl.addEventListener("timeupdate", async () => {
+    if (!window.supabaseClient) return;
+
+    const current = Math.floor(videoEl.currentTime);
+
+    // Save every 10 seconds
+    if (current - lastSavedSecond < 10) return;
+    lastSavedSecond = current;
+
+    const session = (await supabase.auth.getSession()).data.session;
+    const user = session?.user;
+    if (!user) return;
+
+    const { error } = await supabase
+      .from("watch_history")
+      .upsert({
+        user_id: user.id,
+        video_lookup: videoId,
+        seconds_watched: current,
+        updated_at: new Date().toISOString()
       });
-    });
-  }
+
+    if (error) {
+      console.error("[watch_history INSERT ERROR]", error);
+    } else {
+      console.log("[watch_history SAVED]", videoId, current);
+    }
+  });
+
+  videoEl.addEventListener("ended", async () => {
+    const session = (await supabase.auth.getSession()).data.session;
+    const user = session?.user;
+    if (!user) return;
+
+    await supabase
+      .from("watch_history")
+      .upsert({
+        user_id: user.id,
+        video_lookup: videoId,
+        completed: true,
+        updated_at: new Date().toISOString()
+      });
+  });
+}
 
 
  
