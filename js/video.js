@@ -41,17 +41,17 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
       return;
     }
 
-    //const { data } = await supabase.auth.getUser();
-    //const user = data?.user || null;
+    const { data } = await supabase.auth.getUser();
+    const user = data?.user || null;
 
-    //if (!user) {
-    //  currentUser = null;
-    //  favoriteIds = new Set();
-    //  favoritesLoaded = true;
-    //  return;
+    if (!user) {
+      currentUser = null;
+      favoriteIds = new Set();
+      favoritesLoaded = true;
+      return;
     }
 
-    //currentUser = user;
+    currentUser = user;
 
     const { data: favRows, error } = await supabase
       .from("user_favorites")
