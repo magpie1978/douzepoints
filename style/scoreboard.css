@@ -1,14 +1,3 @@
-body {
-  font-family: 'Raleway', sans-serif;
-  background: #0f111a;
-  color: #ccc;
-  margin: 0;
-}
-
-.main-content {
-  padding: 20px;
-}
-
 /* Keep everything aligned to same width as table */
 .table-aligned-container {
   max-width: 1280px;
