@@ -91,6 +91,7 @@ body {
   padding: 20px;
 }
 
+
 .grid-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -144,14 +145,9 @@ h4 {
 }
 
 
-
-
-
-
 /* =====================================================
    VIDEO MODAL – FADE ANIMATION
 ===================================================== */
-
 
 #videoModal {
   position: fixed;
@@ -174,10 +170,6 @@ h4 {
 }
 
 
-
-
-
-
 /* Visible state */
 #videoModal.show {
   opacity: 1;
@@ -188,21 +180,6 @@ h4 {
     opacity 1000ms ease,
     visibility 0s linear 0s;
 }
-
-
-
-/* =========================================================
-   REMOVED AND REPLACED WITH LARGE PLAYER LAYOUT CODE BELOW
-========================================================= */
-/* Optional: subtle zoom on modal content 
-#videoModal .modal-content {
-  transform: scale(0.96);
-  transition: transform 1000ms ease;
-}
-*/
-
-
-
 
 
 /* =====================================================
@@ -216,17 +193,9 @@ h4 {
   max-height: 85vh;
   background: #000;
   border-radius: 12px;
-  /*display: flex;*/
-  /*align-items: center;*/
-  /*justify-content: center;*/
- /* padding: 0;*/
   overflow: hidden;
-  position: relative;  /* NEW */
+  position: relative;
 }
-
-
-
-
 
 
 #videoModal.show .modal-content {
@@ -237,15 +206,6 @@ h4 {
 /* =====================================================
    ENSURE VIDEO & IFRAME FILL THE CONTAINER
 ===================================================== */
-/*#videoModal video,
-#videoModal iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  background: #000;
-  object-fit: contain;
-}
-*/
 
 /* Video / iframe fill frame */
 #videoModal video,
@@ -267,35 +227,6 @@ h4 {
 }
 
 
-
-
-
-/* =====================================================
-   VIDEO CLOSE BUTTON
-===================================================== */
-/*
-#videoModal .close-btn {
-  position: absolute;
-  top: -18px;    
-  right: -18px; 
-  width: 36px;
-  height: 36px;
-
-  background: rgba(0, 0, 0, 0.75);
-  color: #fff;
-
-  border-radius: 50%;
-  font-size: 20px;
-  line-height: 36px;
-  text-align: center;
-
-  cursor: pointer;
-  z-index: 20;
-
-  transition: background 150ms ease;
-}
-*/
-
 #videoModal .close-button {
   position: absolute;
   top: 8px;
@@ -316,6 +247,8 @@ h4 {
   border: none;
 }
 
+/*
 #videoModal .close-btn:hover {
   background: rgba(0, 0, 0, 0.95);
 }
+*/
