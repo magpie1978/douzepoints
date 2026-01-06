@@ -49,7 +49,7 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
     //  favoriteIds = new Set();
     //  favoritesLoaded = true;
     //  return;
-    //}
+    }
 
     //currentUser = user;
 
