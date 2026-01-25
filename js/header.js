@@ -7,15 +7,15 @@ document.addEventListener("DOMContentLoaded", () => {
 // -------------------------------------------------------------
 // 🔒 AUTH STATE PROTECTION (BEST PRACTICE)
 // -------------------------------------------------------------
-supabase.auth.onAuthStateChange((event, session) => {
-    const isLoginPage = window.location.pathname.includes("login.html");
+// supabase.auth.onAuthStateChange((event, session) => {
+//    const isLoginPage = window.location.pathname.includes("login.html");
 
     // If no active session and not on login page → redirect
-    if (!session && !isLoginPage) {
-        console.warn("⛔ Session missing – redirecting to login.");
-        window.location.href = "login.html";
-    }
-});
+//    if (!session && !isLoginPage) {
+//        console.warn("⛔ Session missing – redirecting to login.");
+//        window.location.href = "login.html";
+//    }
+//});
 
 // -------------------------------------------------------------
 // 🚀 Load header + bind logout button + lucide icon render
