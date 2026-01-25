@@ -482,7 +482,7 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
 // -------------------------------------------------------------
 // WATCH TRACKING
 // -------------------------------------------------------------
-function attachWatchTracking(videoEl, entry) {
+/* function attachWatchTracking(videoEl, entry) {
   if (!videoEl || !entry?.Video_Lookup) return;
 
   const videoId = entry.Video_Lookup;
@@ -541,9 +541,69 @@ function attachWatchTracking(videoEl, entry) {
       });
   });
 }
+*/
+
+  // ------------------------------------------------------------
+  // NEW WATCH TRACKER
+  // ------------------------------------------------------------
+
+    function attachWatchTracking(videoEl, entry) {
+      if (!videoEl || !entry?.Video_Lookup) return;
+    
+      const videoLookup = entry.Video_Lookup;
+      let viewId = null;
+      let lastSecond = 0;
+    
+      videoEl.addEventListener("play", async () => {
+        const { data } = await supabase.auth.getSession();
+        const user = data?.session?.user;
+        if (!user) return;
+    
+        const { data: row, error } = await supabase
+          .from("video_views")
+          .insert({
+            user_id: user.id,
+            video_lookup: videoLookup
+          })
+          .select("id")
+          .single();
+    
+        if (!error && row) {
+          viewId = row.id;
+          lastSecond = 0;
+        }
+      });
+    
+      videoEl.addEventListener("timeupdate", async () => {
+        if (!viewId) return;
+    
+        const current = Math.floor(videoEl.currentTime);
+        if (current - lastSecond < 10) return;
+        lastSecond = current;
+    
+        await supabase
+          .from("video_views")
+          .update({
+            duration_seconds: current
+          })
+          .eq("id", viewId);
+      });
+    
+      videoEl.addEventListener("ended", async () => {
+        if (!viewId) return;
+    
+        await supabase
+          .from("video_views")
+          .update({
+            end_time: new Date().toISOString(),
+            duration_seconds: Math.floor(videoEl.duration)
+          })
+          .eq("id", viewId);
+      });
+    }
 
 
- 
+  
   
   // ------------------------------------------------------------
   // EXPORTS
