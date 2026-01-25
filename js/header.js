@@ -33,24 +33,25 @@ async function loadHeader() {
     // -----------------------
     // 🔴 LOGOUT BUTTON
     // -----------------------
-    const logoutBtn = document.getElementById("logout-btn");
+    
+    //const logoutBtn = document.getElementById("logout-btn");
 
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", async (e) => {
-            e.preventDefault();
+    //if (logoutBtn) {
+    //    logoutBtn.addEventListener("click", async (e) => {
+    //        e.preventDefault();
 
-            console.log("Logging out…");
+    //        console.log("Logging out…");
 
-            const { error } = await supabase.auth.signOut({ scope: "local" });
+    //        const { error } = await supabase.auth.signOut({ scope: "local" });
 
-            if (error) {
-                console.error("Logout error:", error);
-            } else {
-                console.log("Logout successful.");
-                window.location.href = "login.html";
-            }
-        });
-    }
+    //        if (error) {
+    //            console.error("Logout error:", error);
+    //        } else {
+    //            console.log("Logout successful.");
+    //            window.location.href = "login.html";
+    //        }
+    //    });
+    // }
 
     // ---------------------------------------------------------
     // ⭐ LUCIDE ICON FIX — Render icons AFTER header is injected
