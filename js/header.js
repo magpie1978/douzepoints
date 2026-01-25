@@ -121,19 +121,19 @@ async function loadHeader() {
             banner.alt = editionYear;
         }
 
-    } else if (isCountryPage && country) {
-        const { data } = await supabase
-            .from("douzepoints")
-            .select("Country_Code")
-            .ilike("Country", country)
-            .limit(1);
+    //} else if (isCountryPage && country) {
+    //    const { data } = await supabase
+    //        .from("douzepoints")
+    //        .select("Country_Code")
+    //        .ilike("Country", country)
+    //        .limit(1);
 
-        const code = data?.[0]?.Country_Code?.toLowerCase();
+    //    const code = data?.[0]?.Country_Code?.toLowerCase();
 
-        if (code) {
-            banner.src = `/banners/${code}.png`;
-            banner.alt = country;
-        }
+    //    if (code) {
+    //        banner.src = `/banners/${code}.png`;
+    //        banner.alt = country;
+    //    }
 
     } else if (isWatchHistoryPage) {
         banner.src = "/banners/watchstats.png";
