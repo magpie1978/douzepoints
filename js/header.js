@@ -7,15 +7,15 @@ document.addEventListener("DOMContentLoaded", () => {
 // -------------------------------------------------------------
 // 🔒 AUTH STATE PROTECTION (BEST PRACTICE)
 // -------------------------------------------------------------
-// supabase.auth.onAuthStateChange((event, session) => {
-//    const isLoginPage = window.location.pathname.includes("login.html");
+ supabase.auth.onAuthStateChange((event, session) => {
+    const isLoginPage = window.location.pathname.includes("login.html");
 
     // If no active session and not on login page → redirect
-//    if (!session && !isLoginPage) {
-//        console.warn("⛔ Session missing – redirecting to login.");
-//        window.location.href = "login.html";
-//    }
-//});
+    if (!session && !isLoginPage) {
+        console.warn("⛔ Session missing – redirecting to login.");
+        window.location.href = "login.html";
+    }
+});
 
 // -------------------------------------------------------------
 // 🚀 Load header + bind logout button + lucide icon render
@@ -34,24 +34,24 @@ async function loadHeader() {
     // 🔴 LOGOUT BUTTON
     // -----------------------
     
-    //const logoutBtn = document.getElementById("logout-btn");
+    const logoutBtn = document.getElementById("logout-btn");
 
-    //if (logoutBtn) {
-    //    logoutBtn.addEventListener("click", async (e) => {
-    //        e.preventDefault();
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
 
-    //        console.log("Logging out…");
+            console.log("Logging out…");
 
-    //        const { error } = await supabase.auth.signOut({ scope: "local" });
+            const { error } = await supabase.auth.signOut({ scope: "local" });
 
-    //        if (error) {
-    //            console.error("Logout error:", error);
-    //        } else {
-    //            console.log("Logout successful.");
-    //            window.location.href = "login.html";
-    //        }
-    //    });
-    // }
+            if (error) {
+                console.error("Logout error:", error);
+            } else {
+                console.log("Logout successful.");
+                window.location.href = "login.html";
+            }
+        });
+     }
 
     // ---------------------------------------------------------
     // ⭐ LUCIDE ICON FIX — Render icons AFTER header is injected
@@ -121,19 +121,19 @@ async function loadHeader() {
             banner.alt = editionYear;
         }
 
-    //} else if (isCountryPage && country) {
-    //    const { data } = await supabase
-    //        .from("douzepoints")
-    //        .select("Country_Code")
-    //        .ilike("Country", country)
-    //        .limit(1);
+    } else if (isCountryPage && country) {
+        const { data } = await supabase
+            .from("douzepoints")
+            .select("Country_Code")
+            .ilike("Country", country)
+            .limit(1);
 
-    //    const code = data?.[0]?.Country_Code?.toLowerCase();
+        const code = data?.[0]?.Country_Code?.toLowerCase();
 
-    //    if (code) {
-    //        banner.src = `/banners/${code}.png`;
-    //        banner.alt = country;
-    //    }
+        if (code) {
+            banner.src = `/banners/${code}.png`;
+            banner.alt = country;
+        }
 
     } else if (isWatchHistoryPage) {
         banner.src = "/banners/watchstats.png";
