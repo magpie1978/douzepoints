@@ -1,4 +1,4 @@
-//import { supabase } from './supabaseClient.js';
+import { supabase } from './supabaseClient.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     loadHeader();
@@ -105,7 +105,6 @@ async function loadHeader() {
         banner.alt = "Home";
 
     } else if (isFanFavesPage) {
-    // Existing Fan Favourites page
         banner.src = "/banners/fanfavorites.png";
         banner.alt = "Fan Favourites";
 
