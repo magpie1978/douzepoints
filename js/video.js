@@ -482,7 +482,7 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
 // -------------------------------------------------------------
 // WATCH TRACKING
 // -------------------------------------------------------------
-/* function attachWatchTracking(videoEl, entry) {
+ function attachWatchTracking(videoEl, entry) {
   if (!videoEl || !entry?.Video_Lookup) return;
 
   const videoId = entry.Video_Lookup;
@@ -541,12 +541,12 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
       });
   });
 }
-*/
+
 
   // ------------------------------------------------------------
   // NEW WATCH TRACKER
   // ------------------------------------------------------------
-
+/*
     function attachWatchTracking(videoEl, entry) {
       if (!videoEl || !entry?.Video_Lookup) return;
     
@@ -602,7 +602,7 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
       });
     }
 
-
+*/
   
   
   // ------------------------------------------------------------
