@@ -79,7 +79,12 @@ async function loadHeader() {
     // ---------------------------------------------------------
     const banner = document.getElementById("country-banner");
 
-    const isIndexPage      = path === "/" || path.endsWith("index.html");
+    //const isIndexPage      = path === "/" || path.endsWith("index.html");
+    const isIndexPage =
+      path === "/" ||
+      path === "/index.html" ||
+      path.endsWith("/index.html") ||
+      path.endsWith("/");
     const isCountryPage    = path.includes("country.html");
     const isEditionPage    = path.includes("edition.html");
     const isWinnersPage    = path.includes("winners.html");
