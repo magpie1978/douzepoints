@@ -246,3 +246,21 @@ h4 {
   z-index: 20;
   border: none;
 }
+
+
+.main-header {
+    width: 100%;
+}
+
+.banner-static {
+    width: 100%;
+    height: 220px;   /* adjust to your design */
+    overflow: hidden;
+}
+
+.banner-static img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
