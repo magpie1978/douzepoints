@@ -79,9 +79,22 @@
   // ----------------------------------------------------------
   // 🎬 Open modal
   // ----------------------------------------------------------
-  window.openVideoModal =
-  async function ({ url, entry }) {
+  //window.openVideoModal =
+  //async function ({ url, entry }) {
 
+  window.openVideoModal =
+async function (arg1, arg2) {
+
+  // Support both call formats
+  let url, entry;
+
+  if (typeof arg1 === "object") {
+    url = arg1.url;
+    entry = arg1.entry;
+  } else {
+    url = arg1;
+    entry = arg2;
+  }
     const container =
       ensureModalContainer();
 
