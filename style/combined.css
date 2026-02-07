@@ -248,19 +248,25 @@ h4 {
 }
 
 
+/*
 .main-header {
     width: 100%;
 }
+*/
 
+/*
 .banner-static {
     width: 100%;
-    height: 220px;   /* adjust to your design */
+    height: 220px;
     overflow: hidden;
 }
+*/
 
+/*
 .banner-static img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
 }
+*/
