@@ -21,108 +21,88 @@ document.addEventListener("DOMContentLoaded", () => {
 // 🚀 Load header + bind logout button + lucide icon render
 // -------------------------------------------------------------
 async function loadHeader() {
+
     const path = window.location.pathname;
-    const headerHtml = await fetch("/header.html").then(res => res.text());
     const headerContainer = document.getElementById("header-container");
 
-    if (!headerContainer) return;
+    if (!headerContainer) {
+        console.warn("Header container not found.");
+        return;
+    }
 
-    // Insert header HTML into the page
+    // Fetch + inject header
+    const headerHtml = await fetch("/header.html").then(res => res.text());
     headerContainer.innerHTML = headerHtml;
+
+    // Wait one render frame so injected DOM exists
+    await new Promise(requestAnimationFrame);
 
     // -----------------------
     // 🔴 LOGOUT BUTTON
     // -----------------------
-    
     const logoutBtn = document.getElementById("logout-btn");
 
     if (logoutBtn) {
         logoutBtn.addEventListener("click", async (e) => {
             e.preventDefault();
 
-            console.log("Logging out…");
-
             const { error } = await supabase.auth.signOut({ scope: "local" });
 
-            if (error) {
-                console.error("Logout error:", error);
-            } else {
-                console.log("Logout successful.");
+            if (!error) {
                 window.location.href = "login.html";
             }
         });
-     }
-
-    // ---------------------------------------------------------
-    // ⭐ LUCIDE ICON FIX — Render icons AFTER header is injected
-    // ---------------------------------------------------------
-    function renderIconsWhenReady() {
-        if (window.lucide) {
-            window.lucide.createIcons();
-            return true;
-        }
-        return false;
-    }
-
-    // Try immediately
-    if (!renderIconsWhenReady()) {
-        // Retry until lucide loads (usually instant)
-        const interval = setInterval(() => {
-            if (renderIconsWhenReady()) {
-                clearInterval(interval);
-            }
-        }, 50);
     }
 
     // ---------------------------------------------------------
-    // 🎨 Banner logic (unchanged)
+    // ⭐ Render Lucide icons
+    // ---------------------------------------------------------
+    if (window.lucide) {
+        window.lucide.createIcons();
+    }
+
+    // ---------------------------------------------------------
+    // 🎨 Banner logic
     // ---------------------------------------------------------
     const banner = document.getElementById("country-banner");
+    if (!banner) {
+        console.warn("Banner element missing.");
+        return;
+    }
 
-    //const isIndexPage      = path === "/" || path.endsWith("index.html");
     const isIndexPage =
-      path === "/" ||
-      path === "/index.html" ||
-      path.endsWith("/index.html") ||
-      path.endsWith("/");
+        path === "/" ||
+        path === "/index.html" ||
+        path.endsWith("/index.html") ||
+        path.endsWith("/");
+
     const isCountryPage    = path.includes("country.html");
     const isEditionPage    = path.includes("edition.html");
     const isWinnersPage    = path.includes("winners.html");
-    const isFavoritesPage  = path.includes("my-favorites.html");  // NEW PAGE
+    const isFavoritesPage  = path.includes("my-favorites.html");
     const isFanFavesPage   = path.includes("fan-favorites.html");
-    const isAboutPage      = path.includes("about.html");
-    const isContactPage    = path.includes("contact.html");
-    const isFAQPage        = path.includes("faq.html");
-    const isPrivacyPage    = path.includes("privacy.html");
     const isScoreboardPage = path.includes("scoreboard.html");
     const isWatchHistoryPage = path.includes("my-stats.html");
 
     const country = new URLSearchParams(window.location.search).get("country");
 
-    if (!banner) return;
-
-    if (isWinnersPage) {
-        banner.src = "/banners/winners.png";
-        banner.alt = "Winners";
-
-    } else if (isIndexPage) {
+    if (isIndexPage) {
         banner.src = "/banners/douzepoints.png";
         banner.alt = "Home";
 
+    } else if (isWinnersPage) {
+        banner.src = "/banners/winners.png";
+
     } else if (isFanFavesPage) {
         banner.src = "/banners/fanfavorites.png";
-        banner.alt = "Fan Favourites";
 
     } else if (isFavoritesPage) {
         banner.src = "/banners/my-faves.png";
-        banner.alt = "My Favorites";
 
-    
     } else if (isEditionPage) {
         const editionYear = new URLSearchParams(window.location.search).get("edition");
         if (editionYear) {
             banner.src = `/banners/${editionYear}.png`;
-            banner.alt = editionYear;
         }
 
     } else if (isCountryPage && country) {
@@ -133,34 +113,14 @@ async function loadHeader() {
             .limit(1);
 
         const code = data?.[0]?.Country_Code?.toLowerCase();
-
         if (code) {
             banner.src = `/banners/${code}.png`;
-            banner.alt = country;
         }
 
     } else if (isWatchHistoryPage) {
         banner.src = "/banners/watchstats.png";
-        banner.alt = "About";
-        
-    } else if (isAboutPage) {
-        banner.src = "/banners/about.png";
-        banner.alt = "About";
 
     } else if (isScoreboardPage) {
         banner.src = "/banners/scoreboard.png";
-        banner.alt = "Scoreboard";
-
-    } else if (isContactPage) {
-        banner.src = "/banners/contact.png";
-        banner.alt = "Contact";
-
-    } else if (isFAQPage) {
-        banner.src = "/banners/faq.png";
-        banner.alt = "FAQ";
-
-    } else if (isPrivacyPage) {
-        banner.src = "/banners/privacy.png";
-        banner.alt = "Privacy";
     }
 }
