@@ -511,7 +511,8 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
     if (!user) return;
 
     const { error } = await supabase
-      .from("watch_history")
+      .from("video_views")
+      //.from("watch_history")
       .upsert({
         user_id: user.id,
         video_lookup: videoId,
@@ -532,7 +533,8 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
     if (!user) return;
 
     await supabase
-      .from("watch_history")
+      .from("video_views")
+      //.from("watch_history")
       .upsert({
         user_id: user.id,
         video_lookup: videoId,
