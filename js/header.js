@@ -65,7 +65,7 @@ if (logoutBtn) {
 
 //    if (!headerContainer) {
 //        console.warn("Header container not found.");
-        return;
+//        return;
 //    }
 
     // 2️⃣ Inject header
