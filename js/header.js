@@ -27,13 +27,28 @@ if (logoutBtn) {
   logoutBtn.addEventListener("click", async (e) => {
     e.preventDefault();
 
-    const { error } = await supabase.auth.signOut();
+    try {
+      const { error } = await supabase.auth.signOut();
 
-    if (!error) {
+      if (error) {
+        console.error("Logout error:", error);
+        alert("Failed to log out.");
+        return;
+      }
+
+      // Clear any cached session data (belt + braces)
+      localStorage.removeItem("supabase.auth.token");
+
+      // Redirect to login
+      window.location.href = "login.html";
+
+    } catch (err) {
+      console.error("Unexpected logout failure:", err);
       window.location.href = "login.html";
     }
   });
 }
+
 
 
 
