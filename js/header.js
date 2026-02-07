@@ -18,13 +18,32 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // -------------------------------------------------------------
+// LOGOUT BUTTON
+// -------------------------------------------------------------
+
+const logoutBtn = document.getElementById("logout-btn");
+
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    const { error } = await supabase.auth.signOut();
+
+    if (!error) {
+      window.location.href = "login.html";
+    }
+  });
+}
+
+
+
+// -------------------------------------------------------------
 // 🚀 Load header + bind logout button + lucide icon render
 // -------------------------------------------------------------
 async function loadHeader() {
 
     // 1️⃣ Declare path first
     const path = window.location.pathname;
-    console.log("PATH:", path);
 
     const headerContainer = document.getElementById("header-container");
 
