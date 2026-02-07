@@ -22,9 +22,10 @@ document.addEventListener("DOMContentLoaded", () => {
 // -------------------------------------------------------------
 async function loadHeader() {
 
+    // 1️⃣ Declare path first
+    const path = window.location.pathname;
     console.log("PATH:", path);
 
-    const path = window.location.pathname;
     const headerContainer = document.getElementById("header-container");
 
     if (!headerContainer) {
@@ -32,40 +33,19 @@ async function loadHeader() {
         return;
     }
 
-    // Fetch + inject header
+    // 2️⃣ Inject header
     const headerHtml = await fetch("/header.html").then(res => res.text());
     headerContainer.innerHTML = headerHtml;
 
     // Wait one render frame so injected DOM exists
     await new Promise(requestAnimationFrame);
 
-    // -----------------------
-    // 🔴 LOGOUT BUTTON
-    // -----------------------
-    //const logoutBtn = document.getElementById("logout-btn");
-
-    //if (logoutBtn) {
-    //    logoutBtn.addEventListener("click", async (e) => {
-    //        e.preventDefault();
-
-    //        const { error } = await supabase.auth.signOut({ scope: "local" });
-
-    //        if (!error) {
-    //            window.location.href = "login.html";
-    //        }
-    //    });
-    //}
-
-    // ---------------------------------------------------------
-    // ⭐ Render Lucide icons
-    // ---------------------------------------------------------
+    // 3️⃣ Render icons
     if (window.lucide) {
         window.lucide.createIcons();
     }
 
-    // ---------------------------------------------------------
-    // 🎨 Banner logic
-    // ---------------------------------------------------------
+    // 4️⃣ Banner logic
     const banner = document.getElementById("country-banner");
     if (!banner) {
         console.warn("Banner element missing.");
