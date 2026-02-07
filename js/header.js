@@ -40,19 +40,19 @@ async function loadHeader() {
     // -----------------------
     // 🔴 LOGOUT BUTTON
     // -----------------------
-    const logoutBtn = document.getElementById("logout-btn");
+    //const logoutBtn = document.getElementById("logout-btn");
 
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", async (e) => {
-            e.preventDefault();
+    //if (logoutBtn) {
+    //    logoutBtn.addEventListener("click", async (e) => {
+    //        e.preventDefault();
 
-            const { error } = await supabase.auth.signOut({ scope: "local" });
+    //        const { error } = await supabase.auth.signOut({ scope: "local" });
 
-            if (!error) {
-                window.location.href = "login.html";
-            }
-        });
-    }
+    //        if (!error) {
+    //            window.location.href = "login.html";
+    //        }
+    //    });
+    //}
 
     // ---------------------------------------------------------
     // ⭐ Render Lucide icons
