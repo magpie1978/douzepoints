@@ -1,231 +1,185 @@
-// ------------------------------------------------------------
-// 🎬 VIDEO MODAL (PLAYBACK ONLY – NO TRACKING)
-// ------------------------------------------------------------
+/* -------------------------------------------------------------
+   1. PRELOAD modal.html INTO #modal-container 
+------------------------------------------------------------- */
 
-(function () {
-
-  // Prevent duplicate modal definition
-  if (window.openVideoModal) return;
-
-  // ----------------------------------------------------------
-  // Ensure modal container exists
-  // ----------------------------------------------------------
-  function ensureModalContainer() {
-
-    let container =
-      document.getElementById("modal-container");
-
+window.modalReady = new Promise((resolve) => {
+  document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById("modal-container");
     if (!container) {
-      container = document.createElement("div");
-      container.id = "modal-container";
-      document.body.appendChild(container);
-    }
-
-    return container;
-  }
-
-  // ----------------------------------------------------------
-  // Open Video Modal
-  // ----------------------------------------------------------
-  window.openVideoModal =
-  function (arg1, arg2) {
-
-    // Support both call formats
-    let url, entry;
-
-    if (typeof arg1 === "object" && arg1 !== null) {
-      url = arg1.url;
-      entry = arg1.entry;
-    } else {
-      url = arg1;
-      entry = arg2;
-    }
-
-    if (!url) {
-      console.warn("[MODAL] No URL provided.");
+      console.warn("modal-container not found");
+      resolve();
       return;
     }
 
-    const container =
-      ensureModalContainer();
+    fetch("modal.html")
+      .then((res) => res.text())
+      .then((html) => {
+        container.innerHTML = html;
+        resolve();
+      })
+      .catch((err) => {
+        console.error("Error loading modal.html:", err);
+        resolve();
+      });
+  });
+});
 
-    // Modal shell
-    container.innerHTML = `
-      <div class="video-modal-overlay"
-           id="videoModalOverlay">
 
-        <div class="video-modal">
+/* -------------------------------------------------------------
+   2. UNIVERSAL OPEN FUNCTION
+------------------------------------------------------------- */
 
-          <button class="modal-close"
-                  id="modalCloseBtn">✕</button>
+window.openVideoModal = async function (arg1, arg2) {
+  await window.modalReady;
 
-          <div class="video-frame-wrapper"
-               id="videoFrameWrapper"></div>
+  let videoUrl = null;
+  let entry = null;
 
-        </div>
-      </div>
-    `;
+  if (typeof arg1 === "object" && arg1.url) {
+    videoUrl = arg1.url;
+    entry = arg1.entry || null;
+  } else {
+    videoUrl = arg1;
+    entry = arg2 || null;
+  }
 
-    const wrapper =
-      document.getElementById(
-        "videoFrameWrapper"
-      );
+  if (!videoUrl) {
+    console.error("[modal.js] No video URL");
+    return;
+  }
 
-    if (!wrapper) return;
+  window.GDriveOpenModalWithVideo(videoUrl, entry);
+};
 
-    // --------------------------------------------------------
-    // FULL VIDEO RENDER LOGIC
-    // --------------------------------------------------------
-    let embedUrl = url;
 
-    // -----------------------------
-    // Google Drive
-    // -----------------------------
-    if (embedUrl.includes("drive.google.com")) {
+/* -------------------------------------------------------------
+   3. OPEN: HANDLE GOOGLE DRIVE OR MP4
+------------------------------------------------------------- */
 
-      let fileId = null;
+/*
+window.GDriveOpenModalWithVideo = function (videoUrl) {
+  const modal = document.getElementById("videoModal");
+  const video = document.getElementById("modalVideo");
+  const iframe = document.getElementById("modalIframe");
 
-      const dMatch =
-        embedUrl.match(/\/d\/([^/]+)/);
+  if (!modal) return;
 
-      if (dMatch) fileId = dMatch[1];
+  // Ensure clean slate
+  video.pause();
+  video.src = "";
+  iframe.src = "";
+  video.style.display = "none";
+  iframe.style.display = "none";
 
-      if (!fileId) {
-        const idParam =
-          new URL(embedUrl)
-            .searchParams.get("id");
+  // Show modal
+  modal.classList.add("show");
 
-        if (idParam) fileId = idParam;
-      }
-
-      if (fileId) {
-        embedUrl =
-          `https://drive.google.com/file/d/${fileId}/preview`;
-      }
-
-      wrapper.innerHTML = `
-        <iframe
-          src="${embedUrl}"
-          allow="autoplay"
-          allowfullscreen
-          frameborder="0"
-          class="video-iframe">
-        </iframe>
-      `;
-
-    // -----------------------------
-    // MP4 videos
-    // -----------------------------
-    } else if (embedUrl.match(/\.mp4($|\?)/i)) {
-
-      wrapper.innerHTML = `
-        <video
-          src="${embedUrl}"
-          controls
-          autoplay
-          playsinline
-          class="video-player">
-        </video>
-      `;
-
-    // -----------------------------
-    // YouTube embeds
-    // -----------------------------
-    } else if (
-      embedUrl.includes("youtube.com") ||
-      embedUrl.includes("youtu.be")
-    ) {
-
-      let videoId = null;
-
-      if (embedUrl.includes("youtu.be")) {
-        videoId =
-          embedUrl.split("/").pop();
-      } else {
-        videoId =
-          new URL(embedUrl)
-            .searchParams.get("v");
-      }
-
-      if (videoId) {
-        embedUrl =
-          `https://www.youtube.com/embed/${videoId}`;
-      }
-
-      wrapper.innerHTML = `
-        <iframe
-          src="${embedUrl}"
-          allow="autoplay; encrypted-media"
-          allowfullscreen
-          frameborder="0"
-          class="video-iframe">
-        </iframe>
-      `;
-
-    // -----------------------------
-    // Generic iframe fallback
-    // -----------------------------
-    } else {
-
-      wrapper.innerHTML = `
-        <iframe
-          src="${embedUrl}"
-          allowfullscreen
-          frameborder="0"
-          class="video-iframe">
-        </iframe>
-      `;
+  // GOOGLE DRIVE
+  if (videoUrl.includes("drive.google.com")) {
+    const match = videoUrl.match(/\/d\/(.*?)\//);
+    if (match && match[1]) {
+      iframe.src = `https://drive.google.com/file/d/${match[1]}/preview`;
+      iframe.style.display = "block";
+      return;
     }
+  }
 
-    // --------------------------------------------------------
-    // Close modal logic
-    // --------------------------------------------------------
-    const overlay =
-      document.getElementById(
-        "videoModalOverlay"
-      );
+  // MP4 OR DIRECT VIDEO
+  video.src = videoUrl;
+  video.style.display = "block";
 
-    const closeBtn =
-      document.getElementById(
-        "modalCloseBtn"
-      );
+  // Force play after small delay for reliability
+  setTimeout(() => video.play().catch(() => {}), 150);
+};
+*/
 
-    function closeModal() {
-      container.innerHTML = "";
-      document.removeEventListener(
-        "keydown",
-        escHandler
-      );
-    }
+/* -------------------------------------------------------------
+   3a. OPEN: HANDLE GOOGLE DRIVE OR MP4
+------------------------------------------------------------- */
+   window.GDriveOpenModalWithVideo = function (videoUrl, entry) {
+     const modal = document.getElementById("videoModal");
+     const video = document.getElementById("modalVideo");
+     const iframe = document.getElementById("modalIframe");
+   
+     if (!modal) return;
+   
+     // Ensure clean slate
+     video.pause();
+     video.src = "";
+     iframe.src = "";
+     video.style.display = "none";
+     iframe.style.display = "none";
+   
+     // Show modal
+     modal.classList.add("show");
+   
+     // GOOGLE DRIVE (untrackable)
+     if (videoUrl.includes("drive.google.com")) {
+       const match = videoUrl.match(/\/d\/(.*?)\//);
+       if (match && match[1]) {
+         iframe.src = `https://drive.google.com/file/d/${match[1]}/preview`;
+         iframe.style.display = "block";
+         return;
+       }
+     }
+   
+     // MP4 OR DIRECT VIDEO
+     video.src = videoUrl;
+     video.style.display = "block";
+   
+     // ✅ Attach watch tracking
+     if (window.attachWatchTracking && entry) {
+       window.attachWatchTracking(video, entry);
+     }
+   
+     // Play
+     setTimeout(() => video.play().catch(() => {}), 150);
+   };
 
-    function escHandler(e) {
-      if (e.key === "Escape") {
-        closeModal();
-      }
-    }
 
-    if (overlay) {
-      overlay.addEventListener(
-        "click",
-        (e) => {
-          if (e.target === overlay) {
-            closeModal();
-          }
-        }
-      );
-    }
 
-    if (closeBtn) {
-      closeBtn.addEventListener(
-        "click",
-        closeModal
-      );
-    }
 
-    document.addEventListener(
-      "keydown",
-      escHandler
-    );
-  };
+/* -------------------------------------------------------------
+   4. CLOSE MODAL
+------------------------------------------------------------- */
 
-})();
+window.GDriveCloseModal = function (event) {
+  if (event) event.stopPropagation();
+
+  const modal = document.getElementById("videoModal");
+  const video = document.getElementById("modalVideo");
+  const iframe = document.getElementById("modalIframe");
+
+  if (!modal) return;
+
+  // Stop media
+  if (video) {
+    video.pause();
+    video.src = "";
+  }
+
+  if (iframe) {
+    iframe.src = "";
+  }
+
+  // Hide modal (CSS-controlled)
+  modal.classList.remove("show");
+};
+
+
+
+/* -------------------------------------------------------------
+   5. CLICK OUTSIDE TO CLOSE
+------------------------------------------------------------- */
+
+document.addEventListener("click", (e) => {
+  const modal = document.getElementById("videoModal");
+  if (!modal || !modal.classList.contains("show")) return;
+
+  const content = document.querySelector(".modal-content");
+  if (!content) return;
+
+  if (!content.contains(e.target) && e.target !== modal) {
+    GDriveCloseModal(e);
+  }
+});
