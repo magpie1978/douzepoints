@@ -1,18 +1,19 @@
 // ------------------------------------------------------------
-// 🎬 VIDEO MODAL + VIEW TRACKING
+// 🎬 VIDEO MODAL + VIEW TRACKING (FULLY COMPLIANT)
 // ------------------------------------------------------------
 
 (function () {
 
-  // Prevent duplicate modal creation
+  // Prevent duplicate modal definition
   if (window.openVideoModal) return;
 
   // ----------------------------------------------------------
-  // 🧱 Create modal container if not present
+  // 🧱 Ensure modal container exists
   // ----------------------------------------------------------
   function ensureModalContainer() {
 
-    let container = document.getElementById("modal-container");
+    let container =
+      document.getElementById("modal-container");
 
     if (!container) {
       container = document.createElement("div");
@@ -35,7 +36,9 @@
         return;
       }
 
-      const { data } = await window.supabaseClient.auth.getSession();
+      const { data } =
+        await window.supabaseClient.auth.getSession();
+
       const user = data?.session?.user;
 
       if (!user) {
@@ -53,13 +56,14 @@
         return;
       }
 
-      const { error } = await window.supabaseClient
-        .from("video_views")
-        .insert({
-          user_id: user.id,
-          video_lookup: videoId,
-          opened_at: new Date().toISOString()
-        });
+      const { error } =
+        await window.supabaseClient
+          .from("video_views")
+          .insert({
+            user_id: user.id,
+            video_lookup: videoId,
+            opened_at: new Date().toISOString()
+          });
 
       if (error) {
         console.error("[VIEW INSERT ERROR]", error);
@@ -73,13 +77,14 @@
   }
 
   // ----------------------------------------------------------
-  // 🎬 Open modal
+  // 🎬 Open Video Modal
   // ----------------------------------------------------------
-  window.openVideoModal = async function (arg1, arg2) {
+  window.openVideoModal =
+  async function (arg1, arg2) {
 
-    // Support both call formats:
-    // openVideoModal({ url, entry })
-    // openVideoModal(url, entry)
+    // --------------------------------------------------------
+    // 🔄 Support both call formats
+    // --------------------------------------------------------
     let url, entry;
 
     if (typeof arg1 === "object" && arg1 !== null) {
@@ -95,46 +100,65 @@
       return;
     }
 
-    const container = ensureModalContainer();
+    const container =
+      ensureModalContainer();
 
-    // Modal HTML
+    // --------------------------------------------------------
+    // 🧱 Build modal shell
+    // --------------------------------------------------------
     container.innerHTML = `
-      <div class="video-modal-overlay" id="videoModalOverlay">
+      <div class="video-modal-overlay"
+           id="videoModalOverlay">
+
         <div class="video-modal">
-          <button class="modal-close" id="modalCloseBtn">✕</button>
-          <div class="video-frame-wrapper" id="videoFrameWrapper"></div>
+
+          <button class="modal-close"
+                  id="modalCloseBtn">✕</button>
+
+          <div class="video-frame-wrapper"
+               id="videoFrameWrapper"></div>
+
         </div>
       </div>
     `;
 
-    const wrapper = document.getElementById("videoFrameWrapper");
+    const wrapper =
+      document.getElementById(
+        "videoFrameWrapper"
+      );
+
     if (!wrapper) return;
 
     // --------------------------------------------------------
-    // 📺 Render video source
+    // 📺 FULL VIDEO RENDER LOGIC
     // --------------------------------------------------------
     let embedUrl = url;
 
-    // Google Drive: normalize to /preview embed
+    // -----------------------------
+    // Google Drive
+    // -----------------------------
     if (embedUrl.includes("drive.google.com")) {
 
-      // Support:
-      // - https://drive.google.com/file/d/<id>/view
-      // - https://drive.google.com/file/d/<id>/preview
-      // - https://drive.google.com/open?id=<id>
-      // - https://drive.google.com/uc?id=<id>
       let fileId = null;
 
-      const dMatch = embedUrl.match(/\/d\/([^/]+)/);
+      // /file/d/ID/
+      const dMatch =
+        embedUrl.match(/\/d\/([^/]+)/);
+
       if (dMatch) fileId = dMatch[1];
 
+      // ?id=ID
       if (!fileId) {
-        const idParam = new URL(embedUrl).searchParams.get("id");
+        const idParam =
+          new URL(embedUrl)
+            .searchParams.get("id");
+
         if (idParam) fileId = idParam;
       }
 
       if (fileId) {
-        embedUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+        embedUrl =
+          `https://drive.google.com/file/d/${fileId}/preview`;
       }
 
       wrapper.innerHTML = `
@@ -147,9 +171,11 @@
         </iframe>
       `;
 
+    // -----------------------------
+    // MP4 / HTML5 video
+    // -----------------------------
     } else if (embedUrl.match(/\.mp4($|\?)/i)) {
 
-      // MP4: use HTML5 video tag
       wrapper.innerHTML = `
         <video
           src="${embedUrl}"
@@ -160,9 +186,45 @@
         </video>
       `;
 
+    // -----------------------------
+    // YouTube embed
+    // -----------------------------
+    } else if (
+      embedUrl.includes("youtube.com") ||
+      embedUrl.includes("youtu.be")
+    ) {
+
+      let videoId = null;
+
+      if (embedUrl.includes("youtu.be")) {
+        videoId =
+          embedUrl.split("/").pop();
+      } else {
+        videoId =
+          new URL(embedUrl)
+            .searchParams.get("v");
+      }
+
+      if (videoId) {
+        embedUrl =
+          `https://www.youtube.com/embed/${videoId}`;
+      }
+
+      wrapper.innerHTML = `
+        <iframe
+          src="${embedUrl}"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          frameborder="0"
+          class="video-iframe">
+        </iframe>
+      `;
+
+    // -----------------------------
+    // Generic iframe fallback
+    // -----------------------------
     } else {
 
-      // Generic iframe fallback
       wrapper.innerHTML = `
         <iframe
           src="${embedUrl}"
@@ -179,29 +241,54 @@
     await trackModalOpen(entry);
 
     // --------------------------------------------------------
-    // ❌ Close modal handlers
+    // ❌ Close modal logic
     // --------------------------------------------------------
-    const overlay = document.getElementById("videoModalOverlay");
-    const closeBtn = document.getElementById("modalCloseBtn");
+    const overlay =
+      document.getElementById(
+        "videoModalOverlay"
+      );
 
-    function escHandler(e) {
-      if (e.key === "Escape") closeModal();
-    }
+    const closeBtn =
+      document.getElementById(
+        "modalCloseBtn"
+      );
 
     function closeModal() {
       container.innerHTML = "";
-      document.removeEventListener("keydown", escHandler);
+      document.removeEventListener(
+        "keydown",
+        escHandler
+      );
+    }
+
+    function escHandler(e) {
+      if (e.key === "Escape") {
+        closeModal();
+      }
     }
 
     if (overlay) {
-      overlay.addEventListener("click", (e) => {
-        if (e.target === overlay) closeModal();
-      });
+      overlay.addEventListener(
+        "click",
+        (e) => {
+          if (e.target === overlay) {
+            closeModal();
+          }
+        }
+      );
     }
 
-    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    if (closeBtn) {
+      closeBtn.addEventListener(
+        "click",
+        closeModal
+      );
+    }
 
-    document.addEventListener("keydown", escHandler);
+    document.addEventListener(
+      "keydown",
+      escHandler
+    );
   };
 
 })();
