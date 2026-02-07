@@ -124,44 +124,81 @@ async function (arg1, arg2) {
     // 📺 Render video source
     // --------------------------------------------------------
 
-    if (url.includes("drive.google.com")) {
+//    if (url.includes("drive.google.com")) {
 
       // Google Drive iframe
-      wrapper.innerHTML = `
-        <iframe
-          src="${url}"
-          allow="autoplay"
-          allowfullscreen
-          frameborder="0"
-          class="video-iframe">
-        </iframe>
-      `;
+//      wrapper.innerHTML = `
+//        <iframe
+//          src="${url}"
+//          allow="autoplay"
+//          allowfullscreen
+//          frameborder="0"
+//          class="video-iframe">
+//        </iframe>
+//      `;
 
-    } else if (url.match(/\.mp4($|\?)/i)) {
+//    } else if (url.match(/\.mp4($|\?)/i)) {
 
       // MP4 video
-      wrapper.innerHTML = `
-        <video
-          src="${url}"
-          controls
-          autoplay
-          class="video-player">
-        </video>
-      `;
+//      wrapper.innerHTML = `
+//        <video
+//          src="${url}"
+//          controls
+//          autoplay
+//          class="video-player">
+//        </video>
+//      `;
 
-    } else {
+//    } else {
 
       // Generic iframe fallback
-      wrapper.innerHTML = `
-        <iframe
-          src="${url}"
-          allowfullscreen
-          frameborder="0"
-          class="video-iframe">
-        </iframe>
-      `;
-    }
+//      wrapper.innerHTML = `
+//        <iframe
+//          src="${url}"
+//          allowfullscreen
+//          frameborder="0"
+//          class="video-iframe">
+//        </iframe>
+//      `;
+//    }
 
+
+
+
+
+
+if (url.includes("drive.google.com")) {
+
+  // Convert to preview embed
+  const fileIdMatch =
+    url.match(/\/d\/([^/]+)/);
+
+  if (fileIdMatch) {
+    const fileId = fileIdMatch[1];
+
+    url =
+      `https://drive.google.com/file/d/${fileId}/preview`;
+  }
+
+  wrapper.innerHTML = `
+    <iframe
+      src="${url}"
+      allow="autoplay"
+      allowfullscreen
+      frameborder="0"
+      class="video-iframe">
+    </iframe>
+  `;
+}
+
+
+
+
+
+
+
+
+  
     // --------------------------------------------------------
     // 📊 Track modal open
     // --------------------------------------------------------
