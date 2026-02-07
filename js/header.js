@@ -22,6 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
 // -------------------------------------------------------------
 async function loadHeader() {
 
+    console.log("PATH:", path);
+
     const path = window.location.pathname;
     const headerContainer = document.getElementById("header-container");
 
