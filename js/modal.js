@@ -122,7 +122,27 @@ window.GDriveOpenModalWithVideo = function (videoUrl) {
          return;
        }
      }
-   
+
+      // YOUTUBE
+      if (videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be")) {
+        let videoId = null;
+      
+        // Standard watch URL
+        const match1 = videoUrl.match(/[?&]v=([^&]+)/);
+        if (match1) videoId = match1[1];
+      
+        // Short URL
+        const match2 = videoUrl.match(/youtu\.be\/([^?]+)/);
+        if (match2) videoId = match2[1];
+      
+        if (videoId) {
+          iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+          iframe.style.display = "block";
+          return;
+        }
+      }
+
+      
      // MP4 OR DIRECT VIDEO
      video.src = videoUrl;
      video.style.display = "block";
