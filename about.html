@@ -10,6 +10,34 @@
         <link rel="stylesheet" href="style/footer.css">
         <script src="/js/favicons.js"></script>
     </head>
+
+    <style>
+        /* Make page full height */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        
+        /* Use flexbox layout */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        /* This makes the main content expand */
+        .banner,
+        .big-title,
+        .plans-section,
+        #signup-modal-overlay {
+            flex-shrink: 0;
+        }
+        
+        /* Push footer to bottom */
+        #footer {
+            margin-top: auto;
+        }
+    </style>
     
     <body>
         <!-- Top area just used to position the login pill -->
