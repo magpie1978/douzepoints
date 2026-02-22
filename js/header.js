@@ -8,12 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
 // 🔒 AUTH STATE PROTECTION (BEST PRACTICE)
 // -------------------------------------------------------------
  supabase.auth.onAuthStateChange((event, session) => {
-    const isLoginPage = window.location.pathname.includes("login.html");
+    const isLoginPage = window.location.pathname.includes("index.html");
 
     // If no active session and not on login page → redirect
     if (!session && !isLoginPage) {
         console.warn("⛔ Session missing – redirecting to login.");
-        window.location.href = "login.html";
+        window.location.href = "index.html";
     }
 });
 
@@ -40,11 +40,11 @@ if (logoutBtn) {
       localStorage.removeItem("supabase.auth.token");
 
       // Redirect to login
-      window.location.href = "login.html";
+      window.location.href = "index.html";
 
     } catch (err) {
       console.error("Unexpected logout failure:", err);
-      window.location.href = "login.html";
+      window.location.href = "index.html";
     }
   });
 }
@@ -149,7 +149,7 @@ async function loadHeader() {
 
     if (!headerContainer) return;
 
-    const headerHtml = await fetch("/header.html").then(res => res.text());
+    const headerHtml = await fetch("header.html").then(res => res.text());
     headerContainer.innerHTML = headerHtml;
 
     await new Promise(requestAnimationFrame);
@@ -162,7 +162,7 @@ async function loadHeader() {
             e.preventDefault();
 
             await supabase.auth.signOut();
-            window.location.href = "login.html";
+            window.location.href = "index.html";
         });
     }
 
