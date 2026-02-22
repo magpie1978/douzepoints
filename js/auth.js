@@ -62,10 +62,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // Open signup modal from auth modal button
   document.addEventListener("click", (e) => {
     if (e.target.id === "open-signup") {
-      const overlay = document.getElementById("signup-modal-overlay");
-      if (overlay) overlay.style.display = "flex";
+      // Close login modal
+      const authOverlay = document.getElementById("auth-overlay");
+      if (authOverlay) authOverlay.style.display = "none";
+  
+      // Open signup modal
+      const signupOverlay = document.getElementById("signup-modal-overlay");
+      if (signupOverlay) signupOverlay.style.display = "flex";
     }
-  });
+  });  
   
   // ALSO bind legacy .signup-btn buttons (restores old functionality)
   document.querySelectorAll(".signup-btn").forEach(btn => {
