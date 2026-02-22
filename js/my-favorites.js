@@ -44,8 +44,8 @@ async function initFavoritesPage() {
   const user = userData?.user || null;
 
   if (!user) {
-    window.location.href = "index.html";
-    return;
+    window.location.href = "index.html?auth=1&next=my-favorites.html";
+   return;
   }
 
   currentUser = user;
