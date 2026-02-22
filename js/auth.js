@@ -60,14 +60,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Open signup modal from auth modal button
-  const openSignup = document.getElementById("open-signup");
-  if (openSignup) {
-    openSignup.addEventListener("click", () => {
+  document.addEventListener("click", (e) => {
+    if (e.target.id === "open-signup") {
       const overlay = document.getElementById("signup-modal-overlay");
       if (overlay) overlay.style.display = "flex";
-    });
-  }
-
+    }
+  });
+  
   // ALSO bind legacy .signup-btn buttons (restores old functionality)
   document.querySelectorAll(".signup-btn").forEach(btn => {
     btn.addEventListener("click", () => {
