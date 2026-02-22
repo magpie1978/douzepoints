@@ -1,14 +1,18 @@
 import { supabase } from './supabaseClient.js';
 
-// --------- PUBLIC API ----------
+// =====================================================
+// PUBLIC API
+// =====================================================
+
 export function openAuthModal(nextUrl = null) {
   const overlay = document.getElementById("auth-overlay");
   if (!overlay) return;
 
   overlay.style.display = "flex";
 
-  // remember where to go after login
-  if (nextUrl) sessionStorage.setItem("auth_next", nextUrl);
+  if (nextUrl) {
+    sessionStorage.setItem("auth_next", nextUrl);
+  }
 }
 
 export function closeAuthModal() {
@@ -19,13 +23,32 @@ export function closeAuthModal() {
 export async function requireAuth(nextUrl) {
   const { data: { session } } = await supabase.auth.getSession();
   if (session) return true;
-  openAuthModal(nextUrl);
+
+  const hasModal = !!document.getElementById("auth-overlay");
+
+  if (hasModal) {
+    openAuthModal(nextUrl);
+  } else {
+    // Redirect to index if modal not present on this page
+    window.location.href = `index.html?auth=1&next=${encodeURIComponent(nextUrl)}`;
+  }
+
   return false;
 }
 
-// --------- WIRING ----------
+// =====================================================
+// WIRING
+// =====================================================
+
 document.addEventListener("DOMContentLoaded", () => {
-  // Close modal
+
+  // Auto-open modal if ?auth=1
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("auth") === "1") {
+    openAuthModal(params.get("next") || null);
+  }
+
+  // Close main auth modal
   const closeBtn = document.getElementById("auth-close");
   if (closeBtn) closeBtn.addEventListener("click", closeAuthModal);
 
@@ -36,56 +59,67 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Open signup modal
+  // Open signup modal from auth modal button
   const openSignup = document.getElementById("open-signup");
   if (openSignup) {
     openSignup.addEventListener("click", () => {
-      document.getElementById("signup-modal-overlay").style.display = "flex";
+      const overlay = document.getElementById("signup-modal-overlay");
+      if (overlay) overlay.style.display = "flex";
     });
   }
+
+  // ALSO bind legacy .signup-btn buttons (restores old functionality)
+  document.querySelectorAll(".signup-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const overlay = document.getElementById("signup-modal-overlay");
+      if (overlay) overlay.style.display = "flex";
+    });
+  });
 
   // Close signup modal
   const signupClose = document.getElementById("signup-close");
   if (signupClose) {
     signupClose.addEventListener("click", () => {
-      document.getElementById("signup-modal-overlay").style.display = "none";
+      const overlay = document.getElementById("signup-modal-overlay");
+      if (overlay) overlay.style.display = "none";
     });
-  }
-
-  // If you arrive with ?auth=1&next=my-favorites.html, open automatically
-  const params = new URLSearchParams(window.location.search);
-  if (params.get("auth") === "1") {
-    openAuthModal(params.get("next") || null);
   }
 
   bindLogin();
   bindSignup();
 });
 
-// --------- LOGIN (from your login.js) ----------
+// =====================================================
+// LOGIN
+// =====================================================
+
 function bindLogin() {
   const btn = document.getElementById("login-btn");
   if (!btn) return;
 
   btn.onclick = async () => {
-    const email = document.getElementById("login-email").value.trim();
-    const password = document.getElementById("login-password").value.trim();
+    const email = document.getElementById("login-email")?.value.trim();
+    const password = document.getElementById("login-password")?.value.trim();
     const errorBox = document.getElementById("login-error");
 
-    errorBox.style.display = "none";
-    errorBox.textContent = "";
-
     if (!email || !password) {
-      errorBox.textContent = "Please enter both email and password.";
-      errorBox.style.display = "block";
+      if (errorBox) {
+        errorBox.textContent = "Please enter both email and password.";
+        errorBox.style.display = "block";
+      }
       return;
     }
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
 
     if (error) {
-      errorBox.textContent = error.message;
-      errorBox.style.display = "block";
+      if (errorBox) {
+        errorBox.textContent = error.message;
+        errorBox.style.display = "block";
+      }
       return;
     }
 
@@ -93,20 +127,28 @@ function bindLogin() {
 
     const next = sessionStorage.getItem("auth_next");
     sessionStorage.removeItem("auth_next");
-    if (next) window.location.href = next;
+
+    if (next) {
+      window.location.href = next;
+    }
   };
 }
 
-// --------- SIGNUP (promo validation from your login.js) ----------
+// =====================================================
+// SIGNUP (WITH PROMO VALIDATION)
+// =====================================================
+
 function bindSignup() {
   const btn = document.getElementById("signup-submit");
   if (!btn) return;
 
   btn.onclick = async () => {
-    const email = document.getElementById("signup-email").value.trim();
-    const password = document.getElementById("signup-password").value.trim();
-    const promo = document.getElementById("signup-promo").value.trim();
+    const email = document.getElementById("signup-email")?.value.trim();
+    const password = document.getElementById("signup-password")?.value.trim();
+    const promo = document.getElementById("signup-promo")?.value.trim();
     const errorBox = document.getElementById("signup-error");
+
+    if (!errorBox) return;
 
     errorBox.style.color = "#e50914";
     errorBox.textContent = "";
@@ -152,7 +194,8 @@ function bindSignup() {
     errorBox.textContent = "Account created! Check your email.";
 
     setTimeout(() => {
-      document.getElementById("signup-modal-overlay").style.display = "none";
+      const overlay = document.getElementById("signup-modal-overlay");
+      if (overlay) overlay.style.display = "none";
       errorBox.style.color = "#e50914";
     }, 1500);
   };
