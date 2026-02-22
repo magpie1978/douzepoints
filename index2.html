@@ -16,9 +16,8 @@
   <style>
     html, body { height: 100%; }
 
-    /* ================= LOGIN OVERLAY ================= */
-
-    #auth-overlay {
+    #auth-overlay,
+    #signup-modal-overlay {
       position: fixed;
       inset: 0;
       display: none;
@@ -30,7 +29,8 @@
       z-index: 99999;
     }
 
-    #auth-modal {
+    #auth-modal,
+    #signup-modal {
       width: min(500px, 92vw);
       padding: 32px;
       border-radius: 18px;
@@ -45,11 +45,12 @@
       flex-direction: column;
       gap: 18px;
       color: #fff;
-      position: relative;
       box-sizing: border-box;
+      position: relative;
     }
 
-    #auth-modal input {
+    #auth-modal input,
+    #signup-modal input {
       width: 100%;
       padding: 14px 16px;
       border-radius: 12px;
@@ -58,21 +59,6 @@
       color: #fff;
       font-size: 15px;
       box-sizing: border-box;
-    }
-
-    #auth-modal input::placeholder {
-      color: rgba(255,255,255,0.55);
-    }
-
-    .auth-buttons,
-    .auth-secondary {
-      display: flex;
-      justify-content: center;
-    }
-
-    .auth-divider {
-      height: 1px;
-      background: rgba(255,255,255,0.12);
     }
 
     .modal-btn {
@@ -90,18 +76,22 @@
       color: white;
     }
 
-    .primary:hover {
-      background: #ff1f2a;
-      transform: translateY(-1px);
-    }
-
     .secondary {
       background: rgba(255,255,255,0.12);
       color: white;
     }
 
-    .secondary:hover {
-      background: rgba(255,255,255,0.2);
+    .auth-buttons,
+    .auth-secondary,
+    .signup-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .auth-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.12);
     }
 
     .auth-close {
@@ -114,61 +104,10 @@
       color: rgba(255,255,255,0.7);
       cursor: pointer;
     }
-
-    .auth-close:hover { color: #fff; }
-
-    /* ================= SIGNUP OVERLAY ================= */
-
-    #signup-modal-overlay {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0.55);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      z-index: 100000;
-    }
-
-    #signup-modal {
-      width: min(500px, 92vw);
-      padding: 32px;
-      border-radius: 18px;
-      background: rgba(20, 25, 40, 0.65);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.15);
-      box-shadow:
-        0 25px 60px rgba(0,0,0,0.55),
-        inset 0 1px 0 rgba(255,255,255,0.08);
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      color: #fff;
-      box-sizing: border-box;
-    }
-
-    #signup-modal input {
-      width: 100%;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.08);
-      color: #fff;
-      font-size: 15px;
-      box-sizing: border-box;
-    }
-
-    .signup-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 14px;
-    }
   </style>
 </head>
 
-<body oncontextmenu="return false">
+<body>
 
   <!-- HEADER -->
   <div id="header-container"></div>
@@ -176,12 +115,12 @@
 
   <br><br>
 
-  <!-- ================= PAGE CONTENT ================= -->
+  <!-- ================= MAIN CONTENT ================= -->
 
   <div class="page-layout">
     <div class="main-content">
 
-      <!-- CAROUSEL 1 -->
+      <!-- Winners -->
       <div class="carousel-section">
         <div class="section-header">
           <h4>Eurovision Winners</h4>
@@ -189,55 +128,43 @@
         </div>
         <div class="carousel-wrapper">
           <button class="carousel-button" onclick="scrollCarousel(-1,'carouselTrack1')">&#10094;</button>
-          <div class="carousel-container"><div class="carousel-track" id="carouselTrack1"></div></div>
+          <div class="carousel-container">
+            <div class="carousel-track" id="carouselTrack1"></div>
+          </div>
           <button class="carousel-button" onclick="scrollCarousel(1,'carouselTrack1')">&#10095;</button>
         </div>
       </div>
 
-    <br>
-  
-    <!-- CAROUSEL 2: Basel 2025 -->
-    <div class="carousel-section">
-      <div class="section-header">
-        <h4>Basel 2025</h4>
-        <a class="view-more" href="edition.html?edition=2025">VIEW ALL</a>
+      <!-- Basel -->
+      <div class="carousel-section">
+        <div class="section-header">
+          <h4>Basel 2025</h4>
+          <a class="view-more" href="edition.html?edition=2025">VIEW ALL</a>
+        </div>
+        <div class="carousel-wrapper">
+          <button class="carousel-button" onclick="scrollCarousel(-1,'carouselTrack4')">&#10094;</button>
+          <div class="carousel-container">
+            <div class="carousel-track" id="carouselTrack4"></div>
+          </div>
+          <button class="carousel-button" onclick="scrollCarousel(1,'carouselTrack4')">&#10095;</button>
+        </div>
       </div>
-      <div class="carousel-wrapper">
-        <button class="carousel-button" onclick="scrollCarousel(-1, 'carouselTrack4')">&#10094;</button>
-        <div class="carousel-container"><div class="carousel-track" id="carouselTrack4"></div></div>
-        <button class="carousel-button" onclick="scrollCarousel(1, 'carouselTrack4')">&#10095;</button>
+
+      <!-- Malmö -->
+      <div class="carousel-section">
+        <div class="section-header">
+          <h4>Malmö 2024</h4>
+          <a class="view-more" href="edition.html?edition=2024">VIEW ALL</a>
+        </div>
+        <div class="carousel-wrapper">
+          <button class="carousel-button" onclick="scrollCarousel(-1,'carouselTrack2')">&#10094;</button>
+          <div class="carousel-container">
+            <div class="carousel-track" id="carouselTrack2"></div>
+          </div>
+          <button class="carousel-button" onclick="scrollCarousel(1,'carouselTrack2')">&#10095;</button>
+        </div>
       </div>
-    </div>
-  
-    <br>
-  
-    <!-- CAROUSEL 3: Malmö 2024 -->
-    <div class="carousel-section">
-      <div class="section-header">
-        <h4>Malmö 2024</h4>
-        <a class="view-more" href="edition.html?edition=2024">VIEW ALL</a>
-      </div>
-      <div class="carousel-wrapper">
-        <button class="carousel-button" onclick="scrollCarousel(-1, 'carouselTrack2')">&#10094;</button>
-        <div class="carousel-container"><div class="carousel-track" id="carouselTrack2"></div></div>
-        <button class="carousel-button" onclick="scrollCarousel(1, 'carouselTrack2')">&#10095;</button>
-      </div>
-    </div>
-  
-    <br>
-  
-    <!-- CAROUSEL 4: Fan Favorites -->
-    <div class="carousel-section">
-      <div class="section-header">
-        <h4>Fan Favorites</h4>
-        <a class="view-more" href="fan-favorites.html">VIEW MORE</a>
-      </div>
-      <div class="carousel-wrapper">
-        <button class="carousel-button" onclick="scrollCarousel(-1,'carouselTrack3')">&#10094;</button>
-        <div class="carousel-container"><div class="carousel-track" id="carouselTrack3"></div></div>
-        <button class="carousel-button" onclick="scrollCarousel(1,'carouselTrack3')">&#10095;</button>
-      </div>
-    </div>
+
     </div>
   </div>
 
@@ -246,7 +173,6 @@
   <div id="auth-overlay">
     <div id="auth-modal">
       <h3>Sign in to use Favorites</h3>
-
       <input type="email" id="login-email" placeholder="Email">
       <input type="password" id="login-password" placeholder="Password">
 
@@ -261,7 +187,7 @@
       </div>
 
       <button id="auth-close" class="auth-close">×</button>
-      <p id="login-error" style="color:#e50914;text-align:center;min-height:18px;"></p>
+      <p id="login-error" style="text-align:center;color:#e50914;"></p>
     </div>
   </div>
 
@@ -270,7 +196,6 @@
   <div id="signup-modal-overlay">
     <div id="signup-modal">
       <h3>Create Account</h3>
-
       <input id="signup-email" type="email" placeholder="Email">
       <input id="signup-password" type="password" placeholder="Password">
       <input id="signup-promo" type="text" placeholder="Promo Code (required)">
@@ -280,19 +205,20 @@
         <button id="signup-close" class="modal-btn secondary">Close</button>
       </div>
 
-      <p id="signup-error" style="color:#e50914;text-align:center;min-height:18px;"></p>
+      <p id="signup-error" style="text-align:center;color:#e50914;"></p>
     </div>
   </div>
 
-  <!-- ================= SCRIPTS ================= -->
+  <!-- ================= REQUIRED SCRIPTS ================= -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script type="module" src="js/supabaseClient.js"></script>
   <script type="module" src="js/video.js"></script>
+  <script src="js/modal.js"></script>
   <script type="module" src="js/auth.js"></script>
+  <script src="js/footer.js"></script>
 
   <div id="footer"></div>
-  <script src="js/footer.js"></script>
 
 </body>
 </html>
