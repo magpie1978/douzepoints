@@ -61,6 +61,18 @@ async function loadHeader() {
         });
     }
 
+    import { requireAuth } from './auth.js'; // (or dynamically import inside handler)
+    
+    const favLink = document.querySelector('a[href="my-favorites.html"]');
+    if (favLink) {
+      favLink.addEventListener("click", async (e) => {
+        e.preventDefault();
+        const ok = await requireAuth("my-favorites.html");
+        if (ok) window.location.href = "my-favorites.html";
+      });
+    }
+
+    
     // Icons
     if (window.lucide) {
         window.lucide.createIcons();
