@@ -10,7 +10,6 @@ async function loadHeader() {
   const headerContainer = document.getElementById("header-container");
   if (!headerContainer) return;
 
-  // ✅ IMPORTANT: relative path (works on douzepoints.org + GitHub Pages)
   const res = await fetch("header.html", { cache: "no-store" });
   if (!res.ok) {
     console.error("[header] Failed to load header.html:", res.status, res.statusText);
@@ -20,34 +19,53 @@ async function loadHeader() {
   headerContainer.innerHTML = await res.text();
   await new Promise(requestAnimationFrame);
 
-  // ✅ Render Lucide icons (your header.html uses data-lucide)
   if (window.lucide) window.lucide.createIcons();
 
-  // ✅ Logout (no login.html anymore)
+  // --- session-aware header controls ---
+  const { data: { session } } = await supabase.auth.getSession();
+
   const logoutBtn = document.getElementById("logout-btn");
   if (logoutBtn) {
+    // hide logout if not logged in
+    logoutBtn.style.display = session ? "flex" : "none";
+
     logoutBtn.addEventListener("click", async (e) => {
       e.preventDefault();
       try {
         await supabase.auth.signOut();
       } finally {
+        // after logout, go home
         window.location.href = "index.html";
       }
     });
   }
 
-  // ✅ Gate only My Favorites (dynamic import is valid inside function)
+  // --- Gate only "My Favorites" ---
   const favLink = headerContainer.querySelector('a[href="my-favorites.html"]');
   if (favLink) {
     favLink.addEventListener("click", async (e) => {
       e.preventDefault();
-      const { requireAuth } = await import("./auth.js");
-      const ok = await requireAuth("my-favorites.html");
-      if (ok) window.location.href = "my-favorites.html";
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        window.location.href = "my-favorites.html";
+        return;
+      }
+
+      // If auth modal exists on this page, use it
+      const hasModal = !!document.getElementById("auth-overlay");
+      if (hasModal) {
+        const { requireAuth } = await import("./auth.js");
+        const ok = await requireAuth("my-favorites.html");
+        if (ok) window.location.href = "my-favorites.html";
+      } else {
+        // Otherwise, send them to index where the auth modal lives
+        window.location.href = "index.html?auth=1&next=my-favorites.html";
+      }
     });
   }
 
-  // ✅ Banner logic (keep yours, but use RELATIVE banner paths)
+  // --- Banner logic (unchanged, but keep paths relative) ---
   const banner = document.getElementById("country-banner");
   if (!banner) return;
 
@@ -69,20 +87,15 @@ async function loadHeader() {
 
   if (isIndexPage) {
     banner.src = "banners/douzepoints.png";
-
   } else if (isWinnersPage) {
     banner.src = "banners/winners.png";
-
   } else if (isFanFavesPage) {
     banner.src = "banners/fanfavorites.png";
-
   } else if (isFavoritesPage) {
     banner.src = "banners/my-faves.png";
-
   } else if (isEditionPage) {
     const editionYear = new URLSearchParams(window.location.search).get("edition");
     if (editionYear) banner.src = `banners/${editionYear}.png`;
-
   } else if (isCountryPage && country) {
     const { data } = await supabase
       .from("douzepoints")
@@ -92,10 +105,8 @@ async function loadHeader() {
 
     const code = data?.[0]?.Country_Code?.toLowerCase();
     if (code) banner.src = `banners/${code}.png`;
-
   } else if (isWatchHistoryPage) {
     banner.src = "banners/watchstats.png";
-
   } else if (isScoreboardPage) {
     banner.src = "banners/scoreboard.png";
   }
