@@ -165,7 +165,7 @@
     <script type="module" src="js/video.js"></script>
 
 
-    <!-- AUTH MODAL (login + signup) -->
+    <!-- AUTH MODAL (login + signup) -
     <div id="auth-overlay" style="display:none;">
       <div id="auth-modal">
         <div class="auth-header">
@@ -187,6 +187,29 @@
           Create account
         </button>
       </div>
+    </div>
+    -->
+
+    <!-- SIGN IN MODAL -->
+    <div id="auth-modal">
+      <h3>Sign in to use Favorites</h3>
+    
+      <input type="email" id="login-email" placeholder="Email">
+      <input type="password" id="login-password" placeholder="Password">
+    
+      <div class="auth-buttons">
+        <button id="login-btn" class="modal-btn primary">Log In</button>
+      </div>
+    
+      <div class="auth-divider"></div>
+    
+      <div class="auth-secondary">
+        <button id="open-signup" class="modal-btn secondary">
+          Create account
+        </button>
+      </div>
+    
+      <button id="auth-close" class="auth-close">×</button>
     </div>
     
     <!-- SIGN-UP MODAL (reuse your existing markup if you want) -->
