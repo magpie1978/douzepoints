@@ -1,137 +1,102 @@
+// js/header_new.js
 import { supabase } from './supabaseClient.js';
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadHeader();
+  loadHeader();
 });
 
-
-// -------------------------------------------------------------
-// LOGOUT BUTTON
-// -------------------------------------------------------------
-
-const logoutBtn = document.getElementById("logout-btn");
-
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", async (e) => {
-    e.preventDefault();
-
-    try {
-      const { error } = await supabase.auth.signOut();
-
-      if (error) {
-        console.error("Logout error:", error);
-        alert("Failed to log out.");
-        return;
-      }
-
-      // Clear any cached session data (belt + braces)
-      localStorage.removeItem("supabase.auth.token");
-
-      // Redirect to login
-      window.location.href = "index.html";
-
-    } catch (err) {
-      console.error("Unexpected logout failure:", err);
-      window.location.href = "index.html";
-    }
-  });
-}
-
 async function loadHeader() {
+  const path = window.location.pathname;
+  const headerContainer = document.getElementById("header-container");
+  if (!headerContainer) return;
 
-    const path = window.location.pathname;
-    const headerContainer = document.getElementById("header-container");
+  // ✅ IMPORTANT: relative path (works on douzepoints.org + GitHub Pages)
+  const res = await fetch("header.html", { cache: "no-store" });
+  if (!res.ok) {
+    console.error("[header] Failed to load header.html:", res.status, res.statusText);
+    return;
+  }
 
-    if (!headerContainer) return;
+  headerContainer.innerHTML = await res.text();
+  await new Promise(requestAnimationFrame);
 
-    const headerHtml = await fetch("/header.html").then(res => res.text());
-    headerContainer.innerHTML = headerHtml;
+  // ✅ Render Lucide icons (your header.html uses data-lucide)
+  if (window.lucide) window.lucide.createIcons();
 
-    await new Promise(requestAnimationFrame);
+  // ✅ Logout (no login.html anymore)
+  const logoutBtn = document.getElementById("logout-btn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      try {
+        await supabase.auth.signOut();
+      } finally {
+        window.location.href = "index.html";
+      }
+    });
+  }
 
-    // ⭐ ADD THIS — logout binding
-    const logoutBtn = document.getElementById("logout-btn");
+  // ✅ Gate only My Favorites (dynamic import is valid inside function)
+  const favLink = headerContainer.querySelector('a[href="my-favorites.html"]');
+  if (favLink) {
+    favLink.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const { requireAuth } = await import("./auth.js");
+      const ok = await requireAuth("my-favorites.html");
+      if (ok) window.location.href = "my-favorites.html";
+    });
+  }
 
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", async (e) => {
-            e.preventDefault();
+  // ✅ Banner logic (keep yours, but use RELATIVE banner paths)
+  const banner = document.getElementById("country-banner");
+  if (!banner) return;
 
-            await supabase.auth.signOut();
-            window.location.href = "login.html";
-        });
-    }
+  const isIndexPage =
+    path === "/" ||
+    path === "/index.html" ||
+    path.endsWith("/index.html") ||
+    path.endsWith("/");
 
-    import { requireAuth } from './auth.js'; // (or dynamically import inside handler)
-    
-    const favLink = document.querySelector('a[href="my-favorites.html"]');
-    if (favLink) {
-      favLink.addEventListener("click", async (e) => {
-        e.preventDefault();
-        const ok = await requireAuth("my-favorites.html");
-        if (ok) window.location.href = "my-favorites.html";
-      });
-    }
+  const isCountryPage      = path.includes("country.html");
+  const isEditionPage      = path.includes("edition.html");
+  const isWinnersPage      = path.includes("winners.html");
+  const isFavoritesPage    = path.includes("my-favorites.html");
+  const isFanFavesPage     = path.includes("fan-favorites.html");
+  const isScoreboardPage   = path.includes("scoreboard.html");
+  const isWatchHistoryPage = path.includes("my-stats.html");
 
-    
-    // Icons
-    if (window.lucide) {
-        window.lucide.createIcons();
-    }
+  const country = new URLSearchParams(window.location.search).get("country");
 
-    // Banner logic (UNCHANGED)
-    const banner = document.getElementById("country-banner");
-    if (!banner) return;
+  if (isIndexPage) {
+    banner.src = "banners/douzepoints.png";
 
-    const isIndexPage =
-        path === "/" ||
-        path === "/index.html" ||
-        path.endsWith("/index.html") ||
-        path.endsWith("/");
+  } else if (isWinnersPage) {
+    banner.src = "banners/winners.png";
 
-    const isCountryPage    = path.includes("country.html");
-    const isEditionPage    = path.includes("edition.html");
-    const isWinnersPage    = path.includes("winners.html");
-    const isFavoritesPage  = path.includes("my-favorites.html");
-    const isFanFavesPage   = path.includes("fan-favorites.html");
-    const isScoreboardPage = path.includes("scoreboard.html");
-    const isWatchHistoryPage = path.includes("my-stats.html");
+  } else if (isFanFavesPage) {
+    banner.src = "banners/fanfavorites.png";
 
-    const country = new URLSearchParams(window.location.search).get("country");
+  } else if (isFavoritesPage) {
+    banner.src = "banners/my-faves.png";
 
-    if (isIndexPage) {
-        banner.src = "/banners/douzepoints.png";
+  } else if (isEditionPage) {
+    const editionYear = new URLSearchParams(window.location.search).get("edition");
+    if (editionYear) banner.src = `banners/${editionYear}.png`;
 
-    } else if (isWinnersPage) {
-        banner.src = "/banners/winners.png";
+  } else if (isCountryPage && country) {
+    const { data } = await supabase
+      .from("douzepoints")
+      .select("Country_Code")
+      .ilike("Country", country)
+      .limit(1);
 
-    } else if (isFanFavesPage) {
-        banner.src = "/banners/fanfavorites.png";
+    const code = data?.[0]?.Country_Code?.toLowerCase();
+    if (code) banner.src = `banners/${code}.png`;
 
-    } else if (isFavoritesPage) {
-        banner.src = "/banners/my-faves.png";
+  } else if (isWatchHistoryPage) {
+    banner.src = "banners/watchstats.png";
 
-    } else if (isEditionPage) {
-        const editionYear = new URLSearchParams(window.location.search).get("edition");
-        if (editionYear) {
-            banner.src = `/banners/${editionYear}.png`;
-        }
-
-    } else if (isCountryPage && country) {
-        const { data } = await supabase
-            .from("douzepoints")
-            .select("Country_Code")
-            .ilike("Country", country)
-            .limit(1);
-
-        const code = data?.[0]?.Country_Code?.toLowerCase();
-        if (code) {
-            banner.src = `/banners/${code}.png`;
-        }
-
-    } else if (isWatchHistoryPage) {
-        banner.src = "/banners/watchstats.png";
-
-    } else if (isScoreboardPage) {
-        banner.src = "/banners/scoreboard.png";
-    }
+  } else if (isScoreboardPage) {
+    banner.src = "banners/scoreboard.png";
+  }
 }
