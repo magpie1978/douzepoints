@@ -331,25 +331,41 @@ h4 {
   font-size: 24px;
   font-weight: 700;
 }
-/*
-.main-header {
-    width: 100%;
-}
-*/
 
-/*
-.banner-static {
-    width: 100%;
-    height: 220px;
-    overflow: hidden;
-}
-*/
 
-/*
-.banner-static img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+.signup-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 6px;
 }
-*/
+
+#signup-modal .modal-btn {
+  padding: 12px 22px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+
+#signup-modal .primary {
+  background: #e50914;
+  color: white;
+}
+
+#signup-modal .primary:hover {
+  background: #ff1f2a;
+  transform: translateY(-1px);
+}
+
+#signup-modal .secondary {
+  background: rgba(255,255,255,0.12);
+  color: white;
+}
+
+#signup-modal .secondary:hover {
+  background: rgba(255,255,255,0.2);
+}
