@@ -385,25 +385,19 @@ h4 {
 
 #auth-modal {
   width: min(500px, 92vw);
+  max-height: 90vh;
   padding: 32px;
   border-radius: 18px;
-
   background: rgba(20, 25, 40, 0.65);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow:
     0 25px 60px rgba(0, 0, 0, 0.55),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
-
-  color: #ffffff;
-
   display: flex;
   flex-direction: column;
   gap: 18px;
-
-  position: relative;
   box-sizing: border-box;
 }
 
