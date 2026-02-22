@@ -10,10 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
 // 🔒 AUTH PROTECTION
 // -------------------------------------------------------------
 supabase.auth.onAuthStateChange((event, session) => {
-    const isLoginPage = window.location.pathname.includes("login.html");
+    const isLoginPage = window.location.pathname.includes("index.html");
 
     if (!session && !isLoginPage) {
-        window.location.href = "login.html";
+        window.location.href = "index.html";
     }
 });
 
@@ -26,7 +26,7 @@ async function loadHeader() {
     if (!headerContainer) return;
 
     // Inject shared header HTML
-    const headerHtml = await fetch("/header.html").then(res => res.text());
+    const headerHtml = await fetch("header.html").then(res => res.text());
     headerContainer.innerHTML = headerHtml;
 
     await new Promise(requestAnimationFrame);
@@ -46,7 +46,7 @@ async function loadHeader() {
         logoutBtn.addEventListener("click", async (e) => {
             e.preventDefault();
             await supabase.auth.signOut();
-            window.location.href = "login.html";
+            window.location.href = "index.html";
         });
     }
 
