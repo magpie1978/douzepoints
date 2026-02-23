@@ -7,6 +7,10 @@ body {
   color: #ccc;
 }
 
+#country-banner {
+  display: none;
+}
+
 .container {
       display: flex;
     }
