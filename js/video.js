@@ -68,55 +68,80 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
     favoritesLoaded = true;
   }
 
-  async function toggleFavorite(button, videoKey) {
-    if (!supabase) {
-      console.warn("[video.js] supabase missing – cannot toggle favourites.");
-      return;
-    }
-
-    await ensureFavoritesLoaded();
-
-    if (!currentUser) {
-      alert("Please log in to save favourites.");
-      return;
-    }
-
-    const key = String(videoKey);
-
-    if (favoriteIds.has(key)) {
-      const { error } = await supabase
-        .from("user_favorites")
-        .delete()
-        .eq("user_id", currentUser.id)
-        .eq("video_id", key);
-
-      if (error) {
-        console.error("Error removing favourite:", error);
-        return;
-      }
-
-      favoriteIds.delete(key);
-      button.classList.remove("is-favorite");
-      return;
-    }
-
-    const { error } = await supabase
-      .from("user_favorites")
-      .insert({
-        user_id: currentUser.id,
-        video_id: key
-      });
-
-    if (error) {
-      console.error("Error adding favourite:", error);
-      return;
-    }
-
-    favoriteIds.add(key);
-    button.classList.add("is-favorite");
+async function toggleFavorite(button, videoKey, entry = null) {
+  if (!supabase) {
+    console.warn("[video.js] supabase missing – cannot toggle favourites.");
+    return;
   }
 
+  await ensureFavoritesLoaded();
 
+  if (!currentUser) {
+    alert("Please log in to save favourites.");
+    return;
+  }
+
+  const key = String(videoKey);
+
+  // ================================
+  // REMOVE FAVORITE
+  // ================================
+  if (favoriteIds.has(key)) {
+    const { error } = await supabase
+      .from("user_favorites")
+      .delete()
+      .eq("user_id", currentUser.id)
+      .eq("video_id", key);
+
+    if (error) {
+      console.error("Error removing favourite:", error);
+      return;
+    }
+
+    favoriteIds.delete(key);
+    button.classList.remove("is-favorite");
+
+    // ✅ GOOGLE ANALYTICS: favorite_remove
+    if (typeof gtag === "function" && entry) {
+      gtag('event', 'favorite_remove', {
+        song_title: entry.Song || "",
+        artist: entry.Artist || "",
+        edition_year: entry.Year || "",
+        country: entry.Country || ""
+      });
+    }
+
+    return;
+  }
+
+  // ================================
+  // ADD FAVORITE
+  // ================================
+  const { error } = await supabase
+    .from("user_favorites")
+    .insert({
+      user_id: currentUser.id,
+      video_id: key
+    });
+
+  if (error) {
+    console.error("Error adding favourite:", error);
+    return;
+  }
+
+  favoriteIds.add(key);
+  button.classList.add("is-favorite");
+
+  // ✅ GOOGLE ANALYTICS: favorite_add
+  if (typeof gtag === "function" && entry) {
+    gtag('event', 'favorite_add', {
+      song_title: entry.Song || "",
+      artist: entry.Artist || "",
+      edition_year: entry.Year || "",
+      country: entry.Country || ""
+    });
+  }
+}
 
 
   
