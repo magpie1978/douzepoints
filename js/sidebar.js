@@ -40,9 +40,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       //NEW SEO VERSION
       const slug = country
         .toLowerCase()
-        .replace(/\s+/g, "-")
-        .replace(/[^a-z0-9-]/g, "");
-      a.href = `country/${slug}.html`;
+        .replace(/[^a-z0-9]+/g, "-")   // replace ANY non-alphanumeric with single hyphen
+        .replace(/-+/g, "-")          // collapse multiple hyphens
+        .replace(/^-|-$/g, "");       // trim leading/trailing hyphens      
       // END OF NEW SEO VERSION
       
       const img = document.createElement("img");
