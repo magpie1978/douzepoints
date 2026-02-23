@@ -1,4 +1,3 @@
-
 // js/header_new.js
 import { supabase } from './supabaseClient.js';
 
@@ -6,11 +5,16 @@ document.addEventListener("DOMContentLoaded", () => {
   loadHeader();
 });
 
+
 async function loadHeader() {
+
   const path = window.location.pathname;
   const headerContainer = document.getElementById("header-container");
   if (!headerContainer) return;
 
+  // --------------------------------------------------
+  // Load shared header HTML
+  // --------------------------------------------------
   const res = await fetch("header.html", { cache: "no-store" });
   if (!res.ok) {
     console.error("[header] Failed to load header.html:", res.status, res.statusText);
@@ -22,12 +26,15 @@ async function loadHeader() {
 
   if (window.lucide) window.lucide.createIcons();
 
-  // --- session-aware header controls ---
+  // --------------------------------------------------
+  // Session-aware controls
+  // --------------------------------------------------
   const { data: { session } } = await supabase.auth.getSession();
 
   const logoutBtn = document.getElementById("logout-btn");
   if (logoutBtn) {
-    // hide logout if not logged in
+
+    // Show logout only if logged in
     logoutBtn.style.display = session ? "flex" : "none";
 
     logoutBtn.addEventListener("click", async (e) => {
@@ -35,13 +42,14 @@ async function loadHeader() {
       try {
         await supabase.auth.signOut();
       } finally {
-        // after logout, go home
         window.location.href = "index.html";
       }
     });
   }
 
-  // --- Gate only "My Favorites" ---
+  // --------------------------------------------------
+  // Gate only "My Favorites"
+  // --------------------------------------------------
   const favLink = headerContainer.querySelector('a[href="my-favorites.html"]');
   if (favLink) {
     favLink.addEventListener("click", async (e) => {
@@ -60,19 +68,22 @@ async function loadHeader() {
         const ok = await requireAuth("my-favorites.html");
         if (ok) window.location.href = "my-favorites.html";
       } else {
-        // Otherwise, send them to index where the auth modal lives
         window.location.href = "index.html?auth=1&next=my-favorites.html";
       }
     });
   }
 
-  // --- Banner logic (unchanged, but keep paths relative) ---
+  // --------------------------------------------------
+  // Banner Logic (Flash-Free)
+  // --------------------------------------------------
   const banner = document.getElementById("country-banner");
   if (!banner) return;
 
+  // Hide by default (prevents broken image flash)
+  banner.style.display = "none";
+
   const isIndexPage =
     path === "/" ||
-    path === "/index.html" ||
     path.endsWith("/index.html") ||
     path.endsWith("/");
 
@@ -86,17 +97,19 @@ async function loadHeader() {
 
   const country = new URLSearchParams(window.location.search).get("country");
 
+  let bannerSrc = null;
+
   if (isIndexPage) {
-    banner.src = "banners/douzepoints.png";
+    bannerSrc = "banners/douzepoints.png";
   } else if (isWinnersPage) {
-    banner.src = "banners/winners.png";
+    bannerSrc = "banners/winners.png";
   } else if (isFanFavesPage) {
-    banner.src = "banners/fanfavorites.png";
+    bannerSrc = "banners/fanfavorites.png";
   } else if (isFavoritesPage) {
-    banner.src = "banners/my-faves.png";
+    bannerSrc = "banners/my-faves.png";
   } else if (isEditionPage) {
     const editionYear = new URLSearchParams(window.location.search).get("edition");
-    if (editionYear) banner.src = `banners/${editionYear}.png`;
+    if (editionYear) bannerSrc = `banners/${editionYear}.png`;
   } else if (isCountryPage && country) {
     const { data } = await supabase
       .from("douzepoints")
@@ -105,10 +118,17 @@ async function loadHeader() {
       .limit(1);
 
     const code = data?.[0]?.Country_Code?.toLowerCase();
-    if (code) banner.src = `banners/${code}.png`;
+    if (code) bannerSrc = `banners/${code}.png`;
   } else if (isWatchHistoryPage) {
-    banner.src = "banners/watchstats.png";
+    bannerSrc = "banners/watchstats.png";
   } else if (isScoreboardPage) {
-    banner.src = "banners/scoreboard.png";
+    bannerSrc = "banners/scoreboard.png";
+  }
+
+  if (bannerSrc) {
+    banner.onload = () => {
+      banner.style.display = "block";
+    };
+    banner.src = bannerSrc;
   }
 }
