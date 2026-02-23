@@ -9,13 +9,13 @@ document.addEventListener("DOMContentLoaded", () => {
 // -------------------------------------------------------------
 // 🔒 AUTH PROTECTION
 // -------------------------------------------------------------
-supabase.auth.onAuthStateChange((event, session) => {
-    const isLoginPage = window.location.pathname.includes("index.html");
-
-    if (!session && !isLoginPage) {
-        window.location.href = "index.html";
-    }
-});
+//supabase.auth.onAuthStateChange((event, session) => {
+//    const isLoginPage = window.location.pathname.includes("index.html");
+//
+//    if (!session && !isLoginPage) {
+//        window.location.href = "index.html";
+//    }
+//});
 
 // -------------------------------------------------------------
 // 🚀 Load header (REMOVE banner completely)
