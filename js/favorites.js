@@ -3,6 +3,7 @@
 // - Uses the SAME card renderer from video.js
 // - No duplicated HTML
 // - Fully uses modal and favourite system
+// - Includes Google Analytics tracking
 
 (function () {
 
@@ -16,8 +17,15 @@
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      window.location.href = "login.html";
+      window.location.href = "index.html?auth=1&next=my-favorites.html";
       return;
+    }
+
+    // ✅ Google Analytics: Track Favorites Page View
+    if (typeof gtag === "function") {
+      gtag('event', 'view_my_favorites', {
+        user_id: user.id
+      });
     }
 
     // 2. Load favourite IDs
@@ -41,7 +49,7 @@
     const { data: videos, error: videoError } = await supabase
       .from("douzepoints")
       .select("*")
-      .in("Video_Lookup", ids);   // ⭐ THIS IS THE FIX
+      .in("Video_Lookup", ids);
 
     if (videoError) {
       console.error("Video lookup error:", videoError);
