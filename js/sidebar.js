@@ -40,10 +40,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       //NEW SEO VERSION
       const slug = country
         .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")   // replace ANY non-alphanumeric with single hyphen
-        .replace(/-+/g, "-")          // collapse multiple hyphens
-        .replace(/^-|-$/g, "");       // trim leading/trailing hyphens      
-      // END OF NEW SEO VERSION
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+      a.href = `country/${slug}.html`;
+      //END OF NEW SEO CODE
       
       const img = document.createElement("img");
       img.src = `flags/${countryCode}.png`;
