@@ -1,3 +1,4 @@
+
 // js/header_new.js
 import { supabase } from './supabaseClient.js';
 
@@ -6,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function loadHeader() {
-
   const path = window.location.pathname;
   const headerContainer = document.getElementById("header-container");
   if (!headerContainer) return;
@@ -26,37 +26,20 @@ async function loadHeader() {
   const { data: { session } } = await supabase.auth.getSession();
 
   const logoutBtn = document.getElementById("logout-btn");
-
   if (logoutBtn) {
-
-    const hideLogoutPages = [
-      "about.html",
-      "contact.html",
-      "faq.html",
-      "privacy.html"
-    ];
-
-    const isStaticPage = hideLogoutPages.some(page =>
-      path.endsWith(page)
-    );
-
-    if (isStaticPage) {
-      logoutBtn.style.display = "none";
-    } else {
-      logoutBtn.style.display = session ? "flex" : "none";
-    }
+    // hide logout if not logged in
+    logoutBtn.style.display = session ? "flex" : "none";
 
     logoutBtn.addEventListener("click", async (e) => {
       e.preventDefault();
       try {
         await supabase.auth.signOut();
       } finally {
+        // after logout, go home
         window.location.href = "index.html";
       }
     });
   }
-
-}
 
   // --- Gate only "My Favorites" ---
   const favLink = headerContainer.querySelector('a[href="my-favorites.html"]');
