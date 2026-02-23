@@ -116,28 +116,70 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
     button.classList.add("is-favorite");
   }
 
+
+
+
+  
   // ------------------------------------------------------------
   // MODAL WRAPPER
+  // ------------------------------------------------------------
+  //function openModalStrict(videoUrl, entry) {
+  //  if (!videoUrl) {
+  //    console.error("[video.js] No Video_URL found:", entry);
+  //    return;
+  //  }
+
+  //  if (typeof window.openVideoModal === "function") {
+  //    try {
+        // This calls into modal.js, which now logs views
+  //      window.openVideoModal({ url: videoUrl, entry });
+  //      return;
+  //    } catch (e) {
+  //      console.error("[video.js] Error calling openVideoModal:", e);
+  //    }
+  //  }
+
+  //  console.error("[video.js] No modal function found.");
+  //}
+
+
+
+  // ------------------------------------------------------------
+  // MODAL WRAPPER WITH GOOGLE ANALYTICS VIDEO PLAY TRACKING
   // ------------------------------------------------------------
   function openModalStrict(videoUrl, entry) {
     if (!videoUrl) {
       console.error("[video.js] No Video_URL found:", entry);
       return;
     }
-
+  
+    //  Track GA event here
+    if (typeof gtag === "function") {
+      gtag('event', 'video_play', {
+        song_title: entry.Song || "",
+        artist: entry.Artist || "",
+        edition_year: entry.Year || "",
+        country: entry.Country || ""
+      });
+    }
+  
     if (typeof window.openVideoModal === "function") {
       try {
-        // This calls into modal.js, which now logs views
         window.openVideoModal({ url: videoUrl, entry });
         return;
       } catch (e) {
         console.error("[video.js] Error calling openVideoModal:", e);
       }
     }
-
+  
     console.error("[video.js] No modal function found.");
   }
+  
 
+
+
+
+  
   // ------------------------------------------------------------
   // RENDER A SINGLE VIDEO CARD
   // ------------------------------------------------------------
