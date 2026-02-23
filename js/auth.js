@@ -154,6 +154,10 @@ function bindLogin() {
 // SIGNUP (WITH PROMO VALIDATION)
 // =====================================================
 
+// =====================================================
+// SIGNUP (WITH PROMO VALIDATION)
+// =====================================================
+
 function bindSignup() {
   const btn = document.getElementById("signup-submit");
   if (!btn) return;
@@ -195,7 +199,7 @@ function bindSignup() {
       return;
     }
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { promo } }
@@ -204,6 +208,14 @@ function bindSignup() {
     if (error) {
       errorBox.textContent = error.message;
       return;
+    }
+
+    // ✅ GOOGLE ANALYTICS: Track Sign Up
+    if (typeof gtag === "function") {
+      gtag('event', 'sign_up', {
+        method: 'password',
+        user_id: data?.user?.id || null
+      });
     }
 
     errorBox.style.color = "#4ade80";
