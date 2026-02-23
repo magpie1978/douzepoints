@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- HOMEPAGE -->
+  <url><loc>https://douzepoints.org/</loc><lastmod>2026-02-23</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
+
+  <!-- CORE PAGES -->
+  <url><loc>https://douzepoints.org/winners.html</loc><lastmod>2026-02-23</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://douzepoints.org/scoreboard.html</loc><lastmod>2026-02-23</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://douzepoints.org/fan-favorites.html</loc><lastmod>2026-02-23</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>
+
+  <!-- CURRENT EDITION -->
+  <url><loc>https://douzepoints.org/edition/2026.html</loc><lastmod>2026-02-23</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+
+  <!-- RECENT EDITIONS (2021–2025) -->
+  <url><loc>https://douzepoints.org/edition/2025.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://douzepoints.org/edition/2024.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://douzepoints.org/edition/2023.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://douzepoints.org/edition/2022.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://douzepoints.org/edition/2021.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+
+  <!-- MODERN ERA (2000–2020) -->
+  <url><loc>https://douzepoints.org/edition/2020.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2019.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2018.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2017.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2016.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2015.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2014.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2013.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2012.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2011.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2010.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2009.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2008.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2007.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2006.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2005.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2004.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2003.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2002.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2001.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://douzepoints.org/edition/2000.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- EARLY ERA (1999–1956) -->
+  <url><loc>https://douzepoints.org/edition/1999.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1998.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1997.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1996.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1995.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1994.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1993.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1992.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1991.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1990.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1989.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1988.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1987.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1986.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1985.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1984.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1983.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1982.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1981.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1980.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1979.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1978.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1977.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1976.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1975.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1974.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1973.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1972.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1971.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1970.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1969.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1968.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1967.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1966.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1965.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1964.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1963.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1962.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1961.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1960.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1959.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1958.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1957.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://douzepoints.org/edition/1956.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+   <!-- COUNTRY PAGES -->
+  <url><loc>https://douzepoints.org/country/albania.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/andorra.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/armenia.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/australia.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/austria.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/azerbaijan.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/belarus.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/belgium.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/bosnia-hercegovina.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/bulgaria.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/croatia.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/cyprus.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/czechia.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/denmark.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/estonia.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/finland.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/france.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/georgia.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/germany.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/greece.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/hungary.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/iceland.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/ireland.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/israel.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/italy.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/latvia.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/lithuania.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/luxembourg.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/malta.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/moldova.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/monaco.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/montenegro.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/morocco.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/netherlands.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/north-macedonia.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/norway.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/poland.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/portugal.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/romania.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/russia.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/san-marino.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/serbia-montenegro.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/slovakia.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/slovenia.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/spain.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/sweden.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/switzerland.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/turkey.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/ukraine.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/united-kingdom.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://douzepoints.org/country/yugoslavia.html</loc><lastmod>2026-02-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+</urlset>
