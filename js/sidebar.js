@@ -33,8 +33,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       div.className = "sidebar-row";
 
       const a = document.createElement("a");
-      a.href = `country.html?country=${encodeURIComponent(country)}`;
+      
+      // REMOVED FOR REPLACEMENt SEO VERSION (BELOW)
+      //a.href = `country.html?country=${encodeURIComponent(country)}`;
 
+      //NEW SEO VERSION
+      const slug = country
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "");
+      a.href = `country/${slug}.html`;
+      // END OF NEW SEO VERSION
+      
       const img = document.createElement("img");
       img.src = `flags/${countryCode}.png`;
       img.alt = country;
