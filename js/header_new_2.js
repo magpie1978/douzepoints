@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadHeader();
 });
 
+
 async function loadHeader() {
 
   const path = window.location.pathname;
