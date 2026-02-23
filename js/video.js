@@ -321,7 +321,7 @@ async function toggleFavorite(button, videoKey, entry = null) {
       favBtn.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        toggleFavorite(favBtn, videoKey);
+        toggleFavorite(favBtn, videoKey, entry);
       });
     }
 
