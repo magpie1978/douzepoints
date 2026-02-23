@@ -97,6 +97,10 @@ document.addEventListener("DOMContentLoaded", () => {
 // LOGIN
 // =====================================================
 
+// =====================================================
+// LOGIN
+// =====================================================
+
 function bindLogin() {
   const btn = document.getElementById("login-btn");
   if (!btn) return;
@@ -114,7 +118,7 @@ function bindLogin() {
       return;
     }
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
     });
@@ -125,6 +129,14 @@ function bindLogin() {
         errorBox.style.display = "block";
       }
       return;
+    }
+
+    // ✅ GOOGLE ANALYTICS: Track Login
+    if (typeof gtag === "function") {
+      gtag('event', 'login', {
+        method: 'password',
+        user_id: data?.user?.id || null
+      });
     }
 
     closeAuthModal();
