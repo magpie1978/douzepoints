@@ -1,47 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+  
+  <!-- START OF HEAD SECTION -->
   <head>
 
     <meta charset="utf-8"/>
+    
     <title>Complete Eurovision Winners List (1956–2025)</title>
+
+    <!-- Links to Stylesheets -->
     <link rel="stylesheet" type="text/css" href="style/combined.css">
     <link rel="stylesheet" type="text/css" href="style/video-cards.css">
     <link rel="stylesheet" type="text/css" href="style/favorites.css">
     <link rel="stylesheet" type="text/css" href="style/sidebar.css">
     <link rel="stylesheet" type="text/css" href="style/footer.css">
 
+    <!-- Lucid Icons Script -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/js/favicons.js"></script>
 
+    <!-- Supabase Connection Script -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Favicons Script -->
+    <script src="/js/favicons.js"></script>
 
     <!-- GOOGLE ADSENSE SCRIPT -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687" crossorigin="anonymous"></script>
     
-
   </head>
+  <!-- END OF HEAD SECTION -->
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-    
-      gtag('config', 'G-9BDCDNFMGG');
-    </script>
-
+  <!-- Script for Google Tags (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG"></script>
   
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-9BDCDNFMGG');
+  </script>
+
+  <!-- START OF BODY SECTION -->
   <body oncontextmenu="return false">
     
-    <!-- HEADER -->
+    <!-- HEADER CONTAINER-->
     <div id="header-container"></div>
+
+    <!-- INJECT HEADER CONTENT INTO HEADER CONTAINER -->
     <script type="module" src="js/header_new.js"></script>
   
     <!-- MAIN CONTAINER -->
     <div class="container">
+
+      <!-- SIDEBAR CONTAINER -->
       <div id="sidebar-container" class="sidebar"></div>
-  
+
+      <!-- MAIN CONTENT -->
       <div class="main-content">
         <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
           <div style="flex: 1;"></div>
@@ -62,20 +76,25 @@
         </div>
         <div class="grid-container" id="video-container"></div>
       </div>
+      <!-- END OF MAIN CONTENT -->
     </div>
+    <!-- END OF MAIN CONTENT CONTAINER -->
   
   
-    <!-- MODAL -->
+    <!-- MODAL CONTAINER FOR PLAYING VIDEOS -->
     <script src="js/modal.js"></script>
     <div id="modal-container"></div>
 
+    <!-- INJECT VIDEO CONTENT INTO MODAL CONTAINER -->
     <script type="module" src="js/video.js"></script>
-  
+    
+
     <!-- FOOTER -->
     <div id="footer"></div>
     <script src="js/footer.js" type="text/javascript"></script>
+
     
-    <!-- SCRIPTS -->
+    <!-- ADDITIONAL SCRIPTS -->
     <script src="js/sorting.js" type="text/javascript"></script>
     <script src="js/icons.js" type="text/javascript"></script>
    
