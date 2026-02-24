@@ -82,6 +82,22 @@
     
         <!-- LOAD SIDEBAR LAST -->
         <script type="module" src="js/sidebar.js"></script>
+
+
+        <!--   -->
+        <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            const params = new URLSearchParams(window.location.search);
+            const country = params.get("country");
+        
+            if (country) {
+              // Clean formatting (handles URL encoding)
+              const formattedCountry = decodeURIComponent(country);
+        
+              document.title = `${formattedCountry} Eurovision Results & History | DouzePoints`;
+            }
+          });
+        </script>
     
     </body>
 </html>
