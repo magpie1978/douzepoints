@@ -76,5 +76,20 @@
         
         <!-- LOAD SIDEBAR MODULE LAST -->
         <script type="module" src="js/sidebar.js"></script>
+
+        <!-- Dynamically change the title -->
+        <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            const params = new URLSearchParams(window.location.search);
+            const year = params.get("edition");
+        
+            if (year) {
+              const formattedYear = decodeURIComponent(year);
+        
+              document.title = `Eurovision ${formattedYear} Final Results & Scoreboard | DouzePoints`;
+            }
+          });
+        </script>
+        
     </body>
 </html>
