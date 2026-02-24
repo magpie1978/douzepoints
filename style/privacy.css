@@ -57,7 +57,7 @@ body {
 /* Outer “glass” container */
 .glass-shell {
   width: min(980px, 92vw);
-  height: calc(100vh - 110px - 28px - 90px); 
+  height: calc(100vh - 110px - 28px - 120px); 
   /* 110px header clearance + 28px bottom padding + ~footer height (tweak 90px if needed) */
 
   background: rgba(255, 255, 255, 0.08);
