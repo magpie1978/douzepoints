@@ -375,17 +375,101 @@ h4 {
 }
 
 
+/* FROM INDEX.HTML
+ #auth-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 99999;
+    }    
+/*
+
+/* FROM INDEX.HTML
+    #auth-modal {
+      width: min(720px, 92vw);
+      background: #0f111a;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 18px;
+      color: #fff;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    }
+*/
+
+/* FROM INDEX.HTML
+    .auth-header {
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      margin-bottom: 12px;
+    }
+/*
+
+/* FROM INDEX.HTML  
+    .auth-title { font-weight: 700; }
+*/
+
+/* FROM INDEX.HTML 
+    .auth-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.12);
+      margin: 14px 0;
+    }
+/*
+
+/* FROM INDEX.HTML
+    #auth-close {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+    }
+*/
+
+/* FROM INDEX.HTML
+    .auth-row input {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+    }
+*/
+
+/* FROM INDEX.HTML
+    .auth-secondary {
+      display: flex;
+      justify-content: center;
+      margin-top: 12px;
+    }
+*/
+
+/* FROM INDEX.HTML 
+.auth-row {
+      display:flex;
+      gap: 10px;
+      align-items:center;
+    }
+*/
+
 #auth-overlay {
-  position: fixed;
-  inset: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: 99999;   /* Must be higher than header, banners, etc */
-}
+    position: fixed;
+    inset: 0;
+    display: none; /* IMPORTANT */
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 99999;
+  }    
 
 #auth-modal {
   width: min(500px, 92vw);
@@ -477,4 +561,3 @@ h4 {
 .auth-close:hover {
   color: #ffffff;
 }
-
