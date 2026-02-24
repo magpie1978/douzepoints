@@ -59,8 +59,7 @@ body {
   width: min(980px, 92vw);
   height: calc(100vh - 110px - 28px - 120px); 
   /* 110px header clearance + 28px bottom padding + ~footer height (tweak 90px if needed) */
-
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 18px;
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
@@ -76,7 +75,7 @@ body {
   overflow: auto;
   padding: 26px 26px 30px;
   box-sizing: border-box;
-  color: #000;
+  color: #fff;
 }
 
 /* Optional: make headings nicer inside the panel */
