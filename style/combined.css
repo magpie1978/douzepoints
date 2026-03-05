@@ -660,3 +660,7 @@ h4 {
   gap: 20px;
   padding: 10px 0;
 }
+
+.show-card.placeholder {
+  visibility: hidden;
+}
