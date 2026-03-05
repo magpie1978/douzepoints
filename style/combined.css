@@ -624,137 +624,11 @@ h4 {
   color: white;
 }
 
-/* =========================================
-   END
-========================================= */
-
-
-
-
-/* =================================
-   SHOW ROWS (NETFLIX STYLE)
-================================= */
-
-.shows-row {
-  margin-bottom: 40px;
-}
-
-.shows-year {
-  font-size: 24px;
-  font-weight: 700;
-  margin: 20px 0 10px 10px;
-}
-
-/* carousel wrapper */
-
-.shows-carousel {
-  position: relative;
-}
-
-/* horizontal scroll */
-
-.shows-track {
-  display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding: 10px;
-}
-
-/* hide scrollbar */
-
-.shows-track::-webkit-scrollbar {
-  display: none;
-}
-
-/* arrows */
-
-.shows-arrow {
-  position: absolute;
-  top: 40%;
-  transform: translateY(-50%);
-  background: rgba(0,0,0,0.6);
-  border: none;
-  color: white;
-  font-size: 28px;
-  padding: 8px 12px;
-  cursor: pointer;
-  z-index: 2;
-}
-
-.shows-arrow.left {
-  left: 0;
-}
-
-.shows-arrow.right {
-  right: 0;
-}
-
-/* =========================================
-   END
-========================================= */
-
-
-
-
-/* =========================
-   SHOWS — NETFLIX ROWS
-========================= */
-
 .shows-row {
   margin: 22px 0 36px;
 }
 
-.shows-row-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 10px 10px;
-}
-
-.shows-year {
-  font-size: 24px;
-  font-weight: 700;
-  margin: 0;
-}
-
-.shows-row-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.shows-track {
-  display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding: 10px;
-}
-
-.shows-track::-webkit-scrollbar {
-  display: none;
-}
-
-.shows-arrow {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: #fff;
-  font-size: 22px;
-  border-radius: 10px;
-  padding: 6px 10px;
-  cursor: pointer;
-}
-
-.shows-arrow:hover {
-  background: rgba(255,255,255,0.16);
-}
-
-
-
-
-/* ====================================
-   YEAR BANNERS
-==================================== */
+/* YEAR BANNERS */
 
 .shows-banner {
   display: flex;
@@ -764,10 +638,9 @@ h4 {
 }
 
 .shows-banner-title {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
-  white-space: nowrap;
-  letter-spacing: 1px;
+  color: #FFD700;
 }
 
 .shows-banner-line {
@@ -780,61 +653,6 @@ h4 {
     transparent
   );
 }
-
-/* ====================================
-   SHOW CAROUSEL
-==================================== */
-
-.shows-carousel {
-  position: relative;
-}
-
-.shows-track {
-  display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding: 10px 0;
-}
-
-.shows-track::-webkit-scrollbar {
-  display: none;
-}
-
-.shows-arrow {
-  position: absolute;
-  top: 40%;
-  transform: translateY(-50%);
-  background: rgba(0,0,0,0.6);
-  border: none;
-  color: white;
-  font-size: 26px;
-  padding: 8px 12px;
-  cursor: pointer;
-  border-radius: 6px;
-  z-index: 5;
-}
-
-.shows-arrow.left {
-  left: -10px;
-}
-
-.shows-arrow.right {
-  right: -10px;
-}
-
-.shows-arrow:hover {
-  background: rgba(0,0,0,0.85);
-}
-
-
-
-.shows-banner-title {
-  font-size: 26px;
-  font-weight: 700;
-  color: #FFD700;
-}
-
 
 .shows-track {
   display: grid;
