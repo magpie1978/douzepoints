@@ -107,7 +107,7 @@ async function loadHeader() {
   } else if (isFanFavesPage) {
     bannerSrc = "banners/fanfavorites.png";
   } else if (isShowPage) {
-    bannerSrc = "banners/fanfavorites.png";
+    bannerSrc = "banners/shows.png";
   } else if (isFavoritesPage) {
     bannerSrc = "banners/my-faves.png";
   } else if (isEditionPage) {
