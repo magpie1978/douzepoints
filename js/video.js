@@ -370,10 +370,6 @@ async function toggleFavorite(button, videoKey, entry = null) {
       wrapper.innerHTML = `
         <div class="show-thumb">
           <img src="${escapeHTML(imageUrl)}" alt="${escapeHTML(showType)}">
-    
-          <div class="show-overlay">
-            <div class="show-year">${escapeHTML(year)}</div>
-          </div>
         </div>
       `;
     
@@ -613,38 +609,38 @@ async function toggleFavorite(button, videoKey, entry = null) {
   // ------------------------------------------------------------
   // LOAD FULL SHOWS
   // ------------------------------------------------------------
-function loadShows() {
-
-  if (!supabase) return;
-
-  supabase
-    .from("douzepoints_shows")
-    .select("year, show_type, video_url")
-    .order("year", { ascending: false })
-    .then(({ data, error }) => {
-
-      if (error) {
-        console.error("Error loading shows:", error);
-        return;
-      }
-
-      console.log("[shows] rows:", data);
-
-      const transformed = (data || []).map(row => ({
-        Year: row.year,
-        Artist: "Eurovision Song Contest",
-        Song: row.show_type,
-        Country: "",
-        Country_Code: "",
-        Image: `images/shows/${row.year}-${row.show_type}.jpg`,
-        Video_URL: row.video_url,
-        Video_Lookup: `${row.year}-${row.show_type}`
-      }));
-
-      renderShows(transformed);
-
-    });
-  }
+  function loadShows() {
+  
+    if (!supabase) return;
+  
+    supabase
+      .from("douzepoints_shows")
+      .select("year, show_type, video_url")
+      .order("year", { ascending: false })
+      .then(({ data, error }) => {
+  
+        if (error) {
+          console.error("Error loading shows:", error);
+          return;
+        }
+  
+        console.log("[shows] rows:", data);
+  
+        const transformed = (data || []).map(row => ({
+          Year: row.year,
+          Artist: "Eurovision Song Contest",
+          Song: row.show_type,
+          Country: "",
+          Country_Code: "",
+          Image: `images/shows/${row.year}-${row.show_type}.jpg`,
+          Video_URL: row.video_url,
+          Video_Lookup: `${row.year}-${row.show_type}`
+        }));
+  
+        renderShows(transformed);
+  
+      });
+    }
   
   async function loadHome() {
     if (!supabase) return;
