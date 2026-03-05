@@ -334,57 +334,47 @@ async function toggleFavorite(button, videoKey, entry = null) {
 // ------------------------------------------------------------
 // RENDER FULL SHOW CARD
 // ------------------------------------------------------------
-//    function renderShowCard(entry) {
+    function renderShowCard(entry) {
     
-//      const wrapper = document.createElement("div");
-//      wrapper.className = "show-card";
-//      wrapper.setAttribute("role", "button");
-//      wrapper.tabIndex = 0;
+      const wrapper = document.createElement("div");
+      wrapper.className = "show-card";
+      wrapper.setAttribute("role", "button");
+      wrapper.tabIndex = 0;
     
-//      const videoUrl = entry.Video_URL;
+      const videoUrl = entry.Video_URL;
+      const year = entry.Year || "";
+      const showType = entry.Song || "";
     
-//      const showType = entry.Song || "";
-//      const year = entry.Year || "";
+      const imageUrl = entry.Image || `images/shows/${year}.jpg`;
     
-//      const imageUrl = entry.Image || `images/shows/${year}.jpg`;
+      wrapper.innerHTML = `
+        <div class="show-thumb">
+          <img src="${escapeHTML(imageUrl)}" alt="${escapeHTML(showType)}">
     
-//      wrapper.innerHTML = `
-//        <div class="show-thumb">
+          <div class="show-overlay">
+            <div class="show-badge">${escapeHTML(showType)}</div>
+            <div class="show-year">${escapeHTML(year)}</div>
+          </div>
+        </div>
+      `;
     
-//          <img src="${escapeHTML(imageUrl)}" alt="${escapeHTML(showType)}">
+      const open = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openModalStrict(videoUrl, entry);
+      };
     
-//          <div class="show-overlay">
+      wrapper.addEventListener("click", open);
     
-//            <div class="show-badge">
-//              ${escapeHTML(showType)}
-//            </div>
+      wrapper.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          open(e);
+        }
+      });
     
-//            <div class="show-year">
-//              ${escapeHTML(year)}
-//            </div>
-    
-//          </div>
-    
-//        </div>
-//      `;
-    
-//      const open = (e) => {
-//        e.preventDefault();
-//        e.stopPropagation();
-//        openModalStrict(videoUrl, entry);
-//      };
-    
-//      wrapper.addEventListener("click", open);
-    
-//      wrapper.addEventListener("keydown", (e) => {
-//        if (e.key === "Enter" || e.key === " ") {
-//          e.preventDefault();
-//          open(e);
-//        }
-//      });
-    
-//      return wrapper;
-//    }
+      return wrapper;
+    }
 
 
 
