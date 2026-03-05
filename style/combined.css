@@ -627,3 +627,69 @@ h4 {
 /* =========================================
    END
 ========================================= */
+
+
+
+
+/* =================================
+   SHOW ROWS (NETFLIX STYLE)
+================================= */
+
+.shows-row {
+  margin-bottom: 40px;
+}
+
+.shows-year {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 20px 0 10px 10px;
+}
+
+/* carousel wrapper */
+
+.shows-carousel {
+  position: relative;
+}
+
+/* horizontal scroll */
+
+.shows-track {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 10px;
+}
+
+/* hide scrollbar */
+
+.shows-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* arrows */
+
+.shows-arrow {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.6);
+  border: none;
+  color: white;
+  font-size: 28px;
+  padding: 8px 12px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.shows-arrow.left {
+  left: 0;
+}
+
+.shows-arrow.right {
+  right: 0;
+}
+
+/* =========================================
+   END
+========================================= */
