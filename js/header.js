@@ -90,6 +90,7 @@ async function loadHeader() {
   const isCountryPage      = path.includes("country.html");
   const isEditionPage      = path.includes("edition.html");
   const isWinnersPage      = path.includes("winners.html");
+  const isShowPage         = path.includes("shows.html");  
   const isFavoritesPage    = path.includes("my-favorites.html");
   const isFanFavesPage     = path.includes("fan-favorites.html");
   const isScoreboardPage   = path.includes("scoreboard.html");
@@ -104,6 +105,8 @@ async function loadHeader() {
   } else if (isWinnersPage) {
     bannerSrc = "banners/winners.png";
   } else if (isFanFavesPage) {
+    bannerSrc = "banners/fanfavorites.png";
+  } else if (isShowPage) {
     bannerSrc = "banners/fanfavorites.png";
   } else if (isFavoritesPage) {
     bannerSrc = "banners/my-faves.png";
