@@ -448,6 +448,39 @@ async function toggleFavorite(button, videoKey, entry = null) {
     );
   }
 
+  // ------------------------------------------------------------
+  // LOAD FULL SHOWS
+  // ------------------------------------------------------------
+function loadShows() {
+
+  if (!supabase) return;
+
+  supabase
+    .from("douzepoints_shows")
+    .select("*")
+    .order("year", { ascending: false })
+    .then(({ data, error }) => {
+
+      if (error) {
+        console.error("Error loading shows:", error);
+        return;
+      }
+
+      const transformed = (data || []).map(row => ({
+        Year: row.year,
+        Artist: "Eurovision",
+        Song: row.show_type,
+        Country: "",
+        Country_Code: "",
+        Video_URL: row.video_url,
+        Video_Lookup: `${row.year}-${row.show_type}`
+      }));
+
+      renderVideos(transformed);
+
+    });
+
+}
   async function loadHome() {
     if (!supabase) return;
     await ensureFavoritesLoaded();
@@ -525,24 +558,25 @@ async function toggleFavorite(button, videoKey, entry = null) {
   // ------------------------------------------------------------
   // ROUTING
   // ------------------------------------------------------------
-  document.addEventListener("DOMContentLoaded", () => {
-    const path = window.location.pathname || "";
+document.addEventListener("DOMContentLoaded", () => {
+  const path = window.location.pathname || "";
 
-    if (path.includes("my-favorites.html")) {
-      return;
-    } else if (path.includes("edition.html")) {
-      loadEdition();
-    } else if (path.includes("country.html")) {
-      loadCountry();
-    } else if (path.includes("winners.html")) {
-      loadWinners();
-    } else if (path.includes("fan-favorites.html")) {
-      loadFanFavorites();
-    } else if (path.includes("index.html") || path === "/") {
-      loadHome();
-    }
-  });
-
+  if (path.includes("my-favorites.html")) {
+    return;
+  } else if (path.includes("shows.html")) {
+    loadShows();
+  } else if (path.includes("edition.html")) {
+    loadEdition();
+  } else if (path.includes("country.html")) {
+    loadCountry();
+  } else if (path.includes("winners.html")) {
+    loadWinners();
+  } else if (path.includes("fan-favorites.html")) {
+    loadFanFavorites();
+  } else if (path.includes("index.html") || path === "/") {
+    loadHome();
+  }
+});
 
 
 
