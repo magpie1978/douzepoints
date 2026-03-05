@@ -400,65 +400,79 @@ async function toggleFavorite(button, videoKey, entry = null) {
 
 
 
+
 // ------------------------------------------------------------
 // RENDER SHOWS GROUPED BY YEAR
 // ------------------------------------------------------------
-function renderShows(entries) {
-
-  const container = document.getElementById("video-container");
-  if (!container) return;
-
-  container.innerHTML = "";
-  container.classList.remove("grid-container");
-
-  // Group entries by year
-  const groups = {};
-  entries.forEach(e => {
-    const year = String(e.Year || "Unknown");
-    if (!groups[year]) groups[year] = [];
-    groups[year].push(e);
-  });
-
-  // Sort years descending
-  const years = Object.keys(groups).sort((a, b) => Number(b) - Number(a));
-
-  years.forEach(year => {
-
-    const section = document.createElement("section");
-    section.className = "shows-row";
-
-    section.innerHTML = `
-      <div class="shows-banner">
-        <div class="shows-banner-line"></div>
-        <div class="shows-banner-title">
-          Eurovision Song Contest ${escapeHTML(year)}
-        </div>
-        <div class="shows-banner-line"></div>
-      </div>
-      <div class="shows-track"></div>
-    `;
-
-    const track = section.querySelector(".shows-track");
-
-    // Render show cards
-    const shows = groups[year];
-    shows.forEach(entry => {
-      track.appendChild(renderShowCard(entry));
-    });
-
-    // Force exactly 3 slots per row
-    const missing = 3 - shows.length;
-
-    for (let i = 0; i < missing; i++) {
-      const placeholder = document.createElement("div");
-      placeholder.className = "show-card placeholder";
-      track.appendChild(placeholder);
+    function renderShows(entries) {
+    
+      const container = document.getElementById("video-container");
+      if (!container) return;
+    
+      container.innerHTML = "";
+      container.classList.remove("grid-container");
+    
+      // Eurovision show order
+      const showOrder = {
+        "Semi Final 1": 1,
+        "Semi Final 2": 2,
+        "Semi Final": 3,
+        "Grand Final": 4,
+        "Final": 4
+      };
+    
+      // Group entries by year
+      const groups = {};
+      entries.forEach(e => {
+        const year = String(e.Year || "Unknown");
+        if (!groups[year]) groups[year] = [];
+        groups[year].push(e);
+      });
+    
+      // Sort years descending
+      const years = Object.keys(groups).sort((a, b) => Number(b) - Number(a));
+    
+      years.forEach(year => {
+    
+        const section = document.createElement("section");
+        section.className = "shows-row";
+    
+        section.innerHTML = `
+          <div class="shows-banner">
+            <div class="shows-banner-line"></div>
+            <div class="shows-banner-title">
+              Eurovision Song Contest ${escapeHTML(year)}
+            </div>
+            <div class="shows-banner-line"></div>
+          </div>
+          <div class="shows-track"></div>
+        `;
+    
+        const track = section.querySelector(".shows-track");
+    
+        // Sort shows in Eurovision order
+        const shows = groups[year].sort((a, b) => {
+          const aOrder = showOrder[a.Song] ?? 99;
+          const bOrder = showOrder[b.Song] ?? 99;
+          return aOrder - bOrder;
+        });
+    
+        // Render cards
+        shows.forEach(entry => {
+          track.appendChild(renderShowCard(entry));
+        });
+    
+        // Ensure exactly 3 slots
+        const missing = 3 - shows.length;
+        for (let i = 0; i < missing; i++) {
+          const placeholder = document.createElement("div");
+          placeholder.className = "show-card placeholder";
+          track.appendChild(placeholder);
+        }
+    
+        container.appendChild(section);
+      });
     }
-
-    container.appendChild(section);
-  });
-
-}
 
 
 
