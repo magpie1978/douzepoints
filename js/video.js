@@ -334,60 +334,111 @@ async function toggleFavorite(button, videoKey, entry = null) {
 // ------------------------------------------------------------
 // RENDER FULL SHOW CARD
 // ------------------------------------------------------------
-    function renderShowCard(entry) {
+//    function renderShowCard(entry) {
     
-      const wrapper = document.createElement("div");
-      wrapper.className = "show-card";
-      wrapper.setAttribute("role", "button");
-      wrapper.tabIndex = 0;
+//      const wrapper = document.createElement("div");
+//      wrapper.className = "show-card";
+//      wrapper.setAttribute("role", "button");
+//      wrapper.tabIndex = 0;
     
-      const videoUrl = entry.Video_URL;
+//      const videoUrl = entry.Video_URL;
     
-      const showType = entry.Song || "";
-      const year = entry.Year || "";
+//      const showType = entry.Song || "";
+//      const year = entry.Year || "";
     
-      const imageUrl = entry.Image || `images/shows/${year}.jpg`;
+//      const imageUrl = entry.Image || `images/shows/${year}.jpg`;
     
-      wrapper.innerHTML = `
-        <div class="show-thumb">
+//      wrapper.innerHTML = `
+//        <div class="show-thumb">
     
-          <img src="${escapeHTML(imageUrl)}" alt="${escapeHTML(showType)}">
+//          <img src="${escapeHTML(imageUrl)}" alt="${escapeHTML(showType)}">
     
-          <div class="show-overlay">
+//          <div class="show-overlay">
     
-            <div class="show-badge">
-              ${escapeHTML(showType)}
-            </div>
+//            <div class="show-badge">
+//              ${escapeHTML(showType)}
+//            </div>
     
-            <div class="show-year">
-              ${escapeHTML(year)}
-            </div>
+//            <div class="show-year">
+//              ${escapeHTML(year)}
+//            </div>
     
-          </div>
+//          </div>
     
-        </div>
-      `;
+//        </div>
+//      `;
     
-      const open = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        openModalStrict(videoUrl, entry);
-      };
+//      const open = (e) => {
+//        e.preventDefault();
+//        e.stopPropagation();
+//        openModalStrict(videoUrl, entry);
+//      };
     
-      wrapper.addEventListener("click", open);
+//      wrapper.addEventListener("click", open);
     
-      wrapper.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          open(e);
-        }
+//      wrapper.addEventListener("keydown", (e) => {
+//        if (e.key === "Enter" || e.key === " ") {
+//          e.preventDefault();
+//          open(e);
+//        }
+//      });
+    
+//      return wrapper;
+//    }
+
+
+
+
+// ------------------------------------------------------------
+// RENDER SHOWS GROUPED BY YEAR (NETFLIX STYLE)
+// ------------------------------------------------------------
+    function renderShows(entries) {
+    
+      const container = document.getElementById("video-container");
+      if (!container) return;
+    
+      container.innerHTML = "";
+    
+      // Group by year
+      const groups = {};
+    
+      entries.forEach(e => {
+        const year = e.Year || "Unknown";
+        if (!groups[year]) groups[year] = [];
+        groups[year].push(e);
       });
     
-      return wrapper;
+      // Sort years descending
+      const years = Object.keys(groups).sort((a, b) => b - a);
+    
+      years.forEach(year => {
+    
+        const section = document.createElement("section");
+        section.className = "shows-row";
+    
+        section.innerHTML = `
+          <h2 class="shows-year">${year}</h2>
+          <div class="shows-track" id="shows-${year}"></div>
+        `;
+    
+        container.appendChild(section);
+    
+        const track = section.querySelector(".shows-track");
+    
+        groups[year].forEach(entry => {
+          track.appendChild(renderShowCard(entry));
+        });
+    
+      });
+    
     }
 
 
 
+
+
+
+  
 
 
   
