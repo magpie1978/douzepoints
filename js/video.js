@@ -383,46 +383,57 @@ async function toggleFavorite(button, videoKey, entry = null) {
 // RENDER SHOWS GROUPED BY YEAR (NETFLIX STYLE)
 // ------------------------------------------------------------
     function renderShows(entries) {
-    
       const container = document.getElementById("video-container");
       if (!container) return;
     
       container.innerHTML = "";
+      container.classList.remove("grid-container"); // ✅ important: don’t force grid layout
     
       // Group by year
       const groups = {};
-    
-      entries.forEach(e => {
-        const year = e.Year || "Unknown";
+      (entries || []).forEach(e => {
+        const year = String(e.Year || "Unknown");
         if (!groups[year]) groups[year] = [];
         groups[year].push(e);
       });
     
-      // Sort years descending
-      const years = Object.keys(groups).sort((a, b) => b - a);
+      // Sort years desc (numeric)
+      const years = Object.keys(groups).sort((a, b) => Number(b) - Number(a));
     
       years.forEach(year => {
-    
         const section = document.createElement("section");
         section.className = "shows-row";
     
         section.innerHTML = `
-          <h2 class="shows-year">${year}</h2>
+          <div class="shows-row-header">
+            <h2 class="shows-year">${escapeHTML(year)}</h2>
+            <div class="shows-row-actions">
+              <button class="shows-arrow left" aria-label="Scroll left">‹</button>
+              <button class="shows-arrow right" aria-label="Scroll right">›</button>
+            </div>
+          </div>
           <div class="shows-track" id="shows-${year}"></div>
         `;
     
         container.appendChild(section);
     
         const track = section.querySelector(".shows-track");
+        groups[year].forEach(entry => track.appendChild(renderShowCard(entry)));
     
-        groups[year].forEach(entry => {
-          track.appendChild(renderShowCard(entry));
-        });
+        // Wire arrows
+        const leftBtn = section.querySelector(".shows-arrow.left");
+        const rightBtn = section.querySelector(".shows-arrow.right");
     
+        const scrollByCards = (dir) => {
+          const card = track.querySelector(".show-card");
+          const cardW = card ? card.getBoundingClientRect().width + 20 : 320;
+          track.scrollBy({ left: dir * cardW * 3, behavior: "smooth" });
+        };
+    
+        leftBtn.addEventListener("click", (e) => { e.preventDefault(); scrollByCards(-1); });
+        rightBtn.addEventListener("click", (e) => { e.preventDefault(); scrollByCards(1); });
       });
-    
     }
-
 
 
 
