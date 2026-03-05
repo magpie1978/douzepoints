@@ -653,28 +653,6 @@ function loadShows() {
   // ------------------------------------------------------------
   // ROUTING
   // ------------------------------------------------------------
-
-  //document.addEventListener("DOMContentLoaded", () => {
-  //  const path = window.location.pathname || "";
-  
-  //  if (path.includes("my-favorites.html")) {
-  //    return;
-  //  } else if (path.includes("shows.html")) {
-  //    loadShows();
-  //  } else if (path.includes("edition.html")) {
-  //    loadEdition();
-  //  } else if (path.includes("country.html")) {
-  //    loadCountry();
-  //  } else if (path.includes("winners.html")) {
-  //    loadWinners();
-  //  } else if (path.includes("fan-favorites.html")) {
-  //    loadFanFavorites();
-  //  } else if (path.includes("index.html") || path === "/") {
-  //    loadHome();
-  //  }
-  //});
-
-
   document.addEventListener("DOMContentLoaded", () => {
   const path = window.location.pathname || "";
 
