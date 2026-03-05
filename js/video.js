@@ -372,7 +372,6 @@ async function toggleFavorite(button, videoKey, entry = null) {
           <img src="${escapeHTML(imageUrl)}" alt="${escapeHTML(showType)}">
     
           <div class="show-overlay">
-            <div class="show-badge">${escapeHTML(showType)}</div>
             <div class="show-year">${escapeHTML(year)}</div>
           </div>
         </div>
