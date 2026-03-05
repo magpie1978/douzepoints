@@ -596,12 +596,8 @@ h4 {
 .show-overlay {
   position: absolute;
   bottom: 0;
-  left: 0;
   right: 0;
-  padding: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
+  padding: 10px 14px;
   background: linear-gradient(
     to top,
     rgba(0,0,0,.7),
@@ -609,14 +605,6 @@ h4 {
   );
 }
 
-.show-badge {
-  background: #e50914;
-  color: white;
-  font-size: 13px;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-weight: 600;
-}
 
 .show-year {
   font-size: 16px;
