@@ -405,17 +405,41 @@ async function toggleFavorite(button, videoKey, entry = null) {
         const section = document.createElement("section");
         section.className = "shows-row";
     
+        //section.innerHTML = `
+        //  <div class="shows-row-header">
+        //    <h2 class="shows-year">${escapeHTML(year)}</h2>
+        //    <div class="shows-row-actions">
+        //      <button class="shows-arrow left" aria-label="Scroll left">‹</button>
+        //      <button class="shows-arrow right" aria-label="Scroll right">›</button>
+        //    </div>
+        //  </div>
+        //  <div class="shows-track" id="shows-${year}"></div>
+        //`;
+
         section.innerHTML = `
-          <div class="shows-row-header">
-            <h2 class="shows-year">${escapeHTML(year)}</h2>
-            <div class="shows-row-actions">
-              <button class="shows-arrow left" aria-label="Scroll left">‹</button>
-              <button class="shows-arrow right" aria-label="Scroll right">›</button>
+          <div class="shows-banner">
+        
+            <div class="shows-banner-line"></div>
+        
+            <div class="shows-banner-title">
+              Eurovision Song Contest ${escapeHTML(year)}
             </div>
+        
+            <div class="shows-banner-line"></div>
+        
           </div>
-          <div class="shows-track" id="shows-${year}"></div>
+        
+          <div class="shows-carousel">
+        
+            <button class="shows-arrow left" aria-label="Scroll left">‹</button>
+        
+            <div class="shows-track" id="shows-${year}"></div>
+        
+            <button class="shows-arrow right" aria-label="Scroll right">›</button>
+        
+          </div>
         `;
-    
+        
         container.appendChild(section);
     
         const track = section.querySelector(".shows-track");
