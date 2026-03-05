@@ -686,4 +686,5 @@ function loadShows() {
   window.scrollCarousel = scrollCarousel;
   window.ensureFavoritesLoaded = ensureFavoritesLoaded;
   window.attachWatchTracking = attachWatchTracking;
+  window.loadShows = loadShows;
 })();
