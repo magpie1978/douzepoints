@@ -345,8 +345,28 @@ async function toggleFavorite(button, videoKey, entry = null) {
       const year = entry.Year || "";
       const showType = entry.Song || "";
     
-      const imageUrl = entry.Image || `images/shows/${year}.jpg`;
-    
+      //const imageUrl = entry.Image || `images/shows/${year}.jpg`;
+
+      let imageUrl;
+
+        if (showType === "Grand Final" || showType === "Final") {
+          imageUrl = `/banners/${year}F.png`;
+        } 
+        else if (showType === "Semi Final 1") {
+          imageUrl = `/banners/${year}SF1.png`;
+        } 
+        else if (showType === "Semi Final 2") {
+          imageUrl = `/banners/${year}SF2.png`;
+        } 
+        else if (showType === "Semi Final") {
+          imageUrl = `/banners/${year}SF.png`;
+        } 
+        else {
+          imageUrl = `/banners/${year}F.png`; // fallback
+        }
+
+
+      
       wrapper.innerHTML = `
         <div class="show-thumb">
           <img src="${escapeHTML(imageUrl)}" alt="${escapeHTML(showType)}">
