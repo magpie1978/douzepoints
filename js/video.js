@@ -383,7 +383,7 @@ async function toggleFavorite(button, videoKey, entry = null) {
 // RENDER SHOWS GROUPED BY YEAR (NETFLIX STYLE)
 // ------------------------------------------------------------
     function renderShows(entries) {
-      delete window.triggerInitialSort;   // ⭐ disables sorting system
+      window.triggerInitialSort = null;
       const container = document.getElementById("video-container");
       if (!container) return;
     
@@ -624,7 +624,7 @@ function loadShows() {
         Song: row.show_type,
         Country: "",
         Country_Code: "",
-        Image: "banners/2026-F.png",
+        Image: `images/shows/${row.year}-${row.show_type}.jpg`,
         Video_URL: row.video_url,
         Video_Lookup: `${row.year}-${row.show_type}`
       }));
