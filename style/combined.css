@@ -748,3 +748,89 @@ h4 {
 .shows-arrow:hover {
   background: rgba(255,255,255,0.16);
 }
+
+
+
+
+/* ====================================
+   YEAR BANNERS
+==================================== */
+
+.shows-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 40px 0 18px;
+}
+
+.shows-banner-title {
+  font-size: 24px;
+  font-weight: 700;
+  white-space: nowrap;
+  letter-spacing: 1px;
+}
+
+.shows-banner-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255,255,255,0.3),
+    transparent
+  );
+}
+
+/* ====================================
+   SHOW CAROUSEL
+==================================== */
+
+.shows-carousel {
+  position: relative;
+}
+
+.shows-track {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 10px 0;
+}
+
+.shows-track::-webkit-scrollbar {
+  display: none;
+}
+
+.shows-arrow {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.6);
+  border: none;
+  color: white;
+  font-size: 26px;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  z-index: 5;
+}
+
+.shows-arrow.left {
+  left: -10px;
+}
+
+.shows-arrow.right {
+  right: -10px;
+}
+
+.shows-arrow:hover {
+  background: rgba(0,0,0,0.85);
+}
+
+
+
+.shows-banner-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #FFD700;
+}
