@@ -693,3 +693,58 @@ h4 {
 /* =========================================
    END
 ========================================= */
+
+
+
+
+/* =========================
+   SHOWS — NETFLIX ROWS
+========================= */
+
+.shows-row {
+  margin: 22px 0 36px;
+}
+
+.shows-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px 10px;
+}
+
+.shows-year {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.shows-row-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.shows-track {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 10px;
+}
+
+.shows-track::-webkit-scrollbar {
+  display: none;
+}
+
+.shows-arrow {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #fff;
+  font-size: 22px;
+  border-radius: 10px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.shows-arrow:hover {
+  background: rgba(255,255,255,0.16);
+}
