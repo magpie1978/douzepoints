@@ -383,6 +383,7 @@ async function toggleFavorite(button, videoKey, entry = null) {
 // RENDER SHOWS GROUPED BY YEAR (NETFLIX STYLE)
 // ------------------------------------------------------------
     function renderShows(entries) {
+      delete window.triggerInitialSort;   // ⭐ disables sorting system
       const container = document.getElementById("video-container");
       if (!container) return;
     
