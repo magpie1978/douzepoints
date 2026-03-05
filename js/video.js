@@ -519,26 +519,7 @@ async function toggleFavorite(button, videoKey, entry = null) {
 
 
   
-  // ------------------------------------------------------------
-  // RENDER SHOWS GRID
-  // ------------------------------------------------------------
-  function renderShows(entries) {
-  
-    const container = document.getElementById("video-container");
-    if (!container) return;
-  
-    container.innerHTML = "";
-  
-    const frag = document.createDocumentFragment();
-  
-    entries.forEach(entry => {
-      frag.appendChild(renderShowCard(entry));
-    });
-  
-    container.appendChild(frag);
-  
-  }
-
+ 
 
 
 
