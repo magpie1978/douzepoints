@@ -457,7 +457,7 @@ function loadShows() {
 
   supabase
     .from("douzepoints_shows")
-    .select("*")
+    .select("year, show_type, video_url")
     .order("year", { ascending: false })
     .then(({ data, error }) => {
 
