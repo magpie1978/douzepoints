@@ -328,6 +328,69 @@ async function toggleFavorite(button, videoKey, entry = null) {
     return wrapper;
   }
 
+
+
+
+// ------------------------------------------------------------
+// RENDER FULL SHOW CARD
+// ------------------------------------------------------------
+    function renderShowCard(entry) {
+    
+      const wrapper = document.createElement("div");
+      wrapper.className = "show-card";
+      wrapper.setAttribute("role", "button");
+      wrapper.tabIndex = 0;
+    
+      const videoUrl = entry.Video_URL;
+    
+      const showType = entry.Song || "";
+      const year = entry.Year || "";
+    
+      const imageUrl = entry.Image || `images/shows/${year}.jpg`;
+    
+      wrapper.innerHTML = `
+        <div class="show-thumb">
+    
+          <img src="${escapeHTML(imageUrl)}" alt="${escapeHTML(showType)}">
+    
+          <div class="show-overlay">
+    
+            <div class="show-badge">
+              ${escapeHTML(showType)}
+            </div>
+    
+            <div class="show-year">
+              ${escapeHTML(year)}
+            </div>
+    
+          </div>
+    
+        </div>
+      `;
+    
+      const open = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openModalStrict(videoUrl, entry);
+      };
+    
+      wrapper.addEventListener("click", open);
+    
+      wrapper.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          open(e);
+        }
+      });
+    
+      return wrapper;
+    }
+
+
+
+
+
+  
   // ------------------------------------------------------------
   // RENDER GRID (⭐ Calls triggerInitialSort)
   // ------------------------------------------------------------
@@ -375,6 +438,35 @@ async function toggleFavorite(button, videoKey, entry = null) {
     }
   }
 
+
+
+
+  
+  // ------------------------------------------------------------
+  // RENDER SHOWS GRID
+  // ------------------------------------------------------------
+  function renderShows(entries) {
+  
+    const container = document.getElementById("video-container");
+    if (!container) return;
+  
+    container.innerHTML = "";
+  
+    const frag = document.createDocumentFragment();
+  
+    entries.forEach(entry => {
+      frag.appendChild(renderShowCard(entry));
+    });
+  
+    container.appendChild(frag);
+  
+  }
+
+
+
+
+
+  
   // ------------------------------------------------------------
   // FETCH WRAPPER
   // ------------------------------------------------------------
@@ -479,7 +571,7 @@ function loadShows() {
         Video_Lookup: `${row.year}-${row.show_type}`
       }));
 
-      renderVideos(transformed);
+      renderShows(transformed);
 
     });
   }
