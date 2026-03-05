@@ -474,7 +474,7 @@ function loadShows() {
         Song: row.show_type,
         Country: "",
         Country_Code: "",
-        Image: "images/2026-DK.jpeg",   // ⭐ FIX
+        Image: "images/2026.png",
         Video_URL: row.video_url,
         Video_Lookup: `${row.year}-${row.show_type}`
       }));
