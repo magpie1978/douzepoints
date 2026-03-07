@@ -80,7 +80,69 @@
         .about-text p {
           margin-bottom: 18px;
         }
+
         
+        /* MAIN CONTAINER */
+        
+        .about-container {
+          max-width: 900px;
+          margin: 40px auto 80px auto;
+          padding: 0 30px;
+          color: white;
+        }
+        
+        
+        /* INTRO PARAGRAPHS */
+        
+        .about-intro {
+          font-size: 1.15rem;
+          line-height: 1.8;
+          font-weight: 400;
+          margin-bottom: 50px;
+        }
+        
+        .about-intro p {
+          margin-bottom: 22px;
+        }
+        
+        
+        /* CONTENT SECTIONS */
+        
+        .about-section {
+          margin-top: 45px;
+        }
+        
+        .about-section h3 {
+          font-size: 1.6rem;
+          font-weight: 600;
+          margin-bottom: 15px;
+        }
+        
+        .about-section p {
+          font-size: 1.05rem;
+          line-height: 1.8;
+          margin-bottom: 18px;
+          color: rgba(255,255,255,0.9);
+        }
+        
+        
+        /* RESPONSIVE */
+        
+        @media (max-width: 768px) {
+        
+          .about-container {
+            padding: 0 20px;
+          }
+        
+          .about-intro {
+            font-size: 1.05rem;
+          }
+        
+          .about-section h3 {
+            font-size: 1.35rem;
+          }
+        
+        }
     </style>
     
     <body>
@@ -97,27 +159,56 @@
         <div class="big-subtitle">Your hub for Eurovision performances</div>
 
 
-         <main class="page-main">
-          <div class="glass-shell">
-            <div class="glass-scroll">
-              <!-- ✅ MOVE ALL YOUR EXISTING <main> CONTENT INTO HERE -->
-
-                <div class="about-text">
-                  <p>
-                    DouzePoints.org is a data-driven Eurovision Song Contest archive designed for fans who want to explore the contest in more depth. 
-                    The website brings together performances, full shows, results, and statistics from across Eurovision history in one place. Visitors can browse entries by country, year, or contest edition, watch performances and full broadcasts, and explore how the contest has evolved over time. The goal is to make Eurovision history easy to navigate while celebrating the music, performances, and stories behind each entry.
-                  </p>
-                
-                  <p>
-                    Alongside the video archive, DouzePoints.org provides interactive features such as scoreboards, rankings, and statistics that allow users to analyse voting patterns, compare results between countries, and revisit iconic Eurovision moments. The site is designed to combine entertainment with data exploration — whether you're rewatching a favourite performance, analysing how a country has performed over the years, or discovering songs you may have missed.
-                  </p>
-                
-                  <p>
-                    Ultimately, DouzePoints.org exists to celebrate the Eurovision Song Contest and make its rich history accessible, searchable, and enjoyable for fans everywhere.
-                  </p>
-                </div>
-            </div>
+        <main class="page-main">
+        
+          <div class="about-container">
+        
+            <section class="about-intro">
+              <p>
+                DouzePoints.org is a data-driven Eurovision Song Contest archive designed for fans who want to explore the contest in more depth.
+                The website brings together performances, full shows, results, and statistics from across Eurovision history in one place.
+              </p>
+        
+              <p>
+                Visitors can browse entries by country, year, or contest edition, watch performances and full broadcasts,
+                and explore how the contest has evolved over time. The goal is to make Eurovision history easy to navigate
+                while celebrating the music, performances, and stories behind each entry.
+              </p>
+            </section>
+        
+        
+            <section class="about-section">
+              <h3>Explore Eurovision History</h3>
+        
+              <p>
+                Alongside the video archive, DouzePoints.org provides interactive features such as scoreboards, rankings,
+                and statistics that allow users to analyse voting patterns, compare results between countries,
+                and revisit iconic Eurovision moments.
+              </p>
+        
+              <p>
+                Whether you're rewatching a favourite performance, analysing how a country has performed over the years,
+                or discovering songs you may have missed, the platform combines entertainment with data exploration.
+              </p>
+            </section>
+        
+        
+            <section class="about-section">
+              <h3>Built for Eurovision Fans</h3>
+        
+              <p>
+                DouzePoints.org exists to celebrate the Eurovision Song Contest and make its rich history accessible,
+                searchable, and enjoyable for fans everywhere.
+              </p>
+        
+              <p>
+                From legendary performances to detailed statistics, the site is designed as a hub where Eurovision fans
+                can relive past contests and discover new favourites.
+              </p>
+            </section>
+        
           </div>
+        
         </main>
   
         <script src="js/footer.js" defer></script>
