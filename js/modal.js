@@ -55,47 +55,6 @@ window.openVideoModal = async function (arg1, arg2) {
 /* -------------------------------------------------------------
    3. OPEN: HANDLE GOOGLE DRIVE OR MP4
 ------------------------------------------------------------- */
-
-/*
-window.GDriveOpenModalWithVideo = function (videoUrl) {
-  const modal = document.getElementById("videoModal");
-  const video = document.getElementById("modalVideo");
-  const iframe = document.getElementById("modalIframe");
-
-  if (!modal) return;
-
-  // Ensure clean slate
-  video.pause();
-  video.src = "";
-  iframe.src = "";
-  video.style.display = "none";
-  iframe.style.display = "none";
-
-  // Show modal
-  modal.classList.add("show");
-
-  // GOOGLE DRIVE
-  if (videoUrl.includes("drive.google.com")) {
-    const match = videoUrl.match(/\/d\/(.*?)\//);
-    if (match && match[1]) {
-      iframe.src = `https://drive.google.com/file/d/${match[1]}/preview`;
-      iframe.style.display = "block";
-      return;
-    }
-  }
-
-  // MP4 OR DIRECT VIDEO
-  video.src = videoUrl;
-  video.style.display = "block";
-
-  // Force play after small delay for reliability
-  setTimeout(() => video.play().catch(() => {}), 150);
-};
-*/
-
-/* -------------------------------------------------------------
-   3a. OPEN: HANDLE GOOGLE DRIVE OR MP4
-------------------------------------------------------------- */
    window.GDriveOpenModalWithVideo = function (videoUrl, entry) {
      const modal = document.getElementById("videoModal");
      const video = document.getElementById("modalVideo");
