@@ -3,7 +3,6 @@ import { supabase } from './supabaseClient.js';
 // =====================================================
 // PUBLIC API
 // =====================================================
-
 export function openAuthModal(nextUrl = null) {
   const overlay = document.getElementById("auth-overlay");
   if (!overlay) return;
@@ -36,10 +35,10 @@ export async function requireAuth(nextUrl) {
   return false;
 }
 
+
 // =====================================================
 // WIRING
 // =====================================================
-
 document.addEventListener("DOMContentLoaded", () => {
 
   // Auto-open modal if ?auth=1
@@ -96,11 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // =====================================================
 // LOGIN
 // =====================================================
-
-// =====================================================
-// LOGIN
-// =====================================================
-
 function bindLogin() {
   const btn = document.getElementById("login-btn");
   if (!btn) return;
@@ -153,11 +147,6 @@ function bindLogin() {
 // =====================================================
 // SIGNUP (WITH PROMO VALIDATION)
 // =====================================================
-
-// =====================================================
-// SIGNUP (WITH PROMO VALIDATION)
-// =====================================================
-
 function bindSignup() {
   const btn = document.getElementById("signup-submit");
   if (!btn) return;
