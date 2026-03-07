@@ -1,4 +1,3 @@
-// js/header_new.js
 import { supabase } from './supabaseClient.js';
 
 document.addEventListener("DOMContentLoaded", () => {
