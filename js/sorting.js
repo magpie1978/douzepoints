@@ -1,18 +1,3 @@
-/*
- * sorting.js
- * Sorts video cards and updates the score circles based on the selected option.
- *
- * Expected <select id="sort-options"> values:
- *   - "jury"      -> sort by jury points (desc)
- *   - "televote"  -> sort by televote points (desc)
- *   - "total"     -> sort by total points (desc)
- *   - "year-asc"  -> year ascending
- *   - "year-desc" -> year descending
- *   - "artist"    -> artist A–Z
- *   - "song"      -> song A–Z
- *   - "country"   -> country A–Z
- */
-
 (function () {
 
   // ------------------------------------------------------------
