@@ -144,31 +144,6 @@ async function toggleFavorite(button, videoKey, entry = null) {
 }
 
 
-  
-  // ------------------------------------------------------------
-  // MODAL WRAPPER
-  // ------------------------------------------------------------
-  //function openModalStrict(videoUrl, entry) {
-  //  if (!videoUrl) {
-  //    console.error("[video.js] No Video_URL found:", entry);
-  //    return;
-  //  }
-
-  //  if (typeof window.openVideoModal === "function") {
-  //    try {
-        // This calls into modal.js, which now logs views
-  //      window.openVideoModal({ url: videoUrl, entry });
-  //      return;
-  //    } catch (e) {
-  //      console.error("[video.js] Error calling openVideoModal:", e);
-  //    }
-  //  }
-
-  //  console.error("[video.js] No modal function found.");
-  //}
-
-
-
   // ------------------------------------------------------------
   // MODAL WRAPPER WITH GOOGLE ANALYTICS VIDEO PLAY TRACKING
   // ------------------------------------------------------------
@@ -525,14 +500,6 @@ async function toggleFavorite(button, videoKey, entry = null) {
 
 
 
-
-  
- 
-
-
-
-
-  
   // ------------------------------------------------------------
   // FETCH WRAPPER
   // ------------------------------------------------------------
