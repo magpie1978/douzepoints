@@ -1,4 +1,4 @@
-import { escapeHTML, openModalStrict } from "./video-core.js";
+import { escapeHTML, openModalStrict } from "./video_core.js";
 
 export function renderEntry(entry) {
 
