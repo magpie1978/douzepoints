@@ -113,7 +113,7 @@
     } else if (path.includes("country.html")) {
       defaultSort = "year-desc";     // Year (DESC)
     } else if (path.includes("winners.html")) {
-      defaultSort = "year-asc";      // Year (ASC)
+      defaultSort = "year-desc";      // Year (ASC)
     }
 
     // Apply the default
