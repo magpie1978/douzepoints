@@ -1,4 +1,4 @@
-import { renderEntry } from "./video-grid.js";
+import { renderEntry } from "./video_grid.js";
 import { supabase } from "./supabaseClient.js";
 
 document.addEventListener("DOMContentLoaded", loadHome);
