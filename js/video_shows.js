@@ -1,4 +1,4 @@
-import { openModalStrict } from "./video-core.js";
+import { openModalStrict } from "./video_core.js";
 
 function renderShowCard(entry){
 
