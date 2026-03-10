@@ -109,7 +109,7 @@ async function loadHeader() {
   } else if (isShowPage) {
     bannerSrc = "banners/shows.png";
   } else if (isUMKPage) {
-    bannerSrc = "banners/umk2.png";    
+    bannerSrc = "banners/UMK.png";    
   } else if (isFavoritesPage) {
     bannerSrc = "banners/my-faves.png";
   } else if (isEditionPage) {
