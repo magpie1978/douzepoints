@@ -653,9 +653,15 @@ h4 {
 ========================================= */
 .video-item {
   will-change: transform, opacity;
+  transform-origin: center;
+  position: relative;
 }
 
 .video-item {
-  will-change: transform, opacity;
-  transform-origin: center;
+  transition: box-shadow 0.2s ease;
+}
+
+.video-item:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.4);
 }
