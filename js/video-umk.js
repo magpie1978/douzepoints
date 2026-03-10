@@ -99,13 +99,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   console.log("Year being queried:", year);
   
-  const { data, error } = await supabase
-    .from("douzepoints_finland")
-    .select("*")
-    .eq("Contest","UMK")
-    .eq("Year",year)
-    .order("Running_Order",{ ascending:true });
+//  const { data, error } = await supabase
+//    .from("douzepoints_finland")
+//    .select("*")
+//    .eq("Contest","UMK")
+//    .eq("Year",year)
+//    .order("Running_Order",{ ascending:true });
 
+const { data, error } = await supabase
+  .from("douzepoints_finland")
+  .select("*");
+
+console.log("ALL rows:", data);
+
+  
   if (error) {
     console.error("UMK load error:", error);
     return;
