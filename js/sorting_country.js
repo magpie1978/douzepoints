@@ -22,6 +22,15 @@
       case "song":
         return (a,b)=>txt(a,"song").localeCompare(txt(b,"song"));
 
+      case "jury":
+        return (a,b)=>num(b,"jury")-num(a,"jury");
+      
+      case "televote":
+        return (a,b)=>num(b,"televote")-num(a,"televote");
+      
+      case "total":
+        return (a,b)=>num(b,"total")-num(a,"total");  
+
       default:
         return ()=>0;
 
