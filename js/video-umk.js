@@ -75,10 +75,7 @@ function renderUMKVideos(entries) {
 
     const open = () => {
       if (window.openVideoModal) {
-        window.openVideoModal({
-          url: entry.Video_URL,
-          entry: entry
-        });
+        window.openVideoModal(entry.Video_URL, entry);
       }
     };
 
