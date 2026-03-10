@@ -657,5 +657,5 @@ h4 {
 
 .video-item {
   will-change: transform;
-  transition: transform 0.35s ease;
+  transition: transform 1.0s ease;
 }
