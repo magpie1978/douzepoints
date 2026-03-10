@@ -97,6 +97,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
   const year = Number(params.get("edition")) || 2026;
 
+  console.log("Year being queried:", year);
+  
   const { data, error } = await supabase
     .from("douzepoints_finland")
     .select("*")
