@@ -93,7 +93,7 @@
   // ------------------------------------------------------------
 
   function attachSorting() {
-
+  
     const select = document.getElementById("sort-options");
     const container = document.getElementById("video-container");
   
@@ -111,7 +111,7 @@
         firstRects.set(el, el.getBoundingClientRect());
       });
   
-      // Sort elements
+      // Sort items
       items.sort(comparatorFactory(sortType));
   
       const frag = document.createDocumentFragment();
@@ -120,8 +120,8 @@
       container.innerHTML = "";
       container.appendChild(frag);
   
-      // LAST positions
-      items.forEach(el => {
+      // LAST positions + animation
+      items.forEach((el, index) => {
   
         const first = firstRects.get(el);
         const last = el.getBoundingClientRect();
@@ -136,8 +136,10 @@
           el.style.transform = `translate(${dx}px, ${dy}px)`;
   
           requestAnimationFrame(() => {
-            el.style.transition = "transform 350ms ease";
+  
+            el.style.transition = `transform 350ms ease ${index * 30}ms`;
             el.style.transform = "";
+  
           });
   
         }
@@ -149,7 +151,6 @@
     });
   
   }
-
   
 
   // ------------------------------------------------------------
