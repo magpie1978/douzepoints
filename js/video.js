@@ -212,14 +212,39 @@ async function toggleFavorite(button, videoKey, entry = null) {
     const flagUrl = `/flags/${countryCode}.png`;
 
     // DNQ logic
+    //removed 10 March 2026
+    //const finalRank = entry.Final_Rank;
+    //const finalPoints = entry.Final_TotalPoints;
+
+    // NEW CODE 10 MARCH 2026
     const finalRank = entry.Final_Rank;
     const finalPoints = entry.Final_TotalPoints;
-    const qualifiedFlag = String(entry.QualifiedFinal || "").toUpperCase();
-    const isDNQ =
-      !finalRank ||
-      Number(finalRank) === 0 ||
-      qualifiedFlag === "N";
+    const semiPoints = entry.SemiFinal_TotalPoints;
 
+    // Only show scores if results exist
+    const resultsAvailable =
+      finalPoints !== null && finalPoints !== undefined ||
+      semiPoints !== null && semiPoints !== undefined;
+    // END OF NEW CODE 10 MARCH 2026
+    
+    const qualifiedFlag = String(entry.QualifiedFinal || "").toUpperCase();
+
+    // REMOVED 10 MARCH 2026
+    //const isDNQ =
+    //  !finalRank ||
+    //  Number(finalRank) === 0 ||
+    //  qualifiedFlag === "N";
+
+    // NEW CODE 10 MARCH 2026
+    const isDNQ =
+      resultsAvailable &&
+        (
+          !finalRank ||
+          Number(finalRank) === 0 ||
+          qualifiedFlag === "N"
+        );
+    // END OF NEW CODE 10 MARCH 2026
+    
     const rankDisplay = isDNQ ? "NQ" : finalRank;
     const pointsDisplay = isDNQ ? "NQ" : finalPoints;
 
@@ -257,7 +282,9 @@ async function toggleFavorite(button, videoKey, entry = null) {
         </div>
 
         ${
-          variant === "carousel" || isFavoritesPage
+          // CHANGED 10 MARCH 2026
+          //variant === "carousel" || isFavoritesPage
+          variant === "carousel" || isFavoritesPage || !resultsAvailable
             ? ""
             : `
             <div class="score-wrapper">
