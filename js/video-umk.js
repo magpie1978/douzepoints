@@ -24,7 +24,7 @@ function renderUMKVideos(entries) {
     wrapper.setAttribute("role","button");
     wrapper.tabIndex = 0;
 
-    const imageUrl = `images/umk/${entry.Year}-${entry["Running Order"]}.jpg`;
+    const imageUrl = `images/umk/${entry.Year}-${entry["Running_Order"]}.jpg`;
 
     wrapper.innerHTML = `
       <div class="preview-container">
