@@ -91,31 +91,66 @@
   // ------------------------------------------------------------
   // Attach Sorting
   // ------------------------------------------------------------
+
   function attachSorting() {
 
     const select = document.getElementById("sort-options");
     const container = document.getElementById("video-container");
-
+  
     if (!select || !container) return;
-
+  
     select.addEventListener("change", () => {
-
+  
       const sortType = select.value;
-
+  
       const items = Array.from(container.children);
+  
+      // FIRST positions
+      const firstRects = new Map();
+      items.forEach(el => {
+        firstRects.set(el, el.getBoundingClientRect());
+      });
+  
+      // Sort elements
       items.sort(comparatorFactory(sortType));
-
+  
       const frag = document.createDocumentFragment();
       items.forEach(el => frag.appendChild(el));
-
+  
       container.innerHTML = "";
       container.appendChild(frag);
-
+  
+      // LAST positions
+      items.forEach(el => {
+  
+        const first = firstRects.get(el);
+        const last = el.getBoundingClientRect();
+  
+        if (!first) return;
+  
+        const dx = first.left - last.left;
+        const dy = first.top - last.top;
+  
+        if (dx || dy) {
+  
+          el.style.transform = `translate(${dx}px, ${dy}px)`;
+  
+          requestAnimationFrame(() => {
+            el.style.transition = "transform 350ms ease";
+            el.style.transform = "";
+          });
+  
+        }
+  
+      });
+  
       updateScoreDisplay(sortType);
-
+  
     });
-
+  
   }
+
+  
 
   // ------------------------------------------------------------
   // Page-specific Default Sort
