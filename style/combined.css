@@ -645,3 +645,17 @@ h4 {
 .show-card.placeholder {
   visibility: hidden;
 }
+
+
+
+/* =========================================
+   SORTING TRANSITION CODE
+========================================= */
+.video-item {
+  will-change: transform;
+}
+
+.video-item {
+  will-change: transform;
+  transition: transform 0.35s ease;
+}
