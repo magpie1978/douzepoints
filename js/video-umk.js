@@ -26,8 +26,17 @@ function renderUMKVideos(entries) {
 
     const wrapper = document.createElement("div");
     wrapper.className = "video-item";
-     wrapper.setAttribute("role","button");
-     wrapper.tabIndex = 0;
+
+    wrapper.dataset.artist = entry.Artist;
+    wrapper.dataset.song = entry.Song;
+    wrapper.dataset.running = entry.Running_Order;
+    wrapper.dataset.place = entry.Place;
+
+    
+    //const wrapper = document.createElement("div");
+    //wrapper.className = "video-item";
+    wrapper.setAttribute("role","button");
+    wrapper.tabIndex = 0;
 
     const imageUrl = `images/umk/${entry.Year}-${entry.Place}.jpeg`;
 
