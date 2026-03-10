@@ -139,7 +139,7 @@
           requestAnimationFrame(() => {
   
             el.style.transition =
-        `transform 420ms cubic-bezier(.2,.8,.2,1) ${index * 35}ms,
+        `transform 1000ms cubic-bezier(.2,.8,.2,1) ${index * 35}ms,
          opacity 300ms ease ${index * 35}ms`;
 
       el.style.transform = "";
