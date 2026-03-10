@@ -26,6 +26,8 @@ function renderUMKVideos(entries) {
 
     const wrapper = document.createElement("div");
     wrapper.className = "video-item";
+     wrapper.setAttribute("role","button");
+     wrapper.tabIndex = 0;
 
     const imageUrl = `images/umk/${entry.Year}-${entry.Running_Order}.jpg`;
 
@@ -73,12 +75,28 @@ function renderUMKVideos(entries) {
       </div>
     `;
 
-    const open = () => {
-      if (window.openVideoModal) {
-        window.openVideoModal(entry.Video_URL, entry);
+    const open = (e) => {
+    
+      e.preventDefault();
+      e.stopPropagation();
+    
+      if (!entry.Video_URL) {
+        console.error("Missing Video_URL:", entry);
+        return;
+      }
+    
+      if (typeof window.openVideoModal === "function") {
+    
+        window.openVideoModal({
+          url: entry.Video_URL,
+          entry: entry
+        });
+    
+      } else {
+        console.error("openVideoModal function not available");
       }
     };
-
+    
     wrapper.addEventListener("click", open);
     wrapper.querySelector(".thumbnail")?.addEventListener("click", open);
 
