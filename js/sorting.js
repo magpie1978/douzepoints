@@ -25,13 +25,19 @@
 
       case "artist":
         return (a, b) => txt(a, "artist").localeCompare(txt(b, "artist"));
-
+      
       case "song":
         return (a, b) => txt(a, "song").localeCompare(txt(b, "song"));
-
+      
+      case "running":
+        return (a, b) => num(a, "running") - num(b, "running");
+      
+      case "place":
+        return (a, b) => num(a, "place") - num(b, "place");
+      
       case "country":
         return (a, b) => txt(a, "country").localeCompare(txt(b, "country"));
-
+      
       default:
         return (a, b) => txt(b, "country").localeCompare(txt(a, "country"));
     }
