@@ -652,10 +652,10 @@ h4 {
    SORTING TRANSITION CODE
 ========================================= */
 .video-item {
-  will-change: transform;
+  will-change: transform, opacity;
 }
 
 .video-item {
-  will-change: transform;
-  transition: transform 1.0s ease;
+  will-change: transform, opacity;
+  transform-origin: center;
 }
