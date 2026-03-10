@@ -31,6 +31,8 @@ function renderUMKVideos(entries) {
     wrapper.dataset.song = entry.Song;
     wrapper.dataset.running = entry.Running_Order;
     wrapper.dataset.place = entry.Place;
+    wrapper.dataset.year = entry.Year;
+    wrapper.dataset.country = "Finland";
 
     
     //const wrapper = document.createElement("div");
