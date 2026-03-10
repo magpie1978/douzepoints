@@ -49,14 +49,7 @@ function renderUMKVideos(entries) {
               <div class="title-artist">${escapeHTML(entry.Artist)}</div>
               <div class="title-song">${escapeHTML(entry.Song)}</div>
             </div>
-
-            <div class="title-meta">
-              <span class="title-country">Finland</span>
-              <span class="title-year">${entry.Year}</span>
-            </div>
-
           </div>
-
         </div>
 
         <div class="score-wrapper">
