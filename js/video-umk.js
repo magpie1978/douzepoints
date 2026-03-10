@@ -15,16 +15,19 @@ function renderUMKVideos(entries) {
 
   container.innerHTML = "";
 
+  if (!entries || entries.length === 0) {
+    container.innerHTML = `<p style="padding:20px;">No UMK videos found.</p>`;
+    return;
+  }
+
   const frag = document.createDocumentFragment();
 
   entries.forEach(entry => {
 
     const wrapper = document.createElement("div");
     wrapper.className = "video-item";
-    wrapper.setAttribute("role","button");
-    wrapper.tabIndex = 0;
 
-    const imageUrl = `images/umk/${entry.Year}-${entry["Running_Order"]}.jpg`;
+    const imageUrl = `images/umk/${entry.Year}-${entry.Running_Order}.jpg`;
 
     wrapper.innerHTML = `
       <div class="preview-container">
@@ -61,7 +64,7 @@ function renderUMKVideos(entries) {
               <th>Place</th>
             </tr>
             <tr>
-              <td><div class="score-circle">${entry["Running_Order"]}</div></td>
+              <td><div class="score-circle">${entry.Running_Order}</div></td>
               <td><div class="score-circle">${entry.Place ?? "-"}</div></td>
             </tr>
           </table>
@@ -73,7 +76,7 @@ function renderUMKVideos(entries) {
     const open = () => {
       if (window.openVideoModal) {
         window.openVideoModal({
-          url: entry["Video_URL"],
+          url: entry.Video_URL,
           entry: entry
         });
       }
@@ -92,9 +95,8 @@ function renderUMKVideos(entries) {
 document.addEventListener("DOMContentLoaded", async () => {
 
   const params = new URLSearchParams(window.location.search);
-  //const year = params.get("edition") || 2026;
   const year = Number(params.get("edition")) || 2026;
-  
+
   const { data, error } = await supabase
     .from("douzepoints_finland")
     .select("*")
@@ -108,7 +110,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   console.log("UMK rows:", data);
-  
-  renderUMKVideos(data || []);
+
+  renderUMKVideos(data);
 
 });
