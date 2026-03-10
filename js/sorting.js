@@ -35,7 +35,33 @@
       default:
         return (a, b) => txt(b, "country").localeCompare(txt(a, "country"));
     }
-  }
+
+    switch (sortValue) {
+      case "artist":
+        items.sort((a, b) =>
+          a.dataset.artist.localeCompare(b.dataset.artist)
+        );
+        break;
+    
+      case "song":
+        items.sort((a, b) =>
+          a.dataset.song.localeCompare(b.dataset.song)
+        );
+        break;
+    
+      case "running":
+        items.sort((a, b) =>
+          Number(a.dataset.running) - Number(b.dataset.running)
+        );
+        break;
+    
+      case "place":
+        items.sort((a, b) =>
+          Number(a.dataset.place) - Number(b.dataset.place)
+        );
+        break;
+      }
+    }
 
   // ------------------------------------------------------------
   // Update Score Display (Pos/Pts circles)
