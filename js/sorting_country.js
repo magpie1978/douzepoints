@@ -1,4 +1,4 @@
-import { applySorting } from "./sorting-core.js";
+import { applySorting } from "./sorting_core.js";
 
 function comparator(type){
 
