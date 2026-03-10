@@ -131,23 +131,28 @@
         const dx = first.left - last.left;
         const dy = first.top - last.top;
   
-        if (dx || dy) {
-          // Initial inverted position + visual effect
-          el.style.transform = `translate(${dx}px, ${dy}px) scale(0.96)`;
-          el.style.opacity = "0.6";
-  
-          requestAnimationFrame(() => {
-  
-            el.style.transition =
-        `transform 1000ms cubic-bezier(.2,.8,.2,1) ${index * 35}ms,
-         opacity 300ms ease ${index * 35}ms`;
+{
+  // Start state (lift + shadow)
+  el.style.transform = `translate(${dx}px, ${dy}px) scale(0.92)`;
+  el.style.opacity = "0.7";
+  el.style.zIndex = "20";
+  el.style.boxShadow = "0 20px 40px rgba(0,0,0,0.55)";
 
-      el.style.transform = "";
-      el.style.opacity = "1";
-  
-          });
-  
-        }
+  requestAnimationFrame(() => {
+
+    el.style.transition =
+      `transform 520ms cubic-bezier(.22,1,.36,1) ${index * 60}ms,
+       opacity 300ms ease ${index * 60}ms,
+       box-shadow 520ms ease ${index * 60}ms`;
+
+    // End state (settle)
+    el.style.transform = "";
+    el.style.opacity = "1";
+    el.style.boxShadow = "";
+    el.style.zIndex = "";
+
+  });
+}
   
       });
   
