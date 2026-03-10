@@ -94,6 +94,7 @@ async function loadHeader() {
   const isFanFavesPage     = path.includes("fan-favorites.html");
   const isScoreboardPage   = path.includes("scoreboard.html");
   const isWatchHistoryPage = path.includes("my-stats.html");
+  const isUMKPage          = path.includes("umk.html");
 
   const country = new URLSearchParams(window.location.search).get("country");
 
@@ -107,6 +108,8 @@ async function loadHeader() {
     bannerSrc = "banners/fanfavorites.png";
   } else if (isShowPage) {
     bannerSrc = "banners/shows.png";
+  } else if (isUMKPage) {
+    bannerSrc = "banners/uml.png";    
   } else if (isFavoritesPage) {
     bannerSrc = "banners/my-faves.png";
   } else if (isEditionPage) {
