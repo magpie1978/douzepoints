@@ -132,13 +132,18 @@
         const dy = first.top - last.top;
   
         if (dx || dy) {
-  
-          el.style.transform = `translate(${dx}px, ${dy}px)`;
+          // Initial inverted position + visual effect
+          el.style.transform = `translate(${dx}px, ${dy}px) scale(0.96)`;
+          el.style.opacity = "0.6";
   
           requestAnimationFrame(() => {
   
-            el.style.transition = `transform 350ms ease ${index * 30}ms`;
-            el.style.transform = "";
+            el.style.transition =
+        `transform 420ms cubic-bezier(.2,.8,.2,1) ${index * 35}ms,
+         opacity 300ms ease ${index * 35}ms`;
+
+      el.style.transform = "";
+      el.style.opacity = "1";
   
           });
   
