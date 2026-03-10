@@ -92,8 +92,9 @@ function renderUMKVideos(entries) {
 document.addEventListener("DOMContentLoaded", async () => {
 
   const params = new URLSearchParams(window.location.search);
-  const year = params.get("edition") || 2026;
-
+  //const year = params.get("edition") || 2026;
+  const year = Number(params.get("edition")) || 2026;
+  
   const { data, error } = await supabase
     .from("douzepoints_finland")
     .select("*")
@@ -106,6 +107,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  console.log("UMK rows:", data);
+  
   renderUMKVideos(data || []);
 
 });
