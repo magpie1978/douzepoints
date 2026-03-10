@@ -25,6 +25,9 @@
       case "country":
         return (a, b) => txt(a, "country").localeCompare(txt(b, "country"));
 
+      case "country-desc":
+        return (a, b) => txt(b, "country").localeCompare(txt(a, "country"));
+
       case "year-asc":
         return (a, b) => num(a, "year") - num(b, "year");
 
