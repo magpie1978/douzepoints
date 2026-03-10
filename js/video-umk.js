@@ -61,7 +61,7 @@ function renderUMKVideos(entries) {
               <th>Place</th>
             </tr>
             <tr>
-              <td><div class="score-circle">${entry["Running Order"]}</div></td>
+              <td><div class="score-circle">${entry["Running_Order"]}</div></td>
               <td><div class="score-circle">${entry.Place ?? "-"}</div></td>
             </tr>
           </table>
@@ -73,7 +73,7 @@ function renderUMKVideos(entries) {
     const open = () => {
       if (window.openVideoModal) {
         window.openVideoModal({
-          url: entry["Video URL"],
+          url: entry["Video_URL"],
           entry: entry
         });
       }
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     .select("*")
     .eq("Contest","UMK")
     .eq("Year",year)
-    .order("Running Order",{ ascending:true });
+    .order("Running_Order",{ ascending:true });
 
   if (error) {
     console.error("UMK load error:", error);
