@@ -101,22 +101,22 @@ async function loadHeader() {
   /* --------------------------------------------------
      Banner Logic (Flash-Free)
   -------------------------------------------------- */
-
+  
   const banner = document.getElementById("country-banner");
   if (!banner) return;
-
+  
   banner.style.display = "none";
-
+  
   const params = new URLSearchParams(window.location.search);
-
+  
   const country = params.get("country");
   const contest = params.get("contest");
-
+  
   const isIndexPage =
     path === "/" ||
     path.endsWith("/index.html") ||
     path.endsWith("/");
-
+  
   const isCountryPage      = path.includes("country.html");
   const isEditionPage      = path.includes("edition.html");
   const isWinnersPage      = path.includes("winners.html");
@@ -126,73 +126,73 @@ async function loadHeader() {
   const isScoreboardPage   = path.includes("scoreboard.html");
   const isWatchHistoryPage = path.includes("my-stats.html");
   const isNationalPage     = path.includes("national-finals.html");
-
+  
   let bannerSrc = null;
-
+  
   if (isIndexPage) {
-
+  
     bannerSrc = "banners/douzepoints.png";
-
+  
   } else if (isWinnersPage) {
-
+  
     bannerSrc = "banners/winners.png";
-
+  
   } else if (isFanFavesPage) {
-
+  
     bannerSrc = "banners/fanfavorites.png";
-
+  
   } else if (isShowPage) {
-
+  
     bannerSrc = "banners/shows.png";
-
+  
   } else if (isFavoritesPage) {
-
+  
     bannerSrc = "banners/my-faves.png";
-
+  
   } else if (isEditionPage) {
-
+  
     const editionYear = params.get("edition");
-
+  
     if (editionYear) bannerSrc = `banners/${editionYear}.png`;
-
+  
   } else if (isCountryPage && country) {
-
+  
     const { data } = await supabase
       .from("douzepoints")
       .select("Country_Code")
       .ilike("Country", country)
       .limit(1);
-
+  
     const code = data?.[0]?.Country_Code?.toLowerCase();
-
+  
     if (code) bannerSrc = `banners/${code}.png`;
-
+  
   } else if (isWatchHistoryPage) {
-
+  
     bannerSrc = "banners/watchstats.png";
-
+  
   } else if (isScoreboardPage) {
-
+  
     bannerSrc = "banners/scoreboard.png";
-
+  
   } else if (isNationalPage && contest) {
-
-    bannerSrc = `/banners_nf/${contest}.png`;
-
+  
+    bannerSrc = `/banners_nf/${contest}.jpeg`;
+  
   }
-
+  
   if (bannerSrc) {
-
+  
     banner.onload = () => {
       banner.style.display = "block";
     };
-
+  
     banner.src = bannerSrc;
-
+  
   }
 
-}
 
+  
 /* --------------------------------------------------
    NATIONAL FINALS DROPDOWN
 -------------------------------------------------- */
