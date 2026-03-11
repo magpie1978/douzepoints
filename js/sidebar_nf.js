@@ -12,7 +12,7 @@ async function loadSidebar(){
 
   const { data, error } = await supabase
     .from("douzepoints_finland")
-    .select("Contest, Country, Year")
+    .select("Contest, country, Year")
     .eq("country", country);
 
   if (error) {
