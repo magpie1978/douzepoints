@@ -1,72 +1,70 @@
 import { supabase } from "./supabaseClient.js";
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", loadSidebar);
 
-  const sidebar = document.getElementById("sidebar-container");
+async function loadSidebar() {
+
+  const sidebar = document.getElementById("sidebar");
   if (!sidebar) return;
-
-  /* ---------------------------------- */
-  /* Read contest from URL              */
-  /* ---------------------------------- */
-
-  const params = new URLSearchParams(window.location.search);
-  const contest = params.get("contest") || "UMK";
-
-  /* ---------------------------------- */
-  /* Contest → flag mapping             */
-  /* ---------------------------------- */
-
-  const contestFlags = {
-    "UMK": "fi",
-    "Eesti Laul": "ee"
-  };
-
-  const flagCode = contestFlags[contest] || "eu";
-
-  /* ---------------------------------- */
-  /* Fetch years for this contest       */
-  /* ---------------------------------- */
 
   const { data, error } = await supabase
     .from("douzepoints_finland")
-    .select("Year")
-    .eq("Contest", contest);
+    .select("Contest, Country, Year");
 
   if (error) {
     console.error("Sidebar load error:", error);
     return;
   }
 
-  /* ---------------------------------- */
-  /* Create unique year list            */
-  /* ---------------------------------- */
+  /* ------------------------------------------
+     Create unique Contest + Year combinations
+  ------------------------------------------ */
 
-  const uniqueYears = [...new Set(data.map(r => r.Year))]
-    .sort((a,b) => b - a);
+  const rows = [...new Set(
+    data.map(r => `${r.Contest}|${r.Year}|${r.Country}`)
+  )].map(v => {
+    const [contest, year, country] = v.split("|");
+    return { contest, year, country };
+  });
 
-  /* ---------------------------------- */
-  /* Build sidebar                      */
-  /* ---------------------------------- */
+  /* ------------------------------------------
+     Sort newest first
+  ------------------------------------------ */
 
-  uniqueYears.forEach(year => {
+  rows.sort((a,b)=>{
 
-    const div = document.createElement("div");
-    div.className = "sidebar-row";
+    if (a.contest === b.contest) {
+      return b.year - a.year;
+    }
 
-    const a = document.createElement("a");
-    a.href =
-      `national-finals.html?contest=${encodeURIComponent(contest)}&year=${year}`;
-
-    const img = document.createElement("img");
-    img.src = `/flags/${flagCode}.png`;
-    img.className = "flag-icon";
-
-    a.appendChild(img);
-    a.appendChild(document.createTextNode(`${contest} ${year}`));
-
-    div.appendChild(a);
-    sidebar.appendChild(div);
+    return a.contest.localeCompare(b.contest);
 
   });
 
-});
+  /* ------------------------------------------
+     Render sidebar
+  ------------------------------------------ */
+
+  const frag = document.createDocumentFragment();
+
+  rows.forEach(row => {
+
+    const link = document.createElement("a");
+
+    link.className = "sidebar-item";
+
+    link.href =
+      `national-finals.html?contest=${encodeURIComponent(row.contest)}&year=${row.year}`;
+
+    link.innerHTML = `
+      <img class="flag-icon" src="/flags/${row.country}.png">
+      ${row.contest} ${row.year}
+    `;
+
+    frag.appendChild(link);
+
+  });
+
+  sidebar.appendChild(frag);
+
+}
