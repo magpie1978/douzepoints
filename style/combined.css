@@ -665,3 +665,67 @@ h4 {
   transform: translateY(-4px) scale(1.02);
   box-shadow: 0 12px 24px rgba(0,0,0,0.4);
 }
+
+
+
+
+
+/* =========================================
+   HEADER PAGE DROPDOWN FOR MATIONAL FINALS
+========================================= */
+
+/* --------------------------------
+   Dropdown container
+-------------------------------- */
+
+.nav-item.dropdown {
+  position: relative;
+}
+
+/* --------------------------------
+   Hidden menu
+-------------------------------- */
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+
+  background: #0b0f2a;
+  padding: 10px 0;
+  margin: 0;
+
+  list-style: none;
+
+  border-radius: 6px;
+  min-width: 180px;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+  z-index: 1000;
+}
+
+/* --------------------------------
+   Show menu on hover
+-------------------------------- */
+
+.nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+/* --------------------------------
+   Menu items
+-------------------------------- */
+
+.dropdown-item {
+  display: block;
+  padding: 8px 18px;
+
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.dropdown-item:hover {
+  background: rgba(255,255,255,0.08);
+}
