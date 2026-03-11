@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", loadSidebar);
 
 async function loadSidebar(){
 
-  const sidebar = document.getElementById("sidebar");
+  const sidebar = document.getElementById("sidebar-container");
   if (!sidebar) return;
 
   const params = new URLSearchParams(window.location.search);
