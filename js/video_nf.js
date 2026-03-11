@@ -52,7 +52,9 @@ function renderVideos(entries, contest) {
     wrapper.tabIndex = 0;
 
     const imageUrl =
-      `images/national/${contest}/${entry.Year}-${entry.Running_Order}.jpeg`;
+      `images/${encodeURIComponent(contest)}/${entry.Year}-${entry.Running_Order}.jpeg`;
+    //const imageUrl =
+    //  `images/national/${contest}/${entry.Year}-${entry.Running_Order}.jpeg`;
 
     wrapper.innerHTML = `
       <div class="preview-container">
