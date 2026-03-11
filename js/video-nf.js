@@ -16,7 +16,7 @@ function renderUMKVideos(entries) {
   container.innerHTML = "";
 
   if (!entries || entries.length === 0) {
-    container.innerHTML = `<p style="padding:20px;">No UMK videos found.</p>`;
+    container.innerHTML = `<p style="padding:20px;">No videos found.</p>`;
     return;
   }
 
@@ -33,10 +33,6 @@ function renderUMKVideos(entries) {
     wrapper.dataset.place = entry.Place;
     wrapper.dataset.year = entry.Year;
     wrapper.dataset.country = "Finland";
-
-    
-    //const wrapper = document.createElement("div");
-    //wrapper.className = "video-item";
     wrapper.setAttribute("role","button");
     wrapper.tabIndex = 0;
 
@@ -124,7 +120,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     .order("Place",{ ascending:true });
   
   if (error) {
-    console.error("UMK load error:", error);
+    console.error("load error:", error);
     return;
   }
 
