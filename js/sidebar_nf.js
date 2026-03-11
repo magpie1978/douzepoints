@@ -13,7 +13,7 @@ async function loadSidebar(){
   const { data, error } = await supabase
     .from("douzepoints_finland")
     .select("Contest, Country, Year")
-    .eq("Contest", contest);
+    .eq("Country", contest);
 
   if (error) {
     console.error(error);
@@ -32,9 +32,9 @@ async function loadSidebar(){
     link.className = "sidebar-item";
 
     link.href =
-      `national-finals.html?contest=${encodeURIComponent(contest)}&year=${year}`;
+      `national-finals.html?contest=${contest}&year=${year}`;
 
-    link.textContent = `${contest} ${year}`;
+    link.textContent = `${data[0].Contest} ${year}`;
 
     frag.appendChild(link);
 
