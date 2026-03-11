@@ -127,7 +127,7 @@ async function loadHeader() {
   const isScoreboardPage   = path.includes("scoreboard.html");
   const isWatchHistoryPage = path.includes("my-stats.html");
   const isUMKPage          = path.includes("umk.html");
-  const isNationalPage     = path.includes("national.html");
+  const isNationalPage     = path.includes("national-finals.html");
 
   let bannerSrc = null;
 
@@ -237,7 +237,7 @@ async function loadNationalFinalsMenu() {
 
     const a = document.createElement("a");
     a.className = "dropdown-item";
-    a.href = `national.html?contest=${encodeURIComponent(contest)}`;
+    a.href = `national-finals.html?contest=${encodeURIComponent(contest)}`;
     a.textContent = contest;
 
     li.appendChild(a);
