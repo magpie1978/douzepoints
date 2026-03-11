@@ -177,7 +177,7 @@ async function loadHeader() {
 
   } else if (isNationalPage && contest) {
 
-    bannerSrc = `/banners/${encodeURIComponent(contest)}.png`;
+    bannerSrc = `/banners_nf/${encodeURIComponent(contest)}.png`;
 
   }
 
