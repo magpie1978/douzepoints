@@ -101,6 +101,7 @@ async function loadHeader() {
 
   const country = new URLSearchParams(window.location.search).get("country");
   const contest = new URLSearchParams(window.location.search).get("contest");
+  const nfYear = new URLSearchParams(window.location.search).get("year");
 
   let bannerSrc = null;
 
@@ -132,17 +133,23 @@ async function loadHeader() {
     bannerSrc = "banners/watchstats.png";
   } else if (isScoreboardPage) {
     bannerSrc = "banners/scoreboard.png";
-  } else if (isNationalPage && contest) {
+    
+  else if (isNationalPage && contest) {
 
-    const contestFlags = {
-      "UMK": "fi",
-      "Eesti Laul": "ee"
-    };
+  const contestFlags = {
+    "UMK": "fi",
+    "Eesti Laul": "ee"
+  };
 
-    const code = contestFlags[contest];
-    if (code) bannerSrc = `banners/${code}.png`;
+  const code = contestFlags[contest];
 
+  if (code && nfYear) {
+    bannerSrc = `banners/${code}-${nfYear}.png`;
+  } else if (code) {
+    bannerSrc = `banners/${code}.png`;
   }
+
+}
 
   if (bannerSrc) {
     banner.onload = () => {
