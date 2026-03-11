@@ -668,79 +668,11 @@ h4 {
 
 
 
-
-
 /* =========================================
-   HEADER PAGE DROPDOWN FOR MATIONAL FINALS
+   HEADER PAGE DROPDOWN FOR NATIONAL FINALS
 ========================================= */
 
-/* Remove bullets from navigation lists */
-
-nav ul {
-  display: flex;
-  gap: 30px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-
-/* --------------------------------
-   Dropdown container
--------------------------------- */
-
-.nav-item.dropdown {
-  position: relative;
-}
-
-/* --------------------------------
-   Hidden menu
--------------------------------- */
-
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-
-  background: #0b0f2a;
-  padding: 10px 0;
-  margin: 0;
-
-  list-style: none;
-
-  border-radius: 6px;
-  min-width: 180px;
-
-  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
-  z-index: 1000;
-}
-
-/* --------------------------------
-   Show menu on hover
--------------------------------- */
-
-.nav-item.dropdown:hover .dropdown-menu {
-  display: block;
-}
-
-/* --------------------------------
-   Menu items
--------------------------------- */
-
-.dropdown-item {
-  display: block;
-  padding: 8px 18px;
-
-  color: white;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-.dropdown-item:hover {
-  background: rgba(255,255,255,0.08);
-}
-
+/* top-level nav only */
 .nav-menu {
   display: flex;
   gap: 20px;
@@ -749,44 +681,48 @@ nav ul {
   padding: 0;
 }
 
-.nav-menu li {
+.nav-menu > li {
   list-style: none;
-}
-
-
-/* dropdown container */
-.nav-item.dropdown {
   position: relative;
 }
 
-/* hide menu by default */
-.dropdown-menu {
+/* dropdown menu */
+.nav-menu .dropdown-menu {
   display: none;
   position: absolute;
   top: 100%;
   left: 0;
-  background: #111;
+
+  background: #0b0f2a;
   min-width: 180px;
   padding: 8px 0;
   margin: 0;
+
   list-style: none;
   border-radius: 6px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
   z-index: 1000;
 }
 
-/* show menu on hover */
-.nav-item.dropdown:hover .dropdown-menu {
+/* show on hover */
+.nav-menu .dropdown:hover .dropdown-menu {
   display: block;
 }
 
-/* menu links */
-.dropdown-item {
+/* dropdown links */
+.nav-menu .dropdown-menu li {
+  list-style: none;
+}
+
+.nav-menu .dropdown-item {
   display: block;
   padding: 8px 16px;
   color: white;
   text-decoration: none;
+  font-size: 14px;
+  white-space: nowrap;
 }
 
-.dropdown-item:hover {
-  background: #222;
+.nav-menu .dropdown-item:hover {
+  background: rgba(255,255,255,0.08);
 }
