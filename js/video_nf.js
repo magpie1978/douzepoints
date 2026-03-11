@@ -51,10 +51,10 @@ function renderVideos(entries, contest) {
     wrapper.setAttribute("role","button");
     wrapper.tabIndex = 0;
 
+    const contestSlug = contest.toLowerCase().replace(/\s+/g, "-");
     const imageUrl =
-      `images/${encodeURIComponent(contest)}/${entry.Year}-${entry.Running_Order}.jpeg`;
-    //const imageUrl =
-    //  `images/national/${contest}/${entry.Year}-${entry.Running_Order}.jpeg`;
+      `images/${contestSlug}/${entry.Year}-${entry.Running_Order}.jpeg`;
+    
 
     wrapper.innerHTML = `
       <div class="preview-container">
