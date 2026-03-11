@@ -34,9 +34,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const a = document.createElement("a");
       
-      // REMOVED FOR REPLACEMENt SEO VERSION (BELOW)
-      //a.href = `country.html?country=${encodeURIComponent(country)}`;
-
       //NEW SEO VERSION
       const slug = country
         .toLowerCase()
