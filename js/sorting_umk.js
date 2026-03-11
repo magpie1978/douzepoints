@@ -1,9 +1,9 @@
 import { applySorting } from "./sorting_core.js";
 
-function comparator(type) {
+function comparator(type){
 
-  const num = (el,k)=>Number(el.dataset[k]||0);
-  const txt = (el,k)=>(el.dataset[k]||"");
+  const num=(el,k)=>Number(el.dataset[k]||0);
+  const txt=(el,k)=>(el.dataset[k]||"");
 
   switch(type){
 
