@@ -111,7 +111,6 @@ async function loadHeader() {
 
   const country = params.get("country");
   const contest = params.get("contest");
-  const nfYear  = params.get("year");
 
   const isIndexPage =
     path === "/" ||
@@ -126,7 +125,6 @@ async function loadHeader() {
   const isFanFavesPage     = path.includes("fan-favorites.html");
   const isScoreboardPage   = path.includes("scoreboard.html");
   const isWatchHistoryPage = path.includes("my-stats.html");
-  const isUMKPage          = path.includes("umk.html");
   const isNationalPage     = path.includes("national-finals.html");
 
   let bannerSrc = null;
@@ -146,10 +144,6 @@ async function loadHeader() {
   } else if (isShowPage) {
 
     bannerSrc = "banners/shows.png";
-
-  } else if (isUMKPage) {
-
-    bannerSrc = "banners/UMK.png";
 
   } else if (isFavoritesPage) {
 
@@ -183,18 +177,7 @@ async function loadHeader() {
 
   } else if (isNationalPage && contest) {
 
-    const contestFlags = {
-      "UMK": "fi",
-      "Eesti Laul": "ee"
-    };
-
-    const code = contestFlags[contest];
-
-    if (code && nfYear) {
-      bannerSrc = `banners/${code}-${nfYear}.png`;
-    } else if (code) {
-      bannerSrc = `banners/${code}.png`;
-    }
+    bannerSrc = `/banners/${encodeURIComponent(contest)}.png`;
 
   }
 
