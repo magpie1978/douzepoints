@@ -10,14 +10,12 @@ async function loadHeader() {
   const headerContainer = document.getElementById("header-container");
   if (!headerContainer) return;
 
-  /* --------------------------------------------------
-     Load shared header HTML
-  -------------------------------------------------- */
+  /* Load shared header HTML */
 
   const res = await fetch("header.html", { cache: "no-store" });
 
   if (!res.ok) {
-    console.error("[header] Failed to load header.html:", res.status, res.statusText);
+    console.error("[header] Failed to load header.html:", res.status);
     return;
   }
 
@@ -26,17 +24,12 @@ async function loadHeader() {
   await new Promise(requestAnimationFrame);
 
   if (window.lucide) window.lucide.createIcons();
-}
 
-  /* --------------------------------------------------
-     Load National Finals Dropdown
-  -------------------------------------------------- */
+  /* Load National Finals dropdown */
 
   await loadNationalFinalsMenu();
 
-  /* --------------------------------------------------
-     Session-aware controls
-  -------------------------------------------------- */
+  /* Session-aware controls */
 
   const { data: { session } } = await supabase.auth.getSession();
 
@@ -60,64 +53,23 @@ async function loadHeader() {
 
   }
 
-  /* --------------------------------------------------
-     Gate only "My Favorites"
-  -------------------------------------------------- */
+  /* Banner Logic */
 
-  const favLink = headerContainer.querySelector('a[href="my-favorites.html"]');
-
-  if (favLink) {
-
-    favLink.addEventListener("click", async (e) => {
-
-      e.preventDefault();
-
-      const { data: { session } } = await supabase.auth.getSession();
-
-      if (session) {
-        window.location.href = "my-favorites.html";
-        return;
-      }
-
-      const hasModal = !!document.getElementById("auth-overlay");
-
-      if (hasModal) {
-
-        const { requireAuth } = await import("./auth.js");
-
-        const ok = await requireAuth("my-favorites.html");
-
-        if (ok) window.location.href = "my-favorites.html";
-
-      } else {
-
-        window.location.href = "index.html?auth=1&next=my-favorites.html";
-
-      }
-
-    });
-
-  }
-
-  /* --------------------------------------------------
-     Banner Logic (Flash-Free)
-  -------------------------------------------------- */
-  
   const banner = document.getElementById("country-banner");
   if (!banner) return;
-  
+
   banner.style.display = "none";
-  
+
   const params = new URLSearchParams(window.location.search);
-  
+
   const country = params.get("country");
   const contest = params.get("contest");
-  
+
   const isIndexPage =
     path === "/" ||
     path.endsWith("/index.html") ||
     path.endsWith("/");
-  
+
   const isCountryPage      = path.includes("country.html");
   const isEditionPage      = path.includes("edition.html");
   const isWinnersPage      = path.includes("winners.html");
@@ -127,76 +79,73 @@ async function loadHeader() {
   const isScoreboardPage   = path.includes("scoreboard.html");
   const isWatchHistoryPage = path.includes("my-stats.html");
   const isNationalPage     = path.includes("national-finals.html");
-  
+
   let bannerSrc = null;
-  
+
   if (isIndexPage) {
-  
+
     bannerSrc = "banners/douzepoints.png";
-  
+
   } else if (isWinnersPage) {
-  
+
     bannerSrc = "banners/winners.png";
-  
+
   } else if (isFanFavesPage) {
-  
+
     bannerSrc = "banners/fanfavorites.png";
-  
+
   } else if (isShowPage) {
-  
+
     bannerSrc = "banners/shows.png";
-  
+
   } else if (isFavoritesPage) {
-  
+
     bannerSrc = "banners/my-faves.png";
-  
+
   } else if (isEditionPage) {
-  
+
     const editionYear = params.get("edition");
-  
     if (editionYear) bannerSrc = `banners/${editionYear}.png`;
-  
+
   } else if (isCountryPage && country) {
-  
+
     const { data } = await supabase
       .from("douzepoints")
       .select("Country_Code")
       .ilike("Country", country)
       .limit(1);
-  
+
     const code = data?.[0]?.Country_Code?.toLowerCase();
-  
+
     if (code) bannerSrc = `banners/${code}.png`;
-  
+
   } else if (isWatchHistoryPage) {
-  
+
     bannerSrc = "banners/watchstats.png";
-  
+
   } else if (isScoreboardPage) {
-  
+
     bannerSrc = "banners/scoreboard.png";
-  
+
   } else if (isNationalPage && contest) {
-  
+
     bannerSrc = `/banners_nf/${contest}.jpeg`;
-  
+
   }
-  
+
   if (bannerSrc) {
-  
+
     banner.onload = () => {
       banner.style.display = "block";
     };
-  
+
     banner.src = bannerSrc;
-  
+
   }
 
+}
 
-  
-/* --------------------------------------------------
-   NATIONAL FINALS DROPDOWN
--------------------------------------------------- */
+/* National Finals dropdown */
 
 async function loadNationalFinalsMenu() {
 
@@ -215,18 +164,20 @@ async function loadNationalFinalsMenu() {
   const contests = [
     ...new Map(data.map(r => [r.Country, r])).values()
   ].sort((a,b)=>a.Contest.localeCompare(b.Contest));
-  
+
   contests.forEach(row => {
-  
+
     const li = document.createElement("li");
-  
+
     const a = document.createElement("a");
     a.className = "dropdown-item";
-  
+
     a.href = `national-finals.html?contest=${row.Country}`;
     a.textContent = row.Contest;
-  
+
     li.appendChild(a);
     menu.appendChild(li);
 
-});
+  });
+
+}
