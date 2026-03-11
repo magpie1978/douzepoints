@@ -10,14 +10,12 @@ async function loadHeader() {
   const headerContainer = document.getElementById("header-container");
   if (!headerContainer) return;
 
-  /* --------------------------------------------------
-     Load shared header HTML
-  -------------------------------------------------- */
+  /* Load shared header HTML */
 
   const res = await fetch("header.html", { cache: "no-store" });
 
   if (!res.ok) {
-    console.error("[header] Failed to load header.html:", res.status, res.statusText);
+    console.error("[header] Failed to load header.html:", res.status);
     return;
   }
 
@@ -27,15 +25,11 @@ async function loadHeader() {
 
   if (window.lucide) window.lucide.createIcons();
 
-  /* --------------------------------------------------
-     Load National Finals Dropdown
-  -------------------------------------------------- */
+  /* Load National Finals dropdown */
 
   await loadNationalFinalsMenu();
 
-  /* --------------------------------------------------
-     Session-aware controls
-  -------------------------------------------------- */
+  /* Session-aware controls */
 
   const { data: { session } } = await supabase.auth.getSession();
 
@@ -59,48 +53,7 @@ async function loadHeader() {
 
   }
 
-  /* --------------------------------------------------
-     Gate only "My Favorites"
-  -------------------------------------------------- */
-
-  const favLink = headerContainer.querySelector('a[href="my-favorites.html"]');
-
-  if (favLink) {
-
-    favLink.addEventListener("click", async (e) => {
-
-      e.preventDefault();
-
-      const { data: { session } } = await supabase.auth.getSession();
-
-      if (session) {
-        window.location.href = "my-favorites.html";
-        return;
-      }
-
-      const hasModal = !!document.getElementById("auth-overlay");
-
-      if (hasModal) {
-
-        const { requireAuth } = await import("./auth.js");
-
-        const ok = await requireAuth("my-favorites.html");
-
-        if (ok) window.location.href = "my-favorites.html";
-
-      } else {
-
-        window.location.href = "index.html?auth=1&next=my-favorites.html";
-
-      }
-
-    });
-
-  }
-
-  /* --------------------------------------------------
-     Banner Logic (Flash-Free)
-  -------------------------------------------------- */
+  /* Banner Logic */
 
   const banner = document.getElementById("country-banner");
   if (!banner) return;
@@ -152,7 +105,6 @@ async function loadHeader() {
   } else if (isEditionPage) {
 
     const editionYear = params.get("edition");
-
     if (editionYear) bannerSrc = `banners/${editionYear}.png`;
 
   } else if (isCountryPage && country) {
@@ -177,7 +129,7 @@ async function loadHeader() {
 
   } else if (isNationalPage && contest) {
 
-    bannerSrc = `/banners/${encodeURIComponent(contest)}.png`;
+    bannerSrc = `/banners_nf/${contest}.png`;
 
   }
 
@@ -193,9 +145,7 @@ async function loadHeader() {
 
 }
 
-/* --------------------------------------------------
-   NATIONAL FINALS DROPDOWN
--------------------------------------------------- */
+/* National Finals dropdown */
 
 async function loadNationalFinalsMenu() {
 
@@ -204,28 +154,30 @@ async function loadNationalFinalsMenu() {
 
   const { data, error } = await supabase
     .from("douzepoints_finland")
-    .select("Contest");
+    .select("Contest, country");
 
   if (error) {
     console.error("[header] National Finals menu error:", error);
     return;
   }
 
-  const contests = [...new Set(data.map(r => r.Contest))]
-    .sort((a,b)=>a.localeCompare(b));
-
-  contests.forEach(contest => {
-
+  const contests = [
+    ...new Map(data.map(r => [r.country, r])).values()
+  ].sort((a,b)=>a.Contest.localeCompare(b.Contest));
+  
+  contests.forEach(row => {
+  
     const li = document.createElement("li");
-
+  
     const a = document.createElement("a");
     a.className = "dropdown-item";
-    a.href = `national-finals.html?contest=${encodeURIComponent(contest)}`;
-    a.textContent = contest;
-
+  
+    a.href = `national-finals.html?contest=${row.country}`;
+    a.textContent = row.Contest;
+  
     li.appendChild(a);
     menu.appendChild(li);
-
+  
   });
 
 }
