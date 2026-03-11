@@ -32,21 +32,24 @@ function comparator(type){
 
 }
 
-document.addEventListener("DOMContentLoaded",()=>{
-
-  const select=document.getElementById("sort-options");
-  const container=document.getElementById("video-container");
-
-  select.addEventListener("change",()=>{
-
-    const items=[...container.children];
-
-    applySorting(
-      container,
-      items,
-      comparator(select.value)
-    );
-
-  });
+  document.addEventListener("DOMContentLoaded",()=>{
+  
+    const select=document.getElementById("sort-options");
+    const container=document.getElementById("video-container");
+  
+    function runSort(){
+      const items=[...container.children];
+  
+      applySorting(
+        container,
+        items,
+        comparator(select.value)
+      );
+    }
+  
+    select.addEventListener("change", runSort);
+  
+    // Run the default sort immediately
+    setTimeout(runSort, 0);
 
 });
