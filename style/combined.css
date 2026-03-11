@@ -674,6 +674,24 @@ h4 {
    HEADER PAGE DROPDOWN FOR MATIONAL FINALS
 ========================================= */
 
+/* Remove bullets from navigation lists */
+
+nav ul {
+  display: flex;
+  gap: 30px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+nav ul,
+.nav-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+
 /* --------------------------------
    Dropdown container
 -------------------------------- */
