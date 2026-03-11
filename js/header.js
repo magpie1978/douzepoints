@@ -220,7 +220,7 @@ async function loadNationalFinalsMenu() {
 
     const a = document.createElement("a");
     a.className = "dropdown-item";
-    a.href = `national-finals.html?contest=${encodeURIComponent(contest)}`;
+    a.href = `national-finals.html?contest=${contest}`;
     a.textContent = contest;
 
     li.appendChild(a);
