@@ -26,6 +26,7 @@ async function loadHeader() {
   await new Promise(requestAnimationFrame);
 
   if (window.lucide) window.lucide.createIcons();
+}
 
   /* --------------------------------------------------
      Load National Finals Dropdown
