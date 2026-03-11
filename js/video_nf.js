@@ -43,7 +43,8 @@ function renderVideos(entries, contest) {
     wrapper.setAttribute("role","button");
     wrapper.tabIndex = 0;
 
-    const imageUrl = `images/${contest}/${entry.Year}-${entry.Running_Order}.jpeg`;;
+    //const imageUrl = `images/${contest}/${entry.Year}-${entry.Running_Order}.jpeg`;;
+    const imageUrl = `images/${entry.Contest}/${entry.Year}-${entry.Running_Order}.jpeg`;
     
     wrapper.innerHTML = `
       <div class="preview-container">
