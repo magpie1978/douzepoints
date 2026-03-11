@@ -126,7 +126,6 @@ async function loadHeader() {
   const isFanFavesPage     = path.includes("fan-favorites.html");
   const isScoreboardPage   = path.includes("scoreboard.html");
   const isWatchHistoryPage = path.includes("my-stats.html");
-  const isUMKPage          = path.includes("umk.html");
   const isNationalPage     = path.includes("national-finals.html");
 
   let bannerSrc = null;
@@ -146,10 +145,6 @@ async function loadHeader() {
   } else if (isShowPage) {
 
     bannerSrc = "banners/shows.png";
-
-  } else if (isUMKPage) {
-
-    bannerSrc = "banners/UMK.png";
 
   } else if (isFavoritesPage) {
 
