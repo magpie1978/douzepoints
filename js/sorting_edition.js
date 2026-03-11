@@ -28,28 +28,31 @@ function comparator(type){
     case "total":
       return (a,b)=>num(b,"total")-num(a,"total");
 
+    default:
+      return ()=>0;
+
   }
 
 }
 
-  document.addEventListener("DOMContentLoaded",()=>{
-  
-    const select=document.getElementById("sort-options");
-    const container=document.getElementById("video-container");
-  
-    function runSort(){
-      const items=[...container.children];
-  
-      applySorting(
-        container,
-        items,
-        comparator(select.value)
-      );
-    }
-  
-    select.addEventListener("change", runSort);
-  
-    // Run the default sort immediately
-    setTimeout(runSort, 0);
+document.addEventListener("DOMContentLoaded",()=>{
+
+  const select=document.getElementById("sort-options");
+  const container=document.getElementById("video-container");
+
+  function runSort(){
+    const items=[...container.children];
+
+    applySorting(
+      container,
+      items,
+      comparator(select.value)
+    );
+  }
+
+  select.addEventListener("change", runSort);
+
+  // ⭐ expose global function so video.js can trigger sorting
+  window.triggerInitialSort = runSort;
 
 });
