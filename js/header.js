@@ -154,7 +154,7 @@ async function loadNationalFinalsMenu() {
 
   const { data, error } = await supabase
     .from("douzepoints_finland")
-    .select("Contest, Country");
+    .select("Contest, country");
 
   if (error) {
     console.error("[header] National Finals menu error:", error);
@@ -162,22 +162,22 @@ async function loadNationalFinalsMenu() {
   }
 
   const contests = [
-    ...new Map(data.map(r => [r.Country, r])).values()
+    ...new Map(data.map(r => [r.country, r])).values()
   ].sort((a,b)=>a.Contest.localeCompare(b.Contest));
-
+  
   contests.forEach(row => {
-
+  
     const li = document.createElement("li");
-
+  
     const a = document.createElement("a");
     a.className = "dropdown-item";
-
-    a.href = `national-finals.html?contest=${row.Country}`;
+  
+    a.href = `national-finals.html?contest=${row.country}`;
     a.textContent = row.Contest;
-
+  
     li.appendChild(a);
     menu.appendChild(li);
-
+  
   });
 
 }
