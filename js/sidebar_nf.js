@@ -8,12 +8,12 @@ async function loadSidebar(){
   if (!sidebar) return;
 
   const params = new URLSearchParams(window.location.search);
-  const contest = params.get("contest");
+  const country = params.get("contest");
 
   const { data, error } = await supabase
     .from("douzepoints_finland")
     .select("Contest, Country, Year")
-    .eq("Country", contest);
+    .eq("Country", country);
 
   if (error) {
     console.error(error);
@@ -22,6 +22,8 @@ async function loadSidebar(){
 
   const years = [...new Set(data.map(r => r.Year))]
     .sort((a,b)=>b-a);
+
+  const contestName = data[0]?.Contest || "";
 
   const frag = document.createDocumentFragment();
 
@@ -32,9 +34,9 @@ async function loadSidebar(){
     link.className = "sidebar-item";
 
     link.href =
-      `national-finals.html?contest=${contest}&year=${year}`;
+      `national-finals.html?contest=${country}&year=${year}`;
 
-    link.textContent = `${data[0].Contest} ${year}`;
+    link.textContent = `${contestName} ${year}`;
 
     frag.appendChild(link);
 
