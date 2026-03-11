@@ -111,7 +111,6 @@ async function loadHeader() {
 
   const country = params.get("country");
   const contest = params.get("contest");
-  const nfYear  = params.get("year");
 
   const isIndexPage =
     path === "/" ||
@@ -178,18 +177,7 @@ async function loadHeader() {
 
   } else if (isNationalPage && contest) {
 
-    const contestFlags = {
-      "UMK": "fi",
-      "Eesti Laul": "ee"
-    };
-
-    const code = contestFlags[contest];
-
-    if (code && nfYear) {
-      bannerSrc = `banners/${code}-${nfYear}.png`;
-    } else if (code) {
-      bannerSrc = `banners/${code}.png`;
-    }
+    bannerSrc = `/banner/${encodeURIComponent(contest)}.png`;
 
   }
 
@@ -232,7 +220,7 @@ async function loadNationalFinalsMenu() {
 
     const a = document.createElement("a");
     a.className = "dropdown-item";
-    a.href = `national-finals.html?contest=${encodeURIComponent(contest)}`;
+    a.href = `national.html?contest=${encodeURIComponent(contest)}`;
     a.textContent = contest;
 
     li.appendChild(a);
