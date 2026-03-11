@@ -46,10 +46,9 @@ function renderVideos(entries, country) {
     wrapper.setAttribute("role","button");
     wrapper.tabIndex = 0;
 
+    
     /* Image path based on new folder column */
-
-    const imageUrl =
-      `/images_nf/${entry.folder}/${entry.Year}-${entry.Running_Order}.jpeg`;
+    const imageUrl = `/images/${entry.folder}/${entry.Year}-${entry.Place}.jpeg`;
 
     wrapper.innerHTML = `
       <div class="preview-container">
