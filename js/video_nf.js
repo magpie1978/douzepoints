@@ -8,14 +8,6 @@ function escapeHTML(str) {
     .replace(/>/g,"&gt;");
 }
 
-/* -------------------------------------------------- */
-/* Contest → country flag mapping                     */
-/* -------------------------------------------------- */
-
-const contestFlags = {
-  "UMK": "fi",
-  "Eesti Laul": "ee"
-};
 
 /* -------------------------------------------------- */
 /* Render videos                                      */
@@ -33,7 +25,7 @@ function renderVideos(entries, contest) {
     return;
   }
 
-  const flagCode = contestFlags[contest] || "eu";
+  const flagCode = contest;
   const frag = document.createDocumentFragment();
 
   entries.forEach(entry => {
@@ -51,11 +43,8 @@ function renderVideos(entries, contest) {
     wrapper.setAttribute("role","button");
     wrapper.tabIndex = 0;
 
-    const contestSlug = contest.toLowerCase().replace(/\s+/g, "-");
-    const imageUrl =
-      `images/${contestSlug}/${entry.Year}-${entry.Running_Order}.jpeg`;
+    const imageUrl = `images/${contest}/${entry.Year}-${entry.Running_Order}.jpeg`;;
     
-
     wrapper.innerHTML = `
       <div class="preview-container">
         <img class="thumbnail"
@@ -139,7 +128,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const params = new URLSearchParams(window.location.search);
 
-  const contest = params.get("contest") || "UMK";
+  const contest = params.get("contest") || "fi";
   let year = params.get("year");
 
   /* If year not supplied → load latest */
