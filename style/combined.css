@@ -684,13 +684,6 @@ nav ul {
   margin: 0;
 }
 
-nav ul,
-.nav-menu {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
 
 /* --------------------------------
    Dropdown container
@@ -746,4 +739,16 @@ nav ul,
 
 .dropdown-item:hover {
   background: rgba(255,255,255,0.08);
+}
+
+.nav-menu {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu li {
+  list-style: none;
 }
