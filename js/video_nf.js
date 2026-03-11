@@ -138,7 +138,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const { data } = await supabase
       .from("douzepoints_finland")
       .select("Year")
-      .eq("Contest", contest)
+      //.eq("Contest", contest)
+      .eq("country", contest)
       .order("Year",{ ascending:false })
       .limit(1);
 
@@ -151,9 +152,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const { data, error } = await supabase
     .from("douzepoints_finland")
     .select("*")
-    .eq("Contest", contest)
+    //.eq("Contest", contest)
+    .eq("country", contest)
     .eq("Year", year)
-    .order("Running_Order",{ ascending:true });
+    .order("Place",{ ascending:true });
 
   if (error) {
     console.error("load error:", error);
