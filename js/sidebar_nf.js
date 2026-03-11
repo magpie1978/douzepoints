@@ -29,16 +29,17 @@ async function loadSidebar(){
 
   years.forEach(year => {
 
-    const link = document.createElement("a");
+const link = document.createElement("a");
 
-    link.className = "sidebar-item";
-
-    link.href =
-      `national-finals.html?contest=${country}&year=${year}`;
-
-    link.textContent = `${contestName} ${year}`;
-
-    frag.appendChild(link);
+  link.className = "sidebar-item";
+  link.href = `national-finals.html?contest=${country}&year=${year}`;
+  
+  link.innerHTML = `
+    <img class="flag-icon" src="/flags/${country}.png">
+    ${contestName} ${year}
+  `;
+  
+  frag.appendChild(link);
 
   });
 
