@@ -49,7 +49,7 @@ function renderVideos(entries, country) {
     
     /* Image path based on new folder column */
     //const imageUrl = `/images/${entry.folder}/${entry.Year}-${entry.Place}.jpeg`;
-    const imageUrl = `/images_nf/${country}_${entry.Year}-${entry.Running_Order}.jpeg`;
+    const imageUrl = `/images_nf/${country}_${entry.Year}-${entry.Place}.jpeg`;
 
     wrapper.innerHTML = `
       <div class="preview-container">
