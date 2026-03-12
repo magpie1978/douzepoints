@@ -129,7 +129,8 @@ async function loadHeader() {
 
   } else if (isNationalPage && contest) {
 
-    bannerSrc = `/banners_nf/${contest}.png`;
+    //bannerSrc = `/banners_nf/${contest}.png`;
+    bannerSrc = `/banners_nf/${country}.png`;
 
   }
 
