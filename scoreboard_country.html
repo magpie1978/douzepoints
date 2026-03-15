@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eurovision Country Results</title>
+  
+  <link rel="stylesheet" href="style/combined.css" />
+  <link rel="stylesheet" href="style/scoreboard.css" />
+  
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  </head>
+  
+  <body>
+  
+  <div id="header-container"></div>
+    <script type="module" src="js/header.js"></script>
+    <div class="main-content">
+      <div class="table-aligned-container">
+        <h1>Country Eurovision Results</h1>
+        <div class="table-controls">
+          <div class="control-block">
+            <label>Country</label>
+            <select id="countrySelect"></select>
+          </div>
+        </div>
+  
+        <h2>Semi-Final Appearances</h2>
+        <div class="table-wrapper">
+          <table>
+            <thead id="semiHead"></thead>
+            <tbody id="semiBody"></tbody>
+          </table>
+        </div>
+  
+        <h2>Final Appearances</h2>
+        <div class="table-wrapper">
+          <table>
+            <thead id="finalHead"></thead>
+            <tbody id="finalBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  
+    <script type="module" src="js/scoreboard_country.js"></script>
+  
+  </body>
+</html>
