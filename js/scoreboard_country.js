@@ -54,6 +54,31 @@ function renderTables(country) {
   renderFinalTable(finalRows);
 }
 
+//function renderSemiTable(rows){
+
+//  const body = document.getElementById("semiBody");
+//  body.innerHTML = "";
+
+//  rows.forEach(r => {
+
+//    const tr = document.createElement("tr");
+
+//    tr.innerHTML = `
+//      <td>${r.Year}</td>
+//      <td>${r.Artist}</td>
+//      <td>${r.Song}</td>
+//      <td>${r.SemiFinal}</td>
+//      <td>${r.SemiFinal_Rank}</td>
+//      <td>${r.SemiFinal_TotalPoints}</td>
+//    `;
+
+//    body.appendChild(tr);
+
+//  });
+//}
+
+
+
 function renderSemiTable(rows){
 
   const body = document.getElementById("semiBody");
@@ -61,21 +86,66 @@ function renderSemiTable(rows){
 
   rows.forEach(r => {
 
+    const qualified = r.Final_Rank !== null;
+
+    const statusBadge = qualified
+      ? `<span class="badge qualified">Qual</span>`
+      : `<span class="badge dnq">DNQ</span>`;
+
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
       <td>${r.Year}</td>
       <td>${r.Artist}</td>
+
+      <td class="play-icon">
+        <i data-lucide="play-circle"
+           class="video-trigger"
+           data-url="${r.Video_URL || ""}"
+           style="cursor:pointer;color:#e50914;width:22px;height:22px;">
+        </i>
+      </td>
+
       <td>${r.Song}</td>
       <td>${r.SemiFinal}</td>
-      <td>${r.SemiFinal_Rank}</td>
-      <td>${r.SemiFinal_TotalPoints}</td>
+      <td>${r.SemiFinal_Rank || ""}</td>
+      <td>${r.SemiFinal_TotalPoints || ""}</td>
+      <td>${statusBadge}</td>
     `;
 
     body.appendChild(tr);
-
   });
+
+  if (window.lucide) lucide.createIcons();
 }
+
+
+
+
+//function renderFinalTable(rows){
+
+//  const body = document.getElementById("finalBody");
+//  body.innerHTML = "";
+
+//  rows.forEach(r => {
+
+//    const tr = document.createElement("tr");
+
+//    tr.innerHTML = `
+//      <td>${r.Year}</td>
+//      <td>${r.Artist}</td>
+//      <td>${r.Song}</td>
+//      <td>${r.Final_Rank}</td>
+//      <td>${r.Final_TotalPoints}</td>
+//    `;
+
+//    body.appendChild(tr);
+
+//  });
+//}
+
+
+
 
 function renderFinalTable(rows){
 
@@ -84,19 +154,57 @@ function renderFinalTable(rows){
 
   rows.forEach(r => {
 
+    const qualified = r.Final_Rank !== null;
+
+    const statusBadge = qualified
+      ? ""
+      : `<span class="badge dnq">DNQ</span>`;
+
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
       <td>${r.Year}</td>
       <td>${r.Artist}</td>
+
+      <td class="play-icon">
+        <i data-lucide="play-circle"
+           class="video-trigger"
+           data-url="${r.Video_URL || ""}"
+           style="cursor:pointer;color:#e50914;width:22px;height:22px;">
+        </i>
+      </td>
+
       <td>${r.Song}</td>
-      <td>${r.Final_Rank}</td>
-      <td>${r.Final_TotalPoints}</td>
+      <td>${r.Final_Rank || ""}</td>
+      <td>${r.Final_TotalPoints || ""}</td>
+      <td>${statusBadge}</td>
     `;
 
     body.appendChild(tr);
-
   });
+
+  if (window.lucide) lucide.createIcons();
 }
+
+
+
+
+
+document.addEventListener("click", e => {
+
+  if (e.target.classList.contains("video-trigger")) {
+
+    const url = e.target.getAttribute("data-url");
+
+    if (window.openVideoModal) {
+      window.openVideoModal(url);
+    }
+
+  }
+
+});
+
+
+
 
 loadData();
