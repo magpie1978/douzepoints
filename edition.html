@@ -15,6 +15,20 @@
 
         <!-- GOOGLE ADSENSE SCRIPT -->
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687" crossorigin="anonymous"></script>
+
+        <!-- DECLARE CANONICAL PAGE -->
+        <script>
+            const params = new URLSearchParams(window.location.search);
+            const edition = params.get("edition");
+
+            if (edition) {
+              const canonical = document.createElement("link");
+              canonical.rel = "canonical";
+              canonical.href = `https://douzepoints.org/edition.html?edition=${edition}`;
+              document.head.appendChild(canonical);
+            }
+        </script>
+        
     </head>
 
     <!-- Google Tag (gtag.js)  -->
