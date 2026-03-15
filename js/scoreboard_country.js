@@ -47,7 +47,8 @@ function renderTables(country) {
     .filter(r => r.Country === country)
     .sort((a,b)=> b.Year - a.Year);
 
-  const semiRows = countryRows.filter(r => r.SemiFinal !== null);
+  //const semiRows = countryRows.filter(r => r.SemiFinal !== null);
+  const semiRows = countryRows.filter(r => r.SemiFinal === 1 || r.SemiFinal === 2);
   const finalRows = countryRows.filter(r => r.Final_Rank !== null);
 
   renderSemiTable(semiRows);
