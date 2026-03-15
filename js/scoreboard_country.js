@@ -47,13 +47,18 @@ function renderTables(country) {
     .filter(r => r.Country === country)
     .sort((a,b)=> b.Year - a.Year);
 
-  //const semiRows = countryRows.filter(r => r.SemiFinal !== null);
-  const semiRows = countryRows.filter(r => r.SemiFinal === 1 || r.SemiFinal === 2);
-  const finalRows = countryRows.filter(r => r.Final_Rank !== null);
+  /* Semi-Final participants only */
+  const semiRows = countryRows.filter(r =>
+    Number(r.SemiFinal) === 1 || Number(r.SemiFinal) === 2
+  );
+
+  /* Final table = ALL entries */
+  const finalRows = countryRows;
 
   renderSemiTable(semiRows);
   renderFinalTable(finalRows);
 }
+
 
 //function renderSemiTable(rows){
 
@@ -102,8 +107,7 @@ function renderSemiTable(rows){
       <td class="play-icon">
         <i data-lucide="play-circle"
            class="video-trigger"
-           data-url="${r.Video_URL || ""}"
-           style="cursor:pointer;color:#e50914;width:22px;height:22px;">
+           data-url="${r.Video_URL || ""}">
         </i>
       </td>
 
@@ -119,7 +123,6 @@ function renderSemiTable(rows){
 
   if (window.lucide) lucide.createIcons();
 }
-
 
 
 
@@ -170,8 +173,7 @@ function renderFinalTable(rows){
       <td class="play-icon">
         <i data-lucide="play-circle"
            class="video-trigger"
-           data-url="${r.Video_URL || ""}"
-           style="cursor:pointer;color:#e50914;width:22px;height:22px;">
+           data-url="${r.Video_URL || ""}">
         </i>
       </td>
 
