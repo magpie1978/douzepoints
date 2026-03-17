@@ -88,18 +88,18 @@ function renderSemiTable(rows){
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
+      <td>${statusBadge}</td>
+      <td>${r.Year}</td>
       <td class="play-icon">
         <i data-lucide="play-circle"
            class="video-trigger"
            data-url="${r.Video_URL || ""}">
         </i>
       </td>
-      <td>${r.Year}</td>
       <td>${r.Artist}</td>
       <td>${r.Song}</td>
       <td>${r.SemiFinal_Rank}</td>
       <td>${r.SemiFinal_TotalPoints || ""}</td>
-      <td>${statusBadge}</td>
     `;
 
     body.appendChild(tr);
@@ -118,31 +118,6 @@ function renderFinalTable(rows){
 
   rows.forEach(r => {
 
- //                         const qualified =
- //                           r.Final_Rank !== null &&
- //                           r.Final_Rank !== undefined &&
- //                           Number(r.Final_Rank) > 0;
-                          
- //                         const statusBadge = qualified
- //                           ? ""
- //                           : `<span class="badge dnq">DNQ</span>`;
-                      
- //                         const tr = document.createElement("tr");
-                      
- //                         tr.innerHTML = `
- //                           <td class="play-icon">
- //                             <i data-lucide="play-circle"
- //                                class="video-trigger"
- //                                data-url="${r.Video_URL || ""}">
- //                             </i>
- //                           </td>
- //                           <td>${r.Year}</td>
- //                           <td>${r.Artist}</td>
- //                           <td>${r.Song}</td>
- //                           <td>${qualified ? r.Final_Rank : ""}</td>
- //                           <td>${qualified ? r.Final_TotalPoints : ""}</td>
- //                           <td>${qualified ? "" : `<span class="badge dnq">DNQ</span>`}</td>    `;
-
   const qualified =
     r.Final_Rank !== null &&
     r.Final_Rank !== undefined &&
@@ -151,6 +126,8 @@ function renderFinalTable(rows){
   const tr = document.createElement("tr");
 
   tr.innerHTML = `
+    <td>${qualified ? "" : `<span class="badge dnq">DNQ</span>`}</td>
+    <td>${r.Year}</td>
     <td class="play-icon">
       ${
         qualified
@@ -161,13 +138,10 @@ function renderFinalTable(rows){
           : ""
       }
     </td>
-    <td>${r.Year}</td>
     <td>${qualified ? r.Artist : ""}</td>
     <td>${qualified ? r.Song : ""}</td>
     <td>${qualified ? r.Final_Rank : ""}</td>
     <td>${qualified ? r.Final_TotalPoints : ""}</td>
-
-    <td>${qualified ? "" : `<span class="badge dnq">DNQ</span>`}</td>
   `;
     
     body.appendChild(tr);
