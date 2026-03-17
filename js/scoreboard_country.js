@@ -88,18 +88,15 @@ function renderSemiTable(rows){
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${r.Year}</td>
-      <td>${r.Artist}</td>
-
       <td class="play-icon">
         <i data-lucide="play-circle"
            class="video-trigger"
            data-url="${r.Video_URL || ""}">
         </i>
       </td>
-
+      <td>${r.Year}</td>
+      <td>${r.Artist}</td>
       <td>${r.Song}</td>
-      <td>${r.SemiFinal}</td>
       <td>${r.SemiFinal_Rank}</td>
       <td>${r.SemiFinal_TotalPoints || ""}</td>
       <td>${statusBadge}</td>
