@@ -151,10 +151,6 @@ function renderFinalTable(rows){
   const tr = document.createElement("tr");
 
   tr.innerHTML = `
-    <td>${r.Year}</td>
-
-    <td>${qualified ? r.Artist : ""}</td>
-
     <td class="play-icon">
       ${
         qualified
@@ -165,14 +161,14 @@ function renderFinalTable(rows){
           : ""
       }
     </td>
+    <td>${r.Year}</td>
+    <td>${qualified ? r.Artist : ""}</td>
+    <td>${qualified ? r.Song : ""}</td>
+    <td>${qualified ? r.Final_Rank : ""}</td>
+    <td>${qualified ? r.Final_TotalPoints : ""}</td>
 
-  <td>${qualified ? r.Song : ""}</td>
-
-  <td>${qualified ? r.Final_Rank : ""}</td>
-  <td>${qualified ? r.Final_TotalPoints : ""}</td>
-
-  <td>${qualified ? "" : `<span class="badge dnq">DNQ</span>`}</td>
-`;
+    <td>${qualified ? "" : `<span class="badge dnq">DNQ</span>`}</td>
+  `;
     
     body.appendChild(tr);
   });
