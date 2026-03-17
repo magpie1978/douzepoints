@@ -49,7 +49,7 @@ function renderTables(country) {
 
   /* Semi-Final participants only */
   const semiRows = countryRows.filter(r =>
-    Number(r.SemiFinal) === 1 || Number(r.SemiFinal) === 2
+    r.SemiFinal !== null && r.SemiFinal !== undefined
   );
 
   /* Final table = ALL entries */
@@ -92,12 +92,14 @@ function renderSemiTable(rows){
 
   rows.forEach(r => {
 
-    
-  const qualified =
-    r.Final_Rank !== null &&
-    r.Final_Rank !== undefined &&
-    Number(r.Final_Rank) > 0;
-      
+    const qualified =
+      r.Final_Rank !== null &&
+      r.Final_Rank !== undefined &&
+      Number(r.Final_Rank) > 0;
+
+    const statusBadge = qualified
+      ? `<span class="badge q">Q</span>`
+      : `<span class="badge dnq">DNQ</span>`;
 
     const tr = document.createElement("tr");
 
@@ -159,8 +161,11 @@ function renderFinalTable(rows){
 
   rows.forEach(r => {
 
-    const qualified = r.Final_Rank !== null;
-
+    const qualified =
+      r.Final_Rank !== null &&
+      r.Final_Rank !== undefined &&
+      Number(r.Final_Rank) > 0;
+    
     const statusBadge = qualified
       ? ""
       : `<span class="badge dnq">DNQ</span>`;
