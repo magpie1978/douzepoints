@@ -244,12 +244,37 @@ async function toggleFavorite(button, videoKey, entry = null) {
           qualifiedFlag === "N"
         );
     // END OF NEW CODE 10 MARCH 2026
-    
-    const rankDisplay = isDNQ ? "NQ" : finalRank;
-    const pointsDisplay = isDNQ ? "NQ" : finalPoints;
 
-    const rankClass = isDNQ ? "score-circle dnq score-pos" : "score-circle score-pos";
-    const pointsClass = isDNQ ? "score-circle dnq score-pts" : "score-circle score-pts";
+
+    // CODE REMOVED 17 MARCH 2026//
+    //const rankDisplay = isDNQ ? "NQ" : finalRank;
+    //const pointsDisplay = isDNQ ? "NQ" : finalPoints;
+    //const rankClass = isDNQ ? "score-circle dnq score-pos" : "score-circle score-pos";
+    //const pointsClass = isDNQ ? "score-circle dnq score-pts" : "score-circle score-pts";
+
+
+    //NEW CODE 17 MARCH 2026//
+    let rankDisplay, pointsDisplay, rankClass, pointsClass;
+
+    // FINALIST
+    if (!isDNQ) {
+      rankDisplay = finalRank;
+      pointsDisplay = finalPoints;
+
+      rankClass = "score-circle final score-pos";
+      pointsClass = "score-circle final score-pts";
+    }
+
+    // NON-FINALIST → USE SEMI FINAL DATA
+    else {
+      rankDisplay = entry.SemiFinal_Rank || "-";
+      pointsDisplay = entry.SemiFinal_TotalPoints || "-";
+
+      rankClass = "score-circle dnq sf score-pos";
+      pointsClass = "score-circle dnq sf score-pts";
+    }
+    // END OF NEW CODE 17 MARCH 2026//
+    
 
     wrapper.innerHTML = `
       <div class="preview-container" data-video-url="${escapeHTML(videoUrl || "")}">
