@@ -92,11 +92,12 @@ function renderSemiTable(rows){
 
   rows.forEach(r => {
 
-    const qualified = r.Final_Rank !== null;
-
-    const statusBadge = qualified
-      ? `<span class="badge qualified">Qual</span>`
-      : `<span class="badge dnq">DNQ</span>`;
+    
+  const qualified =
+    r.Final_Rank !== null &&
+    r.Final_Rank !== undefined &&
+    Number(r.Final_Rank) > 0;
+      
 
     const tr = document.createElement("tr");
 
@@ -178,10 +179,9 @@ function renderFinalTable(rows){
       </td>
 
       <td>${r.Song}</td>
-      <td>${r.Final_Rank || ""}</td>
-      <td>${r.Final_TotalPoints || ""}</td>
-      <td>${statusBadge}</td>
-    `;
+      <td>${qualified ? r.Final_Rank : ""}</td>
+      <td>${qualified ? r.Final_TotalPoints : ""}</td>
+      <td>${qualified ? "" : `<span class="badge dnq">DNQ</span>`}</td>    `;
 
     body.appendChild(tr);
   });
