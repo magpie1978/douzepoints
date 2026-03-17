@@ -274,7 +274,9 @@ async function toggleFavorite(button, videoKey, entry = null) {
       pointsClass = "score-circle dnq sf score-pts";
     }
     // END OF NEW CODE 17 MARCH 2026//
-    
+
+    const posHeader = isDNQ ? "SF Pos" : "Pos";
+    const ptsHeader = isDNQ ? "SF Pts" : "Pts";
 
     wrapper.innerHTML = `
       <div class="preview-container" data-video-url="${escapeHTML(videoUrl || "")}">
@@ -313,21 +315,11 @@ async function toggleFavorite(button, videoKey, entry = null) {
           // Dynamic header labels
           // =============================
 
-          const posHeader = isDNQ ? "SF Pos" : "Pos";
-          const ptsHeader = isDNQ ? "SF Pts" : "Pts";
-          //variant === "carousel" || isFavoritesPage
           variant === "carousel" || isFavoritesPage || !resultsAvailable
             ? ""
             : `
             
             <div class="score-wrapper">
-              //<table class="score-table">
-              //  <tr><th>Pos</th><th>Pts</th></tr>
-              //  <tr>
-              //    <td><div class="${rankClass}">${escapeHTML(String(rankDisplay || ""))}</div></td>
-              //    <td><div class="${pointsClass}">${escapeHTML(String(pointsDisplay || ""))}</div></td>
-              //  </tr>
-              //</table>
               <table class="score-table">
                 <tr><th>${posHeader}</th><th>${ptsHeader}</th></tr>
                 <tr>
