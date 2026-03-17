@@ -167,3 +167,23 @@
   display: block;
   margin: 0 auto;
 }
+
+
+/* ============================
+   FINALISTS (GREEN)
+============================ */
+.score-circle.final {
+  background-color: #1db954;   /* Netflix-style green */
+  border-color: #1db954;
+  color: #000;
+  font-weight: bold;
+}
+
+/* ============================
+   NON-FINALISTS (RED - IMPROVED)
+============================ */
+.score-circle.sf {
+  background-color: rgba(229, 9, 20, 0.15);
+  border-color: #e50914;
+  color: #ffffff;
+}
