@@ -60,29 +60,6 @@ function renderTables(country) {
 }
 
 
-//function renderSemiTable(rows){
-
-//  const body = document.getElementById("semiBody");
-//  body.innerHTML = "";
-
-//  rows.forEach(r => {
-
-//    const tr = document.createElement("tr");
-
-//    tr.innerHTML = `
-//      <td>${r.Year}</td>
-//      <td>${r.Artist}</td>
-//      <td>${r.Song}</td>
-//      <td>${r.SemiFinal}</td>
-//      <td>${r.SemiFinal_Rank}</td>
-//      <td>${r.SemiFinal_TotalPoints}</td>
-//    `;
-
-//    body.appendChild(tr);
-
-//  });
-//}
-
 
 
 function renderSemiTable(rows){
@@ -104,16 +81,14 @@ function renderSemiTable(rows){
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${r.Year}</td>
-      <td>${r.Artist}</td>
-
       <td class="play-icon">
         <i data-lucide="play-circle"
            class="video-trigger"
            data-url="${r.Video_URL || ""}">
         </i>
       </td>
-
+      <td>${r.Year}</td>
+      <td>${r.Artist}</td>
       <td>${r.Song}</td>
       <td>${r.SemiFinal}</td>
       <td>${r.SemiFinal_Rank || ""}</td>
@@ -126,30 +101,6 @@ function renderSemiTable(rows){
 
   if (window.lucide) lucide.createIcons();
 }
-
-
-
-//function renderFinalTable(rows){
-
-//  const body = document.getElementById("finalBody");
-//  body.innerHTML = "";
-
-//  rows.forEach(r => {
-
-//    const tr = document.createElement("tr");
-
-//    tr.innerHTML = `
-//      <td>${r.Year}</td>
-//      <td>${r.Artist}</td>
-//      <td>${r.Song}</td>
-//      <td>${r.Final_Rank}</td>
-//      <td>${r.Final_TotalPoints}</td>
-//    `;
-
-//    body.appendChild(tr);
-
-//  });
-//}
 
 
 
@@ -173,16 +124,14 @@ function renderFinalTable(rows){
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${r.Year}</td>
-      <td>${r.Artist}</td>
-
       <td class="play-icon">
         <i data-lucide="play-circle"
            class="video-trigger"
            data-url="${r.Video_URL || ""}">
         </i>
       </td>
-
+      <td>${r.Year}</td>
+      <td>${r.Artist}</td>
       <td>${r.Song}</td>
       <td>${qualified ? r.Final_Rank : ""}</td>
       <td>${qualified ? r.Final_TotalPoints : ""}</td>
