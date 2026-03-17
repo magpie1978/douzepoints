@@ -208,6 +208,4 @@ document.addEventListener("click", e => {
 });
 
 
-
-
 loadData();
