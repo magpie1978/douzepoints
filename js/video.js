@@ -308,13 +308,28 @@ async function toggleFavorite(button, videoKey, entry = null) {
 
         ${
           // CHANGED 10 MARCH 2026
+
+          // =============================
+          // Dynamic header labels
+          // =============================
+
+          const posHeader = isDNQ ? "SF Pos" : "Pos";
+          const ptsHeader = isDNQ ? "SF Pts" : "Pts";
           //variant === "carousel" || isFavoritesPage
           variant === "carousel" || isFavoritesPage || !resultsAvailable
             ? ""
             : `
+            
             <div class="score-wrapper">
+              //<table class="score-table">
+              //  <tr><th>Pos</th><th>Pts</th></tr>
+              //  <tr>
+              //    <td><div class="${rankClass}">${escapeHTML(String(rankDisplay || ""))}</div></td>
+              //    <td><div class="${pointsClass}">${escapeHTML(String(pointsDisplay || ""))}</div></td>
+              //  </tr>
+              //</table>
               <table class="score-table">
-                <tr><th>Pos</th><th>Pts</th></tr>
+                <tr><th>${posHeader}</th><th>${ptsHeader}</th></tr>
                 <tr>
                   <td><div class="${rankClass}">${escapeHTML(String(rankDisplay || ""))}</div></td>
                   <td><div class="${pointsClass}">${escapeHTML(String(pointsDisplay || ""))}</div></td>
