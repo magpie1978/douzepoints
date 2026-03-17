@@ -67,7 +67,14 @@ function renderSemiTable(rows){
   const body = document.getElementById("semiBody");
   body.innerHTML = "";
 
-  rows.forEach(r => {
+  // ✅ FILTER OUT rows with no SemiFinal_Rank
+  const filteredRows = rows.filter(r =>
+    r.SemiFinal_Rank !== null &&
+    r.SemiFinal_Rank !== undefined &&
+    r.SemiFinal_Rank !== ""
+  );
+
+  filteredRows.forEach(r => {
 
     const qualified =
       r.Final_Rank !== null &&
@@ -81,17 +88,19 @@ function renderSemiTable(rows){
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
+      <td>${r.Year}</td>
+      <td>${r.Artist}</td>
+
       <td class="play-icon">
         <i data-lucide="play-circle"
            class="video-trigger"
            data-url="${r.Video_URL || ""}">
         </i>
       </td>
-      <td>${r.Year}</td>
-      <td>${r.Artist}</td>
+
       <td>${r.Song}</td>
       <td>${r.SemiFinal}</td>
-      <td>${r.SemiFinal_Rank || ""}</td>
+      <td>${r.SemiFinal_Rank}</td>
       <td>${r.SemiFinal_TotalPoints || ""}</td>
       <td>${statusBadge}</td>
     `;
