@@ -67,11 +67,13 @@
   background: #181a24;
   border-radius: 12px;
 
-  overflow: hidden;        /* 🔥 CRITICAL FIX */
+  overflow: hidden;          /* ✅ MUST be hidden */
   max-height: 600px;
 
   border: 1px solid #2a2d3a;
+
   isolation: isolate;
+  contain: paint;            /* 🔥 THIS is the missing piece */
 }
 
 /* =========================================
@@ -262,4 +264,6 @@
 
 .table-wrapper thead {
   background: #111;
+  position: relative;
+  z-index: 2;
 }
