@@ -263,4 +263,5 @@ th.sort-desc::after { content: "▼"; margin-left: 6px; }
 /* Optional: subtle shadow when scrolling */
 .table-wrapper thead th {
   box-shadow: 0 2px 0 rgba(0,0,0,0.4);
+  backdrop-filter: blur(6px);
 }
