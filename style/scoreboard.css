@@ -206,3 +206,21 @@ th.sort-desc::after { content: "▼"; margin-left: 6px; }
   background: #ff1744;
   color: white;
 }
+
+
+/* Center grouped headers */
+#semiHead th {
+  text-align: center;
+}
+
+/* Slight separation between Jury & Televote */
+#semiHead th[colspan="3"] {
+  font-weight: 600;
+  color: #ccc;
+}
+
+/* Optional divider line */
+#semiHead th:nth-child(7),
+#semiHead th:nth-child(10) {
+  border-left: 1px solid rgba(255,255,255,0.1);
+}
