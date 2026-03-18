@@ -66,6 +66,15 @@ function badge(type) {
   return `<span class="badge dnq">DNQ</span>`;
 }
 
+function renderRankCircle(rank, isQualified) {
+  if (!rank) return "";
+  return `
+    <div class="rank-circle ${isQualified ? "rank-q" : "rank-dnq"}">
+      ${rank}
+    </div>
+  `;
+}
+
 function buildSemiSizes(allRows) {
   const semiSizes = {};
 
@@ -135,7 +144,7 @@ function renderSemiTable(rows) {
 
       <td>${r.Song ?? ""}</td>
       <td>${r.SemiFinal_TotalPoints ?? ""}</td>
-      <td>${r.SemiFinal_Rank ?? ""}</td>
+      <td>${renderRankCircle(r.SemiFinal_Rank, qualified)}</td>
       <td>${qualified ? badge("Q") : badge("DNQ")}</td>
 
       <td>${r.SemiFinal_JuryPoints ?? ""}</td>
