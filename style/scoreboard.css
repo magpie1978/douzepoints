@@ -105,9 +105,22 @@
 .table-wrapper thead th {
   position: sticky;
   top: 0;
-  z-index: 10;
-  background: #111 !important;
-  box-shadow: inset 0 1px 0 #2a2d3a, inset 0 -1px 0 #2a2d3a;
+  z-index: 20;                 /* higher than rows */
+  background: #111 !important; /* fully solid */
+  background-clip: padding-box;
+}
+
+
+.table-wrapper tbody td {
+  position: relative;
+  z-index: 1;
+}
+
+.table-wrapper thead th {
+  box-shadow:
+    inset 0 1px 0 #2a2d3a,
+    inset 0 -1px 0 #2a2d3a,
+    0 2px 0 #111;   /* covers seam during scroll */
 }
 
 /* row hover */
@@ -287,10 +300,4 @@ th.sort-desc::after { content: "▼"; margin-left: 6px; }
 .table-wrapper {
   max-height: 600px;
   overflow-y: auto;
-}
-
-.table-wrapper thead {
-  position: sticky;
-  top: 0;
-  z-index: 10;
 }
