@@ -90,6 +90,43 @@
 
 
 
+/* =========================================
+   TABLE SCROLL AREA + STICKY HEADER
+========================================= */
+
+.table-wrapper {
+  max-height: 420px;   /* adjust as needed */
+  overflow-y: auto;
+  overflow-x: auto;
+  border: 1px solid #2a2d3a;
+}
+
+/* keep the table full width */
+.table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+/* sticky header cells */
+.table-wrapper thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #111;   /* must be solid */
+}
+
+/* row hover */
+.table-wrapper tbody tr:hover td {
+  background: rgba(255,255,255,0.04);
+}
+
+.table-wrapper td {
+  transition: background 0.2s ease;
+}
+
+
+
 /* ----------------------------------------------
    TABLE
 ---------------------------------------------- */
