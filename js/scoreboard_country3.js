@@ -1,49 +1,83 @@
-import { supabase } from "./supabaseClient.js";
+import { supabase } from './supabaseClient.js';
 
-document.addEventListener("DOMContentLoaded", loadPage);
+let eurovisionData = [];
 
-async function loadPage() {
-  const params = new URLSearchParams(window.location.search);
-  const country = params.get("country");
-
-  if (!country) return;
-
+async function loadData() {
   const { data, error } = await supabase
-    .from("douzepoints")
-    .select("*")
-    .ilike("Country", country)
-    .order("Year", { ascending: false });
+    .from('douzepoints')
+    .select('*');
 
   if (error) {
-    console.error("Load error:", error);
+    console.error(error);
     return;
   }
 
-  renderTables(data);
+  eurovisionData = data || [];
+  buildCountryDropdown();
 }
 
-//////////////////////////////////////////////////////
-// MAIN RENDER
-//////////////////////////////////////////////////////
+function buildCountryDropdown() {
+  const countries = [...new Set(eurovisionData.map(r => r.Country))]
+    .filter(Boolean)
+    .sort();
 
-function renderTables(rows) {
+  const select = document.getElementById("countrySelect");
+  if (!select) return;
 
-  renderSemiFinalTable(rows);
-  renderFinalTable(rows);
+  select.innerHTML = "";
 
+  countries.forEach(country => {
+    const option = document.createElement("option");
+    option.value = country;
+    option.textContent = country;
+    select.appendChild(option);
+  });
+
+  if (countries.length > 0) {
+    renderTables(countries[0]);
+  }
+
+  select.addEventListener("change", e => {
+    renderTables(e.target.value);
+  });
 }
 
-//////////////////////////////////////////////////////
-// ✅ SEMI SIZE FIX (NEW LOGIC)
-//////////////////////////////////////////////////////
+function renderTables(country) {
+  const countryRows = eurovisionData
+    .filter(r => r.Country === country)
+    .sort((a, b) => Number(b.Year) - Number(a.Year));
 
-function buildSemiSizes(rows) {
+  const semiRows = countryRows.filter(r =>
+    r.SemiFinal_Rank !== null &&
+    r.SemiFinal_Rank !== undefined &&
+    r.SemiFinal_Rank !== ""
+  );
 
+  const finalRows = countryRows;
+
+  renderSemiTable(semiRows);
+  renderFinalTable(finalRows);
+}
+
+function badge(type) {
+  if (type === "Q") {
+    return `<span class="badge q">Q</span>`;
+  }
+  return `<span class="badge dnq">DNQ</span>`;
+}
+
+function buildSemiSizes(allRows) {
   const semiSizes = {};
 
-  rows.forEach(r => {
-
-    if (!r.SemiFinal || !r.Video_Lookup) return;
+  allRows.forEach(r => {
+    if (
+      r.SemiFinal === null ||
+      r.SemiFinal === undefined ||
+      r.SemiFinal === "" ||
+      !r.Video_Lookup
+    ) {
+      return;
+    }
 
     const key = `${r.Year}-${r.SemiFinal}`;
 
@@ -52,110 +86,128 @@ function buildSemiSizes(rows) {
     }
 
     semiSizes[key].add(r.Video_Lookup);
-
   });
 
   return semiSizes;
 }
 
-//////////////////////////////////////////////////////
-// SEMI FINAL TABLE
-//////////////////////////////////////////////////////
+function renderSemiTable(rows) {
+  const body = document.getElementById("semiBody");
+  if (!body) return;
 
-function renderSemiFinalTable(rows) {
+  body.innerHTML = "";
 
-  const table = document.getElementById("semi-table-body");
-  if (!table) return;
+  const semiSizes = buildSemiSizes(eurovisionData);
 
-  table.innerHTML = "";
+  rows.forEach(r => {
+    const qualified =
+      r.Final_Rank !== null &&
+      r.Final_Rank !== undefined &&
+      Number(r.Final_Rank) > 0;
 
-  const semiSizes = buildSemiSizes(rows);
+    const juryQualified =
+      r.SemiFinal_JuryRank !== null &&
+      r.SemiFinal_JuryRank !== undefined &&
+      r.SemiFinal_JuryRank !== "" &&
+      Number(r.SemiFinal_JuryRank) <= 10;
 
-  const semiRows = rows.filter(r => r.SemiFinal);
-
-  semiRows.forEach(r => {
-
-    // ❌ Skip empty rank rows
-    if (!r.Rank) return;
+    const televoteQualified =
+      r.SemiFinal_TelevoteRank !== null &&
+      r.SemiFinal_TelevoteRank !== undefined &&
+      r.SemiFinal_TelevoteRank !== "" &&
+      Number(r.SemiFinal_TelevoteRank) <= 10;
 
     const key = `${r.Year}-${r.SemiFinal}`;
-    const semiSize = semiSizes[key]?.size || 0;
+    const semiSize = semiSizes[key]?.size || "";
 
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${r.Year}</td>
-      <td>${r.Artist || ""}</td>
-      <td>${r.Song || ""}</td>
+      <td>${r.Year ?? ""}</td>
+      <td>${r.Artist ?? ""}</td>
 
-      <td>${r.Total_Points ?? "-"}</td>
-      <td>${r.Rank ?? "-"}</td>
+      <td class="play-icon">
+        <i data-lucide="play-circle"
+           class="video-trigger"
+           data-url="${r.Video_URL || ""}">
+        </i>
+      </td>
 
-      <td>${badge(r.Qualified)}</td>
+      <td>${r.Song ?? ""}</td>
+      <td>${r.SemiFinal_TotalPoints ?? ""}</td>
+      <td>${r.SemiFinal_Rank ?? ""}</td>
+      <td>${qualified ? badge("Q") : badge("DNQ")}</td>
 
-      <td>${r.Jury_Points ?? "-"}</td>
-      <td>${r.Jury_Rank ?? "-"}</td>
-      <td>${badge(r.Jury_Qualified)}</td>
+      <td>${r.SemiFinal_JuryPoints ?? ""}</td>
+      <td>${r.SemiFinal_JuryRank ?? ""}</td>
+      <td>${juryQualified ? badge("Q") : badge("DNQ")}</td>
 
-      <td>${r.Televote_Points ?? "-"}</td>
-      <td>${r.Televote_Rank ?? "-"}</td>
-      <td>${badge(r.Televote_Qualified)}</td>
+      <td>${r.SemiFinal_TelevotePoints ?? ""}</td>
+      <td>${r.SemiFinal_TelevoteRank ?? ""}</td>
+      <td>${televoteQualified ? badge("Q") : badge("DNQ")}</td>
 
       <td>${semiSize}</td>
     `;
 
-    table.appendChild(tr);
+    body.appendChild(tr);
   });
+
+  if (window.lucide) {
+    lucide.createIcons();
+  }
 }
 
-//////////////////////////////////////////////////////
-// FINAL TABLE
-//////////////////////////////////////////////////////
-
 function renderFinalTable(rows) {
+  const body = document.getElementById("finalBody");
+  if (!body) return;
 
-  const table = document.getElementById("final-table-body");
-  if (!table) return;
+  body.innerHTML = "";
 
-  table.innerHTML = "";
-
-  const finalRows = rows.filter(r => !r.SemiFinal);
-
-  finalRows.forEach(r => {
-
-    const isDNQ = r.Qualified !== "Q";
+  rows.forEach(r => {
+    const qualified =
+      r.Final_Rank !== null &&
+      r.Final_Rank !== undefined &&
+      r.Final_Rank !== "" &&
+      Number(r.Final_Rank) > 0;
 
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${r.Year}</td>
+      <td>${qualified ? "" : `<span class="badge dnq">DNQ</span>`}</td>
+      <td>${r.Year ?? ""}</td>
 
-      <td>${isDNQ ? "" : (r.Artist || "")}</td>
-      <td>${isDNQ ? "" : (r.Song || "")}</td>
+      <td class="play-icon">
+        ${
+          qualified
+            ? `<i data-lucide="play-circle"
+                 class="video-trigger"
+                 data-url="${r.Video_URL || ""}">
+               </i>`
+            : ""
+        }
+      </td>
 
-      <td>${isDNQ ? "" : (r.Total_Points ?? "-")}</td>
-      <td>${isDNQ ? "" : (r.Rank ?? "-")}</td>
-
-      <td>${isDNQ ? badge("DNQ") : badge("Q")}</td>
+      <td>${qualified ? (r.Artist ?? "") : ""}</td>
+      <td>${qualified ? (r.Song ?? "") : ""}</td>
+      <td>${qualified ? (r.Final_Rank ?? "") : ""}</td>
+      <td>${qualified ? (r.Final_TotalPoints ?? "") : ""}</td>
     `;
 
-    table.appendChild(tr);
+    body.appendChild(tr);
   });
+
+  if (window.lucide) {
+    lucide.createIcons();
+  }
 }
 
-//////////////////////////////////////////////////////
-// BADGES
-//////////////////////////////////////////////////////
+document.addEventListener("click", e => {
+  if (e.target.classList.contains("video-trigger")) {
+    const url = e.target.getAttribute("data-url");
+    if (window.openVideoModal) {
+      window.openVideoModal(url);
+    }
+  }
+});
 
-function badge(status) {
-
-  if (!status) return "";
-
-  const isQ = status === "Q";
-
-  return `
-    <span class="badge ${isQ ? "badge-q" : "badge-dnq"}">
-      ${status}
-    </span>
-  `;
-}
+loadData();
