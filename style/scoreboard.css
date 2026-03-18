@@ -240,3 +240,27 @@ th.sort-desc::after { content: "▼"; margin-left: 6px; }
 .table-wrapper tbody tr:hover td {
   background: rgba(255,255,255,0.04);
 }
+
+
+/* =========================================
+   STICKY TABLE HEADER
+========================================= */
+
+.table-wrapper {
+  max-height: 600px;        /* or whatever fits your layout */
+  overflow-y: auto;
+}
+
+/* Sticky header */
+.table-wrapper thead th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+
+  background: #111;          /* MUST match your table background */
+}
+
+/* Optional: subtle shadow when scrolling */
+.table-wrapper thead th {
+  box-shadow: 0 2px 0 rgba(0,0,0,0.4);
+}
