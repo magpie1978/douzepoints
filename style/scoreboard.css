@@ -140,7 +140,7 @@
 /* Second header row */
 .table-wrapper thead tr:nth-child(2) th {
   position: sticky;
-  top: 42px; /* MUST match height of first row */
+  top: 43px; /* MUST match height of first row */
   z-index: 9;
   background: #111;
 }
