@@ -65,7 +65,7 @@
   max-height: 600px;
 
   border: 1px solid #2a2d3a;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+ 
 
   isolation: isolate; /* 🔥 prevents bleed-through */
 }
@@ -87,20 +87,18 @@
    STICKY HEADER (PERFECT 2-ROW)
 ========================================= */
 
-/* FIRST ROW (Jury / Televote) */
+/* FIRST ROW */
 .table-wrapper thead tr:first-child th {
   position: sticky;
   top: 0;
-  z-index: 3;
-  background: #111;
+  z-index: 10;
 }
 
-/* SECOND ROW (Points / Rank / Qual) */
+/* SECOND ROW */
 .table-wrapper thead tr:nth-child(2) th {
   position: sticky;
-  top: 44px; /* ⚠️ adjust if needed */
-  z-index: 2;
-  background: #111;
+  top: 44px;
+  z-index: 9;
 }
 
 /* Header styling */
@@ -109,7 +107,6 @@
   color: #aaa;
   font-weight: 600;
   text-align: left;
-
   border-bottom: 1px solid #2a2d3a;
   border-right: 1px solid #2a2d3a;
 }
@@ -234,4 +231,19 @@
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+/* =========================================
+   SOLID HEADER BLOCK (FIXES BLEED)
+========================================= */
+
+.table-wrapper thead th {
+  color: #aaa;
+  font-weight: 600;
+  border-bottom: 1px solid #2a2d3a;
+  border-right: 1px solid #2a2d3a;
+}
+
+.table-wrapper thead tr {
+  height: 44px;
 }
