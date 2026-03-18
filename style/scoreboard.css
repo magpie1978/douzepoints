@@ -125,26 +125,6 @@
   transition: background 0.2s ease;
 }
 
-/* =========================================
-   STICKY HEADER (MULTI-ROW FIX)
-========================================= */
-
-/* First header row */
-.table-wrapper thead tr:first-child th {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: #111;
-}
-
-/* Second header row */
-.table-wrapper thead tr:nth-child(2) th {
-  position: sticky;
-  top: 30px; /* MUST match height of first row */
-  z-index: 9;
-  background: #111;
-}
-
 
 /* ----------------------------------------------
    TABLE
@@ -321,3 +301,26 @@ th.sort-desc::after { content: "▼"; margin-left: 6px; }
   box-shadow: 0 2px 0 rgba(0,0,0,0.4);
   backdrop-filter: blur(6px);
 }
+
+
+
+/* =========================================
+   STICKY HEADER (MULTI-ROW FIX)
+========================================= */
+
+/* First header row */
+.table-wrapper thead tr:first-child th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #111;
+}
+
+/* Second header row */
+.table-wrapper thead tr:nth-child(2) th {
+  position: sticky;
+  top: 26px; /* MUST match height of first row */
+  z-index: 9;
+  background: #111;
+}
+
