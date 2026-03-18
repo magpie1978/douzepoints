@@ -160,3 +160,29 @@ th.sort-desc::after { content: "▼"; margin-left: 6px; }
   padding: 3px 8px;
   border-radius: 12px;
 }
+
+
+.rank-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Qualified → green */
+.rank-q {
+  background: #00c853;
+  color: black;
+}
+
+/* DNQ → red */
+.rank-dnq {
+  background: #ff1744;
+  color: white;
+}
