@@ -87,18 +87,30 @@
    STICKY HEADER (PERFECT 2-ROW)
 ========================================= */
 
-/* FIRST ROW */
+/* FIRST ROW (Jury / Televote) */
 .table-wrapper thead tr:first-child th {
   position: sticky;
   top: 0;
   z-index: 10;
+  background: #111;
+
+  height: 44px;         /* 👈 lock height */
+  line-height: 44px;    /* 👈 vertical alignment */
 }
 
-/* SECOND ROW */
+.table-wrapper thead tr:first-child {
+  position: relative;
+  z-index: 11;   /* sits ABOVE second row */
+}
+
+/* SECOND ROW (Points / Rank / Qual) */
 .table-wrapper thead tr:nth-child(2) th {
   position: sticky;
   top: 44px;
   z-index: 9;
+  background: #111;
+
+  height: 44px;
 }
 
 /* Header styling */
@@ -244,6 +256,6 @@
   border-right: 1px solid #2a2d3a;
 }
 
-.table-wrapper thead tr {
-  height: 44px;
+.table-wrapper thead {
+  background: #111;
 }
