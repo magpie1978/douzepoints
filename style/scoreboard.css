@@ -1,22 +1,25 @@
-/* Keep everything aligned to same width as table */
+/* =========================================
+   LAYOUT CONTAINER
+========================================= */
+
 .table-aligned-container {
   max-width: 1280px;
   margin: 0 auto;
 }
 
-/* ----------------------------------------------
-   HEADER + CONTROLS ROW (NEW)
----------------------------------------------- */
+/* =========================================
+   HEADER + CONTROLS
+========================================= */
+
 .table-header-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;   /* ensures header + dropdowns sit on same line */
+  align-items: center;
   flex-wrap: wrap;
   gap: 20px;
   margin-bottom: 10px;
 }
 
-/* TITLE */
 #tableHeader {
   margin: 0;
   padding-left: 2px;
@@ -24,28 +27,11 @@
   font-weight: 700;
 }
 
-
-/* =========================================
-   TABLE VERTICAL BORDERS
-========================================= */
-
-
-/* Remove border on last column */
-.table-wrapper table th:last-child,
-.table-wrapper table td:last-child {
-  border-right: none;
-}
-/* ----------------------------------------------
-   DROP-DOWNS (UPDATED)
----------------------------------------------- */
-
 .table-controls {
   display: flex;
-  flex-direction: row;
   gap: 24px;
 }
 
-/* Label ABOVE dropdown */
 .control-block {
   display: flex;
   flex-direction: column;
@@ -57,7 +43,6 @@
   color: #ccc;
 }
 
-/* Select styling kept from original */
 .table-controls select {
   background: #1f212d;
   color: #ccc;
@@ -67,133 +52,84 @@
   font-size: 14px;
 }
 
-/* ----------------------------------------------
-   TABLE WRAPPER
----------------------------------------------- */
-
-.table-wrapper {
-  background: #181a24;
-  border-radius: 12px;
-  overflow-x: auto;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
-}
-
-.table-wrapper table {
-  border-left: 1px solid rgba(255,255,255,0.1);
-}
-
-/* Divider before Televote columns */
-.table-wrapper table th:nth-child(10),
-.table-wrapper table td:nth-child(10) {
-  border-left: 2px solid #2a2d3a;
-}
-
-
-
 /* =========================================
-   TABLE SCROLL AREA + STICKY HEADER
+   TABLE WRAPPER (CRITICAL)
 ========================================= */
 
-/* keep the table full width */
+.table-wrapper {
+  position: relative;
+  background: #181a24;
+  border-radius: 12px;
+
+  overflow: auto;
+  max-height: 600px;
+
+  border: 1px solid #2a2d3a;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+
+  isolation: isolate; /* 🔥 prevents bleed-through */
+}
+
+/* =========================================
+   TABLE STRUCTURE
+========================================= */
+
 .table-wrapper table {
   width: 100%;
   border-collapse: collapse;
   table-layout: auto;
+
+  border-top: 1px solid #2a2d3a;
+  border-left: 1px solid #2a2d3a;
 }
 
 /* =========================================
-   PROPER 2-ROW STICKY HEADER
+   STICKY HEADER (PERFECT 2-ROW)
 ========================================= */
 
-/* First header row (Jury / Televote) */
+/* FIRST ROW (Jury / Televote) */
 .table-wrapper thead tr:first-child th {
   position: sticky;
   top: 0;
-  z-index: 30;
+  z-index: 3;
   background: #111;
 }
 
-/* Second header row (Points / Rank / Qual) */
+/* SECOND ROW (Points / Rank / Qual) */
 .table-wrapper thead tr:nth-child(2) th {
   position: sticky;
-  top: 42px;   /* 👈 MUST match row height */
-  z-index: 29;
+  top: 44px; /* ⚠️ adjust if needed */
+  z-index: 2;
   background: #111;
 }
 
-
+/* Header styling */
 .table-wrapper thead th {
   background: #111;
-  box-shadow: inset 0 -1px 0 #2a2d3a;
-}
-
-.table-wrapper {
-  position: relative;
-  overflow-y: auto;
-  overflow-x: auto;
-  max-height: 600px;
-}
-
-
-.table-wrapper thead th {
-  box-shadow:
-    inset 0 1px 0 #2a2d3a,
-    inset 0 -1px 0 #2a2d3a,
-    0 2px 0 #111;   /* covers seam during scroll */
-}
-
-/* row hover */
-.table-wrapper tbody tr:hover td {
-  background: rgba(255,255,255,0.04);
-}
-
-.table-wrapper td {
-  transition: background 0.2s ease;
-}
-
-
-/* grouped headers: Jury / Televote */
-.table-wrapper thead th[colspan="3"] {
-  background: #111 !important;
-  font-weight: 600;
-  color: #ccc;
-}
-
-/* ----------------------------------------------
-   TABLE
----------------------------------------------- */
-
-th, td {
-  padding: 12px 16px;
-  font-size: 13px;
-  text-align: left;
-}
-
-thead {
-  background: #1f212d;
-  cursor: pointer;
-}
-
-th {
   color: #aaa;
-  user-select: none;
   font-weight: 600;
+  text-align: left;
+
+  border-bottom: 1px solid #2a2d3a;
+  border-right: 1px solid #2a2d3a;
 }
 
-/* sorting arrows */
-th.sort-asc::after { content: "▲"; margin-left: 6px; }
-th.sort-desc::after { content: "▼"; margin-left: 6px; }
+/* Remove right border on last column */
+.table-wrapper th:last-child,
+.table-wrapper td:last-child {
+  border-right: none;
+}
+
+/* Group headers (Jury / Televote) */
+.table-wrapper thead th[colspan="3"] {
+  text-align: center;
+  color: #ccc;
+  font-weight: 600;
+}
 
 /* =========================================
-   TABLE GRID (FIXED + CONSISTENT)
+   TABLE CELLS
 ========================================= */
-
-.table-wrapper table {
-  width: 100%;
-  border-collapse: collapse;
-  border-left: 1px solid #2a2d3a;
-  border-top: 1px solid #2a2d3a;
-}
 
 .table-wrapper th,
 .table-wrapper td {
@@ -205,15 +141,34 @@ th.sort-desc::after { content: "▼"; margin-left: 6px; }
   border-right: 1px solid #2a2d3a;
 }
 
-/* Remove last column border */
-.table-wrapper th:last-child,
-.table-wrapper td:last-child {
-  border-right: none;
+/* Row hover */
+.table-wrapper tbody tr:hover td {
+  background: rgba(255,255,255,0.04);
 }
 
-/* ----------------------------------------------
-   COUNTRY FLAG (UNCHANGED — original size)
----------------------------------------------- */
+.table-wrapper td {
+  transition: background 0.2s ease;
+}
+
+/* =========================================
+   COLUMN DIVIDERS
+========================================= */
+
+/* Divider before Televote */
+.table-wrapper table th:nth-child(10),
+.table-wrapper table td:nth-child(10) {
+  border-left: 2px solid #2a2d3a;
+}
+
+/* Optional subtle group divider */
+#semiHead th:nth-child(7),
+#semiHead th:nth-child(10) {
+  border-left: 1px solid rgba(255,255,255,0.1);
+}
+
+/* =========================================
+   FLAGS + ICONS
+========================================= */
 
 .flag {
   width: 20px;
@@ -223,29 +178,14 @@ th.sort-desc::after { content: "▼"; margin-left: 6px; }
   margin-right: 12px;
 }
 
-
-
-/* ----------------------------------------------
-   PLAY ICON
----------------------------------------------- */
-
 .play-icon i {
   color: #e50914;
   cursor: pointer;
 }
 
-/* ----------------------------------------------
-   RESPONSIVE
----------------------------------------------- */
-
-@media (max-width: 800px) {
-  .table-header-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-
+/* =========================================
+   BADGES
+========================================= */
 
 .badge.q {
   background: #00c853;
@@ -263,6 +203,9 @@ th.sort-desc::after { content: "▼"; margin-left: 6px; }
   border-radius: 12px;
 }
 
+/* =========================================
+   PILLS (RANK)
+========================================= */
 
 .pill {
   display: inline-block;
@@ -272,51 +215,23 @@ th.sort-desc::after { content: "▼"; margin-left: 6px; }
   font-weight: 600;
 }
 
-/* Qualified */
 .pill-q {
   background: #00c853;
   color: black;
 }
 
-/* DNQ */
 .pill-dnq {
   background: #ff1744;
   color: white;
 }
 
-
-/* Center grouped headers */
-#semiHead th {
-  text-align: center;
-}
-
-/* Slight separation between Jury & Televote */
-#semiHead th[colspan="3"] {
-  font-weight: 600;
-  color: #ccc;
-}
-
-/* Optional divider line */
-#semiHead th:nth-child(7),
-#semiHead th:nth-child(10) {
-  border-left: 1px solid rgba(255,255,255,0.1);
-}
-
-/* Gives subtle Netflix-style hover effect */
-.table-wrapper td {
-  transition: background 0.2s ease;
-}
-
-.table-wrapper tbody tr:hover td {
-  background: rgba(255,255,255,0.04);
-}
-
-
 /* =========================================
-   STICKY HEADER (UNIFIED — CORRECT)
+   RESPONSIVE
 ========================================= */
 
-.table-wrapper {
-  max-height: 600px;
-  overflow-y: auto;
+@media (max-width: 800px) {
+  .table-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
