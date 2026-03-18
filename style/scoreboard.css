@@ -233,6 +233,10 @@ th.sort-desc::after { content: "▼"; margin-left: 6px; }
 }
 
 /* Gives subtle Netflix-style hover effect */
-.table-wrapper tr:hover {
-  background: rgba(255,255,255,0.03);
+.table-wrapper td {
+  transition: background 0.2s ease;
+}
+
+.table-wrapper tbody tr:hover td {
+  background: rgba(255,255,255,0.04);
 }
