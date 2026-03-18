@@ -94,13 +94,6 @@
    TABLE SCROLL AREA + STICKY HEADER
 ========================================= */
 
-.table-wrapper {
-  max-height: 420px;   /* adjust as needed */
-  overflow-y: auto;
-  overflow-x: auto;
-  border: 1px solid #2a2d3a;
-}
-
 /* keep the table full width */
 .table-wrapper table {
   width: 100%;
@@ -287,48 +280,27 @@ th.sort-desc::after { content: "▼"; margin-left: 6px; }
 
 
 /* =========================================
-   STICKY TABLE HEADER
+   STICKY HEADER (UNIFIED — CORRECT)
 ========================================= */
 
 .table-wrapper {
-  max-height: 600px;        /* or whatever fits your layout */
+  max-height: 600px;
   overflow-y: auto;
 }
 
-/* Sticky header */
-.table-wrapper thead th {
-  position: sticky;
-  top: 0;
-  z-index: 5;
-
-  background: #111;          /* MUST match your table background */
-}
-
-/* Optional: subtle shadow when scrolling */
-.table-wrapper thead th {
-  box-shadow: 0 2px 0 rgba(0,0,0,0.4);
-  backdrop-filter: blur(6px);
-}
-
-
-
-/* =========================================
-   STICKY HEADER (MULTI-ROW FIX)
-========================================= */
-
-/* First header row */
-.table-wrapper thead tr:first-child th {
+/* Make entire header behave as one block */
+.table-wrapper thead {
   position: sticky;
   top: 0;
   z-index: 10;
+}
+
+/* Ensure all header cells stay visible */
+.table-wrapper thead th {
   background: #111;
 }
 
-/* Second header row */
-.table-wrapper thead tr:nth-child(2) th {
-  position: sticky;
-  top: 26px; /* MUST match height of first row */
-  z-index: 9;
-  background: #111;
+/* Optional: visual separation */
+.table-wrapper thead {
+  box-shadow: 0 2px 0 #2a2d3a;
 }
-
