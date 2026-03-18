@@ -144,13 +144,10 @@ function renderSemiTable(rows) {
 
       <td>${r.Song ?? ""}</td>
       <td>${r.SemiFinal_TotalPoints ?? ""}</td>
-      <td>${renderRankCircle(r.SemiFinal_Rank, qualified)}</td>
       
-
       <td>${r.SemiFinal_JuryPoints ?? ""}</td>
       <td>${r.SemiFinal_JuryRank ?? ""}</td>
       <td>${juryQualified ? badge("Q") : badge("DNQ")}</td>
-
       <td>${r.SemiFinal_TelevotePoints ?? ""}</td>
       <td>${r.SemiFinal_TelevoteRank ?? ""}</td>
       <td>${televoteQualified ? badge("Q") : badge("DNQ")}</td>
