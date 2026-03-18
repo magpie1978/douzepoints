@@ -125,6 +125,25 @@
   transition: background 0.2s ease;
 }
 
+/* =========================================
+   STICKY HEADER (MULTI-ROW FIX)
+========================================= */
+
+/* First header row */
+.table-wrapper thead tr:first-child th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #111;
+}
+
+/* Second header row */
+.table-wrapper thead tr:nth-child(2) th {
+  position: sticky;
+  top: 42px; /* MUST match height of first row */
+  z-index: 9;
+  background: #111;
+}
 
 
 /* ----------------------------------------------
