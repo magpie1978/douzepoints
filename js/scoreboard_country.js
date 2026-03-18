@@ -100,11 +100,15 @@ function renderSemiTable(rows){
       r.SemiFinal_TelevoteRank && Number(r.SemiFinal_TelevoteRank) <= 10;
 
     // Semi size (count entries in same semi + year)
-    const semiSize = filteredRows.filter(x =>
-      x.Year === r.Year &&
-      x.SemiFinal === r.SemiFinal
-    ).length;
-
+    const semiSize = new Set(
+      rows
+        .filter(x =>
+          x.Year === r.Year &&
+          x.SemiFinal === r.SemiFinal
+        )
+        .map(x => x.Country)   // or x.Entry_ID if you have one
+    ).size;
+    
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
