@@ -66,14 +66,6 @@ function badge(type) {
   return `<span class="badge dnq">DNQ</span>`;
 }
 
-function renderRankCircle(rank, isQualified) {
-  if (!rank) return "";
-  return `
-    <div class="rank-circle ${isQualified ? "rank-q" : "rank-dnq"}">
-      ${rank}
-    </div>
-  `;
-}
 
 function buildSemiSizes(allRows) {
   const semiSizes = {};
@@ -109,21 +101,18 @@ function renderSemiTable(rows) {
   const semiSizes = buildSemiSizes(eurovisionData);
 
   rows.forEach(r => {
+
     const qualified =
       r.Final_Rank !== null &&
       r.Final_Rank !== undefined &&
       Number(r.Final_Rank) > 0;
 
     const juryQualified =
-      r.SemiFinal_JuryRank !== null &&
-      r.SemiFinal_JuryRank !== undefined &&
-      r.SemiFinal_JuryRank !== "" &&
+      r.SemiFinal_JuryRank &&
       Number(r.SemiFinal_JuryRank) <= 10;
 
     const televoteQualified =
-      r.SemiFinal_TelevoteRank !== null &&
-      r.SemiFinal_TelevoteRank !== undefined &&
-      r.SemiFinal_TelevoteRank !== "" &&
+      r.SemiFinal_TelevoteRank &&
       Number(r.SemiFinal_TelevoteRank) <= 10;
 
     const key = `${r.Year}-${r.SemiFinal}`;
@@ -144,9 +133,13 @@ function renderSemiTable(rows) {
 
       <td>${r.Song ?? ""}</td>
       <td>${r.SemiFinal_TotalPoints ?? ""}</td>
-      <td>${renderRankCircle(r.SemiFinal_Rank, qualified)}</td>
-      <td>${qualified ? badge("Q") : badge("DNQ")}</td>
-      
+
+      <!-- ✅ RANK AS PILL -->
+      <td>
+        <span class="pill ${qualified ? "pill-q" : "pill-dnq"}">
+          ${r.SemiFinal_Rank ?? ""}
+        </span>
+      </td>
 
       <td>${r.SemiFinal_JuryPoints ?? ""}</td>
       <td>${r.SemiFinal_JuryRank ?? ""}</td>
