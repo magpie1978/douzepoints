@@ -106,7 +106,8 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  background: #111;   /* must be solid */
+  background: #111 !important;
+  box-shadow: inset 0 1px 0 #2a2d3a, inset 0 -1px 0 #2a2d3a;
 }
 
 /* row hover */
@@ -118,12 +119,10 @@
   transition: background 0.2s ease;
 }
 
-.table-wrapper thead th {
-  box-shadow: 0 2px 0 #2a2d3a;
-}
 
+/* grouped headers: Jury / Televote */
 .table-wrapper thead th[colspan="3"] {
-  background: #111;   /* match rest of header */
+  background: #111 !important;
   font-weight: 600;
   color: #ccc;
 }
@@ -290,19 +289,8 @@ th.sort-desc::after { content: "▼"; margin-left: 6px; }
   overflow-y: auto;
 }
 
-/* Make entire header behave as one block */
 .table-wrapper thead {
   position: sticky;
   top: 0;
   z-index: 10;
-}
-
-/* Ensure all header cells stay visible */
-.table-wrapper thead th {
-  background: #111;
-}
-
-/* Optional: visual separation */
-.table-wrapper thead {
-  box-shadow: 0 2px 0 #2a2d3a;
 }
