@@ -142,3 +142,21 @@ th.sort-desc::after { content: "▼"; margin-left: 6px; }
     align-items: flex-start;
   }
 }
+
+
+
+.badge.q {
+  background: #00c853;
+  color: black;
+  font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.badge.dnq {
+  background: #e50914;
+  color: white;
+  font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
