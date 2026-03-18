@@ -125,6 +125,14 @@
   transition: background 0.2s ease;
 }
 
+.table-wrapper thead th {
+  box-shadow: 0 2px 0 #2a2d3a;
+}
+
+.table-wrapper thead th[colspan="3"] {
+  background: #151a2f;
+  font-weight: 600;
+}
 
 /* ----------------------------------------------
    TABLE
