@@ -186,3 +186,23 @@ th.sort-desc::after { content: "▼"; margin-left: 6px; }
   background: #ff1744;
   color: white;
 }
+
+.pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Qualified */
+.pill-q {
+  background: #00c853;
+  color: black;
+}
+
+/* DNQ */
+.pill-dnq {
+  background: #ff1744;
+  color: white;
+}
