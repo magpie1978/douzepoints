@@ -61,13 +61,11 @@
   background: #181a24;
   border-radius: 12px;
 
-  overflow: auto;
+  overflow: hidden;        /* 🔥 CRITICAL FIX */
   max-height: 600px;
 
   border: 1px solid #2a2d3a;
- 
-
-  isolation: isolate; /* 🔥 prevents bleed-through */
+  isolation: isolate;
 }
 
 /* =========================================
