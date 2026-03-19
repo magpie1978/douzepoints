@@ -67,13 +67,11 @@
   background: #181a24;
   border-radius: 12px;
 
-  overflow: hidden;          /* ✅ MUST be hidden */
-  max-height: 600px;
-
+  overflow: hidden;      /* keep */
   border: 1px solid #2a2d3a;
 
   isolation: isolate;
-  contain: paint;            /* 🔥 THIS is the missing piece */
+  contain: paint;
 }
 
 /* =========================================
