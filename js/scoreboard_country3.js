@@ -52,6 +52,8 @@ function buildCountryDropdown() {
     .sort();
 
   const select = document.getElementById("countrySelect");
+  if (!select) return;
+
   select.innerHTML = "";
 
   countries.forEach(country => {
@@ -61,12 +63,18 @@ function buildCountryDropdown() {
     select.appendChild(option);
   });
 
-  renderTable(countries[0]);
+  if (countries.length > 0) {
+    renderTable(countries[0]);
+    renderFinalTable(countries[0]);
+  }
 
   select.addEventListener("change", e => {
     renderTable(e.target.value);
+    renderFinalTable(e.target.value);
   });
 }
+
+
 
 // --- BUILD HEADER (LIKE scoreboard.js) ---
 function renderTableHead() {
