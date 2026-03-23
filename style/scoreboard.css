@@ -270,3 +270,9 @@
   position: relative;
   z-index: 2;
 }
+
+.dnq-merged {
+  text-align: center;
+  vertical-align: middle;
+  padding: 16px 0;
+}
