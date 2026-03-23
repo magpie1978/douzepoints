@@ -273,8 +273,26 @@
 
 .dnq-merged {
   text-align: center;
-  vertical-align: middle;
-  padding: 16px 0;
+  padding: 12px 0;
+  position: relative;
+}
+
+/* subtle separator line */
+.dnq-merged::before {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 50%;
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  z-index: 0;
+}
+
+/* keep badge above line */
+.badge.dnq {
+  position: relative;
+  z-index: 1;
 }
 
 .dnq-full {
