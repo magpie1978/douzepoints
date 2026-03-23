@@ -218,12 +218,14 @@ function renderFinalTable(country) {
     const tr = document.createElement("tr");
 
     
-    // ✅ DNQ ROW (FULL WIDTH)
+    // ✅ DNQ ROW (BADGE CENTERED IN MERGED CELL)
     if (!qualified) {
       tr.innerHTML = `
-        <td><span class="badge dnq">DNQ</span></td>
+        <td></td>
         <td>${r.Year ?? ""}</td>
-        <td colspan="5" class="dnq-merged"></td>
+        <td colspan="5" class="dnq-merged">
+          <span class="badge dnq">DNQ</span>
+        </td>
       `;
       tbody.appendChild(tr);
       return;
