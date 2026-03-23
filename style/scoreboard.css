@@ -276,3 +276,18 @@
   vertical-align: middle;
   padding: 16px 0;
 }
+
+.dnq-full {
+  text-align: center;
+  padding: 14px 0;
+  background: rgba(255,255,255,0.02);
+}
+
+.dnq-full .badge {
+  margin-right: 10px;
+}
+
+.dnq-year {
+  color: #aaa;
+  font-size: 13px;
+}
