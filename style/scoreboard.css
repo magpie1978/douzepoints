@@ -282,17 +282,6 @@
   display: inline-block;
 }
 
-/* subtle separator line */
-.dnq-merged::before {
-  content: "";
-  position: absolute;
-  left: 10%;
-  right: 10%;
-  top: 50%;
-  height: 1px;
-  background: rgba(255,255,255,0.08);
-  z-index: 0;
-}
 
 /* keep badge above line */
 .badge.dnq {
