@@ -20,7 +20,6 @@ const columnDefinitions = [
 ];
 
 const finalColumnDefinitions = [
-  { label: "Status", key: "Status" },
   { label: "Year", key: "Year" },
   { label: "Play", key: "PlayIcon" },
   { label: "Artist", key: "Artist" },
@@ -220,7 +219,6 @@ function renderFinalTable(country) {
     // ✅ DNQ ROW (MERGED FROM PLAY → TOTAL POINTS)
     if (!qualified) {
       tr.innerHTML = `
-        <td></td>
         <td>${r.Year ?? ""}</td>
         <td colspan="5" class="dnq-merged">
           <span class="badge dnq">DNQ</span>
@@ -244,10 +242,6 @@ function renderFinalTable(country) {
         `;
       }
 
-      if (col.key === "Status") {
-        return `<td></td>`;
-      }
-
       return `<td>${r[col.key] ?? ""}</td>`;
     });
 
@@ -259,6 +253,5 @@ function renderFinalTable(country) {
     lucide.createIcons();
   }
 }
-
 
 loadData();
