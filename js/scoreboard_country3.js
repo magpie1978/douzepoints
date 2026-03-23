@@ -221,10 +221,9 @@ function renderFinalTable(country) {
     // ✅ DNQ ROW (FULL WIDTH)
     if (!qualified) {
       tr.innerHTML = `
-        <td colspan="7" class="dnq-full">
-          <span class="badge dnq">DNQ</span>
-          <span class="dnq-year">${r.Year ?? ""}</span>
-        </td>
+        <td><span class="badge dnq">DNQ</span></td>
+        <td>${r.Year ?? ""}</td>
+        <td colspan="5" class="dnq-merged"></td>
       `;
       tbody.appendChild(tr);
       return;
