@@ -273,8 +273,13 @@
 
 .dnq-merged {
   text-align: center;
-  padding: 12px 0;
-  position: relative;
+  vertical-align: middle;
+  padding: 16px 0;
+}
+
+/* make sure badge truly centers visually */
+.dnq-merged .badge {
+  display: inline-block;
 }
 
 /* subtle separator line */
