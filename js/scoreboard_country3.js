@@ -19,6 +19,18 @@ const columnDefinitions = [
   { label: "Semi Size", key: "SemiSize" }
 ];
 
+const finalColumnDefinitions = [
+  { label: "Status", key: "Status" },
+  { label: "Year", key: "Year" },
+  { label: "Play", key: "PlayIcon" },
+  { label: "Artist", key: "Artist" },
+  { label: "Song", key: "Song" },
+  { label: "Rank", key: "Final_Rank" },
+  { label: "Total Points", key: "Final_TotalPoints" }
+];
+
+
+
 async function loadData() {
   const { data, error } = await supabase
     .from('douzepoints')
@@ -156,5 +168,77 @@ document.addEventListener("click", e => {
     }
   }
 });
+
+
+function renderFinalHead() {
+  const thead = document.getElementById("finalHead");
+  thead.innerHTML = "";
+
+  const tr = document.createElement("tr");
+
+  finalColumnDefinitions.forEach(col => {
+    const th = document.createElement("th");
+    th.textContent = col.label;
+    tr.appendChild(th);
+  });
+
+  thead.appendChild(tr);
+}
+
+
+
+
+function renderFinalTable(country) {
+  const rows = eurovisionData
+    .filter(r => r.Country === country)
+    .sort((a, b) => Number(b.Year) - Number(a.Year));
+
+  renderFinalHead();
+
+  const tbody = document.getElementById("finalBody");
+  tbody.innerHTML = "";
+
+  rows.forEach(r => {
+    const qualified =
+      r.Final_Rank !== null &&
+      r.Final_Rank !== undefined &&
+      r.Final_Rank !== "" &&
+      Number(r.Final_Rank) > 0;
+
+    const cells = finalColumnDefinitions.map(col => {
+
+      if (col.key === "PlayIcon") {
+        return qualified
+          ? `<td class="play-icon">
+               <i data-lucide="play-circle"
+                  class="video-trigger"
+                  data-url="${r.Video_URL || ""}">
+               </i>
+             </td>`
+          : `<td></td>`;
+      }
+
+      if (col.key === "Status") {
+        return `<td>${qualified ? "" : `<span class="badge dnq">DNQ</span>`}</td>`;
+      }
+
+      if (!qualified && col.key !== "Year" && col.key !== "Status") {
+        return `<td></td>`;
+      }
+
+      return `<td>${r[col.key] ?? ""}</td>`;
+    });
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = cells.join("");
+    tbody.appendChild(tr);
+  });
+
+  if (window.lucide) lucide.createIcons();
+}
+
+
+
+
 
 loadData();
