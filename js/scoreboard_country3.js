@@ -204,6 +204,8 @@ function renderFinalTable(country) {
   renderFinalHead();
 
   const tbody = document.getElementById("finalBody");
+  if (!tbody) return;
+
   tbody.innerHTML = "";
 
   rows.forEach(r => {
@@ -213,38 +215,52 @@ function renderFinalTable(country) {
       r.Final_Rank !== "" &&
       Number(r.Final_Rank) > 0;
 
+    const tr = document.createElement("tr");
+
+    // ✅ DNQ ROW (MERGED CELLS)
+    if (!qualified) {
+      tr.innerHTML = `
+        <td><span class="badge dnq">DNQ</span></td>
+        <td>${r.Year ?? ""}</td>
+        <td colspan="5" class="dnq-merged"></td>
+      `;
+      tbody.appendChild(tr);
+      return;
+    }
+
+    // ✅ QUALIFIED ROW (STANDARD STRUCTURE)
     const cells = finalColumnDefinitions.map(col => {
 
+      // PLAY BUTTON
       if (col.key === "PlayIcon") {
-        return qualified
-          ? `<td class="play-icon">
-               <i data-lucide="play-circle"
-                  class="video-trigger"
-                  data-url="${r.Video_URL || ""}">
-               </i>
-             </td>`
-          : `<td></td>`;
+        return `
+          <td class="play-icon">
+            <i data-lucide="play-circle"
+               class="video-trigger"
+               data-url="${r.Video_URL || ""}">
+            </i>
+          </td>
+        `;
       }
 
+      // STATUS COLUMN (empty for qualifiers)
       if (col.key === "Status") {
-        return `<td>${qualified ? "" : `<span class="badge dnq">DNQ</span>`}</td>`;
-      }
-
-      if (!qualified && col.key !== "Year" && col.key !== "Status") {
         return `<td></td>`;
       }
 
+      // DEFAULT CELL
       return `<td>${r[col.key] ?? ""}</td>`;
     });
 
-    const tr = document.createElement("tr");
     tr.innerHTML = cells.join("");
     tbody.appendChild(tr);
   });
 
-  if (window.lucide) lucide.createIcons();
+  // Re-render icons
+  if (window.lucide) {
+    lucide.createIcons();
+  }
 }
-
 
 
 
