@@ -272,8 +272,10 @@
 }
 
 .dnq-merged {
-  text-align: center;
-  vertical-align: middle;
+  display: flex;
+  justify-content: center;   /* horizontal center */
+  align-items: center;       /* vertical center */
+  height: 100%;
   padding: 16px 0;
 }
 
