@@ -91,12 +91,23 @@
    STICKY HEADER (PERFECT 2-ROW)
 ========================================= */
 
-/* SIMPLE STICKY HEADER (LIKE scoreboard.html) */
 .table-wrapper thead th {
   position: sticky;
   top: 0;
-  z-index: 5;
+  z-index: 10;
   background: #111;
+  background-clip: padding-box;
+}
+
+
+.table-wrapper thead::before {
+  content: "";
+  position: sticky;
+  top: 0;
+  display: block;
+  height: 1px;
+  background: #111;
+  z-index: 11;
 }
 
 /* LOCK TABLE STRUCTURE */
