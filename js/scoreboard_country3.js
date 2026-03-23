@@ -217,8 +217,7 @@ function renderFinalTable(country) {
 
     const tr = document.createElement("tr");
 
-    
-    // ✅ DNQ ROW (BADGE CENTERED IN MERGED CELL)
+    // ✅ DNQ ROW (MERGED FROM PLAY → TOTAL POINTS)
     if (!qualified) {
       tr.innerHTML = `
         <td></td>
@@ -231,10 +230,9 @@ function renderFinalTable(country) {
       return;
     }
 
-    // ✅ QUALIFIED ROW (STANDARD STRUCTURE)
+    // ✅ NORMAL ROW
     const cells = finalColumnDefinitions.map(col => {
 
-      // PLAY BUTTON
       if (col.key === "PlayIcon") {
         return `
           <td class="play-icon">
@@ -246,12 +244,10 @@ function renderFinalTable(country) {
         `;
       }
 
-      // STATUS COLUMN (empty for qualifiers)
       if (col.key === "Status") {
         return `<td></td>`;
       }
 
-      // DEFAULT CELL
       return `<td>${r[col.key] ?? ""}</td>`;
     });
 
@@ -259,13 +255,10 @@ function renderFinalTable(country) {
     tbody.appendChild(tr);
   });
 
-  // Re-render icons
   if (window.lucide) {
     lucide.createIcons();
   }
 }
-
-
 
 
 loadData();
