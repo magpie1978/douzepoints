@@ -216,11 +216,12 @@ function renderFinalTable(country) {
 
     const tr = document.createElement("tr");
 
-    // ✅ DNQ ROW (MERGED FROM PLAY → TOTAL POINTS)
+    // ✅ DNQ ROW (MERGED FROM ARTIST → TOTAL POINTS)
     if (!qualified) {
       tr.innerHTML = `
         <td>${r.Year ?? ""}</td>
-        <td colspan="5" class="dnq-merged">
+        <td></td>
+        <td colspan="4" class="dnq-merged">
           <span class="badge dnq">DNQ</span>
         </td>
       `;
@@ -228,6 +229,7 @@ function renderFinalTable(country) {
       return;
     }
 
+    
     // ✅ NORMAL ROW
     const cells = finalColumnDefinitions.map(col => {
 
