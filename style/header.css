@@ -94,3 +94,63 @@
 .nav-menu .dropdown-item:hover {
   background: rgba(255,255,255,0.08);
 }
+
+
+/* ================================================== */
+/* NEW */
+/* ================================================== */
+
+header,
+.header,
+.header-container,
+.navbar,
+.nav-menu,
+#header-container {
+  overflow: visible !important;
+}
+
+/* National Finals dropdown container */
+#national-finals-dropdown.nf-dropdown-two-col {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 99999;
+
+  min-width: 520px;
+  max-width: 640px;
+  padding: 14px 16px;
+
+  background: rgba(5, 10, 35, 0.98);
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+
+  grid-template-columns: 1fr 1fr;
+  gap: 0 18px;
+}
+
+/* show on hover */
+.nav-item-national-finals:hover #national-finals-dropdown,
+.nav-item-national-finals:focus-within #national-finals-dropdown {
+  display: grid;
+}
+
+/* each column */
+.nf-dropdown-col {
+  display: flex;
+  flex-direction: column;
+}
+
+/* links */
+#national-finals-dropdown .dropdown-item {
+  display: block;
+  padding: 8px 10px;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+#national-finals-dropdown .dropdown-item:hover {
+  background: rgba(255,255,255,0.08);
+}
