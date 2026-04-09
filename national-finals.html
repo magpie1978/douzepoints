@@ -86,7 +86,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
   const contest = params.get("contest");
-  const edition = params.get("edition");
+  const edition = params.get("year");
 
   if (!contest) return;
 
