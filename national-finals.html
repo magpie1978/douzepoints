@@ -67,7 +67,7 @@
         <!-- LOAD SIDEBAR MODULE LAST -->
         <script type="module" src="js/sidebar_nf.js"></script>
 
-        <!-- Dynamically change the title -->
+        <!-- Dynamically change the title --
         <script>
           document.addEventListener("DOMContentLoaded", () => {
             const params = new URLSearchParams(window.location.search);
@@ -80,6 +80,33 @@
             }
           });
         </script>
+        -->
+
+        <script>
+            document.addEventListener("DOMContentLoaded", async () => {
+
+            const params = new URLSearchParams(window.location.search);
+            const contest = params.get("contest");
+
+            if (!contest) return;
+
+            const { data, error } = await window.supabaseClient
+                .from("douzepoints_finland")
+                .select("Contest, Year")
+                .eq("country", contest)
+                .order("Year", { ascending: false })
+                .limit(1);
+
+            if (error || !data || data.length === 0) return;
+
+            const contestName = data[0].Contest;
+            const year = data[0].Year;
+
+            document.title = `${contestName} ${year} Results | DouzePoints`;
+
+            });
+        </script>
+        
         
     </body>
     
