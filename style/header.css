@@ -154,3 +154,56 @@ header,
 #national-finals-dropdown .dropdown-item:hover {
   background: rgba(255,255,255,0.08);
 }
+
+.main-header,
+.header-overlay,
+.header-links,
+.nav-menu,
+#national-finals-menu {
+  overflow: visible;
+}
+
+#national-finals-menu {
+  position: relative;
+}
+
+#national-finals-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 99999;
+
+  display: none;
+  min-width: 560px;
+  padding: 14px 16px;
+
+  background: rgba(5, 10, 35, 0.98);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+}
+
+#national-finals-menu:hover #national-finals-dropdown,
+#national-finals-menu:focus-within #national-finals-dropdown {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 18px;
+}
+
+.nf-dropdown-col {
+  display: flex;
+  flex-direction: column;
+}
+
+#national-finals-dropdown .dropdown-item {
+  display: block;
+  padding: 8px 10px;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+#national-finals-dropdown .dropdown-item:hover {
+  background: rgba(255,255,255,0.08);
+}
