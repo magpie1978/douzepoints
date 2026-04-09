@@ -227,7 +227,8 @@ async function toggleFavorite(button, videoKey, entry = null) {
   // ------------------------------------------------------------
   // RENDER A SINGLE VIDEO CARD
   // ------------------------------------------------------------
-function renderEntry(entry, variant = "grid") {
+  
+  function renderEntry(entry, variant = "grid") {
   const wrapper = document.createElement("div");
 
   // ------------------------------------------------------------
@@ -401,19 +402,8 @@ function renderEntry(entry, variant = "grid") {
 
   return wrapper;
 }
-
-
-
-
-
-
-
   
-// initial state
-updatePointsCircle(wrapper, "total");
-
-    return wrapper;
-  }
+  
 
 
 
