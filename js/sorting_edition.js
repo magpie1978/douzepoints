@@ -98,6 +98,20 @@ function comparator(type) {
   }
 }
 
+//---------------------------------------------------------------
+//  NEW CODE 9 APRIL
+//----------------------------------------------------------------
+function notifyCards(sortType, container) {
+  container.querySelectorAll(".video-item").forEach(card => {
+    card.dispatchEvent(
+      new CustomEvent("edition-sort-changed", {
+        detail: { sortType }
+      })
+    );
+  });
+}
+//---------  END  -----------------------------------------------
+
 document.addEventListener("DOMContentLoaded", () => {
   const select = document.getElementById("sort-options");
   const container = document.getElementById("video-container");
@@ -113,19 +127,34 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  //--------------------------------------------------------------
+  // -------------- NEW CODE 9 APRIL -----------------------------
+  //--------------------------------------------------------------
+  
+  //function runSort() {
+  //  const items = [...container.children];
+  //  const sortType = select.value;
+
+  //  applySorting(
+  //    container,
+  //    items,
+  //    comparator(sortType)
+  //  );
+
+  //  notifyCards(sortType);
+  //}
+
   function runSort() {
     const items = [...container.children];
     const sortType = select.value;
 
-    applySorting(
-      container,
-      items,
-      comparator(sortType)
-    );
+    applySorting(container, items, comparator(sortType));
 
-    notifyCards(sortType);
+    notifyCards(sortType, container);
   }
-
+  // -----------------  END  -------------------------------
+  
+  
   select.addEventListener("change", runSort);
 
   // expose global function so video.js can trigger initial sort after cards are rendered
