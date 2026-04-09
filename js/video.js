@@ -18,6 +18,50 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
     return params.get(name);
   }
 
+
+  // ------------------------------------------------------------
+  // NEW SORTING CODE APRIL 9
+  // ------------------------------------------------------------
+
+  function isBlank(value) {
+  return value === null || value === undefined || value === "";
+  }
+  
+  function displayStat(value) {
+    return isBlank(value) ? "—" : value;
+  }
+  
+  function getCircleValueFromSort(card, sortType) {
+    switch (sortType) {
+      case "jury":
+        return displayStat(card.dataset.jury);
+      case "televote":
+        return displayStat(card.dataset.televote);
+      case "total":
+      default:
+        return displayStat(card.dataset.total);
+    }
+  }
+  
+  function buildPointsHoverText(card) {
+    return [
+      `Jury Points: ${displayStat(card.dataset.jury)}`,
+      `Televote Points: ${displayStat(card.dataset.televote)}`,
+      `Total Points: ${displayStat(card.dataset.total)}`,
+      `Jury Rank: ${displayStat(card.dataset.juryrank)}`,
+      `Televote Rank: ${displayStat(card.dataset.televoterank)}`
+    ].join(" • ");
+  }
+  
+  function updatePointsCircle(card, sortType = "total") {
+    const circle = card.querySelector(".score-pts");
+    if (!circle) return;
+  
+    circle.textContent = getCircleValueFromSort(card, sortType);
+    circle.title = buildPointsHoverText(card);
+  }
+  
+  
   // ------------------------------------------------------------
   // FAVOURITES STATE
   // ------------------------------------------------------------
@@ -358,6 +402,16 @@ async function toggleFavorite(button, videoKey, entry = null) {
         toggleFavorite(favBtn, videoKey, entry);
       });
     }
+
+    //---------------------
+    //  NEW CODE 9 APRIL //
+    //---------------------
+    wrapper.addEventListener("edition-sort-changed", (e) => {
+      updatePointsCircle(wrapper, e.detail.sortType);
+    });
+
+// initial state
+updatePointsCircle(wrapper, "total");
 
     return wrapper;
   }
