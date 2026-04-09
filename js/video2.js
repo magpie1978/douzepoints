@@ -50,7 +50,7 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
       `Total Points: ${displayStat(card.dataset.total)}`,
       `Jury Rank: ${displayStat(card.dataset.juryrank)}`,
       `Televote Rank: ${displayStat(card.dataset.televoterank)}`
-    ].join(" • ");
+    ].join(" | ");
   }
   
 //  function updatePointsCircle(card, sortType = "total") {
