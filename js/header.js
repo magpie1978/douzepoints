@@ -148,8 +148,47 @@ async function loadHeader() {
 
 /* National Finals dropdown */
 
-async function loadNationalFinalsMenu() {
+//async function loadNationalFinalsMenu() {
 
+//  const menu = document.getElementById("national-finals-dropdown");
+//  if (!menu) return;
+
+//  const { data, error } = await supabase
+//    .from("douzepoints_finland")
+//    .select("Contest, country");
+
+//  if (error) {
+//    console.error("[header] National Finals menu error:", error);
+//    return;
+//  }
+
+//  const contests = [
+//    ...new Map(data.map(r => [r.country, r])).values()
+//  ].sort((a,b)=>a.Contest.localeCompare(b.Contest));
+  
+//  contests.forEach(row => {
+  
+//    const li = document.createElement("li");
+  
+//    const a = document.createElement("a");
+//    a.className = "dropdown-item";
+  
+//    a.href = `national-finals.html?contest=${row.country}`;
+//    a.textContent = row.Contest;
+  
+//    li.appendChild(a);
+//    menu.appendChild(li);
+  
+//  });
+
+//}
+
+
+
+
+
+
+async function loadNationalFinalsMenu() {
   const menu = document.getElementById("national-finals-dropdown");
   if (!menu) return;
 
@@ -164,21 +203,33 @@ async function loadNationalFinalsMenu() {
 
   const contests = [
     ...new Map(data.map(r => [r.country, r])).values()
-  ].sort((a,b)=>a.Contest.localeCompare(b.Contest));
-  
-  contests.forEach(row => {
-  
-    const li = document.createElement("li");
-  
-    const a = document.createElement("a");
-    a.className = "dropdown-item";
-  
-    a.href = `national-finals.html?contest=${row.country}`;
-    a.textContent = row.Contest;
-  
-    li.appendChild(a);
-    menu.appendChild(li);
-  
-  });
+  ].sort((a, b) => a.Contest.localeCompare(b.Contest));
 
+  // clear any existing contents
+  menu.innerHTML = "";
+
+  // mark dropdown as 2-column menu
+  menu.classList.add("nf-dropdown-two-col");
+
+  const halfway = Math.ceil(contests.length / 2);
+  const leftItems = contests.slice(0, halfway);
+  const rightItems = contests.slice(halfway);
+
+  const makeColumn = (items) => {
+    const col = document.createElement("div");
+    col.className = "nf-dropdown-col";
+
+    items.forEach(row => {
+      const a = document.createElement("a");
+      a.className = "dropdown-item";
+      a.href = `national-finals.html?contest=${row.country}`;
+      a.textContent = row.Contest;
+      col.appendChild(a);
+    });
+
+    return col;
+  };
+
+  menu.appendChild(makeColumn(leftItems));
+  menu.appendChild(makeColumn(rightItems));
 }
