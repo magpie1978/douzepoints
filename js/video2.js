@@ -53,14 +53,25 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
     ].join(" • ");
   }
   
+//  function updatePointsCircle(card, sortType = "total") {
+//    const circle = card.querySelector(".score-pts");
+//    if (!circle) return;
+  
+//    circle.textContent = getCircleValueFromSort(card, sortType);
+//    circle.title = buildPointsHoverText(card);
+//  }
+
   function updatePointsCircle(card, sortType = "total") {
-    const circle = card.querySelector(".score-pts");
-    if (!circle) return;
-  
-    circle.textContent = getCircleValueFromSort(card, sortType);
-    circle.title = buildPointsHoverText(card);
-  }
-  
+  const circle = card.querySelector(".score-pts");
+  if (!circle) return;
+
+  const tooltipText = buildPointsHoverText(card);
+
+  circle.textContent = getCircleValueFromSort(card, sortType);
+  circle.setAttribute("title", tooltipText);
+  circle.setAttribute("data-tooltip", tooltipText);
+  circle.setAttribute("aria-label", tooltipText);
+}
   
   // ------------------------------------------------------------
   // FAVOURITES STATE
