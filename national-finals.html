@@ -82,30 +82,38 @@
         </script>
         -->
 
-        <script>
-            document.addEventListener("DOMContentLoaded", async () => {
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const params = new URLSearchParams(window.location.search);
+  const contest = params.get("contest");
+  const edition = params.get("edition");
 
-            const params = new URLSearchParams(window.location.search);
-            const contest = params.get("contest");
+  if (!contest) return;
 
-            if (!contest) return;
+  let query = window.supabaseClient
+    .from("douzepoints_finland")
+    .select("Contest, Year")
+    .eq("country", contest);
 
-            const { data, error } = await window.supabaseClient
-                .from("douzepoints_finland")
-                .select("Contest, Year")
-                .eq("country", contest)
-                .order("Year", { ascending: false })
-                .limit(1);
+  if (edition) {
+    query = query.eq("Year", edition);
+  } else {
+    query = query.order("Year", { ascending: false }).limit(1);
+  }
 
-            if (error || !data || data.length === 0) return;
+  const { data, error } = await query;
 
-            const contestName = data[0].Contest;
-            const year = data[0].Year;
+  if (error || !data || data.length === 0) return;
 
-            document.title = `${contestName} ${year} Results | DouzePoints`;
+  const contestName = data[0].Contest;
+  const year = data[0].Year;
 
-            });
-        </script>
+  document.title = `${contestName} ${year} Results | DouzePoints`;
+});
+</script>
+
+
+        
         
         
     </body>
