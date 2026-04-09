@@ -223,7 +223,19 @@ async function loadNationalFinalsMenu() {
     se: "se",
     no: "no",
     ua: "ua",
-    fi: "fi"
+    fi: "fi",
+    be: "be",
+    mt: "mt",
+    me: "me",
+    bg: "bg",
+    rs: "rs",
+    sm: "sm",
+    it: "it",
+    md: "md",
+    ro: "ro",
+    gr: "gr",
+    lv: "lv",
+    at: "at"
   };
 
   const halfway = Math.ceil(contests.length / 2);
