@@ -211,18 +211,19 @@ async function loadNationalFinalsMenu() {
     au: "au",
     dk: "dk",
     de: "de",
-    depi: "am",
-    dora: "hr",
-    eesti: "ee",
-    eurosong: "ie",
-    eurovizija: "lt",
-    fdc: "pt",
-    fik: "al",
-    poland: "pl",
-    melfest: "se",
-    norway: "no",
-    vidbir: "ua",
-    umk: "fi"
+    am: "am",
+    hr: "hr",
+    ee: "ee",
+    ie: "ie",
+    lt: "lt",
+    pt: "pt",
+    al: "al",
+    pl: "pl",
+    lu: "lu",
+    se: "se",
+    no: "no",
+    ua: "ua",
+    fi: "fi"
   };
 
   const halfway = Math.ceil(contests.length / 2);
