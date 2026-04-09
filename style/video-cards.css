@@ -215,6 +215,19 @@ NEW
   pointer-events: auto;
 }
 
+.score-pts:hover::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -10px;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: rgba(20, 20, 20, 0.96) transparent transparent transparent;
+  z-index: 9999;
+  pointer-events: none;
+}
+
 .score-pts:hover::after {
   content: attr(data-tooltip);
   position: absolute;
@@ -227,21 +240,8 @@ NEW
   border-radius: 8px;
   font-size: 11px;
   line-height: 1.35;
-  white-space: nowrap;
+  white-space: pre-line;
   z-index: 9999;
   box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-  pointer-events: none;
-}
-
-.score-pts:hover::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -10px;
-  transform: translateX(-50%);
-  border-width: 6px;
-  border-style: solid;
-  border-color: rgba(20, 20, 20, 0.96) transparent transparent transparent;
-  z-index: 9999;
   pointer-events: none;
 }
