@@ -209,8 +209,8 @@ async function loadNationalFinalsMenu() {
 
   const flagMap = {
     au: "au",
-    dmgp: "dk",
-    ddf: "de",
+    dk: "dk",
+    de: "de",
     depi: "am",
     dora: "hr",
     eesti: "ee",
