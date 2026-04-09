@@ -207,6 +207,24 @@ async function loadNationalFinalsMenu() {
 
   menu.innerHTML = "";
 
+  const flagMap = {
+    au: "au",
+    dmgp: "dk",
+    ddf: "de",
+    depi: "am",
+    dora: "hr",
+    eesti: "ee",
+    eurosong: "ie",
+    eurovizija: "lt",
+    fdc: "pt",
+    fik: "al",
+    poland: "pl",
+    melfest: "se",
+    norway: "no",
+    vidbir: "ua",
+    umk: "fi"
+  };
+
   const halfway = Math.ceil(contests.length / 2);
   const leftItems = contests.slice(0, halfway);
   const rightItems = contests.slice(halfway);
@@ -217,9 +235,25 @@ async function loadNationalFinalsMenu() {
 
     items.forEach(row => {
       const a = document.createElement("a");
-      a.className = "dropdown-item";
+      a.className = "dropdown-item nf-dropdown-item";
       a.href = `national-finals.html?contest=${row.country}`;
-      a.textContent = row.Contest;
+      a.title = row.Contest;
+
+      const flagCode = flagMap[row.country];
+
+      if (flagCode) {
+        const img = document.createElement("img");
+        img.className = "nf-dropdown-flag";
+        img.src = `/flags/${flagCode}.png`;
+        img.alt = "";
+        a.appendChild(img);
+      }
+
+      const text = document.createElement("span");
+      text.className = "nf-dropdown-text";
+      text.textContent = row.Contest;
+      a.appendChild(text);
+
       col.appendChild(a);
     });
 
