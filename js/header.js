@@ -205,11 +205,7 @@ async function loadNationalFinalsMenu() {
     ...new Map(data.map(r => [r.country, r])).values()
   ].sort((a, b) => a.Contest.localeCompare(b.Contest));
 
-  // clear any existing contents
   menu.innerHTML = "";
-
-  // mark dropdown as 2-column menu
-  menu.classList.add("nf-dropdown-two-col");
 
   const halfway = Math.ceil(contests.length / 2);
   const leftItems = contests.slice(0, halfway);
