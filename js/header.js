@@ -291,11 +291,7 @@ async function loadNationalFinalsMenu() {
     return;
   }
 
-  const contests = [
-    ...new Map(data.map(r => [r.country, r])).values()
-  ].sort((a, b) => a.country.localeCompare(b.country));
-
-  menu.innerHTML = "";
+  if (!data || !data.length) return;
 
   const countryToFlagCode = {
     Australia: "au",
@@ -328,6 +324,16 @@ async function loadNationalFinalsMenu() {
     Austria: "at"
   };
 
+  const contests = [
+    ...new Map(
+      data
+        .filter(row => row && row.country)
+        .map(row => [row.country, row])
+    ).values()
+  ].sort((a, b) => String(a.country).localeCompare(String(b.country)));
+
+  menu.innerHTML = "";
+
   const halfway = Math.ceil(contests.length / 2);
   const leftItems = contests.slice(0, halfway);
   const rightItems = contests.slice(halfway);
@@ -338,12 +344,15 @@ async function loadNationalFinalsMenu() {
 
     items.forEach(row => {
       const flagCode = countryToFlagCode[row.country];
-      if (!flagCode) return;
+      if (!flagCode) {
+        console.warn("[header] No flag code mapping for country:", row.country);
+        return;
+      }
 
       const a = document.createElement("a");
       a.className = "dropdown-item nf-dropdown-item";
       a.href = `national-finals.html?contest=${flagCode}`;
-      a.title = row.Contest;
+      a.title = row.Contest || row.country;
 
       const img = document.createElement("img");
       img.className = "nf-dropdown-flag";
