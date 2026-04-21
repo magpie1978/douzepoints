@@ -337,20 +337,19 @@ async function loadNationalFinalsMenu() {
     col.className = "nf-dropdown-col";
 
     items.forEach(row => {
+      const flagCode = countryToFlagCode[row.country];
+      if (!flagCode) return;
+
       const a = document.createElement("a");
       a.className = "dropdown-item nf-dropdown-item";
-      a.href = `national-finals.html?contest=${encodeURIComponent(row.country)}`;
+      a.href = `national-finals.html?contest=${flagCode}`;
       a.title = row.Contest;
 
-      const flagCode = countryToFlagCode[row.country];
-
-      if (flagCode) {
-        const img = document.createElement("img");
-        img.className = "nf-dropdown-flag";
-        img.src = `/flags/${flagCode}.png`;
-        img.alt = row.country;
-        a.appendChild(img);
-      }
+      const img = document.createElement("img");
+      img.className = "nf-dropdown-flag";
+      img.src = `/flags/${flagCode}.png`;
+      img.alt = row.country;
+      a.appendChild(img);
 
       const text = document.createElement("span");
       text.className = "nf-dropdown-text";
@@ -366,5 +365,3 @@ async function loadNationalFinalsMenu() {
   menu.appendChild(makeColumn(leftItems));
   menu.appendChild(makeColumn(rightItems));
 }
-
-
