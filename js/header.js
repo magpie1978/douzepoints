@@ -278,8 +278,6 @@ async function loadHeader() {
 //}
 
 
-
-
 async function loadNationalFinalsMenu() {
   const menu = document.getElementById("national-finals-dropdown");
   if (!menu) return;
@@ -293,12 +291,42 @@ async function loadNationalFinalsMenu() {
     return;
   }
 
-  // one row per country
   const contests = [
-    ...new Map(data.map(row => [row.country, row])).values()
-  ].sort((a, b) => a.Contest.localeCompare(b.Contest));
+    ...new Map(data.map(r => [r.country, r])).values()
+  ].sort((a, b) => a.country.localeCompare(b.country));
 
   menu.innerHTML = "";
+
+  const countryToFlagCode = {
+    Australia: "au",
+    Denmark: "dk",
+    Germany: "de",
+    Armenia: "am",
+    Croatia: "hr",
+    Estonia: "ee",
+    Ireland: "ie",
+    Lithuania: "lt",
+    Portugal: "pt",
+    Albania: "al",
+    Poland: "pl",
+    Luxembourg: "lu",
+    Sweden: "se",
+    Norway: "no",
+    Ukraine: "ua",
+    Finland: "fi",
+    Belgium: "be",
+    Malta: "mt",
+    Montenegro: "me",
+    Bulgaria: "bg",
+    Serbia: "rs",
+    San Marino: "sm",
+    Italy: "it",
+    Moldova: "md",
+    Romania: "ro",
+    Greece: "gr",
+    Latvia: "lv",
+    Austria: "at"
+  };
 
   const halfway = Math.ceil(contests.length / 2);
   const leftItems = contests.slice(0, halfway);
@@ -314,23 +342,20 @@ async function loadNationalFinalsMenu() {
       a.href = `national-finals.html?contest=${encodeURIComponent(row.country)}`;
       a.title = row.Contest;
 
-      if (row.country) {
+      const flagCode = countryToFlagCode[row.country];
+
+      if (flagCode) {
         const img = document.createElement("img");
         img.className = "nf-dropdown-flag";
-        img.src = `/flags/${row.country}.png`;
+        img.src = `/flags/${flagCode}.png`;
         img.alt = row.country;
         a.appendChild(img);
       }
 
-      //const text = document.createElement("span");
-      //text.className = "nf-dropdown-text";
-      //text.textContent = row.Contest;
-      //a.appendChild(text);
-
-     const text = document.createElement("span");
-     text.className = "nf-dropdown-text";
-     text.textContent = row.country;
-     a.appendChild(text);
+      const text = document.createElement("span");
+      text.className = "nf-dropdown-text";
+      text.textContent = row.country;
+      a.appendChild(text);
 
       col.appendChild(a);
     });
@@ -341,3 +366,5 @@ async function loadNationalFinalsMenu() {
   menu.appendChild(makeColumn(leftItems));
   menu.appendChild(makeColumn(rightItems));
 }
+
+
