@@ -62,7 +62,7 @@ async function loadSidebar() {
   if (!sidebar) return;
 
   const params = new URLSearchParams(window.location.search);
-  const country = params.get("contest");
+  const country = params.get("country");
 
   const { data, error } = await supabase
     .from("douzepoints_finland")
@@ -84,7 +84,8 @@ async function loadSidebar() {
     const link = document.createElement("a");
 
     link.className = "sidebar-item";
-    link.href = `national-finals.html?contest=${encodeURIComponent(country)}&year=${row.Year}`;
+    link.href = `national-finals.html?country=${encodeURIComponent(country)}&year=${row.Year}`;
+    //link.href = `national-finals.html?contest=${encodeURIComponent(country)}&year=${row.Year}`;
 
     link.innerHTML = `
       <img class="flag-icon" src="/flags/${row.country}.png">
