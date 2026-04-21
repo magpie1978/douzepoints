@@ -85,15 +85,15 @@
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
-  const contest = params.get("contest");
+  const country = params.get("country");
   const edition = params.get("year");
 
-  if (!contest) return;
+  if (!country) return;
 
   let query = window.supabaseClient
-    .from("douzepoints_finland")
-    .select("Contest, Year")
-    .eq("country", contest);
+  .from("douzepoints_finland")
+  .select("Contest, Year")
+  .eq("country", country);
 
   if (edition) {
     query = query.eq("Year", edition);
