@@ -315,7 +315,7 @@ async function loadNationalFinalsMenu() {
     Montenegro: "me",
     Bulgaria: "bg",
     Serbia: "rs",
-    San Marino: "sm",
+    "San Marino": "sm",
     Italy: "it",
     Moldova: "md",
     Romania: "ro",
