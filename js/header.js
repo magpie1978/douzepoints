@@ -188,6 +188,98 @@ async function loadHeader() {
 
 
 
+//async function loadNationalFinalsMenu() {
+//  const menu = document.getElementById("national-finals-dropdown");
+//  if (!menu) return;
+
+//  const { data, error } = await supabase
+//    .from("douzepoints_finland")
+//    .select("Contest, country");
+
+//  if (error) {
+//    console.error("[header] National Finals menu error:", error);
+//    return;
+//  }
+
+//  const contests = [
+//    ...new Map(data.map(r => [r.country, r])).values()
+//  ].sort((a, b) => a.Contest.localeCompare(b.Contest));
+
+//  menu.innerHTML = "";
+
+//  const flagMap = {
+//    au: "au",
+//    dk: "dk",
+//    de: "de",
+//    am: "am",
+//    hr: "hr",
+//    ee: "ee",
+//    ie: "ie",
+//    lt: "lt",
+//    pt: "pt",
+//    al: "al",
+//    pl: "pl",
+//    lu: "lu",
+//    se: "se",
+//    no: "no",
+//    ua: "ua",
+//    fi: "fi",
+//    be: "be",
+//    mt: "mt",
+//    me: "me",
+//    bg: "bg",
+//    rs: "rs",
+//    sm: "sm",
+//    it: "it",
+//    md: "md",
+//    ro: "ro",
+//    gr: "gr",
+//    lv: "lv",
+//    at: "at"
+//  };
+
+//  const halfway = Math.ceil(contests.length / 2);
+//  const leftItems = contests.slice(0, halfway);
+//  const rightItems = contests.slice(halfway);
+
+//  const makeColumn = (items) => {
+//    const col = document.createElement("div");
+//    col.className = "nf-dropdown-col";
+
+//    items.forEach(row => {
+//      const a = document.createElement("a");
+//      a.className = "dropdown-item nf-dropdown-item";
+//      a.href = `national-finals.html?contest=${row.country}`;
+//      a.title = row.Contest;
+
+//      const flagCode = flagMap[row.country];
+
+//      if (flagCode) {
+//        const img = document.createElement("img");
+//        img.className = "nf-dropdown-flag";
+//        img.src = `/flags/${flagCode}.png`;
+//        img.alt = "";
+//        a.appendChild(img);
+//      }
+
+//      const text = document.createElement("span");
+//      text.className = "nf-dropdown-text";
+//      text.textContent = row.Contest;
+//      a.appendChild(text);
+
+//      col.appendChild(a);
+//    });
+
+//    return col;
+//  };
+
+//  menu.appendChild(makeColumn(leftItems));
+//  menu.appendChild(makeColumn(rightItems));
+//}
+
+
+
+
 async function loadNationalFinalsMenu() {
   const menu = document.getElementById("national-finals-dropdown");
   if (!menu) return;
@@ -201,42 +293,12 @@ async function loadNationalFinalsMenu() {
     return;
   }
 
+  // one row per country
   const contests = [
-    ...new Map(data.map(r => [r.country, r])).values()
+    ...new Map(data.map(row => [row.country, row])).values()
   ].sort((a, b) => a.Contest.localeCompare(b.Contest));
 
   menu.innerHTML = "";
-
-  const flagMap = {
-    au: "au",
-    dk: "dk",
-    de: "de",
-    am: "am",
-    hr: "hr",
-    ee: "ee",
-    ie: "ie",
-    lt: "lt",
-    pt: "pt",
-    al: "al",
-    pl: "pl",
-    lu: "lu",
-    se: "se",
-    no: "no",
-    ua: "ua",
-    fi: "fi",
-    be: "be",
-    mt: "mt",
-    me: "me",
-    bg: "bg",
-    rs: "rs",
-    sm: "sm",
-    it: "it",
-    md: "md",
-    ro: "ro",
-    gr: "gr",
-    lv: "lv",
-    at: "at"
-  };
 
   const halfway = Math.ceil(contests.length / 2);
   const leftItems = contests.slice(0, halfway);
@@ -249,16 +311,14 @@ async function loadNationalFinalsMenu() {
     items.forEach(row => {
       const a = document.createElement("a");
       a.className = "dropdown-item nf-dropdown-item";
-      a.href = `national-finals.html?contest=${row.country}`;
+      a.href = `national-finals.html?contest=${encodeURIComponent(row.country)}`;
       a.title = row.Contest;
 
-      const flagCode = flagMap[row.country];
-
-      if (flagCode) {
+      if (row.country) {
         const img = document.createElement("img");
         img.className = "nf-dropdown-flag";
-        img.src = `/flags/${flagCode}.png`;
-        img.alt = "";
+        img.src = `/flags/${row.country}.png`;
+        img.alt = row.country;
         a.appendChild(img);
       }
 
