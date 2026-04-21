@@ -129,8 +129,42 @@ async function loadHeader() {
 
   } else if (isNationalPage && contest) {
 
-    bannerSrc = `/banners_nf/${contest}.png`;
-    //bannerSrc = `/banners_nf/${country}.png`;
+    //bannerSrc = `/banners_nf/${contest}.png`;
+    } else if (isNationalPage && country) {
+      const countryToFlagCode = {
+        Australia: "au",
+        Denmark: "dk",
+        Germany: "de",
+        Armenia: "am",
+        Croatia: "hr",
+        Estonia: "ee",
+        Ireland: "ie",
+        Lithuania: "lt",
+        Portugal: "pt",
+        Albania: "al",
+        Poland: "pl",
+        Luxembourg: "lu",
+        Sweden: "se",
+        Norway: "no",
+        Ukraine: "ua",
+        Finland: "fi",
+        Belgium: "be",
+        Malta: "mt",
+        Montenegro: "me",
+        Bulgaria: "bg",
+        Serbia: "rs",
+        "San Marino": "sm",
+        Italy: "it",
+        Moldova: "md",
+        Romania: "ro",
+        Greece: "gr",
+        Latvia: "lv",
+        Austria: "at"
+      };
+
+    const code = countryToFlagCode[country];
+    if (code) bannerSrc = `/banners_nf/${code}.png`;
+  }   
 
   }
 
@@ -351,7 +385,8 @@ async function loadNationalFinalsMenu() {
 
       const a = document.createElement("a");
       a.className = "dropdown-item nf-dropdown-item";
-      a.href = `national-finals.html?contest=${flagCode}`;
+      //a.href = `national-finals.html?contest=${flagCode}`;
+      a.href = `national-finals.html?country=${encodeURIComponent(row.country)}`;
       a.title = row.Contest || row.country;
 
       const img = document.createElement("img");
