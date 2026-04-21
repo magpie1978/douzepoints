@@ -322,10 +322,15 @@ async function loadNationalFinalsMenu() {
         a.appendChild(img);
       }
 
-      const text = document.createElement("span");
-      text.className = "nf-dropdown-text";
-      text.textContent = row.Contest;
-      a.appendChild(text);
+      //const text = document.createElement("span");
+      //text.className = "nf-dropdown-text";
+      //text.textContent = row.Contest;
+      //a.appendChild(text);
+
+     const text = document.createElement("span");
+     text.className = "nf-dropdown-text";
+     text.textContent = row.country;
+     a.appendChild(text);
 
       col.appendChild(a);
     });
