@@ -166,8 +166,6 @@ async function loadHeader() {
     if (code) bannerSrc = `/banners_nf/${code}.png`;
   }   
 
-  }
-
   if (bannerSrc) {
 
     banner.onload = () => {
