@@ -127,45 +127,43 @@ async function loadHeader() {
 
     bannerSrc = "banners/scoreboard.png";
 
-  } else if (isNationalPage && contest) {
+  } else if (isNationalPage && country) {
 
-    //bannerSrc = `/banners_nf/${contest}.png`;
-    } else if (isNationalPage && country) {
-      const countryToFlagCode = {
-        Australia: "au",
-        Denmark: "dk",
-        Germany: "de",
-        Armenia: "am",
-        Croatia: "hr",
-        Estonia: "ee",
-        Ireland: "ie",
-        Lithuania: "lt",
-        Portugal: "pt",
-        Albania: "al",
-        Poland: "pl",
-        Luxembourg: "lu",
-        Sweden: "se",
-        Norway: "no",
-        Ukraine: "ua",
-        Finland: "fi",
-        Belgium: "be",
-        Malta: "mt",
-        Montenegro: "me",
-        Bulgaria: "bg",
-        Serbia: "rs",
-        "San Marino": "sm",
-        Italy: "it",
-        Moldova: "md",
-        Romania: "ro",
-        Greece: "gr",
-        Latvia: "lv",
-        Austria: "at"
-      };
+    const countryToFlagCode = {
+      Australia: "au",
+      Denmark: "dk",
+      Germany: "de",
+      Armenia: "am",
+      Croatia: "hr",
+      Estonia: "ee",
+      Ireland: "ie",
+      Lithuania: "lt",
+      Portugal: "pt",
+      Albania: "al",
+      Poland: "pl",
+      Luxembourg: "lu",
+      Sweden: "se",
+      Norway: "no",
+      Ukraine: "ua",
+      Finland: "fi",
+      Belgium: "be",
+      Malta: "mt",
+      Montenegro: "me",
+      Bulgaria: "bg",
+      Serbia: "rs",
+      "San Marino": "sm",
+      Italy: "it",
+      Moldova: "md",
+      Romania: "ro",
+      Greece: "gr",
+      Latvia: "lv",
+      Austria: "at"
+    };
 
     const code = countryToFlagCode[country];
     if (code) bannerSrc = `/banners_nf/${code}.png`;
-  }   
 
+  }
   if (bannerSrc) {
 
     banner.onload = () => {
