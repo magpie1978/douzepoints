@@ -199,3 +199,5 @@ async function loadVideos() {
 
   renderVideos(data, country, countryCode);
 }
+
+document.addEventListener("DOMContentLoaded", loadVideos);
