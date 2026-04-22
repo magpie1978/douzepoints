@@ -19,6 +19,38 @@ async function loadSidebar() {
     return;
   }
 
+  const countryToFlagCode = {
+    Albania: "al",
+    Armenia: "am",
+    Australia: "au",
+    Austria: "at",
+    Belgium: "be",
+    Bulgaria: "bg",
+    Croatia: "hr",
+    Denmark: "dk",
+    Estonia: "ee",
+    Finland: "fi",
+    France: "fr",
+    Germany: "de",
+    Greece: "gr",
+    Ireland: "ie",
+    Italy: "it",
+    Latvia: "lv",
+    Lithuania: "lt",
+    Luxembourg: "lu",
+    Malta: "mt",
+    Moldova: "md",
+    Montenegro: "me",
+    Norway: "no",
+    Poland: "pl",
+    Portugal: "pt",
+    Romania: "ro",
+    "San Marino": "sm",
+    Serbia: "rs",
+    Sweden: "se",
+    Ukraine: "ua"
+  };
+
   const entries = [
     ...new Map(data.map(row => [row.Year, row])).values()
   ].sort((a, b) => b.Year - a.Year);
@@ -27,13 +59,13 @@ async function loadSidebar() {
 
   entries.forEach(row => {
     const link = document.createElement("a");
+    const flagCode = countryToFlagCode[row.country];
 
     link.className = "sidebar-item";
     link.href = `national-finals.html?country=${encodeURIComponent(country)}&year=${row.Year}`;
-    //link.href = `national-finals.html?contest=${encodeURIComponent(country)}&year=${row.Year}`;
 
     link.innerHTML = `
-      <img class="flag-icon" src="/flags/${row.country}.png">
+      <img class="flag-icon" src="/flags/${flagCode}.png" alt="${row.country}">
       ${row.Contest} ${row.Year}
     `;
 
