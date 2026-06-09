@@ -285,6 +285,24 @@
     padding: 12px;
   }
 
+
+@media (max-width:768px) {
+    .container {
+        flex-direction: column;
+       }
+
+    .sidebar {
+        display: none;
+       }
+
+    .main-content {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+       }
+   }
+
+   
   .mobile-menu-toggle {
     display: block;
     background: rgba(0, 0, 0, 0.75);
