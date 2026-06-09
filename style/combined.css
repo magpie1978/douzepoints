@@ -24,14 +24,21 @@ body {
   }
 
 
-.banner-static {
+/* .banner-static {
   width: 100%;
   height: 400px;
   overflow: hidden;
- 
+ }
+*/
+
+.banner-static {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 .banner-static img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -116,7 +123,6 @@ h4 {
   height: 400px;
   overflow: hidden;
 }
-
 
 .section-header {
   display: flex;
