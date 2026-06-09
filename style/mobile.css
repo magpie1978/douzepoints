@@ -302,6 +302,15 @@
        }
    }
 
+   .carousel-track {
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+   }
+
+   .video-item {
+       min-width:75vw;
+       scroll-snap-align:start;
+   }
    
   .mobile-menu-toggle {
     display: block;
