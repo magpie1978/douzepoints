@@ -259,6 +259,12 @@
    MOBILE HEADER
 ========================================= */
 
+@media (max-width: 768px) {
+    .banner-static {
+        height: 220px;
+    }
+}
+
 .mobile-menu-toggle {
   display: none;
 }
