@@ -25,6 +25,19 @@ async function loadHeader() {
 
   if (window.lucide) window.lucide.createIcons();
 
+  /*  new code for mobile */
+ const menuToggle = document.getElementById("mobile-menu-toggle");
+ const mobileNav = document.getElementById("mobile-nav");
+
+ if (menuToggle && mobileNav) {
+   menuToggle.addEventListener("click", () => {
+     mobileNav.classList.toggle("mobile-open");
+ 
+     const isOpen = mobileNav.classList.contains("mobile-open");
+     menuToggle.textContent = isOpen ? "× Close" : "☰ Menu";
+   });
+ }
+ 
   /* Load National Finals dropdown */
 
   await loadNationalFinalsMenu();
