@@ -40,9 +40,11 @@
     font-size: 0.85rem;
   }
 
-  .banner-static {
-    height: 160px;
-  }
+   @media (max-width: 768px) {
+     .banner-static {
+       height: 160px;
+     }
+   }
 
   .banner-static img {
     object-fit: cover;
