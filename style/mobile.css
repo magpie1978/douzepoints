@@ -3,10 +3,19 @@
    DouzePoints
 ========================================= */
 
-  
-  /* ==========================
-     GENERAL
-  ========================== */
+/* Hide burger on desktop */
+.mobile-menu-toggle {
+  display: none;
+}
+
+
+/* =========================================
+   TABLET / MOBILE
+========================================= */
+
+@media (max-width: 768px) {
+
+  /* GENERAL */
 
   body {
     overflow-x: hidden;
@@ -22,49 +31,176 @@
     box-sizing: border-box;
   }
 
-  /* ==========================
-     HEADER
-  ========================== */
+
+  /* HEADER */
 
   .header-overlay {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
     padding: 12px;
   }
 
-  .header-links {
-    flex-wrap: wrap;
-    gap: 10px;
+  .banner-static {
+    height: 160px;
   }
-
-  .header-links a,
-  .home-link {
-    font-size: 0.85rem;
-  }
-
-   @media (max-width: 768px) {
-     .banner-static {
-       height: 160px;
-     }
-   }
 
   .banner-static img {
     object-fit: cover;
   }
 
-  /* ==========================
-     SIDEBAR
-  ========================== */
+  .header-right {
+    display: none;
+  }
+
+
+  /* BURGER MENU */
+
+  .mobile-menu-toggle {
+    display: block !important;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10001;
+
+    background: rgba(0, 0, 0, 0.75);
+    color: #ffffff;
+
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 8px;
+
+    padding: 10px 14px;
+
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+  }
+
+  #mobile-nav,
+  .header-links {
+    display: none !important;
+  }
+
+  #mobile-nav.mobile-open,
+  .header-links.mobile-open {
+    display: block !important;
+    position: absolute;
+    top: 56px;
+    left: 12px;
+    right: 12px;
+
+    background: rgba(15, 17, 26, 0.98);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+
+    padding: 12px;
+    z-index: 10000;
+    box-sizing: border-box;
+  }
+
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+  }
+
+  .nav-menu li {
+    width: 100%;
+  }
+
+  .nav-menu a,
+  .nav-link,
+  .home-link {
+    display: block;
+    width: 100%;
+
+    padding: 12px;
+    box-sizing: border-box;
+
+    color: #ffffff;
+    text-decoration: none;
+
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+
+  .nav-menu a:hover,
+  .nav-link:hover,
+  .home-link:hover {
+    background: #e50914;
+    color: #ffffff;
+  }
+
+
+  /* NATIONAL FINALS DROPDOWN */
+
+  .dropdown-menu,
+  .nf-dropdown-two-col {
+    position: static;
+    display: block;
+
+    width: 100%;
+    max-height: 260px;
+    overflow-y: auto;
+
+    margin-top: 6px;
+    padding: 8px;
+
+    background: rgba(0,0,0,0.35);
+    border-radius: 8px;
+
+    box-sizing: border-box;
+  }
+
+  .nf-dropdown-two-col {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .nf-dropdown-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .nf-dropdown-item {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px !important;
+  }
+
+  .nf-dropdown-flag {
+    width: 22px;
+    height: 22px;
+
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+
+  /* SIDEBAR */
 
   .sidebar {
     display: none;
   }
 
-  /* ==========================
-     SORTING CONTROLS
-  ========================== */
+
+  /* SORTING CONTROLS */
 
   .header-bar {
     flex-direction: column !important;
     align-items: stretch !important;
+
     margin: 0 0 15px 0 !important;
   }
 
@@ -78,9 +214,8 @@
     max-width: 300px;
   }
 
-  /* ==========================
-     VIDEO GRIDS
-  ========================== */
+
+  /* VIDEO GRIDS */
 
   .grid-container {
     grid-template-columns: 1fr;
@@ -92,26 +227,34 @@
     margin-right: 0;
   }
 
-  /* ==========================
-     HOMEPAGE CAROUSELS
-  ========================== */
+
+  /* HIDE FAVORITE HEART ON MOBILE */
+
+  button.favorite-btn,
+  .favorite-btn {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+
+  /* HOMEPAGE CAROUSELS */
 
   .carousel-wrapper {
     position: relative;
   }
 
-
-@media (max-width: 768px) {
-
   .carousel-container {
     overflow-x: auto;
     overflow-y: hidden;
+
     -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
   }
 
   .carousel-track {
     display: flex;
     gap: 12px;
+
     scroll-snap-type: x mandatory;
   }
 
@@ -121,12 +264,41 @@
     scroll-snap-align: start;
   }
 
-}
+  .carousel-button {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 34px;
+    height: 54px;
+
+    background: rgba(0, 0, 0, 0.55);
+    color: #ffffff;
+
+    border: none;
+    border-radius: 6px;
+
+    font-size: 24px;
+    font-weight: bold;
+
+    z-index: 20;
+    cursor: pointer;
+  }
+
+  .carousel-button:first-child {
+    left: 4px;
+  }
+
+  .carousel-button:last-child {
+    right: 4px;
+  }
 
 
-  /* ==========================
-     VIDEO CARDS
-  ========================== */
+  /* VIDEO CARDS */
 
   .video-title-with-icon {
     flex-wrap: wrap;
@@ -137,9 +309,8 @@
     padding-right: 0;
   }
 
-  /* ==========================
-     SCOREBOARD
-  ========================== */
+
+  /* SCOREBOARD */
 
   .table-header-row {
     flex-direction: column;
@@ -161,22 +332,21 @@
     min-width: 1000px;
   }
 
-  /* ==========================
-     SHOWS PAGE
-  ========================== */
+
+  /* SHOWS PAGE */
 
   .shows-track {
     grid-template-columns: 1fr;
   }
 
-  /* ==========================
-     MODAL VIDEO PLAYER
-  ========================== */
+
+  /* MODAL VIDEO PLAYER */
 
   #videoModal .modal-content {
     width: 100vw;
     height: auto;
     max-height: none;
+
     border-radius: 0;
   }
 
@@ -187,9 +357,8 @@
     height: auto;
   }
 
-  /* ==========================
-     LOGIN / SIGNUP
-  ========================== */
+
+  /* LOGIN / SIGNUP */
 
   #auth-modal,
   #signup-modal {
@@ -207,9 +376,8 @@
     width: 100%;
   }
 
-  /* ==========================
-     SECTION HEADERS
-  ========================== */
+
+  /* SECTION HEADERS */
 
   .section-header {
     flex-direction: column;
@@ -224,6 +392,7 @@
   .view-more {
     font-size: 0.8rem;
   }
+
 }
 
 
@@ -253,266 +422,6 @@
     width: 20px;
     height: 20px;
     font-size: 9px;
-  }
-
-}
-
-
-
-/* =========================================
-   MOBILE HEADER
-========================================= */
-
-@media (max-width: 768px) {
-    .banner-static {
-        height: 220px;
-    }
-}
-
-
-@media (max-width: 768px) {
-    .grid-container {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-}
-
-@media (max-width: 768px) {
-
-    .mobile-menu-toggle {
-        display: block !important;
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        z-index: 10001;
-    }
-
-    /* Hide the desktop navigation */
-    .header-links {
-        display: none;
-    }
-
-    .header-links.mobile-open {
-        display: block;
-    }
-
-    /* Optional: hide logout on mobile */
-    .header-right {
-        display: none;
-    }
-}
-
-@media (max-width: 768px) {
-
-  .header-overlay {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 12px;
-}
-
-@media (max-width:768px) {
-    .container {
-        flex-direction: column;
-       }
-
-
-@media (max-width:768px) {
-
-    #videoModal .modal-content {
-        width:100vw;
-        height:auto;
-        max-height:none;
-        border-radius:0;
-    }
-
-    #videoModal video,
-    #videoModal iframe {
-        aspect-ratio:16/9;
-        height:auto;
-    }
-}
-
-   
-    .sidebar {
-        display: none;
-       }
-
-    .main-content {
-        width: 100%;
-        padding: 10px;
-        box-sizing: border-box;
-       }
-   }
-
-   .carousel-track {
-    overflow-x:auto;
-    scroll-snap-type:x mandatory;
-   }
-
-   .video-item {
-       min-width:75vw;
-       scroll-snap-align:start;
-   }
-   
-  .mobile-menu-toggle {
-    display: block;
-    background: rgba(0, 0, 0, 0.75);
-    color: #ffffff;
-    border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    z-index: 10001;
-  }
-
-  .header-links {
-    display: none;
-    position: absolute;
-    top: 56px;
-    left: 12px;
-    right: 12px;
-    background: rgba(15, 17, 26, 0.98);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 12px;
-    padding: 12px;
-    z-index: 10000;
-  }
-
-  .header-links.mobile-open {
-    display: block;
-  }
-
-  .nav-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .nav-menu li {
-    width: 100%;
-  }
-
-  .nav-menu a,
-  .nav-link,
-  .home-link {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    box-sizing: border-box;
-    color: #ffffff;
-    text-decoration: none;
-    border-radius: 8px;
-  }
-
-  .nav-menu a:hover,
-  .nav-link:hover,
-  .home-link:hover {
-    background: #e50914;
-    color: #ffffff;
-  }
-
-  .header-right {
-    margin-left: auto;
-  }
-
-  .logout-text {
-    display: none;
-  }
-
-  /* National Finals dropdown on mobile */
-  .dropdown-menu,
-  .nf-dropdown-two-col {
-    position: static;
-    display: block;
-    width: 100%;
-    max-height: 260px;
-    overflow-y: auto;
-    margin-top: 6px;
-    padding: 8px;
-    background: rgba(0,0,0,0.35);
-    border-radius: 8px;
-    box-sizing: border-box;
-  }
-
-  .nf-dropdown-two-col {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 4px;
-  }
-
-  .nf-dropdown-col {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .nf-dropdown-item {
-    display: flex !important;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 10px !important;
-  }
-
-  .nf-dropdown-flag {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-  }
-
-  .banner-static {
-    height: 160px;
-  }
-}
-
-/* BURGER BUTTON ON MOBILE */
-
-/* Hide burger on desktop */
-.mobile-menu-toggle {
-  display: none;
-}
-
-/* Show burger on mobile */
-@media (max-width: 768px) {
-  .mobile-menu-toggle {
-    display: block !important;
-    position: relative;
-    z-index: 10001;
-    background: rgba(0, 0, 0, 0.75);
-    color: #ffffff;
-    border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  #mobile-nav {
-    display: none  !important;
-  }
-
-  #mobile-nav.mobile-open {
-    display: block  !important;
-  }
-}
-
-/* END OF BURGER BUTTON ON MOBILE */
-
-
-@media (max-width: 768px) {
-
-  .favorite-btn {
-    display: none !important;
   }
 
 }
