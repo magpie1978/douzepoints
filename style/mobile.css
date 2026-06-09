@@ -475,3 +475,49 @@
     font-size: 12px;
   }
 }
+
+
+@media (max-width: 768px) {
+
+  .video-item {
+    position: relative;
+    padding-bottom: 70px;
+  }
+
+  .score-wrapper,
+  .score-box {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+
+    width: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .score-table {
+    width: auto !important;
+    margin: 0 !important;
+  }
+
+  .score-table th,
+  .score-table td {
+    text-align: center;
+    padding: 2px 4px !important;
+  }
+
+  .score-table th {
+    font-size: 10px;
+    color: #ccc;
+  }
+
+  .score-circle {
+    width: 34px;
+    height: 34px;
+    font-size: 13px;
+  }
+}
