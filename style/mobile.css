@@ -291,6 +291,24 @@
         flex-direction: column;
        }
 
+
+@media (max-width:768px) {
+
+    #videoModal .modal-content {
+        width:100vw;
+        height:auto;
+        max-height:none;
+        border-radius:0;
+    }
+
+    #videoModal video,
+    #videoModal iframe {
+        aspect-ratio:16/9;
+        height:auto;
+    }
+}
+
+   
     .sidebar {
         display: none;
        }
