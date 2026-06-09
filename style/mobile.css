@@ -481,11 +481,11 @@
   }
 
   #mobile-nav {
-    display: none;
+    display: none  !important;
   }
 
   #mobile-nav.mobile-open {
-    display: block;
+    display: block  !important;
   }
 }
 
