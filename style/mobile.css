@@ -521,3 +521,14 @@
     font-size: 13px;
   }
 }
+
+@media (max-width: 768px) {
+
+  .score-wrapper,
+  .score-box,
+  .score-table,
+  .score-circle {
+    display: none !important;
+  }
+
+}
