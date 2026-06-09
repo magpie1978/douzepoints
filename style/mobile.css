@@ -1,0 +1,255 @@
+/* =========================================
+   MOBILE LAYOUT
+   DouzePoints
+========================================= */
+
+@media (max-width: 768px) {
+
+  /* ==========================
+     GENERAL
+  ========================== */
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .container {
+    flex-direction: column;
+  }
+
+  .main-content {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  /* ==========================
+     HEADER
+  ========================== */
+
+  .header-overlay {
+    padding: 12px;
+  }
+
+  .header-links {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .header-links a,
+  .home-link {
+    font-size: 0.85rem;
+  }
+
+  .banner-static {
+    height: 160px;
+  }
+
+  .banner-static img {
+    object-fit: cover;
+  }
+
+  /* ==========================
+     SIDEBAR
+  ========================== */
+
+  .sidebar {
+    display: none;
+  }
+
+  /* ==========================
+     SORTING CONTROLS
+  ========================== */
+
+  .header-bar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    margin: 0 0 15px 0 !important;
+  }
+
+  .sort-controls {
+    justify-content: center;
+    padding-right: 0 !important;
+  }
+
+  #sort-options {
+    width: 100% !important;
+    max-width: 300px;
+  }
+
+  /* ==========================
+     VIDEO GRIDS
+  ========================== */
+
+  .grid-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .video-item {
+    flex: none;
+    margin-right: 0;
+  }
+
+  /* ==========================
+     HOMEPAGE CAROUSELS
+  ========================== */
+
+  .carousel-wrapper {
+    position: relative;
+  }
+
+  .carousel-container {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .carousel-track {
+    display: flex;
+    gap: 12px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .carousel-track .video-item,
+  .carousel-track .carousel-video-item {
+    min-width: 80vw;
+    scroll-snap-align: start;
+  }
+
+  .carousel-button {
+    display: none;
+  }
+
+  /* ==========================
+     VIDEO CARDS
+  ========================== */
+
+  .video-title-with-icon {
+    flex-wrap: wrap;
+  }
+
+  .score-wrapper {
+    width: auto;
+    padding-right: 0;
+  }
+
+  /* ==========================
+     SCOREBOARD
+  ========================== */
+
+  .table-header-row {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+
+  .table-controls {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 1000px;
+  }
+
+  /* ==========================
+     SHOWS PAGE
+  ========================== */
+
+  .shows-track {
+    grid-template-columns: 1fr;
+  }
+
+  /* ==========================
+     MODAL VIDEO PLAYER
+  ========================== */
+
+  #videoModal .modal-content {
+    width: 100vw;
+    height: auto;
+    max-height: none;
+    border-radius: 0;
+  }
+
+  #videoModal video,
+  #videoModal iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    height: auto;
+  }
+
+  /* ==========================
+     LOGIN / SIGNUP
+  ========================== */
+
+  #auth-modal,
+  #signup-modal {
+    width: 95vw;
+    padding: 20px;
+  }
+
+  .auth-buttons,
+  .signup-buttons {
+    flex-direction: column;
+  }
+
+  .auth-buttons button,
+  .signup-buttons button {
+    width: 100%;
+  }
+
+  /* ==========================
+     SECTION HEADERS
+  ========================== */
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .section-header h4 {
+    font-size: 1.2rem;
+  }
+
+  .view-more {
+    font-size: 0.8rem;
+  }
+}
+
+
+/* =========================================
+   SMALL PHONES
+========================================= */
+
+@media (max-width: 480px) {
+
+  .banner-static {
+    height: 120px;
+  }
+
+  h4 {
+    font-size: 1.1rem;
+  }
+
+  .section-header h4 {
+    font-size: 1.1rem;
+  }
+
+  .video-title-text {
+    font-size: 0.8rem;
+  }
+
+  .score-circle {
+    width: 20px;
+    height: 20px;
+    font-size: 9px;
+  }
+
+}
