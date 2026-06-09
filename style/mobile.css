@@ -507,3 +507,12 @@
 }
 
 /* END OF BURGER BUTTON ON MOBILE */
+
+
+@media (max-width: 768px) {
+
+  .favorite-btn {
+    display: none !important;
+  }
+
+}
