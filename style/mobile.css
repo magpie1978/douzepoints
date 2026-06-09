@@ -425,3 +425,53 @@
   }
 
 }
+
+
+/* =========================================
+   POSITION AND SCORE ICONS
+========================================= */
+
+@media (max-width: 768px) {
+
+  .video-title-with-icon {
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .flag-icon {
+    grid-column: 1;
+  }
+
+  .video-title-text {
+    grid-column: 2;
+  }
+
+  .score-wrapper,
+  .score-box {
+    grid-column: 3;
+    width: auto;
+    padding-right: 0;
+    justify-content: flex-end;
+  }
+
+  .score-table {
+    width: auto;
+  }
+
+  .score-table th {
+    font-size: 10px;
+    padding-bottom: 6px;
+  }
+
+  .score-table td {
+    padding: 0;
+  }
+
+  .score-circle {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+}
