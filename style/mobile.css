@@ -253,3 +253,138 @@
   }
 
 }
+
+
+
+/* =========================================
+   MOBILE HEADER
+========================================= */
+
+.mobile-menu-toggle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  .header-overlay {
+    align-items: flex-start;
+    padding: 12px;
+  }
+
+  .mobile-menu-toggle {
+    display: block;
+    background: rgba(0, 0, 0, 0.75);
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 10001;
+  }
+
+  .header-links {
+    display: none;
+    position: absolute;
+    top: 56px;
+    left: 12px;
+    right: 12px;
+    background: rgba(15, 17, 26, 0.98);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 12px;
+    z-index: 10000;
+  }
+
+  .header-links.mobile-open {
+    display: block;
+  }
+
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nav-menu li {
+    width: 100%;
+  }
+
+  .nav-menu a,
+  .nav-link,
+  .home-link {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 8px;
+  }
+
+  .nav-menu a:hover,
+  .nav-link:hover,
+  .home-link:hover {
+    background: #e50914;
+    color: #ffffff;
+  }
+
+  .header-right {
+    margin-left: auto;
+  }
+
+  .logout-text {
+    display: none;
+  }
+
+  /* National Finals dropdown on mobile */
+  .dropdown-menu,
+  .nf-dropdown-two-col {
+    position: static;
+    display: block;
+    width: 100%;
+    max-height: 260px;
+    overflow-y: auto;
+    margin-top: 6px;
+    padding: 8px;
+    background: rgba(0,0,0,0.35);
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+
+  .nf-dropdown-two-col {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .nf-dropdown-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .nf-dropdown-item {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px !important;
+  }
+
+  .nf-dropdown-flag {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .banner-static {
+    height: 160px;
+  }
+}
