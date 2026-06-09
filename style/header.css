@@ -1,18 +1,23 @@
-  /* Layout */
-  .header-overlay {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 30px;
-  }
+/* Layout */
 
-  .header-links a {
-      margin-right: 20px;
-  }
+.mobile-menu-toggle {
+  display: none;
+}
 
-  .header-right {
-      margin-left: auto;
-  }
+.header-overlay {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+}
+
+.header-links a {
+    margin-right: 20px;
+}
+
+.header-right {
+    margin-left: auto;
+}
 
 .logout-link {
     display: flex;
