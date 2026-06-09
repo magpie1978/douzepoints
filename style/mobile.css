@@ -265,6 +265,15 @@
     }
 }
 
+
+@media (max-width: 768px) {
+    .grid-container {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+
 .mobile-menu-toggle {
   display: none;
 }
