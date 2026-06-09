@@ -24,18 +24,12 @@ body {
   }
 
 
-/* .banner-static {
+.banner-static {
   width: 100%;
   height: 400px;
   overflow: hidden;
  }
-*/
 
-.banner-static {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
 
 .banner-static img {
   display: block;
@@ -118,11 +112,11 @@ h4 {
 }
 
 .main-header {
-  position: relative;
-  width: 100%;
-  height: 400px;
-  overflow: hidden;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
 }
+
 
 .section-header {
   display: flex;
