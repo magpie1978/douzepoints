@@ -281,8 +281,28 @@
     }
 }
 
-.mobile-menu-toggle {
-  display: none;
+@media (max-width: 768px) {
+
+    .mobile-menu-toggle {
+        display: block !important;
+        margin-left: auto;
+        position: relative;
+        z-index: 10001;
+    }
+
+    /* Hide the desktop navigation */
+    .header-links {
+        display: none;
+    }
+
+    .header-links.mobile-open {
+        display: block;
+    }
+
+    /* Optional: hide logout on mobile */
+    .header-right {
+        display: none;
+    }
 }
 
 @media (max-width: 768px) {
