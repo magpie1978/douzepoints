@@ -1,8 +1,8 @@
-<link rel="stylesheet" href="style/header.css">
+<!--<link rel="stylesheet" href="style/header.css">
 <header class="main-header">
     <div class="header-overlay">
        
-        <!-- LEFT: Navigation links -->
+        <!-- LEFT: Navigation links
         <div class="header-links">
           <ul class="nav-menu">
             <li><a class="home-link" href="index.html">Home</a></li>
@@ -14,11 +14,10 @@
               <div class="dropdown-menu nf-dropdown-two-col" id="national-finals-dropdown"></div>
             </li>
             <li><a class="home-link" href="scoreboard.html">Scoreboard</a></li>
-            <!--<li><a class="home-link" href="my-favorites.html">My Favorites</a></li>-->
           </ul>
         </div>
         
-        <!--RIGHT: Logout button with icon -->
+        <!--RIGHT: Logout button with icon
         <div class="header-right">
             <a class="logout-link" href="#" id="logout-btn">
                 <i data-lucide="log-out" class="logout-icon"></i>
@@ -30,6 +29,51 @@
     <div class="banner-static">
         <img id="country-banner" style="display:none;" />
     </div>
+</header>
+
+<div class="banner-divider"></div>
+
+
+
+<!----  NEW MOBILE FRIENDLY HEADER --------->
+
+<link rel="stylesheet" href="style/header.css">
+
+<header class="main-header">
+  <div class="header-overlay">
+
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Open menu">
+      ☰ Menu
+    </button>
+
+    <nav class="header-links" id="mobile-nav">
+      <ul class="nav-menu">
+        <li><a class="home-link" href="index.html">Home</a></li>
+        <li><a class="home-link" href="country.html?country=Albania">Countries</a></li>
+        <li><a class="home-link" href="edition.html?edition=2026">Editions</a></li>
+        <li><a class="home-link" href="shows.html">Full Shows</a></li>
+
+        <li class="nav-item dropdown" id="national-finals-menu">
+          <a href="#" class="nav-link dropdown-toggle">National Finals</a>
+          <div class="dropdown-menu nf-dropdown-two-col" id="national-finals-dropdown"></div>
+        </li>
+
+        <li><a class="home-link" href="scoreboard.html">Scoreboard</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <a class="logout-link" href="#" id="logout-btn">
+        <i data-lucide="log-out" class="logout-icon"></i>
+        <span class="logout-text">Logout</span>
+      </a>
+    </div>
+
+  </div>
+
+  <div class="banner-static">
+    <img id="country-banner" style="display:none;" />
+  </div>
 </header>
 
 <div class="banner-divider"></div>
