@@ -532,3 +532,40 @@
   }
 
 }
+
+
+/* =========================================
+   COUNTRY AND EDITION DROPDOWNS
+========================================= */
+
+.mobile-page-selector {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  .mobile-page-selector {
+    display: block;
+    margin: 0 0 16px 0;
+    padding: 0 4px;
+  }
+
+  .mobile-page-selector label {
+    display: block;
+    margin-bottom: 6px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .mobile-page-selector select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: #ffffff;
+    color: #111111;
+    font-family: inherit;
+    font-size: 15px;
+  }
+}
