@@ -36,6 +36,7 @@ async function setupCountrySelector(label, select, params) {
     return;
   }
 
+  
   const countries = [...new Set(data.map(row => row.Country).filter(Boolean))];
 
   select.innerHTML = countries.map(country => {
