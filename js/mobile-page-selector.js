@@ -21,7 +21,8 @@ async function initMobilePageSelector() {
   //}
   if (
     path.includes("edition.html") ||
-    /^\/edition\/\d{4}\.html$/.test(path)
+    ///^\/edition\/\d{4}\.html$/.test(path)
+    /^\/edition\/\d{4}(?:-test)?\.html$/.test(path)
   ) {
     await setupEditionSelector(label, select, params);
   }
@@ -62,7 +63,8 @@ async function setupEditionSelector(label, select, params) {
 
   //const currentEdition = params.get("edition") || "";
   const pathMatch = window.location.pathname.match(
-    /^\/edition\/(\d{4})\.html$/
+    ///^\/edition\/(\d{4})\.html$/
+    /^\/edition\/(\d{4})(?:-test)?\.html$/
   );
   
   const currentEdition =
