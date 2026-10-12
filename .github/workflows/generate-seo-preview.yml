@@ -1,0 +1,34 @@
+
+name: Generate Eurovision SEO Preview
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate-preview:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generate SEO preview
+        env:
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: python generate_edition_seo.py
+
+      - name: Upload preview files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eurovision-seo-preview
+          path: seo-preview/
+          if-no-files-found: warn
