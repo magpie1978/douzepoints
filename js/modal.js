@@ -11,7 +11,8 @@ window.modalReady = new Promise((resolve) => {
       return;
     }
 
-    fetch("modal.html")
+    //fetch("modal.html")
+    fetch("/modal.html")
       .then((res) => res.text())
       .then((html) => {
         container.innerHTML = html;
