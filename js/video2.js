@@ -305,7 +305,8 @@ async function toggleFavorite(button, videoKey, entry = null) {
   const isFavorite = videoKey && favoriteIds.has(String(videoKey));
 
   const countryCode = entry.Country_Code?.toLowerCase() || "";
-  const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
+  //const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
+  const imageUrl = entry.Image || `/images/${entry.Year}-${entry.Country_Code}.jpeg`;
   const videoUrl = entry.Video_URL;
   const flagUrl = `/flags/${countryCode}.png`;
 
@@ -346,7 +347,7 @@ async function toggleFavorite(button, videoKey, entry = null) {
 
     <div class="video-title-with-icon" style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
       <div style="display:flex;align-items:center;gap:10px;">
-        <a href="country.html?country=${encodeURIComponent(entry.Country || "")}" onclick="event.stopPropagation()">
+        <a href="/country.html?country=${encodeURIComponent(entry.Country || "")}" onclick="event.stopPropagation()">
           <img class="flag-icon" src="${escapeHTML(flagUrl)}" alt="Flag">
         </a>
         <div class="video-title-text">
