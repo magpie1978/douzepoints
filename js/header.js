@@ -242,7 +242,10 @@ async function loadHeader() {
       banner.style.display = "block";
     };
 
-    banner.src = bannerSrc;
+    //banner.src = bannerSrc;
+      banner.src = bannerSrc.startsWith("/")
+     ? bannerSrc
+     : `/${bannerSrc}`;
 
   }
 
