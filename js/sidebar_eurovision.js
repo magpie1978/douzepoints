@@ -13,7 +13,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     //path.includes("edition.html")   // load edition sidebar if page is edition.html
     (
       path.includes("edition.html") ||
-      /^\/edition\/\d{4}\.html$/.test(path)
+      ///^\/edition\/\d{4}\.html$/.test(path)
+      /^\/edition\/\d{4}(?:-test)?\.html$/.test(path)
     )
   ) {
     await loadSidebarYears();
