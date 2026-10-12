@@ -169,6 +169,7 @@ def build_entries(rows):
 
     return "<ul>" + "\n".join(items) + "</ul>"
 
+
 def build_page(rows, year):
     location = clean(rows[0].get("Location")) if rows else ""
     host = f" in {location}" if location else ""
@@ -177,14 +178,33 @@ def build_page(rows, year):
         f"Eurovision {year} Results, Songs & "
         "Scoreboard | Douze Points"
     )
-
     description = (
-        f"Explore Eurovision {year} results, "
-        "final rankings, jury and televote points, "
-        "artists, songs and performances."
+        f"Eurovision {year} final results, jury and "
+        "televote points, rankings, artists and songs. "
+        "Explore the full Eurovision archive."
     )
-
     canonical = f"{SITE}/edition/{year}.html"
+
+    finalists = [
+        r for r in rows
+        if number(r.get("Final_Rank")) is not None
+    ]
+    winners = [
+        r for r in finalists
+        if number(r.get("Final_Rank")) == 1
+    ]
+
+    if len(winners) == 1:
+        winner = winners[0]
+        winner_summary = (
+            f'<p class="seo-winner">'
+            f'Winner: <strong>{safe(winner.get("Country"))}'
+            f'</strong> — {safe(winner.get("Artist"))}, '
+            f'<em>{safe(winner.get("Song"))}</em>.'
+            f'</p>'
+        )
+    else:
+        winner_summary = ""
 
     return f"""<!doctype html>
 <html lang="en">
@@ -192,62 +212,174 @@ def build_page(rows, year):
   <meta charset="utf-8">
   <meta name="viewport"
         content="width=device-width, initial-scale=1">
+
   <title>{safe(title)}</title>
-  <meta name="description"
-        content="{safe(description)}">
+  <meta name="description" content="{safe(description)}">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="{canonical}">
+
+  <link rel="stylesheet" href="/style/combined.css">
+  <link rel="stylesheet" href="/style/video-cards.css">
+  <link rel="stylesheet" href="/style/favorites.css">
+  <link rel="stylesheet" href="/style/footer.css">
+  <link rel="stylesheet" href="/style/sidebar.css">
+  <link rel="stylesheet" href="/style/mobile.css">
+
+  <script src="/js/favicons.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687"
+    crossorigin="anonymous"></script>
+
+  <script async
+    src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG">
+  </script>
+  <script src="/js/analytics.js"></script>
+
   <style>
-    body {{
-      font-family: Arial, sans-serif;
-      background: #141414;
-      color: #f5f5f5;
-      margin: 0;
-      padding: 30px;
-      line-height: 1.6;
+    .seo-edition {{
+      padding: 0 20px 28px;
+      max-width: 1200px;
     }}
-    main {{ max-width: 1200px; margin: auto; }}
-    h1, h2 {{ color: #fff; }}
-    h2 {{ margin-top: 36px; }}
-    .results-scroll {{ overflow-x: auto; }}
-    table {{
+    .seo-edition h1 {{
+      font-size: clamp(24px, 3vw, 34px);
+      margin: 0 0 14px;
+    }}
+    .seo-edition h2 {{
+      font-size: 21px;
+      margin: 30px 0 14px;
+    }}
+    .seo-edition p {{
+      line-height: 1.65;
+    }}
+    .seo-winner {{
+      margin: 18px 0;
+      font-size: 16px;
+    }}
+    .seo-results-scroll {{
+      width: 100%;
+      overflow-x: auto;
+    }}
+    .seo-results-scroll table {{
       width: 100%;
       border-collapse: collapse;
-      font-size: 14px;
+      font-size: 13px;
     }}
-    th, td {{
+    .seo-results-scroll th,
+    .seo-results-scroll td {{
       padding: 10px;
       border-bottom: 1px solid #444;
       text-align: left;
     }}
-    th {{ background: #282828; }}
-    tr:hover {{ background: #222; }}
-    a {{ color: #ff6570; }}
-    li {{ margin-bottom: 5px; }}
+    .seo-results-scroll th {{
+      background: #242424;
+    }}
+    .seo-entries {{
+      columns: 2;
+      padding-left: 22px;
+      line-height: 1.8;
+    }}
+    @media (max-width: 700px) {{
+      .seo-entries {{ columns: 1; }}
+      .seo-edition {{ padding: 0 12px 24px; }}
+    }}
   </style>
 </head>
-<body>
-  <main>
-    <h1>Eurovision {year} Results &amp; Songs</h1>
 
-    <p>
-      Explore the Eurovision Song Contest {year}{safe(host)}.
-      Browse the final scoreboard, voting results,
-      participating countries, artists and songs.
-    </p>
+<body oncontextmenu="return false">
 
-    <h2>Eurovision {year} Final Scoreboard</h2>
-    {build_table(rows)}
+  <div id="header-container"></div>
+  <script type="module" src="/js/header.js"></script>
 
-    <h2>Eurovision {year} Participating Entries</h2>
-    {build_entries(rows)}
+  <div class="container">
 
-    <p>
-      <a href="{SITE}/">
-        Explore the Douze Points Eurovision archive
-      </a>
-    </p>
-  </main>
+    <div id="sidebar-container" class="sidebar"></div>
+
+    <div class="main-content">
+
+      <section class="seo-edition">
+        <h1>Eurovision {year} Results &amp; Songs</h1>
+
+        <p>
+          Explore the Eurovision Song Contest
+          {year}{safe(host)}.
+          Browse the final scoreboard, voting results,
+          participating countries, artists and songs.
+        </p>
+
+        {winner_summary}
+
+        <h2>Eurovision {year} Final Scoreboard</h2>
+        <div class="seo-results-scroll">
+          {build_table(rows)}
+        </div>
+
+        <h2>Eurovision {year} Participating Entries</h2>
+        <div class="seo-entries">
+          {build_entries(rows)}
+        </div>
+      </section>
+
+      <div class="mobile-page-selector">
+        <label id="mobile-page-selector-label"
+               for="mobile-page-select"></label>
+        <select id="mobile-page-select"></select>
+      </div>
+
+      <div class="header-bar"
+           style="display:flex;justify-content:flex-end;
+                  margin-bottom:40px;margin-right:20px;">
+
+        <div style="flex:1"></div>
+
+        <div class="sort-controls"
+             style="display:flex;align-items:center;
+                    padding-right:20px;">
+
+          <label for="sort-options">
+            <i data-lucide="list-filter"
+               style="margin-right:15px"></i>
+          </label>
+
+          <select id="sort-options"
+                  style="width:160px;padding:5px;
+                         font-size:11px;">
+            <option value="country" selected>
+              Country (A–Z)
+            </option>
+            <option value="country-desc">
+              Country (Z–A)
+            </option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+            <option value="jury">Jury Points</option>
+            <option value="televote">Televote Points</option>
+            <option value="total">Total Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-container" id="video-container"></div>
+
+    </div>
+  </div>
+
+  <script src="/js/modal.js"></script>
+  <div id="modal-container"></div>
+
+  <script type="module" src="/js/video2.js"></script>
+
+  <div id="footer"></div>
+  <script src="/js/footer.js"></script>
+
+  <script type="module" src="/js/sorting_edition2.js"></script>
+  <script src="/js/icons.js"></script>
+  <script type="module"
+          src="/js/mobile-page-selector.js"></script>
+  <script type="module"
+          src="/js/sidebar_eurovision.js"></script>
+
 </body>
 </html>
 """
