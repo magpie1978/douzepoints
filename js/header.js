@@ -12,14 +12,34 @@ async function loadHeader() {
 
   /* Load shared header HTML */
 
-  const res = await fetch("header.html", { cache: "no-store" });
+  //const res = await fetch("header.html", { cache: "no-store" });
+  const res = await fetch("/header.html", { cache: "no-store" });
 
   if (!res.ok) {
     console.error("[header] Failed to load header.html:", res.status);
     return;
   }
 
-  headerContainer.innerHTML = await res.text();
+  //headerContainer.innerHTML = await res.text();
+ headerContainer.innerHTML = await res.text();
+  if (editionPathIsNested()) {
+    headerContainer.querySelectorAll("a[href]").forEach(link => {
+      const href = link.getAttribute("href");
+  
+      if (
+        href &&
+        !href.startsWith("/") &&
+        !href.startsWith("#") &&
+        !/^[a-z][a-z0-9+.-]*:/i.test(href)
+      ) {
+        link.setAttribute("href", `/${href.replace(/^\.\//, "")}`);
+      }
+    });
+  }
+  
+  function editionPathIsNested() {
+    return /^\/edition\/\d{4}\.html$/.test(window.location.pathname);
+  }
 
   await new Promise(requestAnimationFrame);
 
@@ -59,7 +79,8 @@ async function loadHeader() {
       try {
         await supabase.auth.signOut();
       } finally {
-        window.location.href = "index.html";
+        //window.location.href = "index.html";
+        window.location.href = "/index.html";
       }
 
     });
@@ -84,7 +105,14 @@ async function loadHeader() {
     path.endsWith("/");
 
   const isCountryPage      = path.includes("country.html");
-  const isEditionPage      = path.includes("edition.html");
+  //const isEditionPage      = path.includes("edition.html");
+
+  const editionPathMatch = path.match(/^\/edition\/(\d{4})\.html$/);
+
+ const isEditionPage =
+   path.includes("edition.html") ||
+   Boolean(editionPathMatch);
+  
   const isWinnersPage      = path.includes("winners.html");
   const isShowPage         = path.includes("shows.html");
   const isFavoritesPage    = path.includes("my-favorites.html");
@@ -117,8 +145,15 @@ async function loadHeader() {
 
   } else if (isEditionPage) {
 
-    const editionYear = params.get("edition");
-    if (editionYear) bannerSrc = `banners/${editionYear}.png`;
+    //const editionYear = params.get("edition");
+    //if (editionYear) bannerSrc = `banners/${editionYear}.png`;
+
+   const editionYear =
+   editionPathMatch?.[1] || params.get("edition");
+ 
+     if (editionYear) {
+       bannerSrc = `/banners/${editionYear}.png`;
+     }
 
   } else if (isCountryPage && country) {
 
@@ -440,7 +475,8 @@ const countryToFlagCode = {
 
       const a = document.createElement("a");
       a.className = "dropdown-item nf-dropdown-item";
-      a.href = `national-finals.html?country=${encodeURIComponent(row.country)}`;
+      //a.href = `national-finals.html?country=${encodeURIComponent(row.country)}`;
+      a.href = `/national-finals.html?country=${encodeURIComponent(row.country)}`;
       a.title = row.Contest || row.country;
 
       const img = document.createElement("img");
