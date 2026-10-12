@@ -667,7 +667,8 @@ function loadEdition() {
   // New SEO URL:
   // /edition/2026.html
   const pathMatch = window.location.pathname.match(
-    /\/edition\/(\d{4})\.html$/
+    ///\/edition\/(\d{4})\.html$/
+    /\/edition\/(\d{4})(?:-test)?\.html$/
   );
 
   const pathYear = pathMatch ? pathMatch[1] : null;
@@ -848,7 +849,8 @@ function loadEdition() {
 
   } else if (
     path.includes("edition.html") ||
-    /\/edition\/\d{4}\.html$/.test(path)
+    ///\/edition\/\d{4}\.html$/.test(path)
+    /\/edition\/\d{4}(?:-test)?\.html$/.test(path)
   ) {
   loadEdition();
     
