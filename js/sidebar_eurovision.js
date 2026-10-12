@@ -1,5 +1,5 @@
 import { supabase } from './supabaseClient.js';
-
+ 
 document.addEventListener("DOMContentLoaded", async () => {
   const path = window.location.pathname;
 
