@@ -427,7 +427,7 @@ def build_page(rows, year):
         <h1>Eurovision {year} Results &amp; Songs</h1>
 
         <p>
-          Explore the Eurovision Song Contest {year}{safe(host)}.
+          Explore the Eurovision Song Contest {year}{html.escape(host)}.
           Browse the final scoreboard, voting results,
           participating countries, artists and songs.
         </p>
