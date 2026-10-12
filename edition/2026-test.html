@@ -30,60 +30,6 @@
   <script src="/js/analytics.js"></script>
 
   <style>
-
-    /* Keep the main content inside the available page width */
-    .container {
-      width: 100%;
-      max-width: 100%;
-      box-sizing: border-box;
-    }
-    
-    .main-content {
-      min-width: 0;
-      max-width: 100%;
-      box-sizing: border-box;
-    }
-    
-    /* SEO section */
-    .seo-edition {
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-      box-sizing: border-box;
-      overflow-wrap: anywhere;
-      color: #e5e5e5;
-    }
-    
-    .seo-edition h1,
-    .seo-edition h2 {
-      color: #ffffff;
-    }
-    
-    .seo-edition p,
-    .seo-edition li {
-      color: #cccccc;
-    }
-    
-    /* Make the scoreboard scroll horizontally within its section */
-    .seo-results-scroll,
-    .seo-results-scroll .results-scroll {
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-      overflow-x: auto;
-      box-sizing: border-box;
-    }
-    
-    .seo-results-scroll table {
-      width: 100%;
-      min-width: 650px;
-      border-collapse: collapse;
-    }
-    
-    .seo-results-scroll td,
-    .seo-results-scroll th {
-      white-space: nowrap;
-    }
     .seo-edition {
       padding: 0 20px 28px;
       max-width: 100%;
@@ -130,6 +76,87 @@
       .seo-entries { columns: 1; }
       .seo-edition { padding: 0 12px 24px; }
     }
+
+
+        /* Prevent SEO content from widening the page */
+    .container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .main-content {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .seo-edition {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      color: #e5e5e5;
+      margin-top: 45px;
+      padding-bottom: 40px;
+    }
+
+    .seo-edition h1,
+    .seo-edition h2 {
+      color: #ffffff;
+    }
+
+    .seo-edition p,
+    .seo-edition li {
+      color: #cccccc;
+    }
+
+    /* Scoreboard stays within the content area */
+    .seo-results-scroll,
+    .seo-results-scroll .results-scroll {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
+
+    .seo-results-scroll table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      white-space: nowrap;
+    }
+
+    /* Expandable participants section */
+    .seo-participants {
+      margin-top: 35px;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      padding: 16px 0;
+    }
+
+    .seo-participants summary {
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 0;
+    }
+
+    .seo-participants summary:hover {
+      color: #e50914;
+    }
+
+    .seo-entries {
+      margin-top: 20px;
+    }
+    
   </style>
 </head>
 
@@ -144,12 +171,54 @@
 
     <div class="main-content">
 
+      <div class="mobile-page-selector">
+        <label id="mobile-page-selector-label"
+               for="mobile-page-select"></label>
+        <select id="mobile-page-select"></select>
+      </div>
+
+      <div class="header-bar"
+           style="display:flex;justify-content:flex-end;
+                  margin-bottom:40px;margin-right:20px;">
+
+        <div style="flex:1"></div>
+
+        <div class="sort-controls"
+             style="display:flex;align-items:center;
+                    padding-right:20px;">
+
+          <label for="sort-options">
+            <i data-lucide="list-filter"
+               style="margin-right:15px"></i>
+          </label>
+
+          <select id="sort-options"
+                  style="width:160px;padding:5px;
+                         font-size:11px;">
+            <option value="country" selected>
+              Country (A–Z)
+            </option>
+            <option value="country-desc">
+              Country (Z–A)
+            </option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+            <option value="jury">Jury Points</option>
+            <option value="televote">Televote Points</option>
+            <option value="total">Total Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-container" id="video-container"></div>
+
+      <!-- SEO content follows the video gallery -->
       <section class="seo-edition">
+
         <h1>Eurovision 2026 Results &amp; Songs</h1>
 
         <p>
-          Explore the Eurovision Song Contest
-          2026 in Vienna.
+          Explore the Eurovision Song Contest 2026 in Vienna.
           Browse the final scoreboard, voting results,
           participating countries, artists and songs.
         </p>
@@ -157,6 +226,7 @@
         <p class="seo-winner">Winner: <strong>Bulgaria</strong> — Dara, <em>Bangaranga</em>.</p>
 
         <h2>Eurovision 2026 Final Scoreboard</h2>
+
         <div class="seo-results-scroll">
           
       <div class="results-scroll">
@@ -430,9 +500,14 @@
     
         </div>
 
-        <h2>Eurovision 2026 Participating Entries</h2>
-        <div class="seo-entries">
-          <ul><li><strong>Albania</strong> — Alis: Nân</li>
+        <details class="seo-participants">
+          <summary>
+            Eurovision 2026 Participating Countries,
+            Artists &amp; Songs
+          </summary>
+
+          <div class="seo-entries">
+            <ul><li><strong>Albania</strong> — Alis: Nân</li>
 <li><strong>Armenia</strong> — Simón: Paloma Rumba</li>
 <li><strong>Australia</strong> — Delta Goodrem: Eclipse</li>
 <li><strong>Austria</strong> — Cosmó: Tanzschein</li>
@@ -467,49 +542,10 @@
 <li><strong>Switzerland</strong> — Veronica Fusaro: Alice</li>
 <li><strong>Ukraine</strong> — Leléka: Ridnym</li>
 <li><strong>United Kingdom</strong> — Look Mum No Computer: Eins, Zwei, Drei</li></ul>
-        </div>
+          </div>
+        </details>
+
       </section>
-
-      <div class="mobile-page-selector">
-        <label id="mobile-page-selector-label"
-               for="mobile-page-select"></label>
-        <select id="mobile-page-select"></select>
-      </div>
-
-      <div class="header-bar"
-           style="display:flex;justify-content:flex-end;
-                  margin-bottom:40px;margin-right:20px;">
-
-        <div style="flex:1"></div>
-
-        <div class="sort-controls"
-             style="display:flex;align-items:center;
-                    padding-right:20px;">
-
-          <label for="sort-options">
-            <i data-lucide="list-filter"
-               style="margin-right:15px"></i>
-          </label>
-
-          <select id="sort-options"
-                  style="width:160px;padding:5px;
-                         font-size:11px;">
-            <option value="country" selected>
-              Country (A–Z)
-            </option>
-            <option value="country-desc">
-              Country (Z–A)
-            </option>
-            <option value="artist">Artist Name</option>
-            <option value="song">Song Title</option>
-            <option value="jury">Jury Points</option>
-            <option value="televote">Televote Points</option>
-            <option value="total">Total Points</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="grid-container" id="video-container"></div>
 
     </div>
   </div>
