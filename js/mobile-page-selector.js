@@ -16,7 +16,13 @@ async function initMobilePageSelector() {
     await setupCountrySelector(label, select, params);
   }
 
-  if (path.includes("edition.html")) {
+  //if (path.includes("edition.html")) {
+  //  await setupEditionSelector(label, select, params);
+  //}
+  if (
+    path.includes("edition.html") ||
+    /^\/edition\/\d{4}\.html$/.test(path)
+  ) {
     await setupEditionSelector(label, select, params);
   }
 }
@@ -46,14 +52,21 @@ async function setupCountrySelector(label, select, params) {
 
   select.addEventListener("change", () => {
     const country = encodeURIComponent(select.value);
-    window.location.href = `country.html?country=${country}`;
+    //window.location.href = `country.html?country=${country}`;
+    window.location.href = `/country.html?country=${country}`;
   });
 }
 
 async function setupEditionSelector(label, select, params) {
   label.textContent = "Select edition";
 
-  const currentEdition = params.get("edition") || "";
+  //const currentEdition = params.get("edition") || "";
+  const pathMatch = window.location.pathname.match(
+    /^\/edition\/(\d{4})\.html$/
+  );
+  
+  const currentEdition =
+    pathMatch?.[1] || params.get("edition") || "";
 
   const { data, error } = await supabase
     .from("douzepoints")
@@ -74,7 +87,8 @@ async function setupEditionSelector(label, select, params) {
   }).join("");
 
   select.addEventListener("change", () => {
-    window.location.href = `edition.html?edition=${select.value}`;
+    //window.location.href = `edition.html?edition=${select.value}`;
+    window.location.href = `/edition/${select.value}.html`;
   });
 }
 
