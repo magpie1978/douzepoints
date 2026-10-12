@@ -227,6 +227,7 @@ def build_page(rows, year):
 
   <script src="/js/favicons.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script async
     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687"
@@ -240,7 +241,7 @@ def build_page(rows, year):
   <style>
     .seo-edition {{
       padding: 0 20px 28px;
-      max-width: 1200px;
+      max-width: 100%;
     }}
     .seo-edition h1 {{
       font-size: clamp(24px, 3vw, 34px);
@@ -284,6 +285,87 @@ def build_page(rows, year):
       .seo-entries {{ columns: 1; }}
       .seo-edition {{ padding: 0 12px 24px; }}
     }}
+
+
+        /* Prevent SEO content from widening the page */
+    .container {{
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }}
+
+    .main-content {{
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }}
+
+    .seo-edition {{
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      color: #e5e5e5;
+      margin-top: 45px;
+      padding-bottom: 40px;
+    }}
+
+    .seo-edition h1,
+    .seo-edition h2 {{
+      color: #ffffff;
+    }}
+
+    .seo-edition p,
+    .seo-edition li {{
+      color: #cccccc;
+    }}
+
+    /* Scoreboard stays within the content area */
+    .seo-results-scroll,
+    .seo-results-scroll .results-scroll {{
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }}
+
+    .seo-results-scroll table {{
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }}
+
+    .seo-results-scroll th,
+    .seo-results-scroll td {{
+      white-space: nowrap;
+    }}
+
+    /* Expandable participants section */
+    .seo-participants {{
+      margin-top: 35px;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      padding: 16px 0;
+    }}
+
+    .seo-participants summary {{
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 0;
+    }}
+
+    .seo-participants summary:hover {{
+      color: #e50914;
+    }}
+
+    .seo-entries {{
+      margin-top: 20px;
+    }}
+    
   </style>
 </head>
 
@@ -297,29 +379,6 @@ def build_page(rows, year):
     <div id="sidebar-container" class="sidebar"></div>
 
     <div class="main-content">
-
-      <section class="seo-edition">
-        <h1>Eurovision {year} Results &amp; Songs</h1>
-
-        <p>
-          Explore the Eurovision Song Contest
-          {year}{safe(host)}.
-          Browse the final scoreboard, voting results,
-          participating countries, artists and songs.
-        </p>
-
-        {winner_summary}
-
-        <h2>Eurovision {year} Final Scoreboard</h2>
-        <div class="seo-results-scroll">
-          {build_table(rows)}
-        </div>
-
-        <h2>Eurovision {year} Participating Entries</h2>
-        <div class="seo-entries">
-          {build_entries(rows)}
-        </div>
-      </section>
 
       <div class="mobile-page-selector">
         <label id="mobile-page-selector-label"
@@ -361,6 +420,38 @@ def build_page(rows, year):
       </div>
 
       <div class="grid-container" id="video-container"></div>
+
+      <!-- SEO content follows the video gallery -->
+      <section class="seo-edition">
+
+        <h1>Eurovision {year} Results &amp; Songs</h1>
+
+        <p>
+          Explore the Eurovision Song Contest {year}{safe(host)}.
+          Browse the final scoreboard, voting results,
+          participating countries, artists and songs.
+        </p>
+
+        {winner_summary}
+
+        <h2>Eurovision {year} Final Scoreboard</h2>
+
+        <div class="seo-results-scroll">
+          {build_table(rows)}
+        </div>
+
+        <details class="seo-participants">
+          <summary>
+            Eurovision {year} Participating Countries,
+            Artists &amp; Songs
+          </summary>
+
+          <div class="seo-entries">
+            {build_entries(rows)}
+          </div>
+        </details>
+
+      </section>
 
     </div>
   </div>
