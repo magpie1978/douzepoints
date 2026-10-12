@@ -26,7 +26,9 @@
             if (edition) {
               const canonical = document.createElement("link");
               canonical.rel = "canonical";
-              canonical.href = `https://douzepoints.org/edition.html?edition=${edition}`;
+              canonical.href = edition === "2026"
+                  ? "https://douzepoints.org/edition/2026.html"
+                  : `https://douzepoints.org/edition.html?edition=${encodeURIComponent(edition)}`;
               document.head.appendChild(canonical);
             }
         </script>
