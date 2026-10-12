@@ -30,9 +30,63 @@
   <script src="/js/analytics.js"></script>
 
   <style>
+
+    /* Keep the main content inside the available page width */
+    .container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .main-content {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    
+    /* SEO section */
+    .seo-edition {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      color: #e5e5e5;
+    }
+    
+    .seo-edition h1,
+    .seo-edition h2 {
+      color: #ffffff;
+    }
+    
+    .seo-edition p,
+    .seo-edition li {
+      color: #cccccc;
+    }
+    
+    /* Make the scoreboard scroll horizontally within its section */
+    .seo-results-scroll,
+    .seo-results-scroll .results-scroll {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
+    
+    .seo-results-scroll table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+    
+    .seo-results-scroll td,
+    .seo-results-scroll th {
+      white-space: nowrap;
+    }
     .seo-edition {
       padding: 0 20px 28px;
-      max-width: 1200px;
+      max-width: 100%;
     }
     .seo-edition h1 {
       font-size: clamp(24px, 3vw, 34px);
@@ -95,7 +149,7 @@
 
         <p>
           Explore the Eurovision Song Contest
-          2026in Vienna.
+          2026 in Vienna.
           Browse the final scoreboard, voting results,
           participating countries, artists and songs.
         </p>
