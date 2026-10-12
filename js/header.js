@@ -38,7 +38,7 @@ async function loadHeader() {
   }
   
   function editionPathIsNested() {
-    return /^\/edition\/\d{4}\.html$/.test(window.location.pathname);
+    return /^\/edition\/\d{4}(?:-test)?\.html$/.test(window.location.pathname);
   }
 
   await new Promise(requestAnimationFrame);
@@ -107,7 +107,7 @@ async function loadHeader() {
   const isCountryPage      = path.includes("country.html");
   //const isEditionPage      = path.includes("edition.html");
 
-  const editionPathMatch = path.match(/^\/edition\/(\d{4})\.html$/);
+  const editionPathMatch = path.match(/^\/edition\/(\d{4})(?:-test)?\.html$/);
 
  const isEditionPage =
    path.includes("edition.html") ||
