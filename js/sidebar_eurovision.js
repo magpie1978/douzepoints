@@ -10,7 +10,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   ) {
     await loadSidebarCountries();
   } else if (
-    path.includes("edition.html")   // load edition sidebar if page is edition.html
+    //path.includes("edition.html")   // load edition sidebar if page is edition.html
+    (
+      path.includes("edition.html") ||
+      /^\/edition\/\d{4}\.html$/.test(path)
+    )
   ) {
     await loadSidebarYears();
   }
@@ -40,11 +44,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/-+/g, "-")
         .replace(/^-|-$/g, "");
-      a.href = `country/${slug}.html`;
+      //a.href = `country/${slug}.html`;
+        a.href = `/country/${slug}.html`;
       //END OF NEW SEO CODE
       
       const img = document.createElement("img");
-      img.src = `flags/${countryCode}.png`;
+      //img.src = `flags/${countryCode}.png`;
+      img.src = `/flags/${countryCode}.png`;
       img.alt = country;
       img.className = "flag-icon";
 
@@ -75,7 +81,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const a = document.createElement("a");
       //a.href = `edition.html?edition=${year}`;
-      a.href = `edition/${year}.html`;
+      //a.href = `edition/${year}.html`;
+      a.href = `/edition/${year}.html`;
       a.style.display = 'flex';
       a.style.alignItems = 'center';
       a.style.gap = '10px';
