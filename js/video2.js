@@ -644,17 +644,51 @@ async function toggleFavorite(button, videoKey, entry = null) {
   // ------------------------------------------------------------
   // PAGE LOADERS
   // ------------------------------------------------------------
-  function loadEdition() {
-    const year = getQueryParam("edition");
-    if (!year) return;
+  //function loadEdition() {
+  //  const year = getQueryParam("edition");
+  //  if (!year) return;
 
-    fetchAndRender(s =>
-      s.from("douzepoints")
-        .select("*")
-        .eq("Year", year)
-        .order("Final_Rank", { ascending: true })
-    );
+  //  fetchAndRender(s =>
+  //    s.from("douzepoints")
+  //      .select("*")
+  //      .eq("Year", year)
+  //      .order("Final_Rank", { ascending: true })
+  //  );
+  //}
+
+  
+function loadEdition() {
+
+  // Existing URL:
+  // /edition.html?edition=2026
+  const queryYear = getQueryParam("edition");
+
+  // New SEO URL:
+  // /edition/2026.html
+  const pathMatch = window.location.pathname.match(
+    /\/edition\/(\d{4})\.html$/
+  );
+
+  const pathYear = pathMatch ? pathMatch[1] : null;
+
+  // Prefer the year in the SEO-friendly URL
+  const year = pathYear || queryYear;
+
+  if (!year) {
+    console.warn("[video2] No edition year found.");
+    return;
   }
+
+  console.log("[video2] Loading edition:", year);
+
+  fetchAndRender(s =>
+    s.from("douzepoints")
+      .select("*")
+      .eq("Year", year)
+      .order("Final_Rank", { ascending: true })
+  );
+}
+
 
   function loadCountry() {
     const c = getQueryParam("country");
@@ -808,9 +842,15 @@ async function toggleFavorite(button, videoKey, entry = null) {
   } else if (path.includes("shows.html")) {
     loadShows();
 
-  } else if (path.includes("edition.html")) {
-    loadEdition();
+//  } else if (path.includes("edition.html")) {
+//    loadEdition();
 
+  } else if (
+    path.includes("edition.html") ||
+    /\/edition\/\d{4}\.html$/.test(path)
+  ) {
+  loadEdition();
+    
   } else if (path.includes("country.html")) {
     loadCountry();
 
