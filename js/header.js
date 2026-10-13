@@ -22,19 +22,27 @@ async function loadHeader() {
 
   //headerContainer.innerHTML = await res.text();
  headerContainer.innerHTML = await res.text();
-  if (editionPathIsNested()) {
-    headerContainer.querySelectorAll("a[href]").forEach(link => {
-      const href = link.getAttribute("href");
+  //if (editionPathIsNested()) {
+  //if (pagePathIsNested()) {
+  //  headerContainer.querySelectorAll("a[href]").forEach(link => {
+  //    const href = link.getAttribute("href");
   
-      if (
-        href &&
-        !href.startsWith("/") &&
-        !href.startsWith("#") &&
-        !/^[a-z][a-z0-9+.-]*:/i.test(href)
-      ) {
-        link.setAttribute("href", `/${href.replace(/^\.\//, "")}`);
-      }
-    });
+  //    if (
+  //      href &&
+  //      !href.startsWith("/") &&
+  //      !href.startsWith("#") &&
+  //      !/^[a-z][a-z0-9+.-]*:/i.test(href)
+  //    ) {
+  //      link.setAttribute("href", `/${href.replace(/^\.\//, "")}`);
+  //    }
+  //  });
+  //}
+
+  function pagePathIsNested() {
+    return (
+      /^\/edition\/\d{4}(?:-test)?\.html$/.test(window.location.pathname) ||
+      /^\/country\/[a-z0-9-]+\.html$/i.test(window.location.pathname)
+    );
   }
   
   function editionPathIsNested() {
@@ -96,7 +104,17 @@ async function loadHeader() {
 
   const params = new URLSearchParams(window.location.search);
 
-  const country = params.get("country");
+  //const country = params.get("country");
+  //const contest = params.get("contest");
+
+  const countryPathMatch = path.match(
+    /^\/country\/([a-z0-9-]+?)(?:-test)?\.html$/i
+  );
+  
+  const country = countryPathMatch
+    ? countryPathMatch[1].replace(/-/g, " ")
+    : params.get("country");
+  
   const contest = params.get("contest");
 
   const isIndexPage =
@@ -104,7 +122,8 @@ async function loadHeader() {
     path.endsWith("/index.html") ||
     path.endsWith("/");
 
-  const isCountryPage      = path.includes("country.html");
+  //const isCountryPage      = path.includes("country.html");
+  const isCountryPage      = path.includes("country.html") || Boolean(countryPathMatch);
   //const isEditionPage      = path.includes("edition.html");
 
   const editionPathMatch = path.match(/^\/edition\/(\d{4})(?:-test)?\.html$/);
