@@ -1,19 +1,115 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Ireland Eurovision Results & History | DouzePoints</title>
-  <meta name="description" content="Ireland in Eurovision: results by year, rankings, songs and performances. Explore Ireland’s Eurovision history on DouzePoints." />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://douzepoints.org/country/Ireland.html" />
+    <head>
+        <meta charset="utf-8"/>
+        <title>Ireland Eurovision Results, Songs &amp; History | DouzePoints</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/style/combined.css">
+        <link rel="stylesheet" type="text/css" href="/style/video-cards.css">
+        <link rel="stylesheet" type="text/css" href="/style/favorites.css">
+        <link rel="stylesheet" type="text/css" href="/style/footer.css">
+        <link rel="stylesheet" type="text/css" href="/style/sidebar.css">
+        <link rel="stylesheet" href="/style/mobile.css">
+        
+        <script src="/js/favicons.js"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+        <!-- GOOGLE ADSENSE SCRIPT  -->
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687" crossorigin="anonymous"></script>
+        
+    
+<meta name="description" content="Explore Ireland at Eurovision: year-by-year entries, artists, songs, winners and recorded results.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://douzepoints.org/country/ireland.html">
 </head>
-<body>
-  <script>
-    // Send users (and your JS app) to the existing dynamic page
-    window.location.replace("../country.html?country=Ireland");
-  </script>
-  <noscript>
-    Ireland Eurovision Results & History. Please enable JavaScript.
-  </noscript>
-</body>
+
+    <!-- Google Tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG"></script>
+    <script src="/js/analytics.js"></script>
+
+    <body oncontextmenu="return false">
+        
+        <!-- HEADER -->
+        <div id="header-container"></div>
+        <script type="module" src="/js/header.js"></script>
+    
+        <!-- MAIN CONTAINER -->
+        <div class="container">
+            
+            <div id="sidebar-container" class="sidebar"></div>
+    
+            <div class="main-content">
+
+                <div class="mobile-page-selector">
+                  <label id="mobile-page-selector-label" for="mobile-page-select"></label>
+                  <select id="mobile-page-select"></select>
+                </div>
+                
+                <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
+                    <div style="flex: 1;"></div>
+                    <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
+                        <label for="sort-options">
+                            <i data-lucide="list-filter" style="margin-right: 15px;"></i>
+                        </label>
+                        <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
+                            <option value="year-desc" selected>Year (desc)</option>
+                            <option value="year-asc">Year (asc)</option>
+                            <option value="artist">Artist Name</option>
+                            <option value="song">Song Title</option>
+                            <option value="jury">Jury Points</option>
+                            <option value="televote">Televote Points</option>
+                            <option value="total">Total Points</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-container" id="video-container"></div>
+<section class="seo-country" aria-label="Ireland Eurovision history">
+  <h1>Ireland at Eurovision — Results, Songs &amp; History</h1>
+  <p>Explore Ireland's Eurovision entries, artists, songs and recorded results from the DouzePoints archive.</p>
+  <h2>Ireland's Eurovision Winners</h2>
+  <ul><li>1996 — Eimear Quinn: <em>The Voice</em></li><li>1994 — Paul Harrington and Charlie McGettigan: <em>Rock &#x27;n&#x27; Roll Kids</em></li><li>1993 — Niamh Kavanagh: <em>In Your Eyes</em></li><li>1992 — Linda Martin: <em>Why Me</em></li><li>1987 — Johnny Logan: <em>Hold Me Now</em></li><li>1980 — Johnny Logan: <em>What&#x27;s Another Year</em></li><li>1970 — Dana: <em>All Kinds of Everything</em></li></ul>
+  <details class="seo-participants">
+    <summary>Ireland's Eurovision entries by year</summary>
+    <ul><li><strong>2025</strong> — Emmy: <em>Laika Party</em></li><li><strong>2024</strong> — Bambie Thug: <em>Doomsday Blue</em> — Final position: 6</li><li><strong>2023</strong> — Wild Youth: <em>We Are One</em></li><li><strong>2022</strong> — Brooke: <em>That&#x27;s Rich</em></li><li><strong>2021</strong> — Lesley Roy: <em>Maps</em></li><li><strong>2020</strong> — Lesley Roy: <em>Story of My Life</em></li><li><strong>2019</strong> — Sarah McTernan: <em>22</em></li><li><strong>2018</strong> — Ryan O&#x27;Shaughnessy: <em>Together</em> — Final position: 16</li><li><strong>2017</strong> — Brendan Murray: <em>Dying to Try</em></li><li><strong>2016</strong> — Nicky Byrne: <em>Sunlight</em></li><li><strong>2015</strong> — Molly Sterling: <em>Playing with Numbers</em></li><li><strong>2014</strong> — Can-linn feat. Kasey Smith: <em>Heartbeat</em></li><li><strong>2013</strong> — Ryan Dolan: <em>Only Love Survives</em> — Final position: 26</li><li><strong>2012</strong> — Jedward: <em>Waterline</em> — Final position: 19</li><li><strong>2011</strong> — Jedward: <em>Lipstick</em> — Final position: 8</li><li><strong>2010</strong> — Niamh Kavanagh: <em>It&#x27;s for You</em> — Final position: 23</li><li><strong>2009</strong> — Sinéad Mulvey and Black Daisy: <em>Et Cetera</em></li><li><strong>2008</strong> — Dustin the Turkey: <em>Irelande Douze Pointe</em></li><li><strong>2007</strong> — Dervish: <em>They Can&#x27;t Stop the Spring</em> — Final position: 24</li><li><strong>2006</strong> — Brian Kennedy: <em>Every Song Is a Cry for Love</em> — Final position: 10</li><li><strong>2005</strong> — Donna and Joe: <em>Love?</em></li><li><strong>2004</strong> — Chris Doran: <em>If My World Stopped Turning</em> — Final position: 22</li><li><strong>2003</strong> — Mickey Harte: <em>We&#x27;ve Got the World</em> — Final position: 11</li><li><strong>2001</strong> — Gary O&#x27;Shaughnessy: <em>Without Your Love</em> — Final position: 21</li><li><strong>2000</strong> — Eamonn Toal: <em>Millennium of Love</em> — Final position: 6</li><li><strong>1999</strong> — The Mullans: <em>When You Need Me</em> — Final position: 17</li><li><strong>1998</strong> — Dawn Martin: <em>Is Always Over Now</em> — Final position: 9</li><li><strong>1997</strong> — Marc Roberts: <em>Mysterious Woman</em> — Final position: 2</li><li><strong>1996</strong> — Eimear Quinn: <em>The Voice</em> — Final position: 1</li><li><strong>1995</strong> — Eddie Friel: <em>Dreamin&#x27;</em> — Final position: 14</li><li><strong>1994</strong> — Paul Harrington and Charlie McGettigan: <em>Rock &#x27;n&#x27; Roll Kids</em> — Final position: 1</li><li><strong>1993</strong> — Niamh Kavanagh: <em>In Your Eyes</em> — Final position: 1</li><li><strong>1992</strong> — Linda Martin: <em>Why Me</em> — Final position: 1</li><li><strong>1991</strong> — Kim Jackson: <em>Could It Be That I&#x27;m in Love</em> — Final position: 10</li><li><strong>1990</strong> — Liam Reilly: <em>Somewhere in Europe</em> — Final position: 2</li><li><strong>1989</strong> — Kiev Connolly and the Missing Passengers: <em>The Real Me</em> — Final position: 18</li><li><strong>1988</strong> — Jump the Gun: <em>Take Him Home</em> — Final position: 8</li><li><strong>1987</strong> — Johnny Logan: <em>Hold Me Now</em> — Final position: 1</li><li><strong>1986</strong> — Luv Bug: <em>You Can Count On Me</em> — Final position: 4</li><li><strong>1985</strong> — Maria Christian: <em>Wait Until the Weekend Comes</em> — Final position: 6</li><li><strong>1984</strong> — Linda Martin: <em>Terminal 3</em> — Final position: 2</li><li><strong>1982</strong> — The Duskeys: <em>Here Today, Gone Tomorrow</em> — Final position: 11</li><li><strong>1981</strong> — Sheeba: <em>Horoscopes</em> — Final position: 5</li><li><strong>1980</strong> — Johnny Logan: <em>What&#x27;s Another Year</em> — Final position: 1</li><li><strong>1979</strong> — Cathal Dunne: <em>Happy Man</em> — Final position: 5</li><li><strong>1978</strong> — Colm C. T. Wilkinson: <em>Born to Sing</em> — Final position: 5</li><li><strong>1977</strong> — The Swarbriggs Plus Two: <em>It&#x27;s Nice to Be in Love Again</em> — Final position: 3</li><li><strong>1976</strong> — Red Hurley: <em>When</em> — Final position: 10</li><li><strong>1975</strong> — The Swarbriggs: <em>That&#x27;s What Friends Are For</em> — Final position: 9</li><li><strong>1974</strong> — Tina Reynolds: <em>Cross Your Heart</em> — Final position: 7</li><li><strong>1973</strong> — Maxi: <em>Do I Dream</em> — Final position: 10</li><li><strong>1972</strong> — Sandie Jones: <em>Ceol an Ghrá</em> — Final position: 15</li><li><strong>1971</strong> — Angela Farrell: <em>One Day Love</em> — Final position: 11</li><li><strong>1970</strong> — Dana: <em>All Kinds of Everything</em> — Final position: 1</li><li><strong>1969</strong> — Muriel Day: <em>The Wages of Love</em> — Final position: 7</li><li><strong>1968</strong> — Pat McGeegan: <em>Chance of a Lifetime</em> — Final position: 4</li><li><strong>1967</strong> — Sean Dunphy: <em>If I Could Choose</em> — Final position: 2</li><li><strong>1966</strong> — Dickie Rock: <em>Come Back to Stay</em> — Final position: 4</li><li><strong>1965</strong> — Butch Moore: <em>I&#x27;m Walking the Streets in the Rain</em> — Final position: 6</li></ul>
+  </details>
+</section>
+<style>
+  .seo-country { box-sizing:border-box; max-width:100%; min-width:0; margin:45px 20px 40px;
+                  color:#ccc; overflow-wrap:anywhere; line-height:1.7; }
+  .seo-country h1,.seo-country h2 { color:#fff; }
+  .seo-country h1 { font-size:clamp(24px,3vw,34px); }
+  .seo-country h2 { font-size:21px; margin-top:28px; }
+  .seo-country ul { padding-left:24px; }
+  .seo-country details { border-top:1px solid #333; margin-top:28px; padding-top:16px; }
+  .seo-country summary { cursor:pointer; color:#fff; font-weight:600; }
+  .main-content { min-width:0; }
+</style>
+            </div>
+        </div>
+    
+        
+        <!-- MODAL -->
+        <script src="/js/modal.js"></script>
+        <div id="modal-container"></div>
+    
+        <script type="module" src="/js/video2.js"></script>
+    
+        <!-- FOOTER -->
+        <div id="footer"></div>
+        <script src="/js/footer.js" type="text/javascript"></script>
+    
+        
+        <!-- SCRIPTS -->
+        <script type="module" src="/js/sorting_country2.js"></script>
+        <script src="/js/icons.js" type="text/javascript"></script>
+        
+        <script type="module" src="/js/mobile-page-selector.js"></script>
+        
+    
+        <!-- LOAD SIDEBAR LAST -->
+        <script type="module" src="/js/sidebar_eurovision.js"></script>
+
+    </body>
+
 </html>

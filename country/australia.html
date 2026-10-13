@@ -1,20 +1,115 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Australia Eurovision Results & History | DouzePoints</title>
-  <meta name="description" content="Australia in Eurovision: results by year, rankings, songs and performances. Explore Australia’s Eurovision history on DouzePoints." />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://douzepoints.org/country/Australia.html" />
+    <head>
+        <meta charset="utf-8"/>
+        <title>Australia Eurovision Results, Songs &amp; History | DouzePoints</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/style/combined.css">
+        <link rel="stylesheet" type="text/css" href="/style/video-cards.css">
+        <link rel="stylesheet" type="text/css" href="/style/favorites.css">
+        <link rel="stylesheet" type="text/css" href="/style/footer.css">
+        <link rel="stylesheet" type="text/css" href="/style/sidebar.css">
+        <link rel="stylesheet" href="/style/mobile.css">
+        
+        <script src="/js/favicons.js"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+        <!-- GOOGLE ADSENSE SCRIPT  -->
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687" crossorigin="anonymous"></script>
+        
+    
+<meta name="description" content="Explore Australia at Eurovision: year-by-year entries, artists, songs, winners and recorded results.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://douzepoints.org/country/australia.html">
 </head>
-<body>
-  <script>
-    // Send users (and your JS app) to the existing dynamic page
-    window.location.replace("../country.html?country=Australia");
-  </script>
-  <noscript>
-    Australia Eurovision Results & History. Please enable JavaScript.
-  </noscript>
-</body>
+
+    <!-- Google Tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG"></script>
+    <script src="/js/analytics.js"></script>
+
+    <body oncontextmenu="return false">
+        
+        <!-- HEADER -->
+        <div id="header-container"></div>
+        <script type="module" src="/js/header.js"></script>
+    
+        <!-- MAIN CONTAINER -->
+        <div class="container">
+            
+            <div id="sidebar-container" class="sidebar"></div>
+    
+            <div class="main-content">
+
+                <div class="mobile-page-selector">
+                  <label id="mobile-page-selector-label" for="mobile-page-select"></label>
+                  <select id="mobile-page-select"></select>
+                </div>
+                
+                <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
+                    <div style="flex: 1;"></div>
+                    <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
+                        <label for="sort-options">
+                            <i data-lucide="list-filter" style="margin-right: 15px;"></i>
+                        </label>
+                        <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
+                            <option value="year-desc" selected>Year (desc)</option>
+                            <option value="year-asc">Year (asc)</option>
+                            <option value="artist">Artist Name</option>
+                            <option value="song">Song Title</option>
+                            <option value="jury">Jury Points</option>
+                            <option value="televote">Televote Points</option>
+                            <option value="total">Total Points</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-container" id="video-container"></div>
+<section class="seo-country" aria-label="Australia Eurovision history">
+  <h1>Australia at Eurovision — Results, Songs &amp; History</h1>
+  <p>Explore Australia's Eurovision entries, artists, songs and recorded results from the DouzePoints archive.</p>
+  <h2>Australia's Eurovision Winners</h2>
+  <ul><li>No recorded winners in the current archive.</li></ul>
+  <details class="seo-participants">
+    <summary>Australia's Eurovision entries by year</summary>
+    <ul><li><strong>2026</strong> — Delta Goodrem: <em>Eclipse</em> — Final position: 4</li><li><strong>2025</strong> — Go-Jo: <em>Milkshake Man</em></li><li><strong>2024</strong> — Electric Fields: <em>One Milkali (One Blood)</em></li><li><strong>2023</strong> — Voyager: <em>Promise</em> — Final position: 9</li><li><strong>2022</strong> — Sheldon Riley: <em>Not the Same</em> — Final position: 15</li><li><strong>2021</strong> — Montaigne: <em>Technicolour</em></li><li><strong>2020</strong> — Montaigne: <em>Don&#x27;t Break Me</em></li><li><strong>2019</strong> — Kate Miller-Heidke: <em>Zero Gravity</em> — Final position: 9</li><li><strong>2018</strong> — Jessica Mauboy: <em>We Got Love</em> — Final position: 20</li><li><strong>2017</strong> — Isaiah: <em>Don&#x27;t Come Easy</em> — Final position: 9</li><li><strong>2016</strong> — Dami Im: <em>Sound of Silence</em> — Final position: 2</li><li><strong>2015</strong> — Guy Sebastian: <em>Tonight Again</em> — Final position: 5</li></ul>
+  </details>
+</section>
+<style>
+  .seo-country { box-sizing:border-box; max-width:100%; min-width:0; margin:45px 20px 40px;
+                  color:#ccc; overflow-wrap:anywhere; line-height:1.7; }
+  .seo-country h1,.seo-country h2 { color:#fff; }
+  .seo-country h1 { font-size:clamp(24px,3vw,34px); }
+  .seo-country h2 { font-size:21px; margin-top:28px; }
+  .seo-country ul { padding-left:24px; }
+  .seo-country details { border-top:1px solid #333; margin-top:28px; padding-top:16px; }
+  .seo-country summary { cursor:pointer; color:#fff; font-weight:600; }
+  .main-content { min-width:0; }
+</style>
+            </div>
+        </div>
+    
+        
+        <!-- MODAL -->
+        <script src="/js/modal.js"></script>
+        <div id="modal-container"></div>
+    
+        <script type="module" src="/js/video2.js"></script>
+    
+        <!-- FOOTER -->
+        <div id="footer"></div>
+        <script src="/js/footer.js" type="text/javascript"></script>
+    
+        
+        <!-- SCRIPTS -->
+        <script type="module" src="/js/sorting_country2.js"></script>
+        <script src="/js/icons.js" type="text/javascript"></script>
+        
+        <script type="module" src="/js/mobile-page-selector.js"></script>
+        
+    
+        <!-- LOAD SIDEBAR LAST -->
+        <script type="module" src="/js/sidebar_eurovision.js"></script>
+
+    </body>
+
 </html>

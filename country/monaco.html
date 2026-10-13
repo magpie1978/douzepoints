@@ -1,19 +1,115 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Monaco Eurovision Results & History | DouzePoints</title>
-  <meta name="description" content="Monaco in Eurovision: results by year, rankings, songs and performances. Explore Monaco’s Eurovision history on DouzePoints." />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://douzepoints.org/country/Monaco.html" />
+    <head>
+        <meta charset="utf-8"/>
+        <title>Monaco Eurovision Results, Songs &amp; History | DouzePoints</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/style/combined.css">
+        <link rel="stylesheet" type="text/css" href="/style/video-cards.css">
+        <link rel="stylesheet" type="text/css" href="/style/favorites.css">
+        <link rel="stylesheet" type="text/css" href="/style/footer.css">
+        <link rel="stylesheet" type="text/css" href="/style/sidebar.css">
+        <link rel="stylesheet" href="/style/mobile.css">
+        
+        <script src="/js/favicons.js"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+        <!-- GOOGLE ADSENSE SCRIPT  -->
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687" crossorigin="anonymous"></script>
+        
+    
+<meta name="description" content="Explore Monaco at Eurovision: year-by-year entries, artists, songs, winners and recorded results.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://douzepoints.org/country/monaco.html">
 </head>
-<body>
-  <script>
-    // Send users (and your JS app) to the existing dynamic page
-    window.location.replace("../country.html?country=Monaco");
-  </script>
-  <noscript>
-    Monaco Eurovision Results & History. Please enable JavaScript.
-  </noscript>
-</body>
+
+    <!-- Google Tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG"></script>
+    <script src="/js/analytics.js"></script>
+
+    <body oncontextmenu="return false">
+        
+        <!-- HEADER -->
+        <div id="header-container"></div>
+        <script type="module" src="/js/header.js"></script>
+    
+        <!-- MAIN CONTAINER -->
+        <div class="container">
+            
+            <div id="sidebar-container" class="sidebar"></div>
+    
+            <div class="main-content">
+
+                <div class="mobile-page-selector">
+                  <label id="mobile-page-selector-label" for="mobile-page-select"></label>
+                  <select id="mobile-page-select"></select>
+                </div>
+                
+                <div class="header-bar" style="display: flex; justify-content: flex-end; margin-bottom: 40px; margin-right: 20px;">
+                    <div style="flex: 1;"></div>
+                    <div class="sort-controls" style="display: flex; align-items: center; padding-right: 20px;">
+                        <label for="sort-options">
+                            <i data-lucide="list-filter" style="margin-right: 15px;"></i>
+                        </label>
+                        <select id="sort-options" style="width: 160px; padding: 5px; font-size: 11px;">
+                            <option value="year-desc" selected>Year (desc)</option>
+                            <option value="year-asc">Year (asc)</option>
+                            <option value="artist">Artist Name</option>
+                            <option value="song">Song Title</option>
+                            <option value="jury">Jury Points</option>
+                            <option value="televote">Televote Points</option>
+                            <option value="total">Total Points</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-container" id="video-container"></div>
+<section class="seo-country" aria-label="Monaco Eurovision history">
+  <h1>Monaco at Eurovision — Results, Songs &amp; History</h1>
+  <p>Explore Monaco's Eurovision entries, artists, songs and recorded results from the DouzePoints archive.</p>
+  <h2>Monaco's Eurovision Winners</h2>
+  <ul><li>1971 — Séverine: <em>Un banc, un arbre, une rue</em></li></ul>
+  <details class="seo-participants">
+    <summary>Monaco's Eurovision entries by year</summary>
+    <ul><li><strong>2006</strong> — Séverine Ferrer: <em>La Coco-Dance</em></li><li><strong>2005</strong> — Lise Darly: <em>Tout de moi</em></li><li><strong>2004</strong> — Maryon: <em>Notre planète</em></li><li><strong>1979</strong> — Laurent Vaguener: <em>Notre vie c&#x27;est la musique</em> — Final position: 16</li><li><strong>1978</strong> — Caline and Olivier Toussaint: <em>Les Jardins de Monaco</em> — Final position: 4</li><li><strong>1977</strong> — Michèle Torr: <em>Une petite française</em> — Final position: 4</li><li><strong>1976</strong> — Mary Christy: <em>Toi, la musique et moi</em> — Final position: 3</li><li><strong>1975</strong> — Sophie: <em>Une chanson c&#x27;est une lettre</em> — Final position: 13</li><li><strong>1974</strong> — Romuald: <em>Celui qui reste et celui qui s&#x27;en va</em> — Final position: 4</li><li><strong>1973</strong> — Marie: <em>Un train qui part</em> — Final position: 8</li><li><strong>1972</strong> — Anne-Marie Godart and Peter McLane: <em>Comme on s&#x27;aime</em> — Final position: 16</li><li><strong>1971</strong> — Séverine: <em>Un banc, un arbre, une rue</em> — Final position: 1</li><li><strong>1970</strong> — Dominique Dussault: <em>Marlène</em> — Final position: 8</li><li><strong>1969</strong> — Jean Jacques: <em>Maman, Maman</em> — Final position: 6</li><li><strong>1968</strong> — Line and Willy: <em>À chacun sa chanson</em> — Final position: 7</li><li><strong>1967</strong> — Minouche Barelli: <em>Boum-Badaboum</em> — Final position: 5</li><li><strong>1966</strong> — Téréza: <em>Bien plus fort</em> — Final position: 17</li><li><strong>1965</strong> — Marjorie Noël: <em>Va dire à l&#x27;amour</em> — Final position: 9</li><li><strong>1964</strong> — Romuald: <em>Où sont-elles passées</em> — Final position: 3</li><li><strong>1963</strong> — Françoise Hardy: <em>L&#x27;amour s&#x27;en va</em> — Final position: 5</li><li><strong>1962</strong> — François Deguelt: <em>Dis rien</em> — Final position: 2</li><li><strong>1961</strong> — Colette Deréal: <em>Allons, allons les enfants</em> — Final position: 10</li><li><strong>1960</strong> — François Deguelt: <em>Ce soir-là</em> — Final position: 3</li><li><strong>1959</strong> — Jacques Pills: <em>Mon ami Pierrot</em> — Final position: 11</li></ul>
+  </details>
+</section>
+<style>
+  .seo-country { box-sizing:border-box; max-width:100%; min-width:0; margin:45px 20px 40px;
+                  color:#ccc; overflow-wrap:anywhere; line-height:1.7; }
+  .seo-country h1,.seo-country h2 { color:#fff; }
+  .seo-country h1 { font-size:clamp(24px,3vw,34px); }
+  .seo-country h2 { font-size:21px; margin-top:28px; }
+  .seo-country ul { padding-left:24px; }
+  .seo-country details { border-top:1px solid #333; margin-top:28px; padding-top:16px; }
+  .seo-country summary { cursor:pointer; color:#fff; font-weight:600; }
+  .main-content { min-width:0; }
+</style>
+            </div>
+        </div>
+    
+        
+        <!-- MODAL -->
+        <script src="/js/modal.js"></script>
+        <div id="modal-container"></div>
+    
+        <script type="module" src="/js/video2.js"></script>
+    
+        <!-- FOOTER -->
+        <div id="footer"></div>
+        <script src="/js/footer.js" type="text/javascript"></script>
+    
+        
+        <!-- SCRIPTS -->
+        <script type="module" src="/js/sorting_country2.js"></script>
+        <script src="/js/icons.js" type="text/javascript"></script>
+        
+        <script type="module" src="/js/mobile-page-selector.js"></script>
+        
+    
+        <!-- LOAD SIDEBAR LAST -->
+        <script type="module" src="/js/sidebar_eurovision.js"></script>
+
+    </body>
+
 </html>
