@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>Eurovision 2025 Results &amp; Songs | Douze Points</title>
+  <meta name="description" content="Eurovision 2025 results, rankings, artists and songs. Explore the full Eurovision archive.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://douzepoints.org/edition/2025.html">
+
+  <link rel="stylesheet" href="/style/combined.css">
+  <link rel="stylesheet" href="/style/video-cards.css">
+  <link rel="stylesheet" href="/style/favorites.css">
+  <link rel="stylesheet" href="/style/footer.css">
+  <link rel="stylesheet" href="/style/sidebar.css">
+  <link rel="stylesheet" href="/style/mobile.css">
+
+  <script src="/js/favicons.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687"
+    crossorigin="anonymous"></script>
+
+  <script async
+    src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG">
+  </script>
+  <script src="/js/analytics.js"></script>
+
+  <style>
+    .seo-edition {
+      padding: 0 20px 28px;
+      max-width: 100%;
+    }
+    .seo-edition h1 {
+      font-size: clamp(24px, 3vw, 34px);
+      margin: 0 0 14px;
+    }
+    .seo-edition h2 {
+      font-size: 21px;
+      margin: 30px 0 14px;
+    }
+    .seo-edition p {
+      line-height: 1.65;
+    }
+    .seo-winner {
+      margin: 18px 0;
+      font-size: 16px;
+    }
+    .seo-results-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .seo-results-scroll table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      padding: 10px;
+      border-bottom: 1px solid #444;
+      text-align: left;
+    }
+    .seo-results-scroll th {
+      background: #242424;
+    }
+    .seo-entries {
+      columns: 2;
+      padding-left: 22px;
+      line-height: 1.8;
+    }
+    @media (max-width: 700px) {
+      .seo-entries { columns: 1; }
+      .seo-edition { padding: 0 12px 24px; }
+    }
+
+
+        /* Prevent SEO content from widening the page */
+    .container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .main-content {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .seo-edition {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      color: #e5e5e5;
+      margin-top: 45px;
+      padding-bottom: 40px;
+    }
+
+    .seo-edition h1,
+    .seo-edition h2 {
+      color: #ffffff;
+    }
+
+    .seo-edition p,
+    .seo-edition li {
+      color: #cccccc;
+    }
+
+    /* Scoreboard stays within the content area */
+    .seo-results-scroll,
+    .seo-results-scroll .results-scroll {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
+
+    .seo-results-scroll table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      white-space: nowrap;
+    }
+
+    /* Expandable participants section */
+    .seo-participants {
+      margin-top: 35px;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      padding: 16px 0;
+    }
+
+    .seo-participants summary {
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 0;
+    }
+
+    .seo-participants summary:hover {
+      color: #e50914;
+    }
+
+    .seo-entries {
+      margin-top: 20px;
+    }
+    
+  </style>
+</head>
+
+<body oncontextmenu="return false">
+
+  <div id="header-container"></div>
+  <script type="module" src="/js/header.js"></script>
+
+  <div class="container">
+
+    <div id="sidebar-container" class="sidebar"></div>
+
+    <div class="main-content">
+
+      <div class="mobile-page-selector">
+        <label id="mobile-page-selector-label"
+               for="mobile-page-select"></label>
+        <select id="mobile-page-select"></select>
+      </div>
+
+      <div class="header-bar"
+           style="display:flex;justify-content:flex-end;
+                  margin-bottom:40px;margin-right:20px;">
+
+        <div style="flex:1"></div>
+
+        <div class="sort-controls"
+             style="display:flex;align-items:center;
+                    padding-right:20px;">
+
+          <label for="sort-options">
+            <i data-lucide="list-filter"
+               style="margin-right:15px"></i>
+          </label>
+
+          <select id="sort-options"
+                  style="width:160px;padding:5px;
+                         font-size:11px;">
+            <option value="country" selected>
+              Country (A–Z)
+            </option>
+            <option value="country-desc">
+              Country (Z–A)
+            </option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+            <option value="jury">Jury Points</option>
+            <option value="televote">Televote Points</option>
+            <option value="total">Total Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-container" id="video-container"></div>
+
+      <!-- SEO content follows the video gallery -->
+      <section class="seo-edition">
+
+        <h1>Eurovision 2025 Results &amp; Songs</h1>
+
+        <p>
+          Explore the Eurovision Song Contest 2025 in Basel. Browse the results, participating countries, artists and songs.
+        </p>
+
+        <p class="seo-winner">Winner: <strong>Austria</strong> — JJ, <em>Wasted Love</em>.</p>
+
+        <h2>Eurovision 2025 Final Scoreboard</h2><div class="seo-results-scroll">
+      <div class="results-scroll">
+        <table>
+          <thead><tr><th>Rank</th><th>Country</th><th>Artist</th><th>Song</th><th>Jury</th><th>Televote</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Austria</td><td>JJ</td><td>Wasted Love</td><td>258</td><td>178</td><td>436</td></tr><tr><td>2</td><td>Israel</td><td>Yuval Raphael</td><td>New Day Will Rise</td><td>60</td><td>297</td><td>357</td></tr><tr><td>3</td><td>Estonia</td><td>Tommy Cash</td><td>Espresso Macchiato</td><td>98</td><td>258</td><td>356</td></tr><tr><td>4</td><td>Sweden</td><td>KAJ</td><td>Bara bada bastu</td><td>126</td><td>195</td><td>321</td></tr><tr><td>5</td><td>Italy</td><td>Lucio Corsi</td><td>Volevo essere un duro</td><td>159</td><td>97</td><td>256</td></tr><tr><td>6</td><td>Greece</td><td>Klavdia</td><td>Asteromata</td><td>105</td><td>126</td><td>231</td></tr><tr><td>7</td><td>France</td><td>Louane</td><td>Maman</td><td>180</td><td>50</td><td>230</td></tr><tr><td>8</td><td>Albania</td><td>Shkodra Elektronike</td><td>Zjerm</td><td>45</td><td>173</td><td>218</td></tr><tr><td>9</td><td>Ukraine</td><td>Ziferblat</td><td>Bird of Pray</td><td>60</td><td>158</td><td>218</td></tr><tr><td>10</td><td>Switzerland</td><td>Zoë Më</td><td>Voyage</td><td>214</td><td>0</td><td>214</td></tr><tr><td>11</td><td>Finland</td><td>Erika Vikman</td><td>Ich komme</td><td>88</td><td>108</td><td>196</td></tr><tr><td>12</td><td>Netherlands</td><td>Claude</td><td>C&#x27;est la vie</td><td>133</td><td>42</td><td>175</td></tr><tr><td>13</td><td>Latvia</td><td>Tautumeitas</td><td>Bur man laimi</td><td>116</td><td>42</td><td>158</td></tr><tr><td>14</td><td>Poland</td><td>Justyna Steczkowska</td><td>Gaja</td><td>17</td><td>139</td><td>156</td></tr><tr><td>15</td><td>Germany</td><td>Abor &amp; Tynna</td><td>Baller</td><td>77</td><td>74</td><td>151</td></tr><tr><td>16</td><td>Lithuania</td><td>Katarsis</td><td>Tavo akys</td><td>34</td><td>62</td><td>96</td></tr><tr><td>17</td><td>Malta</td><td>Miriana Conte</td><td>Serving</td><td>83</td><td>8</td><td>91</td></tr><tr><td>18</td><td>Norway</td><td>Kyle Alessandro</td><td>Lighter</td><td>22</td><td>67</td><td>89</td></tr><tr><td>19</td><td>United Kingdom</td><td>Remember Monday</td><td>What the Hell Just Happened?</td><td>88</td><td>0</td><td>88</td></tr><tr><td>20</td><td>Armenia</td><td>Parg</td><td>Survivor</td><td>42</td><td>30</td><td>72</td></tr><tr><td>21</td><td>Portugal</td><td>Napa</td><td>Deslocado</td><td>37</td><td>13</td><td>50</td></tr><tr><td>22</td><td>Luxembourg</td><td>Laura Thorn</td><td>La poupée monte le son</td><td>23</td><td>24</td><td>47</td></tr><tr><td>23</td><td>Denmark</td><td>Sissal</td><td>Hallucination</td><td>45</td><td>2</td><td>47</td></tr><tr><td>24</td><td>Spain</td><td>Melody</td><td>Esa diva</td><td>27</td><td>10</td><td>37</td></tr><tr><td>25</td><td>Iceland</td><td>Væb</td><td>Róa</td><td>0</td><td>33</td><td>33</td></tr><tr><td>26</td><td>San Marino</td><td>Gabry Ponte</td><td>Tutta l&#x27;Italia</td><td>9</td><td>18</td><td>27</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+        <details class="seo-participants">
+          <summary>
+            Eurovision 2025 Participating Countries,
+            Artists &amp; Songs
+          </summary>
+
+          <div class="seo-entries">
+            <ul><li><strong>Albania</strong> — Shkodra Elektronike: Zjerm</li>
+<li><strong>Armenia</strong> — Parg: Survivor</li>
+<li><strong>Australia</strong> — Go-Jo: Milkshake Man</li>
+<li><strong>Austria</strong> — JJ: Wasted Love</li>
+<li><strong>Azerbaijan</strong> — Mamagama: Run with U</li>
+<li><strong>Belgium</strong> — Red Sebastian: Strobe Lights</li>
+<li><strong>Croatia</strong> — Marko Bošnjak: Poison Cake</li>
+<li><strong>Cyprus</strong> — Theo Evan: Shh</li>
+<li><strong>Czechia</strong> — Adonxs: Kiss Kiss Goodbye</li>
+<li><strong>Denmark</strong> — Sissal: Hallucination</li>
+<li><strong>Estonia</strong> — Tommy Cash: Espresso Macchiato</li>
+<li><strong>Finland</strong> — Erika Vikman: Ich komme</li>
+<li><strong>France</strong> — Louane: Maman</li>
+<li><strong>Georgia</strong> — Mariam Shengelia: Freedom</li>
+<li><strong>Germany</strong> — Abor &amp; Tynna: Baller</li>
+<li><strong>Greece</strong> — Klavdia: Asteromata</li>
+<li><strong>Iceland</strong> — Væb: Róa</li>
+<li><strong>Ireland</strong> — Emmy: Laika Party</li>
+<li><strong>Israel</strong> — Yuval Raphael: New Day Will Rise</li>
+<li><strong>Italy</strong> — Lucio Corsi: Volevo essere un duro</li>
+<li><strong>Latvia</strong> — Tautumeitas: Bur man laimi</li>
+<li><strong>Lithuania</strong> — Katarsis: Tavo akys</li>
+<li><strong>Luxembourg</strong> — Laura Thorn: La poupée monte le son</li>
+<li><strong>Malta</strong> — Miriana Conte: Serving</li>
+<li><strong>Montenegro</strong> — Nina Žižić: Dobrodošli</li>
+<li><strong>Netherlands</strong> — Claude: C&#x27;est la vie</li>
+<li><strong>Norway</strong> — Kyle Alessandro: Lighter</li>
+<li><strong>Poland</strong> — Justyna Steczkowska: Gaja</li>
+<li><strong>Portugal</strong> — Napa: Deslocado</li>
+<li><strong>San Marino</strong> — Gabry Ponte: Tutta l&#x27;Italia</li>
+<li><strong>Serbia</strong> — Princ: Mila</li>
+<li><strong>Slovenia</strong> — Klemen: How Much Time Do We Have Left</li>
+<li><strong>Spain</strong> — Melody: Esa diva</li>
+<li><strong>Sweden</strong> — KAJ: Bara bada bastu</li>
+<li><strong>Switzerland</strong> — Zoë Më: Voyage</li>
+<li><strong>Ukraine</strong> — Ziferblat: Bird of Pray</li>
+<li><strong>United Kingdom</strong> — Remember Monday: What the Hell Just Happened?</li></ul>
+          </div>
+        </details>
+
+      </section>
+
+    </div>
+  </div>
+
+  <script src="/js/modal.js"></script>
+  <div id="modal-container"></div>
+
+  <script type="module" src="/js/video2.js"></script>
+
+  <div id="footer"></div>
+  <script src="/js/footer.js"></script>
+
+  <script type="module" src="/js/sorting_edition2.js"></script>
+  <script src="/js/icons.js"></script>
+  <script type="module"
+          src="/js/mobile-page-selector.js"></script>
+  <script type="module"
+          src="/js/sidebar_eurovision.js"></script>
+
+</body>
+</html>
