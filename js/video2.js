@@ -13,6 +13,17 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
       .replace(/>/g, "&gt;");
   }
 
+  // Match the slugs used by generate_country_seo.py.
+  function countrySeoUrl(name) {
+    const slug = String(name || "")
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+    return slug ? `/country/${slug}.html` : "/country.html";
+  }
+
   function getQueryParam(name) {
     const params = new URLSearchParams(window.location.search);
     return params.get(name);
@@ -347,7 +358,7 @@ async function toggleFavorite(button, videoKey, entry = null) {
 
     <div class="video-title-with-icon" style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
       <div style="display:flex;align-items:center;gap:10px;">
-        <a href="/country.html?country=${encodeURIComponent(entry.Country || "")}" onclick="event.stopPropagation()">
+        <a href="${countrySeoUrl(entry.Country)}" onclick="event.stopPropagation()">
           <img class="flag-icon" src="${escapeHTML(flagUrl)}" alt="Flag">
         </a>
         <div class="video-title-text">
