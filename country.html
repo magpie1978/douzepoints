@@ -26,7 +26,14 @@
             if (country) {
               const canonical = document.createElement("link");
               canonical.rel = "canonical";
-              canonical.href = `https://douzepoints.org/country.html?country=${country}`;
+              const slug = country.normalize("NFKD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-|-$/g, "");
+              canonical.href = slug
+                ? `https://douzepoints.org/country/${slug}.html`
+                : "https://douzepoints.org/country.html";
               document.head.appendChild(canonical);
             }
         </script>
