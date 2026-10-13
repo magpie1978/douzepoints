@@ -1,20 +1,292 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Eurovision 1995 Final Results &amp; Scoreboard | DouzePoints</title>
-  <meta name="description" content="Eurovision 1995 results including final rankings, jury points, televote points and full scoreboard. Explore the complete 1995 Eurovision archive on DouzePoints." />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://douzepoints.org/edition/1995.html" />
-</head>
-<body>
-  <script>
-    window.location.replace(
-      "../edition.html?edition=" + encodeURIComponent("1995")
-    );
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>Eurovision 1995 Results &amp; Songs | Douze Points</title>
+  <meta name="description" content="Eurovision 1995 results, rankings, artists and songs. Explore the full Eurovision archive.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://douzepoints.org/edition/1995.html">
+
+  <link rel="stylesheet" href="/style/combined.css">
+  <link rel="stylesheet" href="/style/video-cards.css">
+  <link rel="stylesheet" href="/style/favorites.css">
+  <link rel="stylesheet" href="/style/footer.css">
+  <link rel="stylesheet" href="/style/sidebar.css">
+  <link rel="stylesheet" href="/style/mobile.css">
+
+  <script src="/js/favicons.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687"
+    crossorigin="anonymous"></script>
+
+  <script async
+    src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG">
   </script>
-  <noscript>
-    Eurovision 1995 Final Results &amp; Scoreboard. Please enable JavaScript.
-  </noscript>
+  <script src="/js/analytics.js"></script>
+
+  <style>
+    .seo-edition {
+      padding: 0 20px 28px;
+      max-width: 100%;
+    }
+    .seo-edition h1 {
+      font-size: clamp(24px, 3vw, 34px);
+      margin: 0 0 14px;
+    }
+    .seo-edition h2 {
+      font-size: 21px;
+      margin: 30px 0 14px;
+    }
+    .seo-edition p {
+      line-height: 1.65;
+    }
+    .seo-winner {
+      margin: 18px 0;
+      font-size: 16px;
+    }
+    .seo-results-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .seo-results-scroll table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      padding: 10px;
+      border-bottom: 1px solid #444;
+      text-align: left;
+    }
+    .seo-results-scroll th {
+      background: #242424;
+    }
+    .seo-entries {
+      columns: 2;
+      padding-left: 22px;
+      line-height: 1.8;
+    }
+    @media (max-width: 700px) {
+      .seo-entries { columns: 1; }
+      .seo-edition { padding: 0 12px 24px; }
+    }
+
+
+        /* Prevent SEO content from widening the page */
+    .container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .main-content {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .seo-edition {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      color: #e5e5e5;
+      margin-top: 45px;
+      padding-bottom: 40px;
+    }
+
+    .seo-edition h1,
+    .seo-edition h2 {
+      color: #ffffff;
+    }
+
+    .seo-edition p,
+    .seo-edition li {
+      color: #cccccc;
+    }
+
+    /* Scoreboard stays within the content area */
+    .seo-results-scroll,
+    .seo-results-scroll .results-scroll {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
+
+    .seo-results-scroll table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      white-space: nowrap;
+    }
+
+    /* Expandable participants section */
+    .seo-participants {
+      margin-top: 35px;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      padding: 16px 0;
+    }
+
+    .seo-participants summary {
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 0;
+    }
+
+    .seo-participants summary:hover {
+      color: #e50914;
+    }
+
+    .seo-entries {
+      margin-top: 20px;
+    }
+    
+  </style>
+</head>
+
+<body oncontextmenu="return false">
+
+  <div id="header-container"></div>
+  <script type="module" src="/js/header.js"></script>
+
+  <div class="container">
+
+    <div id="sidebar-container" class="sidebar"></div>
+
+    <div class="main-content">
+
+      <div class="mobile-page-selector">
+        <label id="mobile-page-selector-label"
+               for="mobile-page-select"></label>
+        <select id="mobile-page-select"></select>
+      </div>
+
+      <div class="header-bar"
+           style="display:flex;justify-content:flex-end;
+                  margin-bottom:40px;margin-right:20px;">
+
+        <div style="flex:1"></div>
+
+        <div class="sort-controls"
+             style="display:flex;align-items:center;
+                    padding-right:20px;">
+
+          <label for="sort-options">
+            <i data-lucide="list-filter"
+               style="margin-right:15px"></i>
+          </label>
+
+          <select id="sort-options"
+                  style="width:160px;padding:5px;
+                         font-size:11px;">
+            <option value="country" selected>
+              Country (A–Z)
+            </option>
+            <option value="country-desc">
+              Country (Z–A)
+            </option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+            <option value="jury">Jury Points</option>
+            <option value="televote">Televote Points</option>
+            <option value="total">Total Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-container" id="video-container"></div>
+
+      <!-- SEO content follows the video gallery -->
+      <section class="seo-edition">
+
+        <h1>Eurovision 1995 Results &amp; Songs</h1>
+
+        <p>
+          Explore the Eurovision Song Contest 1995 in Dublin. Browse the results, participating countries, artists and songs.
+        </p>
+
+        <p class="seo-winner">Winner: <strong>Norway</strong> — Secret Garden, <em>Nocturne</em>.</p>
+
+        <h2>Eurovision 1995 Final Scoreboard</h2><div class="seo-results-scroll">
+      <div class="results-scroll">
+        <table>
+          <thead><tr><th>Rank</th><th>Country</th><th>Artist</th><th>Song</th><th>Jury</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Norway</td><td>Secret Garden</td><td>Nocturne</td><td>148</td><td>148</td></tr><tr><td>2</td><td>Spain</td><td>Anabel Conde</td><td>Vuelve conmigo</td><td>119</td><td>119</td></tr><tr><td>3</td><td>Sweden</td><td>Jan Johansen</td><td>Se på mej</td><td>100</td><td>100</td></tr><tr><td>4</td><td>France</td><td>Nathalie Santamaria</td><td>Il me donne rendez-vous</td><td>94</td><td>94</td></tr><tr><td>5</td><td>Denmark</td><td>Aud Wilken</td><td>Fra Mols til Skagen</td><td>92</td><td>92</td></tr><tr><td>6</td><td>Croatia</td><td>Magazin and Lidija</td><td>Nostalgija</td><td>91</td><td>91</td></tr><tr><td>7</td><td>Slovenia</td><td>Darja Švajger</td><td>Prisluhni mi</td><td>84</td><td>84</td></tr><tr><td>8</td><td>Israel</td><td>Liora</td><td>Amen</td><td>81</td><td>81</td></tr><tr><td>9</td><td>Cyprus</td><td>Alexandros Panayi</td><td>Sti fotia</td><td>79</td><td>79</td></tr><tr><td>10</td><td>Malta</td><td>Mike Spiteri</td><td>Keep Me in Mind</td><td>76</td><td>76</td></tr><tr><td>10</td><td>United Kingdom</td><td>Love City Groove</td><td>Love City Groove</td><td>76</td><td>76</td></tr><tr><td>12</td><td>Greece</td><td>Elina Konstantopoulou</td><td>Pia prosefhi</td><td>68</td><td>68</td></tr><tr><td>13</td><td>Austria</td><td>Stella Jones</td><td>Die Welt dreht sich verkehrt</td><td>67</td><td>67</td></tr><tr><td>14</td><td>Ireland</td><td>Eddie Friel</td><td>Dreamin&#x27;</td><td>44</td><td>44</td></tr><tr><td>15</td><td>Iceland</td><td>Bo Halldórsson</td><td>Núna</td><td>31</td><td>31</td></tr><tr><td>16</td><td>Turkey</td><td>Arzu Ece</td><td>Sev!</td><td>21</td><td>21</td></tr><tr><td>17</td><td>Russia</td><td>Philipp Kirkorov</td><td>Kolybelnaya dlya vulkana</td><td>17</td><td>17</td></tr><tr><td>18</td><td>Poland</td><td>Justyna</td><td>Sama</td><td>15</td><td>15</td></tr><tr><td>19</td><td>Bosnia &amp; Hercegovina</td><td>Davor Popović</td><td>Dvadeset prvi vijek&quot;</td><td>14</td><td>14</td></tr><tr><td>20</td><td>Belgium</td><td>Frédéric Etherlinck</td><td>La voix est libre</td><td>8</td><td>8</td></tr><tr><td>21</td><td>Portugal</td><td>Tó Cruz</td><td>Baunilha e chocolate</td><td>5</td><td>5</td></tr><tr><td>22</td><td>Hungary</td><td>Csaba Szigeti</td><td>Új név egy régi ház falán</td><td>3</td><td>3</td></tr><tr><td>23</td><td>Germany</td><td>Stone and Stone</td><td>Verliebt in Dich</td><td>1</td><td>1</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+        <details class="seo-participants">
+          <summary>
+            Eurovision 1995 Participating Countries,
+            Artists &amp; Songs
+          </summary>
+
+          <div class="seo-entries">
+            <ul><li><strong>Austria</strong> — Stella Jones: Die Welt dreht sich verkehrt</li>
+<li><strong>Belgium</strong> — Frédéric Etherlinck: La voix est libre</li>
+<li><strong>Bosnia &amp; Hercegovina</strong> — Davor Popović: Dvadeset prvi vijek&quot;</li>
+<li><strong>Croatia</strong> — Magazin and Lidija: Nostalgija</li>
+<li><strong>Cyprus</strong> — Alexandros Panayi: Sti fotia</li>
+<li><strong>Denmark</strong> — Aud Wilken: Fra Mols til Skagen</li>
+<li><strong>France</strong> — Nathalie Santamaria: Il me donne rendez-vous</li>
+<li><strong>Germany</strong> — Stone and Stone: Verliebt in Dich</li>
+<li><strong>Greece</strong> — Elina Konstantopoulou: Pia prosefhi</li>
+<li><strong>Hungary</strong> — Csaba Szigeti: Új név egy régi ház falán</li>
+<li><strong>Iceland</strong> — Bo Halldórsson: Núna</li>
+<li><strong>Ireland</strong> — Eddie Friel: Dreamin&#x27;</li>
+<li><strong>Israel</strong> — Liora: Amen</li>
+<li><strong>Malta</strong> — Mike Spiteri: Keep Me in Mind</li>
+<li><strong>Norway</strong> — Secret Garden: Nocturne</li>
+<li><strong>Poland</strong> — Justyna: Sama</li>
+<li><strong>Portugal</strong> — Tó Cruz: Baunilha e chocolate</li>
+<li><strong>Russia</strong> — Philipp Kirkorov: Kolybelnaya dlya vulkana</li>
+<li><strong>Slovenia</strong> — Darja Švajger: Prisluhni mi</li>
+<li><strong>Spain</strong> — Anabel Conde: Vuelve conmigo</li>
+<li><strong>Sweden</strong> — Jan Johansen: Se på mej</li>
+<li><strong>Turkey</strong> — Arzu Ece: Sev!</li>
+<li><strong>United Kingdom</strong> — Love City Groove: Love City Groove</li></ul>
+          </div>
+        </details>
+
+      </section>
+
+    </div>
+  </div>
+
+  <script src="/js/modal.js"></script>
+  <div id="modal-container"></div>
+
+  <script type="module" src="/js/video2.js"></script>
+
+  <div id="footer"></div>
+  <script src="/js/footer.js"></script>
+
+  <script type="module" src="/js/sorting_edition2.js"></script>
+  <script src="/js/icons.js"></script>
+  <script type="module"
+          src="/js/mobile-page-selector.js"></script>
+  <script type="module"
+          src="/js/sidebar_eurovision.js"></script>
+
 </body>
 </html>

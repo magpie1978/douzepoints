@@ -1,20 +1,292 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Eurovision 1996 Final Results &amp; Scoreboard | DouzePoints</title>
-  <meta name="description" content="Eurovision 1996 results including final rankings, jury points, televote points and full scoreboard. Explore the complete 1996 Eurovision archive on DouzePoints." />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://douzepoints.org/edition/1996.html" />
-</head>
-<body>
-  <script>
-    window.location.replace(
-      "../edition.html?edition=" + encodeURIComponent("1996")
-    );
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>Eurovision 1996 Results &amp; Songs | Douze Points</title>
+  <meta name="description" content="Eurovision 1996 results, rankings, artists and songs. Explore the full Eurovision archive.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://douzepoints.org/edition/1996.html">
+
+  <link rel="stylesheet" href="/style/combined.css">
+  <link rel="stylesheet" href="/style/video-cards.css">
+  <link rel="stylesheet" href="/style/favorites.css">
+  <link rel="stylesheet" href="/style/footer.css">
+  <link rel="stylesheet" href="/style/sidebar.css">
+  <link rel="stylesheet" href="/style/mobile.css">
+
+  <script src="/js/favicons.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687"
+    crossorigin="anonymous"></script>
+
+  <script async
+    src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG">
   </script>
-  <noscript>
-    Eurovision 1996 Final Results &amp; Scoreboard. Please enable JavaScript.
-  </noscript>
+  <script src="/js/analytics.js"></script>
+
+  <style>
+    .seo-edition {
+      padding: 0 20px 28px;
+      max-width: 100%;
+    }
+    .seo-edition h1 {
+      font-size: clamp(24px, 3vw, 34px);
+      margin: 0 0 14px;
+    }
+    .seo-edition h2 {
+      font-size: 21px;
+      margin: 30px 0 14px;
+    }
+    .seo-edition p {
+      line-height: 1.65;
+    }
+    .seo-winner {
+      margin: 18px 0;
+      font-size: 16px;
+    }
+    .seo-results-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .seo-results-scroll table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      padding: 10px;
+      border-bottom: 1px solid #444;
+      text-align: left;
+    }
+    .seo-results-scroll th {
+      background: #242424;
+    }
+    .seo-entries {
+      columns: 2;
+      padding-left: 22px;
+      line-height: 1.8;
+    }
+    @media (max-width: 700px) {
+      .seo-entries { columns: 1; }
+      .seo-edition { padding: 0 12px 24px; }
+    }
+
+
+        /* Prevent SEO content from widening the page */
+    .container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .main-content {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .seo-edition {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      color: #e5e5e5;
+      margin-top: 45px;
+      padding-bottom: 40px;
+    }
+
+    .seo-edition h1,
+    .seo-edition h2 {
+      color: #ffffff;
+    }
+
+    .seo-edition p,
+    .seo-edition li {
+      color: #cccccc;
+    }
+
+    /* Scoreboard stays within the content area */
+    .seo-results-scroll,
+    .seo-results-scroll .results-scroll {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
+
+    .seo-results-scroll table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      white-space: nowrap;
+    }
+
+    /* Expandable participants section */
+    .seo-participants {
+      margin-top: 35px;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      padding: 16px 0;
+    }
+
+    .seo-participants summary {
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 0;
+    }
+
+    .seo-participants summary:hover {
+      color: #e50914;
+    }
+
+    .seo-entries {
+      margin-top: 20px;
+    }
+    
+  </style>
+</head>
+
+<body oncontextmenu="return false">
+
+  <div id="header-container"></div>
+  <script type="module" src="/js/header.js"></script>
+
+  <div class="container">
+
+    <div id="sidebar-container" class="sidebar"></div>
+
+    <div class="main-content">
+
+      <div class="mobile-page-selector">
+        <label id="mobile-page-selector-label"
+               for="mobile-page-select"></label>
+        <select id="mobile-page-select"></select>
+      </div>
+
+      <div class="header-bar"
+           style="display:flex;justify-content:flex-end;
+                  margin-bottom:40px;margin-right:20px;">
+
+        <div style="flex:1"></div>
+
+        <div class="sort-controls"
+             style="display:flex;align-items:center;
+                    padding-right:20px;">
+
+          <label for="sort-options">
+            <i data-lucide="list-filter"
+               style="margin-right:15px"></i>
+          </label>
+
+          <select id="sort-options"
+                  style="width:160px;padding:5px;
+                         font-size:11px;">
+            <option value="country" selected>
+              Country (A–Z)
+            </option>
+            <option value="country-desc">
+              Country (Z–A)
+            </option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+            <option value="jury">Jury Points</option>
+            <option value="televote">Televote Points</option>
+            <option value="total">Total Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-container" id="video-container"></div>
+
+      <!-- SEO content follows the video gallery -->
+      <section class="seo-edition">
+
+        <h1>Eurovision 1996 Results &amp; Songs</h1>
+
+        <p>
+          Explore the Eurovision Song Contest 1996 in Oslo. Browse the results, participating countries, artists and songs.
+        </p>
+
+        <p class="seo-winner">Winner: <strong>Ireland</strong> — Eimear Quinn, <em>The Voice</em>.</p>
+
+        <h2>Eurovision 1996 Final Scoreboard</h2><div class="seo-results-scroll">
+      <div class="results-scroll">
+        <table>
+          <thead><tr><th>Rank</th><th>Country</th><th>Artist</th><th>Song</th><th>Jury</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Ireland</td><td>Eimear Quinn</td><td>The Voice</td><td>162</td><td>162</td></tr><tr><td>2</td><td>Norway</td><td>Elisabeth Andreassen</td><td>I evighet</td><td>114</td><td>114</td></tr><tr><td>3</td><td>Sweden</td><td>One More Time</td><td>Den vilda</td><td>100</td><td>100</td></tr><tr><td>4</td><td>Croatia</td><td>Maja Blagdan</td><td>Sveta ljubav</td><td>98</td><td>98</td></tr><tr><td>5</td><td>Estonia</td><td>Maarja-Liis Ilus and Ivo Linna</td><td>Kaelakee hääl</td><td>94</td><td>94</td></tr><tr><td>6</td><td>Portugal</td><td>Lúcia Moniz</td><td>O meu coração não tem cor</td><td>92</td><td>92</td></tr><tr><td>7</td><td>Netherlands</td><td>Maxine and Franklin Brown</td><td>De eerste keer</td><td>78</td><td>78</td></tr><tr><td>8</td><td>United Kingdom</td><td>Gina G</td><td>Ooh Aah... Just a Little Bit</td><td>77</td><td>77</td></tr><tr><td>9</td><td>Cyprus</td><td>Constantinos</td><td>Mono gia mas</td><td>72</td><td>72</td></tr><tr><td>10</td><td>Austria</td><td>George Nussbaumer</td><td>Weil&#x27;s dr guat got</td><td>68</td><td>68</td></tr><tr><td>10</td><td>Malta</td><td>Miriam Christine</td><td>In a Woman&#x27;s Heart</td><td>68</td><td>68</td></tr><tr><td>12</td><td>Turkey</td><td>Şebnem Paker</td><td>Beşinci Mevsim</td><td>57</td><td>57</td></tr><tr><td>13</td><td>Iceland</td><td>Anna Mjöll</td><td>Sjúbídú</td><td>51</td><td>51</td></tr><tr><td>14</td><td>Greece</td><td>Marianna Efstratiou</td><td>Emis forame to himona anixiatika</td><td>36</td><td>36</td></tr><tr><td>15</td><td>Poland</td><td>Kasia Kowalska</td><td>Chcę znać swój grzech</td><td>31</td><td>31</td></tr><tr><td>16</td><td>Belgium</td><td>Lisa del Bo</td><td>Liefde is een kaartspel</td><td>22</td><td>22</td></tr><tr><td>16</td><td>Switzerland</td><td>Kathy Leander</td><td>Mon cœur l&#x27;aime</td><td>22</td><td>22</td></tr><tr><td>18</td><td>Slovakia</td><td>Marcel Palonder</td><td>Kým nás máš</td><td>19</td><td>19</td></tr><tr><td>19</td><td>France</td><td>Dan Ar Braz and l&#x27;Héritage des Celtes</td><td>Diwanit bugale</td><td>18</td><td>18</td></tr><tr><td>20</td><td>Spain</td><td>Antonio Carbonell</td><td>Ay, qué deseo</td><td>17</td><td>17</td></tr><tr><td>21</td><td>Slovenia</td><td>Regina</td><td>Dan najlepših sanj</td><td>16</td><td>16</td></tr><tr><td>22</td><td>Bosnia &amp; Hercegovina</td><td>Amila Glamočak</td><td>Za našu ljubav</td><td>13</td><td>13</td></tr><tr><td>23</td><td>Finland</td><td>Jasmine</td><td>Niin kaunis on taivas</td><td>9</td><td>9</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+        <details class="seo-participants">
+          <summary>
+            Eurovision 1996 Participating Countries,
+            Artists &amp; Songs
+          </summary>
+
+          <div class="seo-entries">
+            <ul><li><strong>Austria</strong> — George Nussbaumer: Weil&#x27;s dr guat got</li>
+<li><strong>Belgium</strong> — Lisa del Bo: Liefde is een kaartspel</li>
+<li><strong>Bosnia &amp; Hercegovina</strong> — Amila Glamočak: Za našu ljubav</li>
+<li><strong>Croatia</strong> — Maja Blagdan: Sveta ljubav</li>
+<li><strong>Cyprus</strong> — Constantinos: Mono gia mas</li>
+<li><strong>Estonia</strong> — Maarja-Liis Ilus and Ivo Linna: Kaelakee hääl</li>
+<li><strong>Finland</strong> — Jasmine: Niin kaunis on taivas</li>
+<li><strong>France</strong> — Dan Ar Braz and l&#x27;Héritage des Celtes: Diwanit bugale</li>
+<li><strong>Greece</strong> — Marianna Efstratiou: Emis forame to himona anixiatika</li>
+<li><strong>Iceland</strong> — Anna Mjöll: Sjúbídú</li>
+<li><strong>Ireland</strong> — Eimear Quinn: The Voice</li>
+<li><strong>Malta</strong> — Miriam Christine: In a Woman&#x27;s Heart</li>
+<li><strong>Netherlands</strong> — Maxine and Franklin Brown: De eerste keer</li>
+<li><strong>Norway</strong> — Elisabeth Andreassen: I evighet</li>
+<li><strong>Poland</strong> — Kasia Kowalska: Chcę znać swój grzech</li>
+<li><strong>Portugal</strong> — Lúcia Moniz: O meu coração não tem cor</li>
+<li><strong>Slovakia</strong> — Marcel Palonder: Kým nás máš</li>
+<li><strong>Slovenia</strong> — Regina: Dan najlepših sanj</li>
+<li><strong>Spain</strong> — Antonio Carbonell: Ay, qué deseo</li>
+<li><strong>Sweden</strong> — One More Time: Den vilda</li>
+<li><strong>Switzerland</strong> — Kathy Leander: Mon cœur l&#x27;aime</li>
+<li><strong>Turkey</strong> — Şebnem Paker: Beşinci Mevsim</li>
+<li><strong>United Kingdom</strong> — Gina G: Ooh Aah... Just a Little Bit</li></ul>
+          </div>
+        </details>
+
+      </section>
+
+    </div>
+  </div>
+
+  <script src="/js/modal.js"></script>
+  <div id="modal-container"></div>
+
+  <script type="module" src="/js/video2.js"></script>
+
+  <div id="footer"></div>
+  <script src="/js/footer.js"></script>
+
+  <script type="module" src="/js/sorting_edition2.js"></script>
+  <script src="/js/icons.js"></script>
+  <script type="module"
+          src="/js/mobile-page-selector.js"></script>
+  <script type="module"
+          src="/js/sidebar_eurovision.js"></script>
+
 </body>
 </html>

@@ -1,20 +1,308 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Eurovision 2005 Final Results &amp; Scoreboard | DouzePoints</title>
-  <meta name="description" content="Eurovision 2005 results including final rankings, jury points, televote points and full scoreboard. Explore the complete 2005 Eurovision archive on DouzePoints." />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://douzepoints.org/edition/2005.html" />
-</head>
-<body>
-  <script>
-    window.location.replace(
-      "../edition.html?edition=" + encodeURIComponent("2005")
-    );
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>Eurovision 2005 Results &amp; Songs | Douze Points</title>
+  <meta name="description" content="Eurovision 2005 results, rankings, artists and songs. Explore the full Eurovision archive.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://douzepoints.org/edition/2005.html">
+
+  <link rel="stylesheet" href="/style/combined.css">
+  <link rel="stylesheet" href="/style/video-cards.css">
+  <link rel="stylesheet" href="/style/favorites.css">
+  <link rel="stylesheet" href="/style/footer.css">
+  <link rel="stylesheet" href="/style/sidebar.css">
+  <link rel="stylesheet" href="/style/mobile.css">
+
+  <script src="/js/favicons.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687"
+    crossorigin="anonymous"></script>
+
+  <script async
+    src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG">
   </script>
-  <noscript>
-    Eurovision 2005 Final Results &amp; Scoreboard. Please enable JavaScript.
-  </noscript>
+  <script src="/js/analytics.js"></script>
+
+  <style>
+    .seo-edition {
+      padding: 0 20px 28px;
+      max-width: 100%;
+    }
+    .seo-edition h1 {
+      font-size: clamp(24px, 3vw, 34px);
+      margin: 0 0 14px;
+    }
+    .seo-edition h2 {
+      font-size: 21px;
+      margin: 30px 0 14px;
+    }
+    .seo-edition p {
+      line-height: 1.65;
+    }
+    .seo-winner {
+      margin: 18px 0;
+      font-size: 16px;
+    }
+    .seo-results-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .seo-results-scroll table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      padding: 10px;
+      border-bottom: 1px solid #444;
+      text-align: left;
+    }
+    .seo-results-scroll th {
+      background: #242424;
+    }
+    .seo-entries {
+      columns: 2;
+      padding-left: 22px;
+      line-height: 1.8;
+    }
+    @media (max-width: 700px) {
+      .seo-entries { columns: 1; }
+      .seo-edition { padding: 0 12px 24px; }
+    }
+
+
+        /* Prevent SEO content from widening the page */
+    .container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .main-content {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .seo-edition {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      color: #e5e5e5;
+      margin-top: 45px;
+      padding-bottom: 40px;
+    }
+
+    .seo-edition h1,
+    .seo-edition h2 {
+      color: #ffffff;
+    }
+
+    .seo-edition p,
+    .seo-edition li {
+      color: #cccccc;
+    }
+
+    /* Scoreboard stays within the content area */
+    .seo-results-scroll,
+    .seo-results-scroll .results-scroll {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
+
+    .seo-results-scroll table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      white-space: nowrap;
+    }
+
+    /* Expandable participants section */
+    .seo-participants {
+      margin-top: 35px;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      padding: 16px 0;
+    }
+
+    .seo-participants summary {
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 0;
+    }
+
+    .seo-participants summary:hover {
+      color: #e50914;
+    }
+
+    .seo-entries {
+      margin-top: 20px;
+    }
+    
+  </style>
+</head>
+
+<body oncontextmenu="return false">
+
+  <div id="header-container"></div>
+  <script type="module" src="/js/header.js"></script>
+
+  <div class="container">
+
+    <div id="sidebar-container" class="sidebar"></div>
+
+    <div class="main-content">
+
+      <div class="mobile-page-selector">
+        <label id="mobile-page-selector-label"
+               for="mobile-page-select"></label>
+        <select id="mobile-page-select"></select>
+      </div>
+
+      <div class="header-bar"
+           style="display:flex;justify-content:flex-end;
+                  margin-bottom:40px;margin-right:20px;">
+
+        <div style="flex:1"></div>
+
+        <div class="sort-controls"
+             style="display:flex;align-items:center;
+                    padding-right:20px;">
+
+          <label for="sort-options">
+            <i data-lucide="list-filter"
+               style="margin-right:15px"></i>
+          </label>
+
+          <select id="sort-options"
+                  style="width:160px;padding:5px;
+                         font-size:11px;">
+            <option value="country" selected>
+              Country (A–Z)
+            </option>
+            <option value="country-desc">
+              Country (Z–A)
+            </option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+            <option value="jury">Jury Points</option>
+            <option value="televote">Televote Points</option>
+            <option value="total">Total Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-container" id="video-container"></div>
+
+      <!-- SEO content follows the video gallery -->
+      <section class="seo-edition">
+
+        <h1>Eurovision 2005 Results &amp; Songs</h1>
+
+        <p>
+          Explore the Eurovision Song Contest 2005 in Kyiv. Browse the results, participating countries, artists and songs.
+        </p>
+
+        <p class="seo-winner">Winner: <strong>Greece</strong> — Helena Paparizou, <em>My Number One</em>.</p>
+
+        <h2>Eurovision 2005 Final Scoreboard</h2><div class="seo-results-scroll">
+      <div class="results-scroll">
+        <table>
+          <thead><tr><th>Rank</th><th>Country</th><th>Artist</th><th>Song</th><th>Televote</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Greece</td><td>Helena Paparizou</td><td>My Number One</td><td>230</td><td>230</td></tr><tr><td>2</td><td>Malta</td><td>Chiara</td><td>Angel</td><td>192</td><td>192</td></tr><tr><td>3</td><td>Romania</td><td>Luminița Anghel and Sistem</td><td>Let Me Try</td><td>158</td><td>158</td></tr><tr><td>4</td><td>Israel</td><td>Shiri Maimon</td><td>HaSheket SheNish&#x27;ar</td><td>154</td><td>154</td></tr><tr><td>5</td><td>Latvia</td><td>Walters and Kazha</td><td>The War Is Not Over</td><td>153</td><td>153</td></tr><tr><td>6</td><td>Moldova</td><td>Zdob și Zdub</td><td>Boonika bate doba</td><td>148</td><td>148</td></tr><tr><td>7</td><td>Serbia &amp; Montenegro</td><td>No Name</td><td>Zauvijek moja</td><td>137</td><td>137</td></tr><tr><td>8</td><td>Switzerland</td><td>Vanilla Ninja</td><td>Cool Vibes</td><td>128</td><td>128</td></tr><tr><td>9</td><td>Denmark</td><td>Jakob Sveistrup</td><td>Talking to You</td><td>125</td><td>125</td></tr><tr><td>9</td><td>Norway</td><td>Wig Wam</td><td>In My Dreams</td><td>125</td><td>125</td></tr><tr><td>11</td><td>Croatia</td><td>Boris Novković feat. Lado Members</td><td>Vukovi umiru sami</td><td>115</td><td>115</td></tr><tr><td>12</td><td>Hungary</td><td>Nox</td><td>Forogj, világ</td><td>97</td><td>97</td></tr><tr><td>13</td><td>Turkey</td><td>Gülseren</td><td>Rimi Rimi Ley</td><td>92</td><td>92</td></tr><tr><td>14</td><td>Bosnia &amp; Hercegovina</td><td>Feminnem</td><td>Call Me</td><td>79</td><td>79</td></tr><tr><td>15</td><td>Russia</td><td>Natalia Podolskaya</td><td>Nobody Hurt No One</td><td>57</td><td>57</td></tr><tr><td>16</td><td>Albania</td><td>Ledina Çelo</td><td>Tomorrow I Go</td><td>53</td><td>53</td></tr><tr><td>17</td><td>North Macedonia</td><td>Martin Vučić</td><td>Make My Day</td><td>52</td><td>52</td></tr><tr><td>18</td><td>Cyprus</td><td>Constantinos Christoforou</td><td>Ela Ela</td><td>46</td><td>46</td></tr><tr><td>19</td><td>Sweden</td><td>Martin Stenmarck</td><td>Las Vegas</td><td>30</td><td>30</td></tr><tr><td>19</td><td>Ukraine</td><td>GreenJolly</td><td>Razom nas bahato</td><td>30</td><td>30</td></tr><tr><td>21</td><td>Spain</td><td>Son de Sol</td><td>Brujería</td><td>28</td><td>28</td></tr><tr><td>22</td><td>United Kingdom</td><td>Javine</td><td>Touch My Fire</td><td>18</td><td>18</td></tr><tr><td>23</td><td>France</td><td>Ortal</td><td>Chacun pense à soi</td><td>11</td><td>11</td></tr><tr><td>24</td><td>Germany</td><td>Gracia</td><td>Run &amp; Hide</td><td>4</td><td>4</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+        <details class="seo-participants">
+          <summary>
+            Eurovision 2005 Participating Countries,
+            Artists &amp; Songs
+          </summary>
+
+          <div class="seo-entries">
+            <ul><li><strong>Albania</strong> — Ledina Çelo: Tomorrow I Go</li>
+<li><strong>Andorra</strong> — Marian van de Wal: La mirada interior</li>
+<li><strong>Austria</strong> — Global.Kryner: Y así</li>
+<li><strong>Belarus</strong> — Angelica Agurbash: Love Me Tonight</li>
+<li><strong>Belgium</strong> — Nuno Resende: Le Grand Soir</li>
+<li><strong>Bosnia &amp; Hercegovina</strong> — Feminnem: Call Me</li>
+<li><strong>Bulgaria</strong> — Kaffe: Lorraine</li>
+<li><strong>Croatia</strong> — Boris Novković feat. Lado Members: Vukovi umiru sami</li>
+<li><strong>Cyprus</strong> — Constantinos Christoforou: Ela Ela</li>
+<li><strong>Denmark</strong> — Jakob Sveistrup: Talking to You</li>
+<li><strong>Estonia</strong> — Suntribe: Let&#x27;s Get Loud</li>
+<li><strong>Finland</strong> — Geir Rönning: Why</li>
+<li><strong>France</strong> — Ortal: Chacun pense à soi</li>
+<li><strong>Germany</strong> — Gracia: Run &amp; Hide</li>
+<li><strong>Greece</strong> — Helena Paparizou: My Number One</li>
+<li><strong>Hungary</strong> — Nox: Forogj, világ</li>
+<li><strong>Iceland</strong> — Selma: If I Had Your Love</li>
+<li><strong>Ireland</strong> — Donna and Joe: Love?</li>
+<li><strong>Israel</strong> — Shiri Maimon: HaSheket SheNish&#x27;ar</li>
+<li><strong>Latvia</strong> — Walters and Kazha: The War Is Not Over</li>
+<li><strong>Lithuania</strong> — Laura and the Lovers: Little by Little</li>
+<li><strong>Malta</strong> — Chiara: Angel</li>
+<li><strong>Moldova</strong> — Zdob și Zdub: Boonika bate doba</li>
+<li><strong>Monaco</strong> — Lise Darly: Tout de moi</li>
+<li><strong>Netherlands</strong> — Glennis Grace: My Impossible Dream</li>
+<li><strong>North Macedonia</strong> — Martin Vučić: Make My Day</li>
+<li><strong>Norway</strong> — Wig Wam: In My Dreams</li>
+<li><strong>Poland</strong> — Ivan and Delfin: Czarna dziewczyna</li>
+<li><strong>Portugal</strong> — 2B: Amar</li>
+<li><strong>Romania</strong> — Luminița Anghel and Sistem: Let Me Try</li>
+<li><strong>Russia</strong> — Natalia Podolskaya: Nobody Hurt No One</li>
+<li><strong>Serbia &amp; Montenegro</strong> — No Name: Zauvijek moja</li>
+<li><strong>Slovenia</strong> — Omar Naber: Stop</li>
+<li><strong>Spain</strong> — Son de Sol: Brujería</li>
+<li><strong>Sweden</strong> — Martin Stenmarck: Las Vegas</li>
+<li><strong>Switzerland</strong> — Vanilla Ninja: Cool Vibes</li>
+<li><strong>Turkey</strong> — Gülseren: Rimi Rimi Ley</li>
+<li><strong>Ukraine</strong> — GreenJolly: Razom nas bahato</li>
+<li><strong>United Kingdom</strong> — Javine: Touch My Fire</li></ul>
+          </div>
+        </details>
+
+      </section>
+
+    </div>
+  </div>
+
+  <script src="/js/modal.js"></script>
+  <div id="modal-container"></div>
+
+  <script type="module" src="/js/video2.js"></script>
+
+  <div id="footer"></div>
+  <script src="/js/footer.js"></script>
+
+  <script type="module" src="/js/sorting_edition2.js"></script>
+  <script src="/js/icons.js"></script>
+  <script type="module"
+          src="/js/mobile-page-selector.js"></script>
+  <script type="module"
+          src="/js/sidebar_eurovision.js"></script>
+
 </body>
 </html>

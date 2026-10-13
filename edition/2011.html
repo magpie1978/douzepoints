@@ -1,20 +1,312 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Eurovision 2011 Final Results &amp; Scoreboard | DouzePoints</title>
-  <meta name="description" content="Eurovision 2011 results including final rankings, jury points, televote points and full scoreboard. Explore the complete 2011 Eurovision archive on DouzePoints." />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://douzepoints.org/edition/2011.html" />
-</head>
-<body>
-  <script>
-    window.location.replace(
-      "../edition.html?edition=" + encodeURIComponent("2011")
-    );
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>Eurovision 2011 Results &amp; Songs | Douze Points</title>
+  <meta name="description" content="Eurovision 2011 results, rankings, artists and songs. Explore the full Eurovision archive.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://douzepoints.org/edition/2011.html">
+
+  <link rel="stylesheet" href="/style/combined.css">
+  <link rel="stylesheet" href="/style/video-cards.css">
+  <link rel="stylesheet" href="/style/favorites.css">
+  <link rel="stylesheet" href="/style/footer.css">
+  <link rel="stylesheet" href="/style/sidebar.css">
+  <link rel="stylesheet" href="/style/mobile.css">
+
+  <script src="/js/favicons.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687"
+    crossorigin="anonymous"></script>
+
+  <script async
+    src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG">
   </script>
-  <noscript>
-    Eurovision 2011 Final Results &amp; Scoreboard. Please enable JavaScript.
-  </noscript>
+  <script src="/js/analytics.js"></script>
+
+  <style>
+    .seo-edition {
+      padding: 0 20px 28px;
+      max-width: 100%;
+    }
+    .seo-edition h1 {
+      font-size: clamp(24px, 3vw, 34px);
+      margin: 0 0 14px;
+    }
+    .seo-edition h2 {
+      font-size: 21px;
+      margin: 30px 0 14px;
+    }
+    .seo-edition p {
+      line-height: 1.65;
+    }
+    .seo-winner {
+      margin: 18px 0;
+      font-size: 16px;
+    }
+    .seo-results-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .seo-results-scroll table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      padding: 10px;
+      border-bottom: 1px solid #444;
+      text-align: left;
+    }
+    .seo-results-scroll th {
+      background: #242424;
+    }
+    .seo-entries {
+      columns: 2;
+      padding-left: 22px;
+      line-height: 1.8;
+    }
+    @media (max-width: 700px) {
+      .seo-entries { columns: 1; }
+      .seo-edition { padding: 0 12px 24px; }
+    }
+
+
+        /* Prevent SEO content from widening the page */
+    .container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .main-content {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .seo-edition {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      color: #e5e5e5;
+      margin-top: 45px;
+      padding-bottom: 40px;
+    }
+
+    .seo-edition h1,
+    .seo-edition h2 {
+      color: #ffffff;
+    }
+
+    .seo-edition p,
+    .seo-edition li {
+      color: #cccccc;
+    }
+
+    /* Scoreboard stays within the content area */
+    .seo-results-scroll,
+    .seo-results-scroll .results-scroll {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
+
+    .seo-results-scroll table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      white-space: nowrap;
+    }
+
+    /* Expandable participants section */
+    .seo-participants {
+      margin-top: 35px;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      padding: 16px 0;
+    }
+
+    .seo-participants summary {
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 0;
+    }
+
+    .seo-participants summary:hover {
+      color: #e50914;
+    }
+
+    .seo-entries {
+      margin-top: 20px;
+    }
+    
+  </style>
+</head>
+
+<body oncontextmenu="return false">
+
+  <div id="header-container"></div>
+  <script type="module" src="/js/header.js"></script>
+
+  <div class="container">
+
+    <div id="sidebar-container" class="sidebar"></div>
+
+    <div class="main-content">
+
+      <div class="mobile-page-selector">
+        <label id="mobile-page-selector-label"
+               for="mobile-page-select"></label>
+        <select id="mobile-page-select"></select>
+      </div>
+
+      <div class="header-bar"
+           style="display:flex;justify-content:flex-end;
+                  margin-bottom:40px;margin-right:20px;">
+
+        <div style="flex:1"></div>
+
+        <div class="sort-controls"
+             style="display:flex;align-items:center;
+                    padding-right:20px;">
+
+          <label for="sort-options">
+            <i data-lucide="list-filter"
+               style="margin-right:15px"></i>
+          </label>
+
+          <select id="sort-options"
+                  style="width:160px;padding:5px;
+                         font-size:11px;">
+            <option value="country" selected>
+              Country (A–Z)
+            </option>
+            <option value="country-desc">
+              Country (Z–A)
+            </option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+            <option value="jury">Jury Points</option>
+            <option value="televote">Televote Points</option>
+            <option value="total">Total Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-container" id="video-container"></div>
+
+      <!-- SEO content follows the video gallery -->
+      <section class="seo-edition">
+
+        <h1>Eurovision 2011 Results &amp; Songs</h1>
+
+        <p>
+          Explore the Eurovision Song Contest 2011 in Düsseldorf. Browse the results, participating countries, artists and songs.
+        </p>
+
+        <p class="seo-winner">Winner: <strong>Azerbaijan</strong> — Ell and Nikki, <em>Running Scared</em>.</p>
+
+        <h2>Eurovision 2011 Final Scoreboard</h2><div class="seo-results-scroll">
+      <div class="results-scroll">
+        <table>
+          <thead><tr><th>Rank</th><th>Country</th><th>Artist</th><th>Song</th><th>Jury</th><th>Televote</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Azerbaijan</td><td>Ell and Nikki</td><td>Running Scared</td><td>182</td><td>223</td><td>221</td></tr><tr><td>2</td><td>Italy</td><td>Raphael Gualazzi</td><td>Madness of Love</td><td>251</td><td>99</td><td>189</td></tr><tr><td>3</td><td>Sweden</td><td>Eric Saade</td><td>Popular</td><td>106</td><td>221</td><td>185</td></tr><tr><td>4</td><td>Ukraine</td><td>Mika Newton</td><td>Angel</td><td>117</td><td>168</td><td>159</td></tr><tr><td>5</td><td>Denmark</td><td>A Friend in London</td><td>New Tomorrow</td><td>168</td><td>61</td><td>134</td></tr><tr><td>6</td><td>Bosnia &amp; Hercegovina</td><td>Dino Merlin</td><td>Love in Rewind</td><td>90</td><td>151</td><td>125</td></tr><tr><td>7</td><td>Greece</td><td>Loukas Yorkas feat. Stereo Mike</td><td>Watch My Dance</td><td>84</td><td>176</td><td>120</td></tr><tr><td>8</td><td>Ireland</td><td>Jedward</td><td>Lipstick</td><td>119</td><td>101</td><td>119</td></tr><tr><td>9</td><td>Georgia</td><td>Eldrine</td><td>One More Day</td><td>79</td><td>138</td><td>110</td></tr><tr><td>10</td><td>Germany</td><td>Lena</td><td>Taken by a Stranger</td><td>104</td><td>113</td><td>107</td></tr><tr><td>11</td><td>United Kingdom</td><td>Blue</td><td>I Can</td><td>57</td><td>166</td><td>100</td></tr><tr><td>12</td><td>Moldova</td><td>Zdob și Zdub</td><td>So Lucky</td><td>82</td><td>98</td><td>97</td></tr><tr><td>13</td><td>Slovenia</td><td>Maja Keuc</td><td>No One</td><td>160</td><td>39</td><td>96</td></tr><tr><td>14</td><td>Serbia</td><td>Nina</td><td>Čaroban</td><td>111</td><td>89</td><td>85</td></tr><tr><td>15</td><td>France</td><td>Amaury Vassili</td><td>Sognu</td><td>90</td><td>76</td><td>82</td></tr><tr><td>16</td><td>Russia</td><td>Alexey Vorobyov</td><td>Get You</td><td>25</td><td>138</td><td>77</td></tr><tr><td>17</td><td>Romania</td><td>Hotel FM</td><td>Change</td><td>86</td><td>79</td><td>77</td></tr><tr><td>18</td><td>Austria</td><td>Nadine Beiler</td><td>The Secret Is Love</td><td>145</td><td>25</td><td>64</td></tr><tr><td>19</td><td>Lithuania</td><td>Evelina Sašenko</td><td>C&#x27;est ma vie</td><td>66</td><td>55</td><td>63</td></tr><tr><td>20</td><td>Iceland</td><td>Sjonni&#x27;s Friends</td><td>Coming Home</td><td>72</td><td>60</td><td>61</td></tr><tr><td>21</td><td>Finland</td><td>Paradise Oskar</td><td>Da Da Dam</td><td>75</td><td>47</td><td>57</td></tr><tr><td>22</td><td>Hungary</td><td>Kati Wolf</td><td>What About My Dreams?</td><td>60</td><td>64</td><td>53</td></tr><tr><td>23</td><td>Spain</td><td>Lucía Pérez</td><td>Que me quiten lo bailao</td><td>38</td><td>73</td><td>50</td></tr><tr><td>24</td><td>Estonia</td><td>Getter Jaani</td><td>Rockefeller Street</td><td>74</td><td>32</td><td>44</td></tr><tr><td>25</td><td>Switzerland</td><td>Anna Rossinelli</td><td>In Love for a While</td><td>53</td><td>2</td><td>19</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+        <details class="seo-participants">
+          <summary>
+            Eurovision 2011 Participating Countries,
+            Artists &amp; Songs
+          </summary>
+
+          <div class="seo-entries">
+            <ul><li><strong>Albania</strong> — Aurela Gaçe: Feel the Passion</li>
+<li><strong>Armenia</strong> — Emmy: Boom Boom</li>
+<li><strong>Austria</strong> — Nadine Beiler: The Secret Is Love</li>
+<li><strong>Azerbaijan</strong> — Ell and Nikki: Running Scared</li>
+<li><strong>Belarus</strong> — Anastasia Vinnikova: I Love Belarus</li>
+<li><strong>Belgium</strong> — Witloof Bay: With Love Baby</li>
+<li><strong>Bosnia &amp; Hercegovina</strong> — Dino Merlin: Love in Rewind</li>
+<li><strong>Bulgaria</strong> — Poli Genova: Na inat</li>
+<li><strong>Croatia</strong> — Daria: Celebrate</li>
+<li><strong>Cyprus</strong> — Christos Mylordos: San aggelos s&#x27;agapisa</li>
+<li><strong>Denmark</strong> — A Friend in London: New Tomorrow</li>
+<li><strong>Estonia</strong> — Getter Jaani: Rockefeller Street</li>
+<li><strong>Finland</strong> — Paradise Oskar: Da Da Dam</li>
+<li><strong>France</strong> — Amaury Vassili: Sognu</li>
+<li><strong>Georgia</strong> — Eldrine: One More Day</li>
+<li><strong>Germany</strong> — Lena: Taken by a Stranger</li>
+<li><strong>Greece</strong> — Loukas Yorkas feat. Stereo Mike: Watch My Dance</li>
+<li><strong>Hungary</strong> — Kati Wolf: What About My Dreams?</li>
+<li><strong>Iceland</strong> — Sjonni&#x27;s Friends: Coming Home</li>
+<li><strong>Ireland</strong> — Jedward: Lipstick</li>
+<li><strong>Israel</strong> — Dana International: Ding Dong</li>
+<li><strong>Italy</strong> — Raphael Gualazzi: Madness of Love</li>
+<li><strong>Latvia</strong> — Musiqq: Angel in Disguise</li>
+<li><strong>Lithuania</strong> — Evelina Sašenko: C&#x27;est ma vie</li>
+<li><strong>Malta</strong> — Glen Vella: One Life</li>
+<li><strong>Moldova</strong> — Zdob și Zdub: So Lucky</li>
+<li><strong>Netherlands</strong> — 3JS: Never Alone</li>
+<li><strong>North Macedonia</strong> — Vlatko Ilievski: Rusinka</li>
+<li><strong>Norway</strong> — Stella Mwangi: Haba Haba</li>
+<li><strong>Poland</strong> — Magdalena Tul: Jestem</li>
+<li><strong>Portugal</strong> — Homens da Luta: A luta é alegria</li>
+<li><strong>Romania</strong> — Hotel FM: Change</li>
+<li><strong>Russia</strong> — Alexey Vorobyov: Get You</li>
+<li><strong>San Marino</strong> — Senit: Stand By</li>
+<li><strong>Serbia</strong> — Nina: Čaroban</li>
+<li><strong>Slovakia</strong> — Twiins: I&#x27;m Still Alive</li>
+<li><strong>Slovenia</strong> — Maja Keuc: No One</li>
+<li><strong>Spain</strong> — Lucía Pérez: Que me quiten lo bailao</li>
+<li><strong>Sweden</strong> — Eric Saade: Popular</li>
+<li><strong>Switzerland</strong> — Anna Rossinelli: In Love for a While</li>
+<li><strong>Turkey</strong> — Yüksek Sadakat: Live It Up</li>
+<li><strong>Ukraine</strong> — Mika Newton: Angel</li>
+<li><strong>United Kingdom</strong> — Blue: I Can</li></ul>
+          </div>
+        </details>
+
+      </section>
+
+    </div>
+  </div>
+
+  <script src="/js/modal.js"></script>
+  <div id="modal-container"></div>
+
+  <script type="module" src="/js/video2.js"></script>
+
+  <div id="footer"></div>
+  <script src="/js/footer.js"></script>
+
+  <script type="module" src="/js/sorting_edition2.js"></script>
+  <script src="/js/icons.js"></script>
+  <script type="module"
+          src="/js/mobile-page-selector.js"></script>
+  <script type="module"
+          src="/js/sidebar_eurovision.js"></script>
+
 </body>
 </html>

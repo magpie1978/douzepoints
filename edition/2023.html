@@ -1,20 +1,306 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Eurovision 2023 Final Results &amp; Scoreboard | DouzePoints</title>
-  <meta name="description" content="Eurovision 2023 results including final rankings, jury points, televote points and full scoreboard. Explore the complete 2023 Eurovision archive on DouzePoints." />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://douzepoints.org/edition/2023.html" />
-</head>
-<body>
-  <script>
-    window.location.replace(
-      "../edition.html?edition=" + encodeURIComponent("2023")
-    );
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>Eurovision 2023 Results &amp; Songs | Douze Points</title>
+  <meta name="description" content="Eurovision 2023 results, rankings, artists and songs. Explore the full Eurovision archive.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://douzepoints.org/edition/2023.html">
+
+  <link rel="stylesheet" href="/style/combined.css">
+  <link rel="stylesheet" href="/style/video-cards.css">
+  <link rel="stylesheet" href="/style/favorites.css">
+  <link rel="stylesheet" href="/style/footer.css">
+  <link rel="stylesheet" href="/style/sidebar.css">
+  <link rel="stylesheet" href="/style/mobile.css">
+
+  <script src="/js/favicons.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687"
+    crossorigin="anonymous"></script>
+
+  <script async
+    src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG">
   </script>
-  <noscript>
-    Eurovision 2023 Final Results &amp; Scoreboard. Please enable JavaScript.
-  </noscript>
+  <script src="/js/analytics.js"></script>
+
+  <style>
+    .seo-edition {
+      padding: 0 20px 28px;
+      max-width: 100%;
+    }
+    .seo-edition h1 {
+      font-size: clamp(24px, 3vw, 34px);
+      margin: 0 0 14px;
+    }
+    .seo-edition h2 {
+      font-size: 21px;
+      margin: 30px 0 14px;
+    }
+    .seo-edition p {
+      line-height: 1.65;
+    }
+    .seo-winner {
+      margin: 18px 0;
+      font-size: 16px;
+    }
+    .seo-results-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .seo-results-scroll table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      padding: 10px;
+      border-bottom: 1px solid #444;
+      text-align: left;
+    }
+    .seo-results-scroll th {
+      background: #242424;
+    }
+    .seo-entries {
+      columns: 2;
+      padding-left: 22px;
+      line-height: 1.8;
+    }
+    @media (max-width: 700px) {
+      .seo-entries { columns: 1; }
+      .seo-edition { padding: 0 12px 24px; }
+    }
+
+
+        /* Prevent SEO content from widening the page */
+    .container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .main-content {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .seo-edition {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      color: #e5e5e5;
+      margin-top: 45px;
+      padding-bottom: 40px;
+    }
+
+    .seo-edition h1,
+    .seo-edition h2 {
+      color: #ffffff;
+    }
+
+    .seo-edition p,
+    .seo-edition li {
+      color: #cccccc;
+    }
+
+    /* Scoreboard stays within the content area */
+    .seo-results-scroll,
+    .seo-results-scroll .results-scroll {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
+
+    .seo-results-scroll table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      white-space: nowrap;
+    }
+
+    /* Expandable participants section */
+    .seo-participants {
+      margin-top: 35px;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      padding: 16px 0;
+    }
+
+    .seo-participants summary {
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 0;
+    }
+
+    .seo-participants summary:hover {
+      color: #e50914;
+    }
+
+    .seo-entries {
+      margin-top: 20px;
+    }
+    
+  </style>
+</head>
+
+<body oncontextmenu="return false">
+
+  <div id="header-container"></div>
+  <script type="module" src="/js/header.js"></script>
+
+  <div class="container">
+
+    <div id="sidebar-container" class="sidebar"></div>
+
+    <div class="main-content">
+
+      <div class="mobile-page-selector">
+        <label id="mobile-page-selector-label"
+               for="mobile-page-select"></label>
+        <select id="mobile-page-select"></select>
+      </div>
+
+      <div class="header-bar"
+           style="display:flex;justify-content:flex-end;
+                  margin-bottom:40px;margin-right:20px;">
+
+        <div style="flex:1"></div>
+
+        <div class="sort-controls"
+             style="display:flex;align-items:center;
+                    padding-right:20px;">
+
+          <label for="sort-options">
+            <i data-lucide="list-filter"
+               style="margin-right:15px"></i>
+          </label>
+
+          <select id="sort-options"
+                  style="width:160px;padding:5px;
+                         font-size:11px;">
+            <option value="country" selected>
+              Country (A–Z)
+            </option>
+            <option value="country-desc">
+              Country (Z–A)
+            </option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+            <option value="jury">Jury Points</option>
+            <option value="televote">Televote Points</option>
+            <option value="total">Total Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-container" id="video-container"></div>
+
+      <!-- SEO content follows the video gallery -->
+      <section class="seo-edition">
+
+        <h1>Eurovision 2023 Results &amp; Songs</h1>
+
+        <p>
+          Explore the Eurovision Song Contest 2023 in Liverpool. Browse the results, participating countries, artists and songs.
+        </p>
+
+        <p class="seo-winner">Winner: <strong>Sweden</strong> — Loreen, <em>Tattoo</em>.</p>
+
+        <h2>Eurovision 2023 Final Scoreboard</h2><div class="seo-results-scroll">
+      <div class="results-scroll">
+        <table>
+          <thead><tr><th>Rank</th><th>Country</th><th>Artist</th><th>Song</th><th>Jury</th><th>Televote</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Sweden</td><td>Loreen</td><td>Tattoo</td><td>340</td><td>243</td><td>583</td></tr><tr><td>2</td><td>Finland</td><td>Käärijä</td><td>Cha Cha Cha</td><td>150</td><td>376</td><td>526</td></tr><tr><td>3</td><td>Israel</td><td>Noa Kirel</td><td>Unicorn</td><td>177</td><td>185</td><td>362</td></tr><tr><td>4</td><td>Italy</td><td>Marco Mengoni</td><td>Due vite</td><td>176</td><td>174</td><td>350</td></tr><tr><td>5</td><td>Norway</td><td>Alessandra</td><td>Queen of Kings</td><td>52</td><td>216</td><td>268</td></tr><tr><td>6</td><td>Ukraine</td><td>Tvorchi</td><td>Heart of Steel</td><td>54</td><td>189</td><td>243</td></tr><tr><td>7</td><td>Belgium</td><td>Gustaph</td><td>Because of You</td><td>127</td><td>55</td><td>182</td></tr><tr><td>8</td><td>Estonia</td><td>Alika</td><td>Bridges</td><td>146</td><td>22</td><td>168</td></tr><tr><td>9</td><td>Australia</td><td>Voyager</td><td>Promise</td><td>130</td><td>21</td><td>151</td></tr><tr><td>10</td><td>Czechia</td><td>Vesna</td><td>My Sister&#x27;s Crown</td><td>94</td><td>35</td><td>129</td></tr><tr><td>11</td><td>Lithuania</td><td>Monika Linkytė</td><td>Stay</td><td>81</td><td>46</td><td>127</td></tr><tr><td>12</td><td>Cyprus</td><td>Andrew Lambrou</td><td>Break a Broken Heart</td><td>68</td><td>58</td><td>126</td></tr><tr><td>13</td><td>Croatia</td><td>Let 3</td><td>Mama ŠČ!</td><td>11</td><td>112</td><td>123</td></tr><tr><td>14</td><td>Armenia</td><td>Brunette</td><td>Future Lover</td><td>69</td><td>53</td><td>122</td></tr><tr><td>15</td><td>Austria</td><td>Teya and Salena</td><td>Who the Hell Is Edgar?</td><td>104</td><td>16</td><td>120</td></tr><tr><td>16</td><td>France</td><td>La Zarra</td><td>Évidemment</td><td>54</td><td>50</td><td>104</td></tr><tr><td>17</td><td>Spain</td><td>Blanca Paloma</td><td>Eaea</td><td>95</td><td>5</td><td>100</td></tr><tr><td>18</td><td>Moldova</td><td>Pasha Parfeni</td><td>Soarele și luna</td><td>20</td><td>76</td><td>96</td></tr><tr><td>19</td><td>Poland</td><td>Blanka</td><td>Solo</td><td>12</td><td>81</td><td>93</td></tr><tr><td>20</td><td>Switzerland</td><td>Remo Forrer</td><td>Watergun</td><td>61</td><td>31</td><td>92</td></tr><tr><td>21</td><td>Slovenia</td><td>Joker Out</td><td>Carpe Diem</td><td>33</td><td>45</td><td>78</td></tr><tr><td>22</td><td>Albania</td><td>Albina and Familja Kelmendi</td><td>Duje</td><td>17</td><td>59</td><td>76</td></tr><tr><td>23</td><td>Portugal</td><td>Mimicat</td><td>Ai coração</td><td>43</td><td>16</td><td>59</td></tr><tr><td>24</td><td>Serbia</td><td>Luke Black</td><td>Samo mi se spava</td><td>14</td><td>16</td><td>30</td></tr><tr><td>25</td><td>United Kingdom</td><td>Mae Muller</td><td>I Wrote a Song</td><td>15</td><td>9</td><td>24</td></tr><tr><td>26</td><td>Germany</td><td>Lord of the Lost</td><td>Blood &amp; Glitter</td><td>3</td><td>15</td><td>18</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+        <details class="seo-participants">
+          <summary>
+            Eurovision 2023 Participating Countries,
+            Artists &amp; Songs
+          </summary>
+
+          <div class="seo-entries">
+            <ul><li><strong>Albania</strong> — Albina and Familja Kelmendi: Duje</li>
+<li><strong>Armenia</strong> — Brunette: Future Lover</li>
+<li><strong>Australia</strong> — Voyager: Promise</li>
+<li><strong>Austria</strong> — Teya and Salena: Who the Hell Is Edgar?</li>
+<li><strong>Azerbaijan</strong> — TuralTuranX: Tell Me More</li>
+<li><strong>Belgium</strong> — Gustaph: Because of You</li>
+<li><strong>Croatia</strong> — Let 3: Mama ŠČ!</li>
+<li><strong>Cyprus</strong> — Andrew Lambrou: Break a Broken Heart</li>
+<li><strong>Czechia</strong> — Vesna: My Sister&#x27;s Crown</li>
+<li><strong>Denmark</strong> — Reiley: Breaking My Heart</li>
+<li><strong>Estonia</strong> — Alika: Bridges</li>
+<li><strong>Finland</strong> — Käärijä: Cha Cha Cha</li>
+<li><strong>France</strong> — La Zarra: Évidemment</li>
+<li><strong>Georgia</strong> — Iru: Echo</li>
+<li><strong>Germany</strong> — Lord of the Lost: Blood &amp; Glitter</li>
+<li><strong>Greece</strong> — Victor Vernicos: What They Say</li>
+<li><strong>Iceland</strong> — Diljá: Power</li>
+<li><strong>Ireland</strong> — Wild Youth: We Are One</li>
+<li><strong>Israel</strong> — Noa Kirel: Unicorn</li>
+<li><strong>Italy</strong> — Marco Mengoni: Due vite</li>
+<li><strong>Latvia</strong> — Sudden Lights: Aijā</li>
+<li><strong>Lithuania</strong> — Monika Linkytė: Stay</li>
+<li><strong>Malta</strong> — The Busker: Dance (Our Own Party)</li>
+<li><strong>Moldova</strong> — Pasha Parfeni: Soarele și luna</li>
+<li><strong>Netherlands</strong> — Mia Nicolai and Dion Cooper: Burning Daylight</li>
+<li><strong>Norway</strong> — Alessandra: Queen of Kings</li>
+<li><strong>Poland</strong> — Blanka: Solo</li>
+<li><strong>Portugal</strong> — Mimicat: Ai coração</li>
+<li><strong>Romania</strong> — Theodor Andrei: D.G.T. (Off and On)</li>
+<li><strong>San Marino</strong> — Piqued Jacks: Like an Animal</li>
+<li><strong>Serbia</strong> — Luke Black: Samo mi se spava</li>
+<li><strong>Slovenia</strong> — Joker Out: Carpe Diem</li>
+<li><strong>Spain</strong> — Blanca Paloma: Eaea</li>
+<li><strong>Sweden</strong> — Loreen: Tattoo</li>
+<li><strong>Switzerland</strong> — Remo Forrer: Watergun</li>
+<li><strong>Ukraine</strong> — Tvorchi: Heart of Steel</li>
+<li><strong>United Kingdom</strong> — Mae Muller: I Wrote a Song</li></ul>
+          </div>
+        </details>
+
+      </section>
+
+    </div>
+  </div>
+
+  <script src="/js/modal.js"></script>
+  <div id="modal-container"></div>
+
+  <script type="module" src="/js/video2.js"></script>
+
+  <div id="footer"></div>
+  <script src="/js/footer.js"></script>
+
+  <script type="module" src="/js/sorting_edition2.js"></script>
+  <script src="/js/icons.js"></script>
+  <script type="module"
+          src="/js/mobile-page-selector.js"></script>
+  <script type="module"
+          src="/js/sidebar_eurovision.js"></script>
+
 </body>
 </html>

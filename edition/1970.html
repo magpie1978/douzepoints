@@ -1,20 +1,281 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Eurovision 1970 Final Results &amp; Scoreboard | DouzePoints</title>
-  <meta name="description" content="Eurovision 1970 results including final rankings, jury points, televote points and full scoreboard. Explore the complete 1970 Eurovision archive on DouzePoints." />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://douzepoints.org/edition/1970.html" />
-</head>
-<body>
-  <script>
-    window.location.replace(
-      "../edition.html?edition=" + encodeURIComponent("1970")
-    );
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>Eurovision 1970 Results &amp; Songs | Douze Points</title>
+  <meta name="description" content="Eurovision 1970 results, rankings, artists and songs. Explore the full Eurovision archive.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://douzepoints.org/edition/1970.html">
+
+  <link rel="stylesheet" href="/style/combined.css">
+  <link rel="stylesheet" href="/style/video-cards.css">
+  <link rel="stylesheet" href="/style/favorites.css">
+  <link rel="stylesheet" href="/style/footer.css">
+  <link rel="stylesheet" href="/style/sidebar.css">
+  <link rel="stylesheet" href="/style/mobile.css">
+
+  <script src="/js/favicons.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687"
+    crossorigin="anonymous"></script>
+
+  <script async
+    src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG">
   </script>
-  <noscript>
-    Eurovision 1970 Final Results &amp; Scoreboard. Please enable JavaScript.
-  </noscript>
+  <script src="/js/analytics.js"></script>
+
+  <style>
+    .seo-edition {
+      padding: 0 20px 28px;
+      max-width: 100%;
+    }
+    .seo-edition h1 {
+      font-size: clamp(24px, 3vw, 34px);
+      margin: 0 0 14px;
+    }
+    .seo-edition h2 {
+      font-size: 21px;
+      margin: 30px 0 14px;
+    }
+    .seo-edition p {
+      line-height: 1.65;
+    }
+    .seo-winner {
+      margin: 18px 0;
+      font-size: 16px;
+    }
+    .seo-results-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .seo-results-scroll table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      padding: 10px;
+      border-bottom: 1px solid #444;
+      text-align: left;
+    }
+    .seo-results-scroll th {
+      background: #242424;
+    }
+    .seo-entries {
+      columns: 2;
+      padding-left: 22px;
+      line-height: 1.8;
+    }
+    @media (max-width: 700px) {
+      .seo-entries { columns: 1; }
+      .seo-edition { padding: 0 12px 24px; }
+    }
+
+
+        /* Prevent SEO content from widening the page */
+    .container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .main-content {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .seo-edition {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      color: #e5e5e5;
+      margin-top: 45px;
+      padding-bottom: 40px;
+    }
+
+    .seo-edition h1,
+    .seo-edition h2 {
+      color: #ffffff;
+    }
+
+    .seo-edition p,
+    .seo-edition li {
+      color: #cccccc;
+    }
+
+    /* Scoreboard stays within the content area */
+    .seo-results-scroll,
+    .seo-results-scroll .results-scroll {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
+
+    .seo-results-scroll table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      white-space: nowrap;
+    }
+
+    /* Expandable participants section */
+    .seo-participants {
+      margin-top: 35px;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      padding: 16px 0;
+    }
+
+    .seo-participants summary {
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 0;
+    }
+
+    .seo-participants summary:hover {
+      color: #e50914;
+    }
+
+    .seo-entries {
+      margin-top: 20px;
+    }
+    
+  </style>
+</head>
+
+<body oncontextmenu="return false">
+
+  <div id="header-container"></div>
+  <script type="module" src="/js/header.js"></script>
+
+  <div class="container">
+
+    <div id="sidebar-container" class="sidebar"></div>
+
+    <div class="main-content">
+
+      <div class="mobile-page-selector">
+        <label id="mobile-page-selector-label"
+               for="mobile-page-select"></label>
+        <select id="mobile-page-select"></select>
+      </div>
+
+      <div class="header-bar"
+           style="display:flex;justify-content:flex-end;
+                  margin-bottom:40px;margin-right:20px;">
+
+        <div style="flex:1"></div>
+
+        <div class="sort-controls"
+             style="display:flex;align-items:center;
+                    padding-right:20px;">
+
+          <label for="sort-options">
+            <i data-lucide="list-filter"
+               style="margin-right:15px"></i>
+          </label>
+
+          <select id="sort-options"
+                  style="width:160px;padding:5px;
+                         font-size:11px;">
+            <option value="country" selected>
+              Country (A–Z)
+            </option>
+            <option value="country-desc">
+              Country (Z–A)
+            </option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+            <option value="jury">Jury Points</option>
+            <option value="televote">Televote Points</option>
+            <option value="total">Total Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-container" id="video-container"></div>
+
+      <!-- SEO content follows the video gallery -->
+      <section class="seo-edition">
+
+        <h1>Eurovision 1970 Results &amp; Songs</h1>
+
+        <p>
+          Explore the Eurovision Song Contest 1970 in Amsterdam. Browse the results, participating countries, artists and songs.
+        </p>
+
+        <p class="seo-winner">Winner: <strong>Ireland</strong> — Dana, <em>All Kinds of Everything</em>.</p>
+
+        <h2>Eurovision 1970 Final Scoreboard</h2><div class="seo-results-scroll">
+      <div class="results-scroll">
+        <table>
+          <thead><tr><th>Rank</th><th>Country</th><th>Artist</th><th>Song</th><th>Jury</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Ireland</td><td>Dana</td><td>All Kinds of Everything</td><td>32</td><td>32</td></tr><tr><td>2</td><td>United Kingdom</td><td>Mary Hopkin</td><td>Knock, Knock (Who&#x27;s There?)</td><td>26</td><td>26</td></tr><tr><td>3</td><td>Germany</td><td>Katja Ebstein</td><td>Wunder gibt es immer wieder</td><td>12</td><td>12</td></tr><tr><td>4</td><td>France</td><td>Guy Bonnet</td><td>Marie-Blanche</td><td>8</td><td>8</td></tr><tr><td>4</td><td>Spain</td><td>Julio Iglesias</td><td>Gwendolyne</td><td>8</td><td>8</td></tr><tr><td>4</td><td>Switzerland</td><td>Henri Dès</td><td>Retour</td><td>8</td><td>8</td></tr><tr><td>7</td><td>Netherlands</td><td>Patricia and Hearts of Soul</td><td>Waterman</td><td>7</td><td>7</td></tr><tr><td>8</td><td>Belgium</td><td>Jean Vallée</td><td>Viens l&#x27;oublier</td><td>5</td><td>5</td></tr><tr><td>8</td><td>Italy</td><td>Gianni Morandi</td><td>Occhi di ragazza</td><td>5</td><td>5</td></tr><tr><td>8</td><td>Monaco</td><td>Dominique Dussault</td><td>Marlène</td><td>5</td><td>5</td></tr><tr><td>11</td><td>Yugoslavia</td><td>Eva Sršen</td><td>Pridi, dala ti bom cvet</td><td>4</td><td>4</td></tr><tr><td>12</td><td>Luxembourg</td><td>David Alexandre Winter</td><td>Je suis tombé du ciel</td><td>0</td><td>0</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+        <details class="seo-participants">
+          <summary>
+            Eurovision 1970 Participating Countries,
+            Artists &amp; Songs
+          </summary>
+
+          <div class="seo-entries">
+            <ul><li><strong>Belgium</strong> — Jean Vallée: Viens l&#x27;oublier</li>
+<li><strong>France</strong> — Guy Bonnet: Marie-Blanche</li>
+<li><strong>Germany</strong> — Katja Ebstein: Wunder gibt es immer wieder</li>
+<li><strong>Ireland</strong> — Dana: All Kinds of Everything</li>
+<li><strong>Italy</strong> — Gianni Morandi: Occhi di ragazza</li>
+<li><strong>Luxembourg</strong> — David Alexandre Winter: Je suis tombé du ciel</li>
+<li><strong>Monaco</strong> — Dominique Dussault: Marlène</li>
+<li><strong>Netherlands</strong> — Patricia and Hearts of Soul: Waterman</li>
+<li><strong>Spain</strong> — Julio Iglesias: Gwendolyne</li>
+<li><strong>Switzerland</strong> — Henri Dès: Retour</li>
+<li><strong>United Kingdom</strong> — Mary Hopkin: Knock, Knock (Who&#x27;s There?)</li>
+<li><strong>Yugoslavia</strong> — Eva Sršen: Pridi, dala ti bom cvet</li></ul>
+          </div>
+        </details>
+
+      </section>
+
+    </div>
+  </div>
+
+  <script src="/js/modal.js"></script>
+  <div id="modal-container"></div>
+
+  <script type="module" src="/js/video2.js"></script>
+
+  <div id="footer"></div>
+  <script src="/js/footer.js"></script>
+
+  <script type="module" src="/js/sorting_edition2.js"></script>
+  <script src="/js/icons.js"></script>
+  <script type="module"
+          src="/js/mobile-page-selector.js"></script>
+  <script type="module"
+          src="/js/sidebar_eurovision.js"></script>
+
 </body>
 </html>

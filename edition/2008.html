@@ -1,20 +1,312 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Eurovision 2008 Final Results &amp; Scoreboard | DouzePoints</title>
-  <meta name="description" content="Eurovision 2008 results including final rankings, jury points, televote points and full scoreboard. Explore the complete 2008 Eurovision archive on DouzePoints." />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://douzepoints.org/edition/2008.html" />
-</head>
-<body>
-  <script>
-    window.location.replace(
-      "../edition.html?edition=" + encodeURIComponent("2008")
-    );
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>Eurovision 2008 Results &amp; Songs | Douze Points</title>
+  <meta name="description" content="Eurovision 2008 results, rankings, artists and songs. Explore the full Eurovision archive.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://douzepoints.org/edition/2008.html">
+
+  <link rel="stylesheet" href="/style/combined.css">
+  <link rel="stylesheet" href="/style/video-cards.css">
+  <link rel="stylesheet" href="/style/favorites.css">
+  <link rel="stylesheet" href="/style/footer.css">
+  <link rel="stylesheet" href="/style/sidebar.css">
+  <link rel="stylesheet" href="/style/mobile.css">
+
+  <script src="/js/favicons.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687"
+    crossorigin="anonymous"></script>
+
+  <script async
+    src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG">
   </script>
-  <noscript>
-    Eurovision 2008 Final Results &amp; Scoreboard. Please enable JavaScript.
-  </noscript>
+  <script src="/js/analytics.js"></script>
+
+  <style>
+    .seo-edition {
+      padding: 0 20px 28px;
+      max-width: 100%;
+    }
+    .seo-edition h1 {
+      font-size: clamp(24px, 3vw, 34px);
+      margin: 0 0 14px;
+    }
+    .seo-edition h2 {
+      font-size: 21px;
+      margin: 30px 0 14px;
+    }
+    .seo-edition p {
+      line-height: 1.65;
+    }
+    .seo-winner {
+      margin: 18px 0;
+      font-size: 16px;
+    }
+    .seo-results-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .seo-results-scroll table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      padding: 10px;
+      border-bottom: 1px solid #444;
+      text-align: left;
+    }
+    .seo-results-scroll th {
+      background: #242424;
+    }
+    .seo-entries {
+      columns: 2;
+      padding-left: 22px;
+      line-height: 1.8;
+    }
+    @media (max-width: 700px) {
+      .seo-entries { columns: 1; }
+      .seo-edition { padding: 0 12px 24px; }
+    }
+
+
+        /* Prevent SEO content from widening the page */
+    .container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .main-content {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .seo-edition {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      color: #e5e5e5;
+      margin-top: 45px;
+      padding-bottom: 40px;
+    }
+
+    .seo-edition h1,
+    .seo-edition h2 {
+      color: #ffffff;
+    }
+
+    .seo-edition p,
+    .seo-edition li {
+      color: #cccccc;
+    }
+
+    /* Scoreboard stays within the content area */
+    .seo-results-scroll,
+    .seo-results-scroll .results-scroll {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
+
+    .seo-results-scroll table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      white-space: nowrap;
+    }
+
+    /* Expandable participants section */
+    .seo-participants {
+      margin-top: 35px;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      padding: 16px 0;
+    }
+
+    .seo-participants summary {
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 0;
+    }
+
+    .seo-participants summary:hover {
+      color: #e50914;
+    }
+
+    .seo-entries {
+      margin-top: 20px;
+    }
+    
+  </style>
+</head>
+
+<body oncontextmenu="return false">
+
+  <div id="header-container"></div>
+  <script type="module" src="/js/header.js"></script>
+
+  <div class="container">
+
+    <div id="sidebar-container" class="sidebar"></div>
+
+    <div class="main-content">
+
+      <div class="mobile-page-selector">
+        <label id="mobile-page-selector-label"
+               for="mobile-page-select"></label>
+        <select id="mobile-page-select"></select>
+      </div>
+
+      <div class="header-bar"
+           style="display:flex;justify-content:flex-end;
+                  margin-bottom:40px;margin-right:20px;">
+
+        <div style="flex:1"></div>
+
+        <div class="sort-controls"
+             style="display:flex;align-items:center;
+                    padding-right:20px;">
+
+          <label for="sort-options">
+            <i data-lucide="list-filter"
+               style="margin-right:15px"></i>
+          </label>
+
+          <select id="sort-options"
+                  style="width:160px;padding:5px;
+                         font-size:11px;">
+            <option value="country" selected>
+              Country (A–Z)
+            </option>
+            <option value="country-desc">
+              Country (Z–A)
+            </option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+            <option value="jury">Jury Points</option>
+            <option value="televote">Televote Points</option>
+            <option value="total">Total Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-container" id="video-container"></div>
+
+      <!-- SEO content follows the video gallery -->
+      <section class="seo-edition">
+
+        <h1>Eurovision 2008 Results &amp; Songs</h1>
+
+        <p>
+          Explore the Eurovision Song Contest 2008 in Belgrade. Browse the results, participating countries, artists and songs.
+        </p>
+
+        <p class="seo-winner">Winner: <strong>Russia</strong> — Dima Bilan, <em>Believe</em>.</p>
+
+        <h2>Eurovision 2008 Final Scoreboard</h2><div class="seo-results-scroll">
+      <div class="results-scroll">
+        <table>
+          <thead><tr><th>Rank</th><th>Country</th><th>Artist</th><th>Song</th><th>Televote</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Russia</td><td>Dima Bilan</td><td>Believe</td><td>272</td><td>272</td></tr><tr><td>2</td><td>Ukraine</td><td>Ani Lorak</td><td>Shady Lady</td><td>230</td><td>230</td></tr><tr><td>3</td><td>Greece</td><td>Kalomira</td><td>Secret Combination</td><td>218</td><td>218</td></tr><tr><td>4</td><td>Armenia</td><td>Sirusho</td><td>Qélé, Qélé</td><td>199</td><td>199</td></tr><tr><td>5</td><td>Norway</td><td>Maria</td><td>Hold On Be Strong</td><td>182</td><td>182</td></tr><tr><td>6</td><td>Serbia</td><td>Jelena Tomašević feat. Bora Dugić</td><td>Oro</td><td>160</td><td>160</td></tr><tr><td>7</td><td>Turkey</td><td>Mor ve Ötesi</td><td>Deli</td><td>138</td><td>138</td></tr><tr><td>8</td><td>Azerbaijan</td><td>Elnur and Samir</td><td>Day After Day</td><td>132</td><td>132</td></tr><tr><td>9</td><td>Israel</td><td>Boaz</td><td>The Fire in Your Eyes</td><td>124</td><td>124</td></tr><tr><td>10</td><td>Bosnia &amp; Hercegovina</td><td>Laka</td><td>Pokušaj</td><td>110</td><td>110</td></tr><tr><td>11</td><td>Georgia</td><td>Diana Gurtskaya</td><td>Peace Will Come</td><td>83</td><td>83</td></tr><tr><td>12</td><td>Latvia</td><td>Pirates of the Sea</td><td>Wolves of the Sea</td><td>83</td><td>83</td></tr><tr><td>13</td><td>Portugal</td><td>Vânia Fernandes</td><td>Senhora do mar (negras águas)</td><td>69</td><td>69</td></tr><tr><td>14</td><td>Iceland</td><td>Euroband</td><td>This Is My Life</td><td>64</td><td>64</td></tr><tr><td>15</td><td>Denmark</td><td>Simon Mathew</td><td>All Night Long</td><td>60</td><td>60</td></tr><tr><td>16</td><td>Spain</td><td>Rodolfo Chikilicuatre</td><td>Baila el Chiki Chiki</td><td>55</td><td>55</td></tr><tr><td>17</td><td>Albania</td><td>Olta Boka</td><td>Zemrën e lamë peng</td><td>55</td><td>55</td></tr><tr><td>18</td><td>Sweden</td><td>Charlotte Perrelli</td><td>Hero</td><td>47</td><td>47</td></tr><tr><td>19</td><td>France</td><td>Sébastien Tellier</td><td>Divine</td><td>47</td><td>47</td></tr><tr><td>20</td><td>Romania</td><td>Nico and Vlad</td><td>Pe-o margine de lume</td><td>45</td><td>45</td></tr><tr><td>21</td><td>Croatia</td><td>Kraljevi ulice and 75 Cents</td><td>Romanca</td><td>44</td><td>44</td></tr><tr><td>22</td><td>Finland</td><td>Teräsbetoni</td><td>Missä miehet ratsastaa</td><td>35</td><td>35</td></tr><tr><td>23</td><td>Germany</td><td>No Angels</td><td>Disappear</td><td>14</td><td>14</td></tr><tr><td>24</td><td>Poland</td><td>Isis Gee</td><td>For Life</td><td>14</td><td>14</td></tr><tr><td>25</td><td>United Kingdom</td><td>Andy Abraham</td><td>Even If</td><td>14</td><td>14</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+        <details class="seo-participants">
+          <summary>
+            Eurovision 2008 Participating Countries,
+            Artists &amp; Songs
+          </summary>
+
+          <div class="seo-entries">
+            <ul><li><strong>Albania</strong> — Olta Boka: Zemrën e lamë peng</li>
+<li><strong>Andorra</strong> — Gisela: Casanova</li>
+<li><strong>Armenia</strong> — Sirusho: Qélé, Qélé</li>
+<li><strong>Azerbaijan</strong> — Elnur and Samir: Day After Day</li>
+<li><strong>Belarus</strong> — Ruslan Alehno: Hasta la vista</li>
+<li><strong>Belgium</strong> — Ishtar: O Julissi</li>
+<li><strong>Bosnia &amp; Hercegovina</strong> — Laka: Pokušaj</li>
+<li><strong>Bulgaria</strong> — Deep Zone and Balthazar: DJ, Take Me Away</li>
+<li><strong>Croatia</strong> — Kraljevi ulice and 75 Cents: Romanca</li>
+<li><strong>Cyprus</strong> — Evdokia Kadi: Femme Fatale</li>
+<li><strong>Czechia</strong> — Tereza Kerndlová: Have Some Fun</li>
+<li><strong>Denmark</strong> — Simon Mathew: All Night Long</li>
+<li><strong>Estonia</strong> — Kreisiraadio: Leto svet</li>
+<li><strong>Finland</strong> — Teräsbetoni: Missä miehet ratsastaa</li>
+<li><strong>France</strong> — Sébastien Tellier: Divine</li>
+<li><strong>Georgia</strong> — Diana Gurtskaya: Peace Will Come</li>
+<li><strong>Germany</strong> — No Angels: Disappear</li>
+<li><strong>Greece</strong> — Kalomira: Secret Combination</li>
+<li><strong>Hungary</strong> — Csézy: Candlelight</li>
+<li><strong>Iceland</strong> — Euroband: This Is My Life</li>
+<li><strong>Ireland</strong> — Dustin the Turkey: Irelande Douze Pointe</li>
+<li><strong>Israel</strong> — Boaz: The Fire in Your Eyes</li>
+<li><strong>Latvia</strong> — Pirates of the Sea: Wolves of the Sea</li>
+<li><strong>Lithuania</strong> — Jeronimas Milius: Nomads in the Night</li>
+<li><strong>Malta</strong> — Morena: Vodka</li>
+<li><strong>Moldova</strong> — Geta Burlacu: A Century of Love</li>
+<li><strong>Montenegro</strong> — Stefan Filipović: Zauvijek volim te</li>
+<li><strong>Netherlands</strong> — Hind: Your Heart Belongs to Me</li>
+<li><strong>North Macedonia</strong> — Tamara, Vrčak and Adrijan: Let Me Love You</li>
+<li><strong>Norway</strong> — Maria: Hold On Be Strong</li>
+<li><strong>Poland</strong> — Isis Gee: For Life</li>
+<li><strong>Portugal</strong> — Vânia Fernandes: Senhora do mar (negras águas)</li>
+<li><strong>Romania</strong> — Nico and Vlad: Pe-o margine de lume</li>
+<li><strong>Russia</strong> — Dima Bilan: Believe</li>
+<li><strong>San Marino</strong> — Miodio: Complice</li>
+<li><strong>Serbia</strong> — Jelena Tomašević feat. Bora Dugić: Oro</li>
+<li><strong>Slovenia</strong> — Rebeka Dremelj: Vrag naj vzame</li>
+<li><strong>Spain</strong> — Rodolfo Chikilicuatre: Baila el Chiki Chiki</li>
+<li><strong>Sweden</strong> — Charlotte Perrelli: Hero</li>
+<li><strong>Switzerland</strong> — Paolo Meneguzzi: Era stupendo</li>
+<li><strong>Turkey</strong> — Mor ve Ötesi: Deli</li>
+<li><strong>Ukraine</strong> — Ani Lorak: Shady Lady</li>
+<li><strong>United Kingdom</strong> — Andy Abraham: Even If</li></ul>
+          </div>
+        </details>
+
+      </section>
+
+    </div>
+  </div>
+
+  <script src="/js/modal.js"></script>
+  <div id="modal-container"></div>
+
+  <script type="module" src="/js/video2.js"></script>
+
+  <div id="footer"></div>
+  <script src="/js/footer.js"></script>
+
+  <script type="module" src="/js/sorting_edition2.js"></script>
+  <script src="/js/icons.js"></script>
+  <script type="module"
+          src="/js/mobile-page-selector.js"></script>
+  <script type="module"
+          src="/js/sidebar_eurovision.js"></script>
+
 </body>
 </html>

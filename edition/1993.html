@@ -1,20 +1,294 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Eurovision 1993 Final Results &amp; Scoreboard | DouzePoints</title>
-  <meta name="description" content="Eurovision 1993 results including final rankings, jury points, televote points and full scoreboard. Explore the complete 1993 Eurovision archive on DouzePoints." />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://douzepoints.org/edition/1993.html" />
-</head>
-<body>
-  <script>
-    window.location.replace(
-      "../edition.html?edition=" + encodeURIComponent("1993")
-    );
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>Eurovision 1993 Results &amp; Songs | Douze Points</title>
+  <meta name="description" content="Eurovision 1993 results, rankings, artists and songs. Explore the full Eurovision archive.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://douzepoints.org/edition/1993.html">
+
+  <link rel="stylesheet" href="/style/combined.css">
+  <link rel="stylesheet" href="/style/video-cards.css">
+  <link rel="stylesheet" href="/style/favorites.css">
+  <link rel="stylesheet" href="/style/footer.css">
+  <link rel="stylesheet" href="/style/sidebar.css">
+  <link rel="stylesheet" href="/style/mobile.css">
+
+  <script src="/js/favicons.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687"
+    crossorigin="anonymous"></script>
+
+  <script async
+    src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG">
   </script>
-  <noscript>
-    Eurovision 1993 Final Results &amp; Scoreboard. Please enable JavaScript.
-  </noscript>
+  <script src="/js/analytics.js"></script>
+
+  <style>
+    .seo-edition {
+      padding: 0 20px 28px;
+      max-width: 100%;
+    }
+    .seo-edition h1 {
+      font-size: clamp(24px, 3vw, 34px);
+      margin: 0 0 14px;
+    }
+    .seo-edition h2 {
+      font-size: 21px;
+      margin: 30px 0 14px;
+    }
+    .seo-edition p {
+      line-height: 1.65;
+    }
+    .seo-winner {
+      margin: 18px 0;
+      font-size: 16px;
+    }
+    .seo-results-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .seo-results-scroll table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      padding: 10px;
+      border-bottom: 1px solid #444;
+      text-align: left;
+    }
+    .seo-results-scroll th {
+      background: #242424;
+    }
+    .seo-entries {
+      columns: 2;
+      padding-left: 22px;
+      line-height: 1.8;
+    }
+    @media (max-width: 700px) {
+      .seo-entries { columns: 1; }
+      .seo-edition { padding: 0 12px 24px; }
+    }
+
+
+        /* Prevent SEO content from widening the page */
+    .container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .main-content {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .seo-edition {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      color: #e5e5e5;
+      margin-top: 45px;
+      padding-bottom: 40px;
+    }
+
+    .seo-edition h1,
+    .seo-edition h2 {
+      color: #ffffff;
+    }
+
+    .seo-edition p,
+    .seo-edition li {
+      color: #cccccc;
+    }
+
+    /* Scoreboard stays within the content area */
+    .seo-results-scroll,
+    .seo-results-scroll .results-scroll {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
+
+    .seo-results-scroll table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      white-space: nowrap;
+    }
+
+    /* Expandable participants section */
+    .seo-participants {
+      margin-top: 35px;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      padding: 16px 0;
+    }
+
+    .seo-participants summary {
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 0;
+    }
+
+    .seo-participants summary:hover {
+      color: #e50914;
+    }
+
+    .seo-entries {
+      margin-top: 20px;
+    }
+    
+  </style>
+</head>
+
+<body oncontextmenu="return false">
+
+  <div id="header-container"></div>
+  <script type="module" src="/js/header.js"></script>
+
+  <div class="container">
+
+    <div id="sidebar-container" class="sidebar"></div>
+
+    <div class="main-content">
+
+      <div class="mobile-page-selector">
+        <label id="mobile-page-selector-label"
+               for="mobile-page-select"></label>
+        <select id="mobile-page-select"></select>
+      </div>
+
+      <div class="header-bar"
+           style="display:flex;justify-content:flex-end;
+                  margin-bottom:40px;margin-right:20px;">
+
+        <div style="flex:1"></div>
+
+        <div class="sort-controls"
+             style="display:flex;align-items:center;
+                    padding-right:20px;">
+
+          <label for="sort-options">
+            <i data-lucide="list-filter"
+               style="margin-right:15px"></i>
+          </label>
+
+          <select id="sort-options"
+                  style="width:160px;padding:5px;
+                         font-size:11px;">
+            <option value="country" selected>
+              Country (A–Z)
+            </option>
+            <option value="country-desc">
+              Country (Z–A)
+            </option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+            <option value="jury">Jury Points</option>
+            <option value="televote">Televote Points</option>
+            <option value="total">Total Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-container" id="video-container"></div>
+
+      <!-- SEO content follows the video gallery -->
+      <section class="seo-edition">
+
+        <h1>Eurovision 1993 Results &amp; Songs</h1>
+
+        <p>
+          Explore the Eurovision Song Contest 1993 in Millstreet. Browse the results, participating countries, artists and songs.
+        </p>
+
+        <p class="seo-winner">Winner: <strong>Ireland</strong> — Niamh Kavanagh, <em>In Your Eyes</em>.</p>
+
+        <h2>Eurovision 1993 Final Scoreboard</h2><div class="seo-results-scroll">
+      <div class="results-scroll">
+        <table>
+          <thead><tr><th>Rank</th><th>Country</th><th>Artist</th><th>Song</th><th>Jury</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Ireland</td><td>Niamh Kavanagh</td><td>In Your Eyes</td><td>187</td><td>187</td></tr><tr><td>2</td><td>United Kingdom</td><td>Sonia</td><td>Better the Devil You Know</td><td>164</td><td>164</td></tr><tr><td>3</td><td>Switzerland</td><td>Annie Cotton</td><td>Moi, tout simplement</td><td>148</td><td>148</td></tr><tr><td>4</td><td>France</td><td>Patrick Fiori</td><td>Mama Corsica</td><td>121</td><td>121</td></tr><tr><td>5</td><td>Norway</td><td>Silje Vige</td><td>Alle mine tankar</td><td>120</td><td>120</td></tr><tr><td>6</td><td>Netherlands</td><td>Ruth Jacott</td><td>Vrede</td><td>92</td><td>92</td></tr><tr><td>7</td><td>Sweden</td><td>Arvingarna</td><td>Eloise</td><td>89</td><td>89</td></tr><tr><td>8</td><td>Malta</td><td>William Mangion</td><td>This Time</td><td>69</td><td>69</td></tr><tr><td>9</td><td>Greece</td><td>Katerina Garbi</td><td>Ellada, hora tou fotos</td><td>64</td><td>64</td></tr><tr><td>10</td><td>Portugal</td><td>Anabela</td><td>A cidade até ser dia</td><td>60</td><td>60</td></tr><tr><td>11</td><td>Spain</td><td>Eva Santamaría</td><td>Hombres</td><td>58</td><td>58</td></tr><tr><td>12</td><td>Italy</td><td>Enrico Ruggeri</td><td>Sole d&#x27;Europa</td><td>45</td><td>45</td></tr><tr><td>13</td><td>Iceland</td><td>Inga</td><td>Þá veistu svarið</td><td>42</td><td>42</td></tr><tr><td>14</td><td>Austria</td><td>Tony Wegas</td><td>Maria Magdalena</td><td>32</td><td>32</td></tr><tr><td>15</td><td>Croatia</td><td>Put</td><td>Don&#x27;t Ever Cry</td><td>31</td><td>31</td></tr><tr><td>16</td><td>Bosnia &amp; Hercegovina</td><td>Fazla</td><td>Sva bol svijeta</td><td>27</td><td>27</td></tr><tr><td>17</td><td>Finland</td><td>Katri Helena</td><td>Tule luo</td><td>20</td><td>20</td></tr><tr><td>18</td><td>Germany</td><td>Münchener Freiheit</td><td>Viel zu weit</td><td>18</td><td>18</td></tr><tr><td>19</td><td>Cyprus</td><td>Zymboulakis and Van Beke</td><td>Mi stamatas</td><td>17</td><td>17</td></tr><tr><td>20</td><td>Luxembourg</td><td>Modern Times</td><td>Donne-moi une chance</td><td>11</td><td>11</td></tr><tr><td>21</td><td>Turkey</td><td>Burak Aydos, Öztürk Baybora and Serter</td><td>Esmer Yarim</td><td>10</td><td>10</td></tr><tr><td>22</td><td>Denmark</td><td>Seebach Band</td><td>Under stjernerne på himlen</td><td>9</td><td>9</td></tr><tr><td>22</td><td>Slovenia</td><td>1X Band</td><td>Tih deževen dan</td><td>9</td><td>9</td></tr><tr><td>24</td><td>Israel</td><td>Lehakat Shiru</td><td>Shiru</td><td>4</td><td>4</td></tr><tr><td>25</td><td>Belgium</td><td>Barbara</td><td>Iemand als jij</td><td>3</td><td>3</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+        <details class="seo-participants">
+          <summary>
+            Eurovision 1993 Participating Countries,
+            Artists &amp; Songs
+          </summary>
+
+          <div class="seo-entries">
+            <ul><li><strong>Austria</strong> — Tony Wegas: Maria Magdalena</li>
+<li><strong>Belgium</strong> — Barbara: Iemand als jij</li>
+<li><strong>Bosnia &amp; Hercegovina</strong> — Fazla: Sva bol svijeta</li>
+<li><strong>Croatia</strong> — Put: Don&#x27;t Ever Cry</li>
+<li><strong>Cyprus</strong> — Zymboulakis and Van Beke: Mi stamatas</li>
+<li><strong>Denmark</strong> — Seebach Band: Under stjernerne på himlen</li>
+<li><strong>Finland</strong> — Katri Helena: Tule luo</li>
+<li><strong>France</strong> — Patrick Fiori: Mama Corsica</li>
+<li><strong>Germany</strong> — Münchener Freiheit: Viel zu weit</li>
+<li><strong>Greece</strong> — Katerina Garbi: Ellada, hora tou fotos</li>
+<li><strong>Iceland</strong> — Inga: Þá veistu svarið</li>
+<li><strong>Ireland</strong> — Niamh Kavanagh: In Your Eyes</li>
+<li><strong>Israel</strong> — Lehakat Shiru: Shiru</li>
+<li><strong>Italy</strong> — Enrico Ruggeri: Sole d&#x27;Europa</li>
+<li><strong>Luxembourg</strong> — Modern Times: Donne-moi une chance</li>
+<li><strong>Malta</strong> — William Mangion: This Time</li>
+<li><strong>Netherlands</strong> — Ruth Jacott: Vrede</li>
+<li><strong>Norway</strong> — Silje Vige: Alle mine tankar</li>
+<li><strong>Portugal</strong> — Anabela: A cidade até ser dia</li>
+<li><strong>Slovenia</strong> — 1X Band: Tih deževen dan</li>
+<li><strong>Spain</strong> — Eva Santamaría: Hombres</li>
+<li><strong>Sweden</strong> — Arvingarna: Eloise</li>
+<li><strong>Switzerland</strong> — Annie Cotton: Moi, tout simplement</li>
+<li><strong>Turkey</strong> — Burak Aydos, Öztürk Baybora and Serter: Esmer Yarim</li>
+<li><strong>United Kingdom</strong> — Sonia: Better the Devil You Know</li></ul>
+          </div>
+        </details>
+
+      </section>
+
+    </div>
+  </div>
+
+  <script src="/js/modal.js"></script>
+  <div id="modal-container"></div>
+
+  <script type="module" src="/js/video2.js"></script>
+
+  <div id="footer"></div>
+  <script src="/js/footer.js"></script>
+
+  <script type="module" src="/js/sorting_edition2.js"></script>
+  <script src="/js/icons.js"></script>
+  <script type="module"
+          src="/js/mobile-page-selector.js"></script>
+  <script type="module"
+          src="/js/sidebar_eurovision.js"></script>
+
 </body>
 </html>

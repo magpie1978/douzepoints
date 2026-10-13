@@ -1,20 +1,311 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Eurovision 2016 Final Results &amp; Scoreboard | DouzePoints</title>
-  <meta name="description" content="Eurovision 2016 results including final rankings, jury points, televote points and full scoreboard. Explore the complete 2016 Eurovision archive on DouzePoints." />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://douzepoints.org/edition/2016.html" />
-</head>
-<body>
-  <script>
-    window.location.replace(
-      "../edition.html?edition=" + encodeURIComponent("2016")
-    );
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>Eurovision 2016 Results &amp; Songs | Douze Points</title>
+  <meta name="description" content="Eurovision 2016 results, rankings, artists and songs. Explore the full Eurovision archive.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://douzepoints.org/edition/2016.html">
+
+  <link rel="stylesheet" href="/style/combined.css">
+  <link rel="stylesheet" href="/style/video-cards.css">
+  <link rel="stylesheet" href="/style/favorites.css">
+  <link rel="stylesheet" href="/style/footer.css">
+  <link rel="stylesheet" href="/style/sidebar.css">
+  <link rel="stylesheet" href="/style/mobile.css">
+
+  <script src="/js/favicons.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687"
+    crossorigin="anonymous"></script>
+
+  <script async
+    src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG">
   </script>
-  <noscript>
-    Eurovision 2016 Final Results &amp; Scoreboard. Please enable JavaScript.
-  </noscript>
+  <script src="/js/analytics.js"></script>
+
+  <style>
+    .seo-edition {
+      padding: 0 20px 28px;
+      max-width: 100%;
+    }
+    .seo-edition h1 {
+      font-size: clamp(24px, 3vw, 34px);
+      margin: 0 0 14px;
+    }
+    .seo-edition h2 {
+      font-size: 21px;
+      margin: 30px 0 14px;
+    }
+    .seo-edition p {
+      line-height: 1.65;
+    }
+    .seo-winner {
+      margin: 18px 0;
+      font-size: 16px;
+    }
+    .seo-results-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .seo-results-scroll table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      padding: 10px;
+      border-bottom: 1px solid #444;
+      text-align: left;
+    }
+    .seo-results-scroll th {
+      background: #242424;
+    }
+    .seo-entries {
+      columns: 2;
+      padding-left: 22px;
+      line-height: 1.8;
+    }
+    @media (max-width: 700px) {
+      .seo-entries { columns: 1; }
+      .seo-edition { padding: 0 12px 24px; }
+    }
+
+
+        /* Prevent SEO content from widening the page */
+    .container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .main-content {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .seo-edition {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      color: #e5e5e5;
+      margin-top: 45px;
+      padding-bottom: 40px;
+    }
+
+    .seo-edition h1,
+    .seo-edition h2 {
+      color: #ffffff;
+    }
+
+    .seo-edition p,
+    .seo-edition li {
+      color: #cccccc;
+    }
+
+    /* Scoreboard stays within the content area */
+    .seo-results-scroll,
+    .seo-results-scroll .results-scroll {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
+
+    .seo-results-scroll table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      white-space: nowrap;
+    }
+
+    /* Expandable participants section */
+    .seo-participants {
+      margin-top: 35px;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      padding: 16px 0;
+    }
+
+    .seo-participants summary {
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 0;
+    }
+
+    .seo-participants summary:hover {
+      color: #e50914;
+    }
+
+    .seo-entries {
+      margin-top: 20px;
+    }
+    
+  </style>
+</head>
+
+<body oncontextmenu="return false">
+
+  <div id="header-container"></div>
+  <script type="module" src="/js/header.js"></script>
+
+  <div class="container">
+
+    <div id="sidebar-container" class="sidebar"></div>
+
+    <div class="main-content">
+
+      <div class="mobile-page-selector">
+        <label id="mobile-page-selector-label"
+               for="mobile-page-select"></label>
+        <select id="mobile-page-select"></select>
+      </div>
+
+      <div class="header-bar"
+           style="display:flex;justify-content:flex-end;
+                  margin-bottom:40px;margin-right:20px;">
+
+        <div style="flex:1"></div>
+
+        <div class="sort-controls"
+             style="display:flex;align-items:center;
+                    padding-right:20px;">
+
+          <label for="sort-options">
+            <i data-lucide="list-filter"
+               style="margin-right:15px"></i>
+          </label>
+
+          <select id="sort-options"
+                  style="width:160px;padding:5px;
+                         font-size:11px;">
+            <option value="country" selected>
+              Country (A–Z)
+            </option>
+            <option value="country-desc">
+              Country (Z–A)
+            </option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+            <option value="jury">Jury Points</option>
+            <option value="televote">Televote Points</option>
+            <option value="total">Total Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-container" id="video-container"></div>
+
+      <!-- SEO content follows the video gallery -->
+      <section class="seo-edition">
+
+        <h1>Eurovision 2016 Results &amp; Songs</h1>
+
+        <p>
+          Explore the Eurovision Song Contest 2016 in Stockholm. Browse the results, participating countries, artists and songs.
+        </p>
+
+        <p class="seo-winner">Winner: <strong>Ukraine</strong> — Jamala, <em>1944</em>.</p>
+
+        <h2>Eurovision 2016 Final Scoreboard</h2><div class="seo-results-scroll">
+      <div class="results-scroll">
+        <table>
+          <thead><tr><th>Rank</th><th>Country</th><th>Artist</th><th>Song</th><th>Jury</th><th>Televote</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Ukraine</td><td>Jamala</td><td>1944</td><td>211</td><td>323</td><td>534</td></tr><tr><td>2</td><td>Australia</td><td>Dami Im</td><td>Sound of Silence</td><td>320</td><td>191</td><td>511</td></tr><tr><td>3</td><td>Russia</td><td>Sergey Lazarev</td><td>You Are the Only One</td><td>130</td><td>361</td><td>491</td></tr><tr><td>4</td><td>Bulgaria</td><td>Poli Genova</td><td>If Love Was a Crime</td><td>127</td><td>180</td><td>307</td></tr><tr><td>5</td><td>Sweden</td><td>Frans</td><td>If I Were Sorry</td><td>122</td><td>139</td><td>261</td></tr><tr><td>6</td><td>France</td><td>Amir</td><td>J&#x27;ai cherché</td><td>148</td><td>109</td><td>257</td></tr><tr><td>7</td><td>Armenia</td><td>Iveta Mukuchyan</td><td>LoveWave</td><td>115</td><td>134</td><td>249</td></tr><tr><td>8</td><td>Poland</td><td>Michał Szpak</td><td>Color of Your Life</td><td>7</td><td>222</td><td>229</td></tr><tr><td>9</td><td>Lithuania</td><td>Donny Montell</td><td>I&#x27;ve Been Waiting for This Night</td><td>104</td><td>96</td><td>200</td></tr><tr><td>10</td><td>Belgium</td><td>Laura Tesoro</td><td>What&#x27;s the Pressure</td><td>130</td><td>51</td><td>181</td></tr><tr><td>11</td><td>Netherlands</td><td>Douwe Bob</td><td>Slow Down</td><td>114</td><td>39</td><td>153</td></tr><tr><td>12</td><td>Malta</td><td>Ira Losco</td><td>Walk on Water</td><td>137</td><td>16</td><td>153</td></tr><tr><td>13</td><td>Austria</td><td>Zoë</td><td>Loin d&#x27;ici</td><td>31</td><td>120</td><td>151</td></tr><tr><td>14</td><td>Israel</td><td>Hovi Star</td><td>Made of Stars</td><td>124</td><td>11</td><td>135</td></tr><tr><td>15</td><td>Latvia</td><td>Justs</td><td>Heartbeat</td><td>69</td><td>63</td><td>132</td></tr><tr><td>16</td><td>Italy</td><td>Francesca Michielin</td><td>No Degree of Separation</td><td>90</td><td>34</td><td>124</td></tr><tr><td>17</td><td>Azerbaijan</td><td>Samra</td><td>Miracle</td><td>44</td><td>73</td><td>117</td></tr><tr><td>18</td><td>Serbia</td><td>Sanja Vučić Zaa</td><td>Goodbye (Shelter)</td><td>35</td><td>80</td><td>115</td></tr><tr><td>19</td><td>Hungary</td><td>Freddie</td><td>Pioneer</td><td>52</td><td>56</td><td>108</td></tr><tr><td>20</td><td>Georgia</td><td>Nika Kocharov and Young Georgian Lolitaz</td><td>Midnight Gold</td><td>80</td><td>24</td><td>104</td></tr><tr><td>21</td><td>Cyprus</td><td>Minus One</td><td>Alter Ego</td><td>43</td><td>53</td><td>96</td></tr><tr><td>22</td><td>Spain</td><td>Barei</td><td>Say Yay!</td><td>67</td><td>10</td><td>77</td></tr><tr><td>23</td><td>Croatia</td><td>Nina Kraljić</td><td>Lighthouse</td><td>40</td><td>33</td><td>73</td></tr><tr><td>24</td><td>United Kingdom</td><td>Joe and Jake</td><td>You&#x27;re Not Alone</td><td>54</td><td>8</td><td>62</td></tr><tr><td>25</td><td>Czechia</td><td>Gabriela Gunčíková</td><td>I Stand</td><td>41</td><td>0</td><td>41</td></tr><tr><td>26</td><td>Germany</td><td>Jamie-Lee</td><td>Ghost</td><td>1</td><td>10</td><td>11</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+        <details class="seo-participants">
+          <summary>
+            Eurovision 2016 Participating Countries,
+            Artists &amp; Songs
+          </summary>
+
+          <div class="seo-entries">
+            <ul><li><strong>Albania</strong> — Eneda Tarifa: Fairytale</li>
+<li><strong>Armenia</strong> — Iveta Mukuchyan: LoveWave</li>
+<li><strong>Australia</strong> — Dami Im: Sound of Silence</li>
+<li><strong>Austria</strong> — Zoë: Loin d&#x27;ici</li>
+<li><strong>Azerbaijan</strong> — Samra: Miracle</li>
+<li><strong>Belarus</strong> — Ivan: Help You Fly</li>
+<li><strong>Belgium</strong> — Laura Tesoro: What&#x27;s the Pressure</li>
+<li><strong>Bosnia &amp; Hercegovina</strong> — Dalal and Deen feat. Ana Rucner and Jala: Ljubav je</li>
+<li><strong>Bulgaria</strong> — Poli Genova: If Love Was a Crime</li>
+<li><strong>Croatia</strong> — Nina Kraljić: Lighthouse</li>
+<li><strong>Cyprus</strong> — Minus One: Alter Ego</li>
+<li><strong>Czechia</strong> — Gabriela Gunčíková: I Stand</li>
+<li><strong>Denmark</strong> — Lighthouse X: Soldiers of Love</li>
+<li><strong>Estonia</strong> — Jüri Pootsmann: Play</li>
+<li><strong>Finland</strong> — Sandhja: Sing It Away</li>
+<li><strong>France</strong> — Amir: J&#x27;ai cherché</li>
+<li><strong>Georgia</strong> — Nika Kocharov and Young Georgian Lolitaz: Midnight Gold</li>
+<li><strong>Germany</strong> — Jamie-Lee: Ghost</li>
+<li><strong>Greece</strong> — Argo: Utopian Land</li>
+<li><strong>Hungary</strong> — Freddie: Pioneer</li>
+<li><strong>Iceland</strong> — Greta Salóme: Hear Them Calling</li>
+<li><strong>Ireland</strong> — Nicky Byrne: Sunlight</li>
+<li><strong>Israel</strong> — Hovi Star: Made of Stars</li>
+<li><strong>Italy</strong> — Francesca Michielin: No Degree of Separation</li>
+<li><strong>Latvia</strong> — Justs: Heartbeat</li>
+<li><strong>Lithuania</strong> — Donny Montell: I&#x27;ve Been Waiting for This Night</li>
+<li><strong>Malta</strong> — Ira Losco: Walk on Water</li>
+<li><strong>Moldova</strong> — Lidia Isac: Falling Stars</li>
+<li><strong>Montenegro</strong> — Highway: The Real Thing</li>
+<li><strong>Netherlands</strong> — Douwe Bob: Slow Down</li>
+<li><strong>North Macedonia</strong> — Kaliopi: Dona</li>
+<li><strong>Norway</strong> — Agnete: Icebreaker</li>
+<li><strong>Poland</strong> — Michał Szpak: Color of Your Life</li>
+<li><strong>Russia</strong> — Sergey Lazarev: You Are the Only One</li>
+<li><strong>San Marino</strong> — Serhat: I Didn&#x27;t Know</li>
+<li><strong>Serbia</strong> — Sanja Vučić Zaa: Goodbye (Shelter)</li>
+<li><strong>Slovenia</strong> — ManuElla: Blue and Red</li>
+<li><strong>Spain</strong> — Barei: Say Yay!</li>
+<li><strong>Sweden</strong> — Frans: If I Were Sorry</li>
+<li><strong>Switzerland</strong> — Rykka: The Last of Our Kind</li>
+<li><strong>Ukraine</strong> — Jamala: 1944</li>
+<li><strong>United Kingdom</strong> — Joe and Jake: You&#x27;re Not Alone</li></ul>
+          </div>
+        </details>
+
+      </section>
+
+    </div>
+  </div>
+
+  <script src="/js/modal.js"></script>
+  <div id="modal-container"></div>
+
+  <script type="module" src="/js/video2.js"></script>
+
+  <div id="footer"></div>
+  <script src="/js/footer.js"></script>
+
+  <script type="module" src="/js/sorting_edition2.js"></script>
+  <script src="/js/icons.js"></script>
+  <script type="module"
+          src="/js/mobile-page-selector.js"></script>
+  <script type="module"
+          src="/js/sidebar_eurovision.js"></script>
+
 </body>
 </html>

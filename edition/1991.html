@@ -1,20 +1,291 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Eurovision 1991 Final Results &amp; Scoreboard | DouzePoints</title>
-  <meta name="description" content="Eurovision 1991 results including final rankings, jury points, televote points and full scoreboard. Explore the complete 1991 Eurovision archive on DouzePoints." />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://douzepoints.org/edition/1991.html" />
-</head>
-<body>
-  <script>
-    window.location.replace(
-      "../edition.html?edition=" + encodeURIComponent("1991")
-    );
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>Eurovision 1991 Results &amp; Songs | Douze Points</title>
+  <meta name="description" content="Eurovision 1991 results, rankings, artists and songs. Explore the full Eurovision archive.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://douzepoints.org/edition/1991.html">
+
+  <link rel="stylesheet" href="/style/combined.css">
+  <link rel="stylesheet" href="/style/video-cards.css">
+  <link rel="stylesheet" href="/style/favorites.css">
+  <link rel="stylesheet" href="/style/footer.css">
+  <link rel="stylesheet" href="/style/sidebar.css">
+  <link rel="stylesheet" href="/style/mobile.css">
+
+  <script src="/js/favicons.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687"
+    crossorigin="anonymous"></script>
+
+  <script async
+    src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG">
   </script>
-  <noscript>
-    Eurovision 1991 Final Results &amp; Scoreboard. Please enable JavaScript.
-  </noscript>
+  <script src="/js/analytics.js"></script>
+
+  <style>
+    .seo-edition {
+      padding: 0 20px 28px;
+      max-width: 100%;
+    }
+    .seo-edition h1 {
+      font-size: clamp(24px, 3vw, 34px);
+      margin: 0 0 14px;
+    }
+    .seo-edition h2 {
+      font-size: 21px;
+      margin: 30px 0 14px;
+    }
+    .seo-edition p {
+      line-height: 1.65;
+    }
+    .seo-winner {
+      margin: 18px 0;
+      font-size: 16px;
+    }
+    .seo-results-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .seo-results-scroll table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      padding: 10px;
+      border-bottom: 1px solid #444;
+      text-align: left;
+    }
+    .seo-results-scroll th {
+      background: #242424;
+    }
+    .seo-entries {
+      columns: 2;
+      padding-left: 22px;
+      line-height: 1.8;
+    }
+    @media (max-width: 700px) {
+      .seo-entries { columns: 1; }
+      .seo-edition { padding: 0 12px 24px; }
+    }
+
+
+        /* Prevent SEO content from widening the page */
+    .container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .main-content {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .seo-edition {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      color: #e5e5e5;
+      margin-top: 45px;
+      padding-bottom: 40px;
+    }
+
+    .seo-edition h1,
+    .seo-edition h2 {
+      color: #ffffff;
+    }
+
+    .seo-edition p,
+    .seo-edition li {
+      color: #cccccc;
+    }
+
+    /* Scoreboard stays within the content area */
+    .seo-results-scroll,
+    .seo-results-scroll .results-scroll {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
+
+    .seo-results-scroll table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      white-space: nowrap;
+    }
+
+    /* Expandable participants section */
+    .seo-participants {
+      margin-top: 35px;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      padding: 16px 0;
+    }
+
+    .seo-participants summary {
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 0;
+    }
+
+    .seo-participants summary:hover {
+      color: #e50914;
+    }
+
+    .seo-entries {
+      margin-top: 20px;
+    }
+    
+  </style>
+</head>
+
+<body oncontextmenu="return false">
+
+  <div id="header-container"></div>
+  <script type="module" src="/js/header.js"></script>
+
+  <div class="container">
+
+    <div id="sidebar-container" class="sidebar"></div>
+
+    <div class="main-content">
+
+      <div class="mobile-page-selector">
+        <label id="mobile-page-selector-label"
+               for="mobile-page-select"></label>
+        <select id="mobile-page-select"></select>
+      </div>
+
+      <div class="header-bar"
+           style="display:flex;justify-content:flex-end;
+                  margin-bottom:40px;margin-right:20px;">
+
+        <div style="flex:1"></div>
+
+        <div class="sort-controls"
+             style="display:flex;align-items:center;
+                    padding-right:20px;">
+
+          <label for="sort-options">
+            <i data-lucide="list-filter"
+               style="margin-right:15px"></i>
+          </label>
+
+          <select id="sort-options"
+                  style="width:160px;padding:5px;
+                         font-size:11px;">
+            <option value="country" selected>
+              Country (A–Z)
+            </option>
+            <option value="country-desc">
+              Country (Z–A)
+            </option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+            <option value="jury">Jury Points</option>
+            <option value="televote">Televote Points</option>
+            <option value="total">Total Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-container" id="video-container"></div>
+
+      <!-- SEO content follows the video gallery -->
+      <section class="seo-edition">
+
+        <h1>Eurovision 1991 Results &amp; Songs</h1>
+
+        <p>
+          Explore the Eurovision Song Contest 1991 in Rome. Browse the results, participating countries, artists and songs.
+        </p>
+
+        <p class="seo-winner">Winner: <strong>Sweden</strong> — Carola, <em>Fångad av en stormvind</em>.</p>
+
+        <h2>Eurovision 1991 Final Scoreboard</h2><div class="seo-results-scroll">
+      <div class="results-scroll">
+        <table>
+          <thead><tr><th>Rank</th><th>Country</th><th>Artist</th><th>Song</th><th>Jury</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Sweden</td><td>Carola</td><td>Fångad av en stormvind</td><td>146</td><td>146</td></tr><tr><td>2</td><td>France</td><td>Amina</td><td>C&#x27;est le dernier qui a parlé qui a raison</td><td>146</td><td>146</td></tr><tr><td>3</td><td>Israel</td><td>Duo Datz</td><td>Kan</td><td>139</td><td>139</td></tr><tr><td>4</td><td>Spain</td><td>Sergio Dalma</td><td>Bailar pegados</td><td>119</td><td>119</td></tr><tr><td>5</td><td>Switzerland</td><td>Sandra Simó</td><td>Canzone per te</td><td>118</td><td>118</td></tr><tr><td>6</td><td>Malta</td><td>Paul Giordimaina and Georgina</td><td>Could It Be</td><td>106</td><td>106</td></tr><tr><td>7</td><td>Italy</td><td>Peppino di Capri</td><td>Comme è ddoce &#x27;o mare</td><td>89</td><td>89</td></tr><tr><td>8</td><td>Portugal</td><td>Dulce</td><td>Lusitana paixão</td><td>62</td><td>62</td></tr><tr><td>9</td><td>Cyprus</td><td>Elena Patroklou</td><td>S.O.S.</td><td>60</td><td>60</td></tr><tr><td>10</td><td>Ireland</td><td>Kim Jackson</td><td>Could It Be That I&#x27;m in Love</td><td>47</td><td>47</td></tr><tr><td>10</td><td>United Kingdom</td><td>Samantha Janus</td><td>A Message to Your Heart</td><td>47</td><td>47</td></tr><tr><td>12</td><td>Turkey</td><td>Can Uğurluer, İzel Çeliköz, Reyhan Karaca</td><td>İki Dakika</td><td>44</td><td>44</td></tr><tr><td>13</td><td>Greece</td><td>Sophia Vossou</td><td>Anixi</td><td>36</td><td>36</td></tr><tr><td>14</td><td>Luxembourg</td><td>Sarah Bray</td><td>Un baiser volé</td><td>29</td><td>29</td></tr><tr><td>15</td><td>Iceland</td><td>Stefán and Eyfi</td><td>Nína</td><td>26</td><td>26</td></tr><tr><td>16</td><td>Belgium</td><td>Clouseau</td><td>Geef het op</td><td>23</td><td>23</td></tr><tr><td>17</td><td>Norway</td><td>Just 4 Fun</td><td>Mrs. Thompson</td><td>14</td><td>14</td></tr><tr><td>18</td><td>Germany</td><td>Atlantis 2000</td><td>Dieser Traum darf niemals sterben</td><td>10</td><td>10</td></tr><tr><td>19</td><td>Denmark</td><td>Anders Frandsen</td><td>Lige der hvor hjertet slår</td><td>8</td><td>8</td></tr><tr><td>20</td><td>Finland</td><td>Kaija</td><td>Hullu yö</td><td>6</td><td>6</td></tr><tr><td>21</td><td>Yugoslavia</td><td>Baby Doll</td><td>Brazil</td><td>1</td><td>1</td></tr><tr><td>22</td><td>Austria</td><td>Thomas Forstner</td><td>Venedig im Regen</td><td>0</td><td>0</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+        <details class="seo-participants">
+          <summary>
+            Eurovision 1991 Participating Countries,
+            Artists &amp; Songs
+          </summary>
+
+          <div class="seo-entries">
+            <ul><li><strong>Austria</strong> — Thomas Forstner: Venedig im Regen</li>
+<li><strong>Belgium</strong> — Clouseau: Geef het op</li>
+<li><strong>Cyprus</strong> — Elena Patroklou: S.O.S.</li>
+<li><strong>Denmark</strong> — Anders Frandsen: Lige der hvor hjertet slår</li>
+<li><strong>Finland</strong> — Kaija: Hullu yö</li>
+<li><strong>France</strong> — Amina: C&#x27;est le dernier qui a parlé qui a raison</li>
+<li><strong>Germany</strong> — Atlantis 2000: Dieser Traum darf niemals sterben</li>
+<li><strong>Greece</strong> — Sophia Vossou: Anixi</li>
+<li><strong>Iceland</strong> — Stefán and Eyfi: Nína</li>
+<li><strong>Ireland</strong> — Kim Jackson: Could It Be That I&#x27;m in Love</li>
+<li><strong>Israel</strong> — Duo Datz: Kan</li>
+<li><strong>Italy</strong> — Peppino di Capri: Comme è ddoce &#x27;o mare</li>
+<li><strong>Luxembourg</strong> — Sarah Bray: Un baiser volé</li>
+<li><strong>Malta</strong> — Paul Giordimaina and Georgina: Could It Be</li>
+<li><strong>Norway</strong> — Just 4 Fun: Mrs. Thompson</li>
+<li><strong>Portugal</strong> — Dulce: Lusitana paixão</li>
+<li><strong>Spain</strong> — Sergio Dalma: Bailar pegados</li>
+<li><strong>Sweden</strong> — Carola: Fångad av en stormvind</li>
+<li><strong>Switzerland</strong> — Sandra Simó: Canzone per te</li>
+<li><strong>Turkey</strong> — Can Uğurluer, İzel Çeliköz, Reyhan Karaca: İki Dakika</li>
+<li><strong>United Kingdom</strong> — Samantha Janus: A Message to Your Heart</li>
+<li><strong>Yugoslavia</strong> — Baby Doll: Brazil</li></ul>
+          </div>
+        </details>
+
+      </section>
+
+    </div>
+  </div>
+
+  <script src="/js/modal.js"></script>
+  <div id="modal-container"></div>
+
+  <script type="module" src="/js/video2.js"></script>
+
+  <div id="footer"></div>
+  <script src="/js/footer.js"></script>
+
+  <script type="module" src="/js/sorting_edition2.js"></script>
+  <script src="/js/icons.js"></script>
+  <script type="module"
+          src="/js/mobile-page-selector.js"></script>
+  <script type="module"
+          src="/js/sidebar_eurovision.js"></script>
+
 </body>
 </html>

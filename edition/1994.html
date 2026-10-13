@@ -1,20 +1,294 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Eurovision 1994 Final Results &amp; Scoreboard | DouzePoints</title>
-  <meta name="description" content="Eurovision 1994 results including final rankings, jury points, televote points and full scoreboard. Explore the complete 1994 Eurovision archive on DouzePoints." />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://douzepoints.org/edition/1994.html" />
-</head>
-<body>
-  <script>
-    window.location.replace(
-      "../edition.html?edition=" + encodeURIComponent("1994")
-    );
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>Eurovision 1994 Results &amp; Songs | Douze Points</title>
+  <meta name="description" content="Eurovision 1994 results, rankings, artists and songs. Explore the full Eurovision archive.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://douzepoints.org/edition/1994.html">
+
+  <link rel="stylesheet" href="/style/combined.css">
+  <link rel="stylesheet" href="/style/video-cards.css">
+  <link rel="stylesheet" href="/style/favorites.css">
+  <link rel="stylesheet" href="/style/footer.css">
+  <link rel="stylesheet" href="/style/sidebar.css">
+  <link rel="stylesheet" href="/style/mobile.css">
+
+  <script src="/js/favicons.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687"
+    crossorigin="anonymous"></script>
+
+  <script async
+    src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG">
   </script>
-  <noscript>
-    Eurovision 1994 Final Results &amp; Scoreboard. Please enable JavaScript.
-  </noscript>
+  <script src="/js/analytics.js"></script>
+
+  <style>
+    .seo-edition {
+      padding: 0 20px 28px;
+      max-width: 100%;
+    }
+    .seo-edition h1 {
+      font-size: clamp(24px, 3vw, 34px);
+      margin: 0 0 14px;
+    }
+    .seo-edition h2 {
+      font-size: 21px;
+      margin: 30px 0 14px;
+    }
+    .seo-edition p {
+      line-height: 1.65;
+    }
+    .seo-winner {
+      margin: 18px 0;
+      font-size: 16px;
+    }
+    .seo-results-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .seo-results-scroll table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      padding: 10px;
+      border-bottom: 1px solid #444;
+      text-align: left;
+    }
+    .seo-results-scroll th {
+      background: #242424;
+    }
+    .seo-entries {
+      columns: 2;
+      padding-left: 22px;
+      line-height: 1.8;
+    }
+    @media (max-width: 700px) {
+      .seo-entries { columns: 1; }
+      .seo-edition { padding: 0 12px 24px; }
+    }
+
+
+        /* Prevent SEO content from widening the page */
+    .container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .main-content {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .seo-edition {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      color: #e5e5e5;
+      margin-top: 45px;
+      padding-bottom: 40px;
+    }
+
+    .seo-edition h1,
+    .seo-edition h2 {
+      color: #ffffff;
+    }
+
+    .seo-edition p,
+    .seo-edition li {
+      color: #cccccc;
+    }
+
+    /* Scoreboard stays within the content area */
+    .seo-results-scroll,
+    .seo-results-scroll .results-scroll {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
+
+    .seo-results-scroll table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      white-space: nowrap;
+    }
+
+    /* Expandable participants section */
+    .seo-participants {
+      margin-top: 35px;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      padding: 16px 0;
+    }
+
+    .seo-participants summary {
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 0;
+    }
+
+    .seo-participants summary:hover {
+      color: #e50914;
+    }
+
+    .seo-entries {
+      margin-top: 20px;
+    }
+    
+  </style>
+</head>
+
+<body oncontextmenu="return false">
+
+  <div id="header-container"></div>
+  <script type="module" src="/js/header.js"></script>
+
+  <div class="container">
+
+    <div id="sidebar-container" class="sidebar"></div>
+
+    <div class="main-content">
+
+      <div class="mobile-page-selector">
+        <label id="mobile-page-selector-label"
+               for="mobile-page-select"></label>
+        <select id="mobile-page-select"></select>
+      </div>
+
+      <div class="header-bar"
+           style="display:flex;justify-content:flex-end;
+                  margin-bottom:40px;margin-right:20px;">
+
+        <div style="flex:1"></div>
+
+        <div class="sort-controls"
+             style="display:flex;align-items:center;
+                    padding-right:20px;">
+
+          <label for="sort-options">
+            <i data-lucide="list-filter"
+               style="margin-right:15px"></i>
+          </label>
+
+          <select id="sort-options"
+                  style="width:160px;padding:5px;
+                         font-size:11px;">
+            <option value="country" selected>
+              Country (A–Z)
+            </option>
+            <option value="country-desc">
+              Country (Z–A)
+            </option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+            <option value="jury">Jury Points</option>
+            <option value="televote">Televote Points</option>
+            <option value="total">Total Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-container" id="video-container"></div>
+
+      <!-- SEO content follows the video gallery -->
+      <section class="seo-edition">
+
+        <h1>Eurovision 1994 Results &amp; Songs</h1>
+
+        <p>
+          Explore the Eurovision Song Contest 1994 in Dublin. Browse the results, participating countries, artists and songs.
+        </p>
+
+        <p class="seo-winner">Winner: <strong>Ireland</strong> — Paul Harrington and Charlie McGettigan, <em>Rock &#x27;n&#x27; Roll Kids</em>.</p>
+
+        <h2>Eurovision 1994 Final Scoreboard</h2><div class="seo-results-scroll">
+      <div class="results-scroll">
+        <table>
+          <thead><tr><th>Rank</th><th>Country</th><th>Artist</th><th>Song</th><th>Jury</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Ireland</td><td>Paul Harrington and Charlie McGettigan</td><td>Rock &#x27;n&#x27; Roll Kids</td><td>226</td><td>226</td></tr><tr><td>2</td><td>Poland</td><td>Edyta Górniak</td><td>To nie ja!</td><td>166</td><td>166</td></tr><tr><td>3</td><td>Germany</td><td>Mekado</td><td>Wir geben &#x27;ne Party</td><td>128</td><td>128</td></tr><tr><td>4</td><td>Hungary</td><td>Friderika</td><td>Kinek mondjam el vétkeimet?</td><td>122</td><td>122</td></tr><tr><td>5</td><td>Malta</td><td>Moira Stafrace and Christopher Scicluna</td><td>More than Love</td><td>97</td><td>97</td></tr><tr><td>6</td><td>Norway</td><td>Elisabeth Andreasson and Jan Werner Danielsen</td><td>Duett</td><td>76</td><td>76</td></tr><tr><td>7</td><td>France</td><td>Nina Morato</td><td>Je suis un vrai garçon</td><td>74</td><td>74</td></tr><tr><td>8</td><td>Portugal</td><td>Sara</td><td>Chamar a música</td><td>73</td><td>73</td></tr><tr><td>9</td><td>Russia</td><td>Youddiph</td><td>Vechny strannik</td><td>70</td><td>70</td></tr><tr><td>10</td><td>United Kingdom</td><td>Frances Ruffelle</td><td>We Will Be Free (Lonely Symphony)</td><td>63</td><td>63</td></tr><tr><td>11</td><td>Cyprus</td><td>Evridiki</td><td>Ime anthropos ki ego</td><td>51</td><td>51</td></tr><tr><td>12</td><td>Iceland</td><td>Sigga</td><td>Nætur</td><td>49</td><td>49</td></tr><tr><td>13</td><td>Sweden</td><td>Marie Bergman and Roger Pontare</td><td>Stjärnorna</td><td>48</td><td>48</td></tr><tr><td>14</td><td>Greece</td><td>Kostas Bigalis and the Sea Lovers</td><td>To trehandiri (Diri Diri)</td><td>44</td><td>44</td></tr><tr><td>15</td><td>Bosnia &amp; Hercegovina</td><td>Alma and Dejan</td><td>Ostani kraj mene</td><td>39</td><td>39</td></tr><tr><td>16</td><td>Croatia</td><td>Tony Cetinski</td><td>Nek&#x27; ti bude ljubav sva</td><td>27</td><td>27</td></tr><tr><td>17</td><td>Austria</td><td>Petra Frey</td><td>Für den Frieden der Welt</td><td>19</td><td>19</td></tr><tr><td>18</td><td>Spain</td><td>Alejandro Abad</td><td>Ella no es ella</td><td>17</td><td>17</td></tr><tr><td>19</td><td>Slovakia</td><td>Martin Ďurinda and Tublatanka</td><td>Nekonečná pieseň</td><td>15</td><td>15</td></tr><tr><td>19</td><td>Switzerland</td><td>Duilio</td><td>Sto pregando</td><td>15</td><td>15</td></tr><tr><td>21</td><td>Romania</td><td>Dan Bittman</td><td>Dincolo de nori</td><td>14</td><td>14</td></tr><tr><td>22</td><td>Finland</td><td>CatCat</td><td>Bye Bye Baby</td><td>11</td><td>11</td></tr><tr><td>23</td><td>Netherlands</td><td>Willeke Alberti</td><td>Waar is de zon</td><td>4</td><td>4</td></tr><tr><td>24</td><td>Estonia</td><td>Silvi Vrait</td><td>Nagu merelaine</td><td>2</td><td>2</td></tr><tr><td>25</td><td>Lithuania</td><td>Ovidijus Vyšniauskas</td><td>Lopšinė mylimai</td><td>0</td><td>0</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+        <details class="seo-participants">
+          <summary>
+            Eurovision 1994 Participating Countries,
+            Artists &amp; Songs
+          </summary>
+
+          <div class="seo-entries">
+            <ul><li><strong>Austria</strong> — Petra Frey: Für den Frieden der Welt</li>
+<li><strong>Bosnia &amp; Hercegovina</strong> — Alma and Dejan: Ostani kraj mene</li>
+<li><strong>Croatia</strong> — Tony Cetinski: Nek&#x27; ti bude ljubav sva</li>
+<li><strong>Cyprus</strong> — Evridiki: Ime anthropos ki ego</li>
+<li><strong>Estonia</strong> — Silvi Vrait: Nagu merelaine</li>
+<li><strong>Finland</strong> — CatCat: Bye Bye Baby</li>
+<li><strong>France</strong> — Nina Morato: Je suis un vrai garçon</li>
+<li><strong>Germany</strong> — Mekado: Wir geben &#x27;ne Party</li>
+<li><strong>Greece</strong> — Kostas Bigalis and the Sea Lovers: To trehandiri (Diri Diri)</li>
+<li><strong>Hungary</strong> — Friderika: Kinek mondjam el vétkeimet?</li>
+<li><strong>Iceland</strong> — Sigga: Nætur</li>
+<li><strong>Ireland</strong> — Paul Harrington and Charlie McGettigan: Rock &#x27;n&#x27; Roll Kids</li>
+<li><strong>Lithuania</strong> — Ovidijus Vyšniauskas: Lopšinė mylimai</li>
+<li><strong>Malta</strong> — Moira Stafrace and Christopher Scicluna: More than Love</li>
+<li><strong>Netherlands</strong> — Willeke Alberti: Waar is de zon</li>
+<li><strong>Norway</strong> — Elisabeth Andreasson and Jan Werner Danielsen: Duett</li>
+<li><strong>Poland</strong> — Edyta Górniak: To nie ja!</li>
+<li><strong>Portugal</strong> — Sara: Chamar a música</li>
+<li><strong>Romania</strong> — Dan Bittman: Dincolo de nori</li>
+<li><strong>Russia</strong> — Youddiph: Vechny strannik</li>
+<li><strong>Slovakia</strong> — Martin Ďurinda and Tublatanka: Nekonečná pieseň</li>
+<li><strong>Spain</strong> — Alejandro Abad: Ella no es ella</li>
+<li><strong>Sweden</strong> — Marie Bergman and Roger Pontare: Stjärnorna</li>
+<li><strong>Switzerland</strong> — Duilio: Sto pregando</li>
+<li><strong>United Kingdom</strong> — Frances Ruffelle: We Will Be Free (Lonely Symphony)</li></ul>
+          </div>
+        </details>
+
+      </section>
+
+    </div>
+  </div>
+
+  <script src="/js/modal.js"></script>
+  <div id="modal-container"></div>
+
+  <script type="module" src="/js/video2.js"></script>
+
+  <div id="footer"></div>
+  <script src="/js/footer.js"></script>
+
+  <script type="module" src="/js/sorting_edition2.js"></script>
+  <script src="/js/icons.js"></script>
+  <script type="module"
+          src="/js/mobile-page-selector.js"></script>
+  <script type="module"
+          src="/js/sidebar_eurovision.js"></script>
+
 </body>
 </html>

@@ -1,20 +1,288 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Eurovision 1985 Final Results &amp; Scoreboard | DouzePoints</title>
-  <meta name="description" content="Eurovision 1985 results including final rankings, jury points, televote points and full scoreboard. Explore the complete 1985 Eurovision archive on DouzePoints." />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://douzepoints.org/edition/1985.html" />
-</head>
-<body>
-  <script>
-    window.location.replace(
-      "../edition.html?edition=" + encodeURIComponent("1985")
-    );
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>Eurovision 1985 Results &amp; Songs | Douze Points</title>
+  <meta name="description" content="Eurovision 1985 results, rankings, artists and songs. Explore the full Eurovision archive.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://douzepoints.org/edition/1985.html">
+
+  <link rel="stylesheet" href="/style/combined.css">
+  <link rel="stylesheet" href="/style/video-cards.css">
+  <link rel="stylesheet" href="/style/favorites.css">
+  <link rel="stylesheet" href="/style/footer.css">
+  <link rel="stylesheet" href="/style/sidebar.css">
+  <link rel="stylesheet" href="/style/mobile.css">
+
+  <script src="/js/favicons.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687"
+    crossorigin="anonymous"></script>
+
+  <script async
+    src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG">
   </script>
-  <noscript>
-    Eurovision 1985 Final Results &amp; Scoreboard. Please enable JavaScript.
-  </noscript>
+  <script src="/js/analytics.js"></script>
+
+  <style>
+    .seo-edition {
+      padding: 0 20px 28px;
+      max-width: 100%;
+    }
+    .seo-edition h1 {
+      font-size: clamp(24px, 3vw, 34px);
+      margin: 0 0 14px;
+    }
+    .seo-edition h2 {
+      font-size: 21px;
+      margin: 30px 0 14px;
+    }
+    .seo-edition p {
+      line-height: 1.65;
+    }
+    .seo-winner {
+      margin: 18px 0;
+      font-size: 16px;
+    }
+    .seo-results-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .seo-results-scroll table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      padding: 10px;
+      border-bottom: 1px solid #444;
+      text-align: left;
+    }
+    .seo-results-scroll th {
+      background: #242424;
+    }
+    .seo-entries {
+      columns: 2;
+      padding-left: 22px;
+      line-height: 1.8;
+    }
+    @media (max-width: 700px) {
+      .seo-entries { columns: 1; }
+      .seo-edition { padding: 0 12px 24px; }
+    }
+
+
+        /* Prevent SEO content from widening the page */
+    .container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .main-content {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .seo-edition {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      color: #e5e5e5;
+      margin-top: 45px;
+      padding-bottom: 40px;
+    }
+
+    .seo-edition h1,
+    .seo-edition h2 {
+      color: #ffffff;
+    }
+
+    .seo-edition p,
+    .seo-edition li {
+      color: #cccccc;
+    }
+
+    /* Scoreboard stays within the content area */
+    .seo-results-scroll,
+    .seo-results-scroll .results-scroll {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
+
+    .seo-results-scroll table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      white-space: nowrap;
+    }
+
+    /* Expandable participants section */
+    .seo-participants {
+      margin-top: 35px;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      padding: 16px 0;
+    }
+
+    .seo-participants summary {
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 0;
+    }
+
+    .seo-participants summary:hover {
+      color: #e50914;
+    }
+
+    .seo-entries {
+      margin-top: 20px;
+    }
+    
+  </style>
+</head>
+
+<body oncontextmenu="return false">
+
+  <div id="header-container"></div>
+  <script type="module" src="/js/header.js"></script>
+
+  <div class="container">
+
+    <div id="sidebar-container" class="sidebar"></div>
+
+    <div class="main-content">
+
+      <div class="mobile-page-selector">
+        <label id="mobile-page-selector-label"
+               for="mobile-page-select"></label>
+        <select id="mobile-page-select"></select>
+      </div>
+
+      <div class="header-bar"
+           style="display:flex;justify-content:flex-end;
+                  margin-bottom:40px;margin-right:20px;">
+
+        <div style="flex:1"></div>
+
+        <div class="sort-controls"
+             style="display:flex;align-items:center;
+                    padding-right:20px;">
+
+          <label for="sort-options">
+            <i data-lucide="list-filter"
+               style="margin-right:15px"></i>
+          </label>
+
+          <select id="sort-options"
+                  style="width:160px;padding:5px;
+                         font-size:11px;">
+            <option value="country" selected>
+              Country (A–Z)
+            </option>
+            <option value="country-desc">
+              Country (Z–A)
+            </option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+            <option value="jury">Jury Points</option>
+            <option value="televote">Televote Points</option>
+            <option value="total">Total Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-container" id="video-container"></div>
+
+      <!-- SEO content follows the video gallery -->
+      <section class="seo-edition">
+
+        <h1>Eurovision 1985 Results &amp; Songs</h1>
+
+        <p>
+          Explore the Eurovision Song Contest 1985 in Gothenburg. Browse the results, participating countries, artists and songs.
+        </p>
+
+        <p class="seo-winner">Winner: <strong>Norway</strong> — Bobbysocks!, <em>La det swinge</em>.</p>
+
+        <h2>Eurovision 1985 Final Scoreboard</h2><div class="seo-results-scroll">
+      <div class="results-scroll">
+        <table>
+          <thead><tr><th>Rank</th><th>Country</th><th>Artist</th><th>Song</th><th>Jury</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Norway</td><td>Bobbysocks!</td><td>La det swinge</td><td>123</td><td>123</td></tr><tr><td>2</td><td>Germany</td><td>Wind</td><td>Für alle</td><td>105</td><td>105</td></tr><tr><td>3</td><td>Sweden</td><td>Kikki Danielsson</td><td>Bra vibrationer</td><td>103</td><td>103</td></tr><tr><td>4</td><td>United Kingdom</td><td>Vikki</td><td>Love Is</td><td>100</td><td>100</td></tr><tr><td>5</td><td>Israel</td><td>Izhar Cohen</td><td>Olé, Olé</td><td>93</td><td>93</td></tr><tr><td>6</td><td>Ireland</td><td>Maria Christian</td><td>Wait Until the Weekend Comes</td><td>91</td><td>91</td></tr><tr><td>7</td><td>Italy</td><td>Al Bano and Romina Power</td><td>Magic, Oh Magic</td><td>78</td><td>78</td></tr><tr><td>8</td><td>Austria</td><td>Gary Lux</td><td>Kinder dieser Welt</td><td>60</td><td>60</td></tr><tr><td>9</td><td>Finland</td><td>Sonja Lumme</td><td>Eläköön elämä</td><td>58</td><td>58</td></tr><tr><td>10</td><td>France</td><td>Roger Bens</td><td>Femme dans ses rêves aussi</td><td>56</td><td>56</td></tr><tr><td>11</td><td>Denmark</td><td>Hot Eyes</td><td>Sku&#x27; du spørg&#x27; fra no&#x27;en</td><td>41</td><td>41</td></tr><tr><td>12</td><td>Switzerland</td><td>Mariella Farré and Pino Gasparini</td><td>Piano, piano</td><td>39</td><td>39</td></tr><tr><td>13</td><td>Luxembourg</td><td>Margo, Franck Olivier, Chris Roberts, Malcolm Roberts, Ireen Sheer and Diane Solomon</td><td>Children, Kinder, Enfants</td><td>37</td><td>37</td></tr><tr><td>14</td><td>Spain</td><td>Paloma San Basilio</td><td>La fiesta terminó</td><td>36</td><td>36</td></tr><tr><td>14</td><td>Turkey</td><td>MFÖ</td><td>Didai didai dai</td><td>36</td><td>36</td></tr><tr><td>16</td><td>Cyprus</td><td>Lia Vissi</td><td>To katalava arga</td><td>15</td><td>15</td></tr><tr><td>16</td><td>Greece</td><td>Takis Biniaris</td><td>Miazoume</td><td>15</td><td>15</td></tr><tr><td>18</td><td>Portugal</td><td>Adelaide</td><td>Penso em ti, eu sei</td><td>9</td><td>9</td></tr><tr><td>19</td><td>Belgium</td><td>Linda Lepomme</td><td>Laat me nu gaan</td><td>7</td><td>7</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+        <details class="seo-participants">
+          <summary>
+            Eurovision 1985 Participating Countries,
+            Artists &amp; Songs
+          </summary>
+
+          <div class="seo-entries">
+            <ul><li><strong>Austria</strong> — Gary Lux: Kinder dieser Welt</li>
+<li><strong>Belgium</strong> — Linda Lepomme: Laat me nu gaan</li>
+<li><strong>Cyprus</strong> — Lia Vissi: To katalava arga</li>
+<li><strong>Denmark</strong> — Hot Eyes: Sku&#x27; du spørg&#x27; fra no&#x27;en</li>
+<li><strong>Finland</strong> — Sonja Lumme: Eläköön elämä</li>
+<li><strong>France</strong> — Roger Bens: Femme dans ses rêves aussi</li>
+<li><strong>Germany</strong> — Wind: Für alle</li>
+<li><strong>Greece</strong> — Takis Biniaris: Miazoume</li>
+<li><strong>Ireland</strong> — Maria Christian: Wait Until the Weekend Comes</li>
+<li><strong>Israel</strong> — Izhar Cohen: Olé, Olé</li>
+<li><strong>Italy</strong> — Al Bano and Romina Power: Magic, Oh Magic</li>
+<li><strong>Luxembourg</strong> — Margo, Franck Olivier, Chris Roberts, Malcolm Roberts, Ireen Sheer and Diane Solomon: Children, Kinder, Enfants</li>
+<li><strong>Norway</strong> — Bobbysocks!: La det swinge</li>
+<li><strong>Portugal</strong> — Adelaide: Penso em ti, eu sei</li>
+<li><strong>Spain</strong> — Paloma San Basilio: La fiesta terminó</li>
+<li><strong>Sweden</strong> — Kikki Danielsson: Bra vibrationer</li>
+<li><strong>Switzerland</strong> — Mariella Farré and Pino Gasparini: Piano, piano</li>
+<li><strong>Turkey</strong> — MFÖ: Didai didai dai</li>
+<li><strong>United Kingdom</strong> — Vikki: Love Is</li></ul>
+          </div>
+        </details>
+
+      </section>
+
+    </div>
+  </div>
+
+  <script src="/js/modal.js"></script>
+  <div id="modal-container"></div>
+
+  <script type="module" src="/js/video2.js"></script>
+
+  <div id="footer"></div>
+  <script src="/js/footer.js"></script>
+
+  <script type="module" src="/js/sorting_edition2.js"></script>
+  <script src="/js/icons.js"></script>
+  <script type="module"
+          src="/js/mobile-page-selector.js"></script>
+  <script type="module"
+          src="/js/sidebar_eurovision.js"></script>
+
 </body>
 </html>

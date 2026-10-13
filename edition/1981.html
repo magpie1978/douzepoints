@@ -1,20 +1,289 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Eurovision 1981 Final Results &amp; Scoreboard | DouzePoints</title>
-  <meta name="description" content="Eurovision 1981 results including final rankings, jury points, televote points and full scoreboard. Explore the complete 1981 Eurovision archive on DouzePoints." />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://douzepoints.org/edition/1981.html" />
-</head>
-<body>
-  <script>
-    window.location.replace(
-      "../edition.html?edition=" + encodeURIComponent("1981")
-    );
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>Eurovision 1981 Results &amp; Songs | Douze Points</title>
+  <meta name="description" content="Eurovision 1981 results, rankings, artists and songs. Explore the full Eurovision archive.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://douzepoints.org/edition/1981.html">
+
+  <link rel="stylesheet" href="/style/combined.css">
+  <link rel="stylesheet" href="/style/video-cards.css">
+  <link rel="stylesheet" href="/style/favorites.css">
+  <link rel="stylesheet" href="/style/footer.css">
+  <link rel="stylesheet" href="/style/sidebar.css">
+  <link rel="stylesheet" href="/style/mobile.css">
+
+  <script src="/js/favicons.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1056703456722687"
+    crossorigin="anonymous"></script>
+
+  <script async
+    src="https://www.googletagmanager.com/gtag/js?id=G-9BDCDNFMGG">
   </script>
-  <noscript>
-    Eurovision 1981 Final Results &amp; Scoreboard. Please enable JavaScript.
-  </noscript>
+  <script src="/js/analytics.js"></script>
+
+  <style>
+    .seo-edition {
+      padding: 0 20px 28px;
+      max-width: 100%;
+    }
+    .seo-edition h1 {
+      font-size: clamp(24px, 3vw, 34px);
+      margin: 0 0 14px;
+    }
+    .seo-edition h2 {
+      font-size: 21px;
+      margin: 30px 0 14px;
+    }
+    .seo-edition p {
+      line-height: 1.65;
+    }
+    .seo-winner {
+      margin: 18px 0;
+      font-size: 16px;
+    }
+    .seo-results-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .seo-results-scroll table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      padding: 10px;
+      border-bottom: 1px solid #444;
+      text-align: left;
+    }
+    .seo-results-scroll th {
+      background: #242424;
+    }
+    .seo-entries {
+      columns: 2;
+      padding-left: 22px;
+      line-height: 1.8;
+    }
+    @media (max-width: 700px) {
+      .seo-entries { columns: 1; }
+      .seo-edition { padding: 0 12px 24px; }
+    }
+
+
+        /* Prevent SEO content from widening the page */
+    .container {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .main-content {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .seo-edition {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      color: #e5e5e5;
+      margin-top: 45px;
+      padding-bottom: 40px;
+    }
+
+    .seo-edition h1,
+    .seo-edition h2 {
+      color: #ffffff;
+    }
+
+    .seo-edition p,
+    .seo-edition li {
+      color: #cccccc;
+    }
+
+    /* Scoreboard stays within the content area */
+    .seo-results-scroll,
+    .seo-results-scroll .results-scroll {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
+
+    .seo-results-scroll table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+
+    .seo-results-scroll th,
+    .seo-results-scroll td {
+      white-space: nowrap;
+    }
+
+    /* Expandable participants section */
+    .seo-participants {
+      margin-top: 35px;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      padding: 16px 0;
+    }
+
+    .seo-participants summary {
+      cursor: pointer;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 0;
+    }
+
+    .seo-participants summary:hover {
+      color: #e50914;
+    }
+
+    .seo-entries {
+      margin-top: 20px;
+    }
+    
+  </style>
+</head>
+
+<body oncontextmenu="return false">
+
+  <div id="header-container"></div>
+  <script type="module" src="/js/header.js"></script>
+
+  <div class="container">
+
+    <div id="sidebar-container" class="sidebar"></div>
+
+    <div class="main-content">
+
+      <div class="mobile-page-selector">
+        <label id="mobile-page-selector-label"
+               for="mobile-page-select"></label>
+        <select id="mobile-page-select"></select>
+      </div>
+
+      <div class="header-bar"
+           style="display:flex;justify-content:flex-end;
+                  margin-bottom:40px;margin-right:20px;">
+
+        <div style="flex:1"></div>
+
+        <div class="sort-controls"
+             style="display:flex;align-items:center;
+                    padding-right:20px;">
+
+          <label for="sort-options">
+            <i data-lucide="list-filter"
+               style="margin-right:15px"></i>
+          </label>
+
+          <select id="sort-options"
+                  style="width:160px;padding:5px;
+                         font-size:11px;">
+            <option value="country" selected>
+              Country (A–Z)
+            </option>
+            <option value="country-desc">
+              Country (Z–A)
+            </option>
+            <option value="artist">Artist Name</option>
+            <option value="song">Song Title</option>
+            <option value="jury">Jury Points</option>
+            <option value="televote">Televote Points</option>
+            <option value="total">Total Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-container" id="video-container"></div>
+
+      <!-- SEO content follows the video gallery -->
+      <section class="seo-edition">
+
+        <h1>Eurovision 1981 Results &amp; Songs</h1>
+
+        <p>
+          Explore the Eurovision Song Contest 1981 in Dublin. Browse the results, participating countries, artists and songs.
+        </p>
+
+        <p class="seo-winner">Winner: <strong>United Kingdom</strong> — Bucks Fizz, <em>Making Your Mind Up</em>.</p>
+
+        <h2>Eurovision 1981 Final Scoreboard</h2><div class="seo-results-scroll">
+      <div class="results-scroll">
+        <table>
+          <thead><tr><th>Rank</th><th>Country</th><th>Artist</th><th>Song</th><th>Jury</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>United Kingdom</td><td>Bucks Fizz</td><td>Making Your Mind Up</td><td>136</td><td>136</td></tr><tr><td>2</td><td>Germany</td><td>Lena Valaitis</td><td>Johnny Blue</td><td>132</td><td>132</td></tr><tr><td>3</td><td>France</td><td>Jean Gabilou</td><td>Humanahum</td><td>125</td><td>125</td></tr><tr><td>4</td><td>Switzerland</td><td>Peter, Sue and Marc</td><td>Io senza te</td><td>121</td><td>121</td></tr><tr><td>5</td><td>Ireland</td><td>Sheeba</td><td>Horoscopes</td><td>105</td><td>105</td></tr><tr><td>6</td><td>Cyprus</td><td>Island</td><td>Monika</td><td>69</td><td>69</td></tr><tr><td>7</td><td>Israel</td><td>Habibi</td><td>Halayla</td><td>56</td><td>56</td></tr><tr><td>8</td><td>Greece</td><td>Yiannis Dimitras</td><td>Feggari kalokerino</td><td>55</td><td>55</td></tr><tr><td>9</td><td>Netherlands</td><td>Linda Williams</td><td>Het is een wonder</td><td>51</td><td>51</td></tr><tr><td>10</td><td>Sweden</td><td>Björn Skifs</td><td>Fångad i en dröm</td><td>50</td><td>50</td></tr><tr><td>11</td><td>Denmark</td><td>Tommy Seebach and Debbie Cameron</td><td>Krøller eller ej</td><td>41</td><td>41</td></tr><tr><td>11</td><td>Luxembourg</td><td>Jean-Claude Pascal</td><td>C&#x27;est peut-être pas l&#x27;Amérique</td><td>41</td><td>41</td></tr><tr><td>13</td><td>Belgium</td><td>Emly Starr</td><td>Samson</td><td>40</td><td>40</td></tr><tr><td>14</td><td>Spain</td><td>Bacchelli</td><td>Y sólo tú</td><td>38</td><td>38</td></tr><tr><td>15</td><td>Yugoslavia</td><td>Seid Memić Vajta</td><td>Lejla</td><td>35</td><td>35</td></tr><tr><td>16</td><td>Finland</td><td>Riki Sorsa</td><td>Reggae O.K.</td><td>27</td><td>27</td></tr><tr><td>17</td><td>Austria</td><td>Marty Brem</td><td>Wenn du da bist</td><td>20</td><td>20</td></tr><tr><td>18</td><td>Portugal</td><td>Carlos Paião</td><td>Playback</td><td>9</td><td>9</td></tr><tr><td>18</td><td>Turkey</td><td>Modern Folk Trio and Ayşegül</td><td>Dönme Dolap</td><td>9</td><td>9</td></tr><tr><td>20</td><td>Norway</td><td>Finn Kalvik</td><td>Aldri i livet</td><td>0</td><td>0</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+        <details class="seo-participants">
+          <summary>
+            Eurovision 1981 Participating Countries,
+            Artists &amp; Songs
+          </summary>
+
+          <div class="seo-entries">
+            <ul><li><strong>Austria</strong> — Marty Brem: Wenn du da bist</li>
+<li><strong>Belgium</strong> — Emly Starr: Samson</li>
+<li><strong>Cyprus</strong> — Island: Monika</li>
+<li><strong>Denmark</strong> — Tommy Seebach and Debbie Cameron: Krøller eller ej</li>
+<li><strong>Finland</strong> — Riki Sorsa: Reggae O.K.</li>
+<li><strong>France</strong> — Jean Gabilou: Humanahum</li>
+<li><strong>Germany</strong> — Lena Valaitis: Johnny Blue</li>
+<li><strong>Greece</strong> — Yiannis Dimitras: Feggari kalokerino</li>
+<li><strong>Ireland</strong> — Sheeba: Horoscopes</li>
+<li><strong>Israel</strong> — Habibi: Halayla</li>
+<li><strong>Luxembourg</strong> — Jean-Claude Pascal: C&#x27;est peut-être pas l&#x27;Amérique</li>
+<li><strong>Netherlands</strong> — Linda Williams: Het is een wonder</li>
+<li><strong>Norway</strong> — Finn Kalvik: Aldri i livet</li>
+<li><strong>Portugal</strong> — Carlos Paião: Playback</li>
+<li><strong>Spain</strong> — Bacchelli: Y sólo tú</li>
+<li><strong>Sweden</strong> — Björn Skifs: Fångad i en dröm</li>
+<li><strong>Switzerland</strong> — Peter, Sue and Marc: Io senza te</li>
+<li><strong>Turkey</strong> — Modern Folk Trio and Ayşegül: Dönme Dolap</li>
+<li><strong>United Kingdom</strong> — Bucks Fizz: Making Your Mind Up</li>
+<li><strong>Yugoslavia</strong> — Seid Memić Vajta: Lejla</li></ul>
+          </div>
+        </details>
+
+      </section>
+
+    </div>
+  </div>
+
+  <script src="/js/modal.js"></script>
+  <div id="modal-container"></div>
+
+  <script type="module" src="/js/video2.js"></script>
+
+  <div id="footer"></div>
+  <script src="/js/footer.js"></script>
+
+  <script type="module" src="/js/sorting_edition2.js"></script>
+  <script src="/js/icons.js"></script>
+  <script type="module"
+          src="/js/mobile-page-selector.js"></script>
+  <script type="module"
+          src="/js/sidebar_eurovision.js"></script>
+
 </body>
 </html>
