@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const path = window.location.pathname;
 
   if (
-    path.includes("country.html") ||
+    (path.includes("country.html") || /^\/country\/[a-z0-9-]+\.html$/i.test(path)) ||
     path.includes("winners.html") ||
     path.includes("fan-favorites.html")   // load countries sidebar if page is country.html, winners.html or fan-favorites.html
   ) {
