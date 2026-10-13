@@ -101,6 +101,15 @@ def build_table(rows, year):
         clean(row.get("Country"))
     ))
 
+    if year == 1956:
+        # Only the winning entry was officially announced in 1956.
+        # The remaining entries must not be presented as ranked.
+        return (
+            "<p>Only the winning entry was officially announced in 1956. "
+            "The full voting results and rankings of the other songs "
+            "were not published.</p>"
+        )
+
     if not finalists:
         return (
             "<p>Final rankings are not available "
@@ -182,7 +191,18 @@ def build_page(rows, year):
         if number(r.get("Final_Rank")) == 1
     ]
 
-    if len(winners) == 1:
+    if year == 1969 and len(winners) == 4:
+        # The 1969 contest officially had four joint winners.
+        winner_items = ", ".join(
+            f'<strong>{safe(r.get("Country"))}</strong> — '
+            f'{safe(r.get("Artist"))}, <em>{safe(r.get("Song"))}</em>'
+            for r in sorted(winners, key=lambda r: clean(r.get("Country")))
+        )
+        winner_summary = (
+            '<p class="seo-winner">Four joint winners (1969): '
+            f'{winner_items}.</p>'
+        )
+    elif len(winners) == 1:
         winner = winners[0]
         winner_summary = (
             f'<p class="seo-winner">'
@@ -202,7 +222,16 @@ def build_page(rows, year):
     else:
         intro = (f"Explore the Eurovision Song Contest {year}{host}. "
                  "Browse the results, participating countries, artists and songs.")
-        results_section = (f'<h2>Eurovision {year} Final Scoreboard</h2>'
+        if year == 1956:
+            intro += (" Only the winning song was officially announced; "
+                      "other placements and full voting figures are unavailable.")
+        elif year == 1969:
+            intro += " The contest ended with four joint winners."
+        results_heading = (
+            "Eurovision 1956 Results" if year == 1956
+            else f"Eurovision {year} Final Scoreboard"
+        )
+        results_section = (f'<h2>{results_heading}</h2>'
                            f'<div class="seo-results-scroll">{build_table(rows, year)}</div>')
 
     return f"""<!doctype html>
@@ -483,6 +512,10 @@ def validate(rows, year):
         issues.append("2020 contains competition results; review source data")
     if year != 2020 and actual["finalists"] == 0:
         issues.append("No final rankings available; review before publishing")
+    if year == 1956 and sum(number(r.get("Final_Rank")) == 1 for r in rows) != 1:
+        issues.append("1956 should have exactly one recorded winner")
+    if year == 1969 and sum(number(r.get("Final_Rank")) == 1 for r in rows) != 4:
+        issues.append("1969 should have exactly four joint winners")
     checks = {
         key: {"expected": expected, "actual": actual[key], "passed": actual[key] == expected}
         for key, expected in EXPECTED.items()
