@@ -22,21 +22,15 @@ async function loadHeader() {
 
   //headerContainer.innerHTML = await res.text();
  headerContainer.innerHTML = await res.text();
-  //if (editionPathIsNested()) {
-  //if (pagePathIsNested()) {
-  //  headerContainer.querySelectorAll("a[href]").forEach(link => {
-  //    const href = link.getAttribute("href");
-  
-  //    if (
-  //      href &&
-  //      !href.startsWith("/") &&
-  //      !href.startsWith("#") &&
-  //      !/^[a-z][a-z0-9+.-]*:/i.test(href)
-  //    ) {
-  //      link.setAttribute("href", `/${href.replace(/^\.\//, "")}`);
-  //    }
-  //  });
-  //}
+  if (pagePathIsNested()) {
+    headerContainer.querySelectorAll("a[href]").forEach(link => {
+      const href = link.getAttribute("href");
+      if (href && !href.startsWith("/") && !href.startsWith("#") &&
+          !/^[a-z][a-z0-9+.-]*:/i.test(href)) {
+        link.setAttribute("href", `/${href.replace(/^\.\//, "")}`);
+      }
+    });
+  }
 
   function pagePathIsNested() {
     return (
@@ -45,9 +39,6 @@ async function loadHeader() {
     );
   }
   
-  function editionPathIsNested() {
-    return /^\/edition\/\d{4}(?:-test)?\.html$/.test(window.location.pathname);
-  }
 
   await new Promise(requestAnimationFrame);
 
@@ -111,8 +102,13 @@ async function loadHeader() {
     /^\/country\/([a-z0-9-]+?)(?:-test)?\.html$/i
   );
   
+  const specialCountries = {
+    "bosnia-hercegovina": "Bosnia & Hercegovina",
+    "serbia-montenegro": "Serbia & Montenegro"
+  };
+  const countrySlug = countryPathMatch?.[1]?.toLowerCase();
   const country = countryPathMatch
-    ? countryPathMatch[1].replace(/-/g, " ")
+    ? (specialCountries[countrySlug] || countrySlug.replace(/-/g, " "))
     : params.get("country");
   
   const contest = params.get("contest");

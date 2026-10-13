@@ -698,7 +698,14 @@ function loadEdition() {
     const pathMatch = window.location.pathname.match(
       /\/country\/([a-z0-9-]+?)(?:-test)?\.html$/i
     );
-    const c = pathMatch ? pathMatch[1].replace(/-/g, " ") : getQueryParam("country");
+    const specialCountries = {
+      "bosnia-hercegovina": "Bosnia & Hercegovina",
+      "serbia-montenegro": "Serbia & Montenegro"
+    };
+    const slug = pathMatch?.[1]?.toLowerCase();
+    const c = pathMatch
+      ? (specialCountries[slug] || slug.replace(/-/g, " "))
+      : getQueryParam("country");
     if (!c) return;
 
     fetchAndRender(s =>
