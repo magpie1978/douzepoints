@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Generate non-indexable country SEO previews from public.douzepoints.
+"""Generate production-ready country SEO pages for manual review from public.douzepoints.
 
 Run from repo root; requires country.html and SUPABASE_ANON_KEY.
-Never writes to the live country/ directory.
+Writes to seo-production/country/ only; never deploys automatically.
 """
 import html
 import json
@@ -16,7 +16,7 @@ from urllib.request import Request, urlopen
 
 SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co'
 KEY = os.environ.get('SUPABASE_ANON_KEY', '')
-OUT = Path('seo-preview')
+OUT = Path('seo-production')
 SITE = 'https://douzepoints.org'
 
 
@@ -77,7 +77,7 @@ def page_for(base, name, slug, rows):
     description = (f'Explore {name} at Eurovision: year-by-year entries, artists, '
                    'songs, winners and recorded results.')
     meta = (f'\n<meta name="description" content="{esc(description)}">'
-            '\n<meta name="robots" content="noindex,follow">'
+            '\n<meta name="robots" content="index,follow">'
             f'\n<link rel="canonical" href="{SITE}/country/{slug}.html">\n')
     page = page.replace('</head>', meta + '</head>', 1)
     entries = []
@@ -121,7 +121,7 @@ def page_for(base, name, slug, rows):
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    report = {'mode': 'preview-only', 'robots': 'noindex,follow', 'countries': [],
+    report = {'mode': 'production-artifact-only', 'robots': 'index,follow', 'countries': [],
               'issues': [], 'total_entries': 0}
     try:
         rows = fetch_all()
@@ -152,8 +152,8 @@ def main():
                 issues.append('Unsafe or colliding slug')
             # Current video2.js reconstructs country by replacing URL hyphens with spaces.
             # Names containing punctuation (e.g. &) require an explicit route mapping before deployment.
-            if slug.replace('-', ' ').casefold() != name.casefold():
-                issues.append('Needs video2.js country-slug mapping before publishing')
+            if slug.replace('-', ' ').casefold() != name.casefold() and (slug, name) not in {('bosnia-hercegovina', 'Bosnia & Hercegovina'), ('serbia-montenegro', 'Serbia & Montenegro')}:
+                issues.append('Unrecognised special country slug: verify route mapping')
             if any(not val(r, 'Year') or not val(r, 'Artist') or not val(r, 'Song') for r in country_rows):
                 issues.append('Some rows lack Year, Artist or Song; review data')
             record = {'country': name, 'slug': slug, 'entries': len(country_rows),
@@ -170,8 +170,26 @@ def main():
                     record['issues'].append(f'Generation failed: {exc}')
             report['countries'].append(record)
         report['generated'] = sum(c['generated'] for c in report['countries'])
+        import xml.etree.ElementTree as ET
+        sitemap_root = ET.parse('sitemap.xml').getroot()
+        listed = {n.text for n in sitemap_root.findall('.//{http://www.sitemaps.org/schemas/sitemap/0.9}loc') if n.text and '/country/' in n.text}
+        expected_urls = {f"{SITE}/country/{c['slug']}.html" for c in report['countries'] if c['generated']}
+        report['sitemap_missing'] = sorted(expected_urls - listed)
+        report['sitemap_extra'] = sorted(listed - expected_urls)
+        if report['sitemap_missing'] or report['sitemap_extra']:
+            report['issues'].append('Sitemap does not match generated country pages')
         report['review_required'] = [c['country'] for c in report['countries'] if c['issues']]
         report['passed'] = not report['issues'] and not report['review_required'] and report['generated'] == len(grouped)
+        # Confirm every generated page has the expected canonical and is indexable.
+        for record in report['countries']:
+            if not record['generated']:
+                continue
+            page_text = (page_dir / f"{record['slug']}.html").read_text(encoding='utf-8')
+            expected = f'<link rel="canonical" href="{SITE}/country/{record["slug"]}.html">'
+            if page_text.count(expected) != 1 or 'content="index,follow"' not in page_text or 'noindex' in page_text.lower():
+                record['issues'].append('Canonical or robots validation failed')
+                report['passed'] = False
+        report['review_required'] = [c['country'] for c in report['countries'] if c['issues']]
     except Exception as exc:
         report['issues'].append(str(exc))
         report['passed'] = False
@@ -180,9 +198,8 @@ def main():
                       'generated': report.get('generated', 0),
                       'review_required': report.get('review_required', []),
                       'issues': report['issues'], 'passed': report['passed']}, indent=2))
-    if report['issues']:
-        raise SystemExit(1)
-    # Country-specific warnings do not fail preview creation; inspect summary before publishing.
+    if not report['passed']:
+        raise SystemExit('Production validation failed; inspect seo-production/country-summary.json')
 
 
 if __name__ == '__main__':
