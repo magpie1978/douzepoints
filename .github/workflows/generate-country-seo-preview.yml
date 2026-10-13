@@ -1,22 +1,39 @@
+
 name: Generate Country SEO Preview
 
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   generate:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Generate Sweden test page
+
+      - name: Generate Sweden redesign preview
         env:
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-        run: python generate_country_seo.py
-      - name: Upload preview
+        run: |
+          python generate_sweden_redesign_preview.py
+
+          if [ ! -s seo-preview/country/sweden-test.html ]; then
+            echo "::error::Sweden preview was not generated"
+            exit 1
+          fi
+
+      - name: Upload Sweden preview
         uses: actions/upload-artifact@v4
         with:
-          name: country-seo-preview
-          path: seo-preview/
+          name: sweden-seo-redesign-preview
+          path: seo-preview/country/sweden-test.html
+          if-no-files-found: error
