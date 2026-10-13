@@ -20,19 +20,20 @@
 
         <!-- DECLARE CANONICAL PAGE -->
         <script>
-            const params = new URLSearchParams(window.location.search);
-            const edition = params.get("edition");
-
-            if (edition) {
-              const canonical = document.createElement("link");
-              canonical.rel = "canonical";
-              canonical.href = edition === "2026"
-                  ? "https://douzepoints.org/edition/2026.html"
-                  : `https://douzepoints.org/edition.html?edition=${encodeURIComponent(edition)}`;
-              document.head.appendChild(canonical);
-            }
-        </script>
+          const params = new URLSearchParams(window.location.search);
+          const edition = params.get("edition");
         
+          if (edition && /^(19[5-9]\d|20[0-2]\d)$/.test(edition)
+              && Number(edition) >= 1956
+              && Number(edition) <= 2026) {
+        
+            const canonical = document.createElement("link");
+            canonical.rel = "canonical";
+            canonical.href = `https://douzepoints.org/edition/${edition}.html`;
+        
+            document.head.appendChild(canonical);
+          }
+        </script>        
     </head>
 
     <!-- Google Tag (gtag.js)  -->
