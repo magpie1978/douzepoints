@@ -1,5 +1,4 @@
 const supabase = window.supabaseClient || null;
-const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
 
 (function () {
   // ------------------------------------------------------------
@@ -63,132 +62,6 @@ const isFavoritesPage = window.location.pathname.includes("my-favorites.html");
   
   
   // ------------------------------------------------------------
-  // FAVOURITES STATE
-  // ------------------------------------------------------------
-  let currentUser = null;
-  let favoriteIds = new Set();
-  let favoritesLoaded = false;
-
-  /**
-   * Get stable favourite key for a video.
-   */
-  function getVideoKey(entry) {
-    return entry.Video_Lookup || null;
-  }
-
-  async function ensureFavoritesLoaded() {
-    if (favoritesLoaded) return;
-
-    if (!supabase) {
-      console.warn("[video.js] supabase client missing – favourites disabled.");
-      favoritesLoaded = true;
-      return;
-    }
-
-    const { data } = await supabase.auth.getUser();
-    const user = data?.user || null;
-
-    if (!user) {
-      currentUser = null;
-      favoriteIds = new Set();
-      favoritesLoaded = true;
-      return;
-    }
-
-    currentUser = user;
-
-    const { data: favRows, error } = await supabase
-      .from("user_favorites")
-      .select("video_id")
-      .eq("user_id", user.id);
-
-    if (error) {
-      console.error("[video.js] error loading favourites:", error);
-      favoriteIds = new Set();
-    } else {
-      favoriteIds = new Set((favRows || []).map(r => String(r.video_id)));
-    }
-
-    favoritesLoaded = true;
-  }
-
-async function toggleFavorite(button, videoKey, entry = null) {
-  if (!supabase) {
-    console.warn("[video.js] supabase missing – cannot toggle favourites.");
-    return;
-  }
-
-  await ensureFavoritesLoaded();
-
-  if (!currentUser) {
-    alert("Please log in to save favourites.");
-    return;
-  }
-
-  const key = String(videoKey);
-
-  // ================================
-  // REMOVE FAVORITE
-  // ================================
-  if (favoriteIds.has(key)) {
-    const { error } = await supabase
-      .from("user_favorites")
-      .delete()
-      .eq("user_id", currentUser.id)
-      .eq("video_id", key);
-
-    if (error) {
-      console.error("Error removing favourite:", error);
-      return;
-    }
-
-    favoriteIds.delete(key);
-    button.classList.remove("is-favorite");
-
-    // ✅ GOOGLE ANALYTICS: favorite_remove
-    if (typeof gtag === "function" && entry) {
-      gtag('event', 'favorite_remove', {
-        song_title: entry.Song || "",
-        artist: entry.Artist || "",
-        edition_year: entry.Year || "",
-        country: entry.Country || ""
-      });
-    }
-
-    return;
-  }
-
-  // ================================
-  // ADD FAVORITE
-  // ================================
-  const { error } = await supabase
-    .from("user_favorites")
-    .insert({
-      user_id: currentUser.id,
-      video_id: key
-    });
-
-  if (error) {
-    console.error("Error adding favourite:", error);
-    return;
-  }
-
-  favoriteIds.add(key);
-  button.classList.add("is-favorite");
-
-  // ✅ GOOGLE ANALYTICS: favorite_add
-  if (typeof gtag === "function" && entry) {
-    gtag('event', 'favorite_add', {
-      song_title: entry.Song || "",
-      artist: entry.Artist || "",
-      edition_year: entry.Year || "",
-      country: entry.Country || ""
-    });
-  }
-}
-
-
-  // ------------------------------------------------------------
   // MODAL WRAPPER WITH GOOGLE ANALYTICS VIDEO PLAY TRACKING
   // ------------------------------------------------------------
   function openModalStrict(videoUrl, entry) {
@@ -247,8 +120,6 @@ async function toggleFavorite(button, videoKey, entry = null) {
     wrapper.setAttribute("role", "button");
     wrapper.tabIndex = 0;
 
-    const videoKey = getVideoKey(entry);
-    const isFavorite = videoKey && favoriteIds.has(String(videoKey));
 
     const countryCode = entry.Country_Code?.toLowerCase() || "";
     const imageUrl = entry.Image || `images/${entry.Year}-${entry.Country_Code}.jpeg`;
@@ -324,14 +195,6 @@ async function toggleFavorite(button, videoKey, entry = null) {
 
     wrapper.innerHTML = `
       <div class="preview-container" data-video-url="${escapeHTML(videoUrl || "")}">
-        <button
-          class="favorite-btn ${isFavorite ? "is-favorite" : ""}"
-          data-video-key="${escapeHTML(String(videoKey || ""))}"
-          aria-label="Toggle favourite"
-        >
-          <i data-lucide="heart"></i>
-        </button>
-
         <img class="thumbnail" src="${escapeHTML(imageUrl)}" alt="${escapeHTML(entry.Artist || "")}">
       </div>
 
@@ -359,7 +222,7 @@ async function toggleFavorite(button, videoKey, entry = null) {
           // Dynamic header labels
           // =============================
 
-          variant === "carousel" || isFavoritesPage || !resultsAvailable
+          variant === "carousel" || !resultsAvailable
             ? ""
             : `
             
@@ -393,15 +256,6 @@ async function toggleFavorite(button, videoKey, entry = null) {
         open(e);
       }
     });
-
-    const favBtn = wrapper.querySelector(".favorite-btn");
-    if (favBtn && videoKey) {
-      favBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleFavorite(favBtn, videoKey, entry);
-      });
-    }
 
     //---------------------
     //  NEW CODE 9 APRIL //
@@ -633,8 +487,6 @@ updatePointsCircle(wrapper, "total");
       return;
     }
 
-    await ensureFavoritesLoaded();
-
     const { data, error } = await queryFn(supabase);
     if (error) {
       console.error("Error fetching videos:", error);
@@ -735,9 +587,6 @@ updatePointsCircle(wrapper, "total");
   
   async function loadHome() {
     if (!supabase) return;
-    // Start fetching favourites without blocking the carousel data requests.
-    // Rendering still waits for favourites so existing heart states remain correct.
-    const favoritesReady = ensureFavoritesLoaded();
 
     const car1 = document.getElementById("carouselTrack1");
     const car2 = document.getElementById("carouselTrack2");
@@ -752,7 +601,6 @@ updatePointsCircle(wrapper, "total");
         .order("Year", { ascending: false })
         .limit(40)
         .then(async ({ data, error }) => {
-          await favoritesReady;
           if (!error) renderIntoCarousel("carouselTrack1", data || []);
         });
     }
@@ -764,7 +612,6 @@ updatePointsCircle(wrapper, "total");
         .eq("Year", 2024)
         .order("Final_Rank", { ascending: true })
         .then(async ({ data, error }) => {
-          await favoritesReady;
           if (!error) renderIntoCarousel("carouselTrack2", data || []);
         });
     }
@@ -776,7 +623,6 @@ updatePointsCircle(wrapper, "total");
         .eq("FanFave", "Y")
         .order("Year", { ascending: false })
         .then(async ({ data, error }) => {
-          await favoritesReady;
           if (!error) renderIntoCarousel("carouselTrack3", data || []);
         });
     }
@@ -788,7 +634,6 @@ updatePointsCircle(wrapper, "total");
         .eq("Year", 2025)
         .order("Final_Rank", { ascending: true })
         .then(async ({ data, error }) => {
-          await favoritesReady;
           if (!error) renderIntoCarousel("carouselTrack4", data || []);
         });
     }
@@ -819,10 +664,7 @@ updatePointsCircle(wrapper, "total");
   document.addEventListener("DOMContentLoaded", () => {
   const path = window.location.pathname || "";
 
-  if (path.includes("my-favorites.html")) {
-    return;
-
-  } else if (path.includes("shows.html")) {
+  if (path.includes("shows.html")) {
     loadShows();
 
   } else if (path.includes("edition.html")) {
@@ -916,7 +758,6 @@ updatePointsCircle(wrapper, "total");
   // ------------------------------------------------------------
   window.renderVideos = renderVideos;
   window.scrollCarousel = scrollCarousel;
-  window.ensureFavoritesLoaded = ensureFavoritesLoaded;
   window.attachWatchTracking = attachWatchTracking;
   window.loadShows = loadShows;
 })();

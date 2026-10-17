@@ -73,32 +73,7 @@ async function loadHeader() {
 
   await loadNationalFinalsMenu();
 
-  /* Session-aware controls */
-
-  const { data: { session } } = await supabase.auth.getSession();
-
-  const logoutBtn = document.getElementById("logout-btn");
-
-  if (logoutBtn) {
-
-    logoutBtn.style.display = session ? "flex" : "none";
-
-    logoutBtn.addEventListener("click", async (e) => {
-
-      e.preventDefault();
-
-      try {
-        await supabase.auth.signOut();
-      } finally {
-        //window.location.href = "index.html";
-        window.location.href = "/index.html";
-      }
-
-    });
-
-  }
-
-  /* Banner Logic */
+     /* Banner Logic */
 
   const banner = document.getElementById("country-banner");
   if (!banner) return;
@@ -145,7 +120,6 @@ async function loadHeader() {
   
   const isWinnersPage      = path.includes("winners.html");
   const isShowPage         = path.includes("shows.html");
-  const isFavoritesPage    = path.includes("my-favorites.html");
   const isFanFavesPage     = path.includes("fan-favorites.html");
   const isScoreboardPage   = path.includes("scoreboard.html");
   const isWatchHistoryPage = path.includes("my-stats.html");
@@ -168,10 +142,6 @@ async function loadHeader() {
   } else if (isShowPage) {
 
     bannerSrc = "banners/shows.png";
-
-  } else if (isFavoritesPage) {
-
-    bannerSrc = "banners/my-faves.png";
 
   } else if (isEditionPage) {
 
