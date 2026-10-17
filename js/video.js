@@ -735,7 +735,9 @@ updatePointsCircle(wrapper, "total");
   
   async function loadHome() {
     if (!supabase) return;
-    await ensureFavoritesLoaded();
+    // Start fetching favourites without blocking the carousel data requests.
+    // Rendering still waits for favourites so existing heart states remain correct.
+    const favoritesReady = ensureFavoritesLoaded();
 
     const car1 = document.getElementById("carouselTrack1");
     const car2 = document.getElementById("carouselTrack2");
@@ -749,7 +751,8 @@ updatePointsCircle(wrapper, "total");
         .eq("Final_Rank", 1)
         .order("Year", { ascending: false })
         .limit(40)
-        .then(({ data, error }) => {
+        .then(async ({ data, error }) => {
+          await favoritesReady;
           if (!error) renderIntoCarousel("carouselTrack1", data || []);
         });
     }
@@ -760,7 +763,8 @@ updatePointsCircle(wrapper, "total");
         .select("*")
         .eq("Year", 2024)
         .order("Final_Rank", { ascending: true })
-        .then(({ data, error }) => {
+        .then(async ({ data, error }) => {
+          await favoritesReady;
           if (!error) renderIntoCarousel("carouselTrack2", data || []);
         });
     }
@@ -771,7 +775,8 @@ updatePointsCircle(wrapper, "total");
         .select("*")
         .eq("FanFave", "Y")
         .order("Year", { ascending: false })
-        .then(({ data, error }) => {
+        .then(async ({ data, error }) => {
+          await favoritesReady;
           if (!error) renderIntoCarousel("carouselTrack3", data || []);
         });
     }
@@ -782,7 +787,8 @@ updatePointsCircle(wrapper, "total");
         .select("*")
         .eq("Year", 2025)
         .order("Final_Rank", { ascending: true })
-        .then(({ data, error }) => {
+        .then(async ({ data, error }) => {
+          await favoritesReady;
           if (!error) renderIntoCarousel("carouselTrack4", data || []);
         });
     }
