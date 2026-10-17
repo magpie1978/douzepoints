@@ -11,6 +11,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway&display=swap">
+    <link rel="stylesheet" href="/style/header.css">
+    <link rel="stylesheet" href="/style/mobile.css">
     <link rel="stylesheet" type="text/css" href="style/combined.css">
     <link rel="stylesheet" type="text/css" href="style/carousels.css"> 
     <link rel="stylesheet" type="text/css" href="style/video-cards.css"> 
@@ -49,7 +51,40 @@
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
   
-    <div id="header-container"></div>
+    <div id="header-container">
+<header class="main-header">
+  <div class="header-overlay">
+
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Open menu">
+      ☰ Menu
+    </button>
+
+    <nav class="header-links" id="mobile-nav">
+      <ul class="nav-menu">
+        <li><a class="home-link" href="index.html">Home</a></li>
+        <li><a class="home-link" href="country.html?country=Albania">Countries</a></li>
+        <li><a class="home-link" href="edition.html?edition=2026">Editions</a></li>
+        <li><a class="home-link" href="shows.html">Full Shows</a></li>
+
+        <li class="nav-item dropdown" id="national-finals-menu">
+          <a href="#" class="nav-link dropdown-toggle">National Finals</a>
+          <div class="dropdown-menu nf-dropdown-two-col" id="national-finals-dropdown"></div>
+        </li>
+
+        <li><a class="home-link" href="scoreboard.html">Scoreboard</a></li>
+      </ul>
+    </nav>
+
+
+  </div>
+
+  <div class="banner-static">
+    <img id="country-banner" src="/banners/douzepoints.png" alt="DouzePoints Eurovision archive" fetchpriority="high" decoding="async" width="1600" height="400" style="display:block;" />
+  </div>
+</header>
+
+<div class="banner-divider"></div>
+    </div>
     <script type="module" src="js/header.js"></script>
   
     <br><br>
