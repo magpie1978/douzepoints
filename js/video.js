@@ -338,7 +338,7 @@ async function toggleFavorite(button, videoKey, entry = null) {
       <div class="video-title-with-icon" style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
         <div style="display:flex;align-items:center;gap:10px;">
           <a href="country.html?country=${encodeURIComponent(entry.Country || "")}" onclick="event.stopPropagation()">
-            <img class="flag-icon" src="${escapeHTML(flagUrl)}" alt="Flag">
+            <img class="flag-icon" src="${escapeHTML(flagUrl)}" alt="${escapeHTML(entry.Country || "Country")} flag" loading="lazy" decoding="async">
           </a>
           <div class="video-title-text">
             <div class="title-line">
@@ -604,9 +604,13 @@ updatePointsCircle(wrapper, "total");
       const card = renderEntry(entry, "carousel");
       const thumbnail = card.querySelector("img.thumbnail");
       if (thumbnail) {
-        // Keep initially visible cards eager; defer the rest until needed.
-        thumbnail.loading = index < 5 ? "eager" : "lazy";
+        // Prioritize only the first visible Winners thumbnail on the homepage.
+        // Other thumbnails should not compete with the banner for bandwidth.
+        const isHomepage = window.location.pathname === "/" || window.location.pathname.endsWith("/index.html");
+        const isPriorityImage = isHomepage && trackId === "carouselTrack1" && index === 0;
+        thumbnail.loading = isPriorityImage ? "eager" : "lazy";
         thumbnail.decoding = "async";
+        if (isPriorityImage) thumbnail.fetchPriority = "high";
       }
       frag.appendChild(card);
     });

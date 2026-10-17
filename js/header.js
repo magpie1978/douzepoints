@@ -22,6 +22,18 @@ async function loadHeader() {
 
   //headerContainer.innerHTML = await res.text();
  headerContainer.innerHTML = await res.text();
+
+ // On the homepage, start loading the hero banner immediately after
+ // header markup arrives, before waiting for navigation/auth requests.
+ if (window.location.pathname === "/" || window.location.pathname.endsWith("/index.html")) {
+   const homeBanner = document.getElementById("country-banner");
+   if (homeBanner) {
+     homeBanner.alt = "DouzePoints Eurovision archive";
+     homeBanner.fetchPriority = "high";
+     homeBanner.onload = () => { homeBanner.style.display = "block"; };
+     homeBanner.src = "/banners/douzepoints.png";
+   }
+ }
   if (pagePathIsNested()) {
     headerContainer.querySelectorAll("a[href]").forEach(link => {
       const href = link.getAttribute("href");
@@ -251,7 +263,7 @@ async function loadHeader() {
     if (code) bannerSrc = `/banners_nf/${code}.png`;
 
   }
-  if (bannerSrc) {
+  if (bannerSrc && !(isIndexPage && banner.getAttribute("src") === "/banners/douzepoints.png")) {
 
     banner.onload = () => {
       banner.style.display = "block";
