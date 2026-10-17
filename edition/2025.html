@@ -176,6 +176,30 @@
     @media(max-width:700px) { .seo-edition .seo-edition-stats { grid-template-columns:1fr 1fr; } .seo-edition .seo-edition-panel { padding:18px 14px; } }
     @media(max-width:420px) { .seo-edition .seo-edition-stats { grid-template-columns:1fr; } }
     
+
+    /* Compact edition introduction above the video gallery */
+    .edition-intro {
+      margin: 12px 20px 18px;
+      padding: 14px 18px;
+      background: #1b1d23;
+      border: 1px solid #34363c;
+      border-left: 4px solid #e50914;
+      border-radius: 10px;
+      color: #e5e5e5;
+    }
+    .edition-intro h1 {
+      font-size: clamp(20px, 2.4vw, 26px);
+      line-height: 1.2;
+      color: #fff;
+      margin: 0 0 6px;
+    }
+    .edition-intro p { font-size: 14px; line-height: 1.5; margin: 0; }
+    .edition-intro a { color: #ff6b73; }
+    @media (max-width: 700px) {
+      .edition-intro { margin: 8px 12px 14px; padding: 12px 14px; }
+      .edition-intro h1 { font-size: 20px; }
+      .edition-intro p { font-size: 13px; }
+    }
   </style>
 </head>
 
@@ -195,6 +219,12 @@
                for="mobile-page-select"></label>
         <select id="mobile-page-select"></select>
       </div>
+
+      <!-- Short, visible summary; detailed history and results remain below the gallery. -->
+      <section class="edition-intro" aria-label="Eurovision 2025 overview">
+        <h1>Eurovision 2025 Results &amp; Songs</h1>
+        <p><strong>Basel, Switzerland · 37 entries · 26 finalists.</strong> Austria won with JJ’s <em>Wasted Love</em> (436 points). Browse the performances below or <a href="#eurovision-2025-results">jump to the full results</a>.</p>
+      </section>
 
       <div class="header-bar"
            style="display:flex;justify-content:flex-end;
@@ -232,8 +262,8 @@
       <div class="grid-container" id="video-container"></div>
 
       <!-- SEO content follows the video gallery -->
-      <section class="seo-edition" aria-label="Eurovision 2025 edition history">
-<div class="seo-edition-panel"><div class="seo-edition-heading"><span class="seo-kicker">EDITION HISTORY</span><h1>Eurovision 2025 Results &amp; Songs</h1></div><p>The Eurovision Song Contest 2025 took place in Basel, Switzerland, with 37 participating entries and 26 countries competing in the grand final. Austria won with JJ’s “Wasted Love”, scoring 436 points. Explore the complete final scoreboard, jury and televote results, and all participating artists and songs.</p><div class="seo-edition-stats"><div class="seo-edition-stat"><span>Participating entries</span><strong>37</strong></div><div class="seo-edition-stat"><span>Grand finalists</span><strong>26</strong></div><div class="seo-edition-stat"><span>Host city</span><strong>Basel</strong></div></div></div>
+      <section class="seo-edition" id="eurovision-2025-results" aria-label="Eurovision 2025 edition history">
+<div class="seo-edition-panel"><div class="seo-edition-heading"><span class="seo-kicker">EDITION HISTORY</span><h2>About Eurovision 2025</h2></div><p>The Eurovision Song Contest 2025 took place in Basel, Switzerland, with 37 participating entries and 26 countries competing in the grand final. Austria won with JJ’s “Wasted Love”, scoring 436 points. Explore the complete final scoreboard, jury and televote results, and all participating artists and songs.</p><div class="seo-edition-stats"><div class="seo-edition-stat"><span>Participating entries</span><strong>37</strong></div><div class="seo-edition-stat"><span>Grand finalists</span><strong>26</strong></div><div class="seo-edition-stat"><span>Host city</span><strong>Basel</strong></div></div></div>
 <div class="seo-edition-panel"><div class="seo-edition-heading"><span class="seo-kicker">WINNING ENTRY</span><h2>Eurovision 2025 winner</h2></div><ul class="seo-edition-winner-list"><li><strong><a href="/country/austria.html">Austria</a></strong> — JJ, <em>Wasted Love</em></li></ul></div>
 <div class="seo-edition-panel"><div class="seo-edition-heading"><span class="seo-kicker">GRAND FINAL</span><h2>Eurovision 2025 Final Scoreboard</h2></div><p>Austria finished first with 436 points, ahead of Israel on 357 and Estonia on 356. Austria received 258 jury points and 178 televote points. Israel received the highest televote score of the final, with 297 points. The table below shows each finalist’s jury, televote and combined total.</p><div class="seo-results-scroll">
       <div class="results-scroll">
