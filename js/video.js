@@ -451,37 +451,61 @@ updatePointsCircle(wrapper, "total");
     const track = document.getElementById(trackId);
     if (!track) return;
 
-    // Keep the already-painted homepage LCP image instead of tearing it down.
-    // The pre-rendered card is hydrated with the live entry and its modal handler.
+    // Keep the server-rendered first Winners card in the DOM for LCP.
+    // Reparenting its image into a new card can cause another paint.
     const preRendered = trackId === "carouselTrack1"
       ? track.querySelector('[data-homepage-first-card="true"]')
       : null;
-    const frag = document.createDocumentFragment();
+    const firstEntry = entries[0];
+    const keepFirstCard = Boolean(
+      preRendered && firstEntry &&
+      String(firstEntry.Year) === "2026" &&
+      String(firstEntry.Country_Code).toUpperCase() === "BG"
+    );
 
+    if (keepFirstCard) {
+      // Hydrate the existing card without removing or moving the image.
+      // The flag link must continue to navigate rather than open the video.
+      const open = (event) => {
+        if (event.target.closest("a")) return;
+        event.stopPropagation();
+        event.preventDefault();
+        openModalStrict(firstEntry.Video_URL, firstEntry);
+      };
+      preRendered.setAttribute("role", "button");
+      preRendered.tabIndex = 0;
+      preRendered.addEventListener("click", open);
+      preRendered.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          if (event.target.closest("a")) return;
+          open(event);
+        }
+      });
+    }
+
+    const frag = document.createDocumentFragment();
     entries.forEach((entry, index) => {
+      if (keepFirstCard && index === 0) return;
+
       const card = renderEntry(entry, "carousel");
       const thumbnail = card.querySelector("img.thumbnail");
       if (thumbnail) {
-        // Prioritize only the first visible Winners thumbnail on the homepage.
-        // Other thumbnails should not compete with the banner for bandwidth.
+        // Only the first visible Winners thumbnail should have high priority.
         const isHomepage = window.location.pathname === "/" || window.location.pathname.endsWith("/index.html");
         const isPriorityImage = isHomepage && trackId === "carouselTrack1" && index === 0;
         thumbnail.loading = isPriorityImage ? "eager" : "lazy";
         thumbnail.decoding = "async";
         if (isPriorityImage) thumbnail.fetchPriority = "high";
       }
-      if (preRendered && index === 0 &&
-          String(entry.Year) === "2026" &&
-          String(entry.Country_Code).toUpperCase() === "BG") {
-        // Preserve the image node already painted by the browser for LCP.
-        const existingImage = preRendered.querySelector("img.thumbnail");
-        const liveImage = card.querySelector("img.thumbnail");
-        if (existingImage && liveImage) liveImage.replaceWith(existingImage);
-      }
       frag.appendChild(card);
     });
 
-    track.replaceChildren(frag);
+    if (keepFirstCard) {
+      // Append subsequent cards; do not replace the already-painted first card.
+      track.appendChild(frag);
+    } else {
+      track.replaceChildren(frag);
+    }
 
     if (window.lucide?.createIcons) {
       window.lucide.createIcons();
