@@ -1,0 +1,19 @@
+/* Homepage only: reserve space for Supabase-populated carousel cards.
+   Loaded after the existing carousel and video-card styles. */
+
+/* Empty tracks otherwise have zero height until JS inserts cards. */
+.carousel-section .carousel-track {
+  min-height: 260px;
+}
+
+/* On narrow screens cards become taller as their thumbnails scale up.
+   Keep this rule scoped to the homepage carousel layout. */
+@media (max-width: 768px) {
+  .carousel-section .carousel-container {
+    min-width: 0;
+    width: 100%;
+  }
+  .carousel-section .carousel-track {
+    min-height: 350px;
+  }
+}
