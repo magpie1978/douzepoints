@@ -451,7 +451,11 @@ updatePointsCircle(wrapper, "total");
     const track = document.getElementById(trackId);
     if (!track) return;
 
-    track.innerHTML = "";
+    // Keep the already-painted homepage LCP image instead of tearing it down.
+    // The pre-rendered card is hydrated with the live entry and its modal handler.
+    const preRendered = trackId === "carouselTrack1"
+      ? track.querySelector('[data-homepage-first-card="true"]')
+      : null;
     const frag = document.createDocumentFragment();
 
     entries.forEach((entry, index) => {
@@ -466,10 +470,18 @@ updatePointsCircle(wrapper, "total");
         thumbnail.decoding = "async";
         if (isPriorityImage) thumbnail.fetchPriority = "high";
       }
+      if (preRendered && index === 0 &&
+          String(entry.Year) === "2026" &&
+          String(entry.Country_Code).toUpperCase() === "BG") {
+        // Preserve the image node already painted by the browser for LCP.
+        const existingImage = preRendered.querySelector("img.thumbnail");
+        const liveImage = card.querySelector("img.thumbnail");
+        if (existingImage && liveImage) liveImage.replaceWith(existingImage);
+      }
       frag.appendChild(card);
     });
 
-    track.appendChild(frag);
+    track.replaceChildren(frag);
 
     if (window.lucide?.createIcons) {
       window.lucide.createIcons();
