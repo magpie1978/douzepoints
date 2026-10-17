@@ -600,8 +600,15 @@ updatePointsCircle(wrapper, "total");
     track.innerHTML = "";
     const frag = document.createDocumentFragment();
 
-    entries.forEach(entry => {
-      frag.appendChild(renderEntry(entry, "carousel"));
+    entries.forEach((entry, index) => {
+      const card = renderEntry(entry, "carousel");
+      const thumbnail = card.querySelector("img.thumbnail");
+      if (thumbnail) {
+        // Keep initially visible cards eager; defer the rest until needed.
+        thumbnail.loading = index < 5 ? "eager" : "lazy";
+        thumbnail.decoding = "async";
+      }
+      frag.appendChild(card);
     });
 
     track.appendChild(frag);
