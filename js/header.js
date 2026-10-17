@@ -13,15 +13,17 @@ async function loadHeader() {
   /* Load shared header HTML */
 
   //const res = await fetch("header.html", { cache: "no-store" });
-  const res = await fetch("/header.html", { cache: "no-store" });
-
-  if (!res.ok) {
-    console.error("[header] Failed to load header.html:", res.status);
-    return;
+  // The homepage includes its header directly in index.html so the banner
+  // can render without waiting for a separate header.html request.
+  // All other pages continue using the existing shared header fetch.
+  if (!headerContainer.querySelector(".main-header")) {
+    const res = await fetch("/header.html", { cache: "no-store" });
+    if (!res.ok) {
+      console.error("[header] Failed to load header.html:", res.status);
+      return;
+    }
+    headerContainer.innerHTML = await res.text();
   }
-
-  //headerContainer.innerHTML = await res.text();
- headerContainer.innerHTML = await res.text();
 
  // On the homepage, start loading the hero banner immediately after
  // header markup arrives, before waiting for navigation/auth requests.
@@ -30,8 +32,10 @@ async function loadHeader() {
    if (homeBanner) {
      homeBanner.alt = "DouzePoints Eurovision archive";
      homeBanner.fetchPriority = "high";
-     homeBanner.onload = () => { homeBanner.style.display = "block"; };
-     homeBanner.src = "/banners/douzepoints.png";
+     homeBanner.style.display = "block";
+     if (homeBanner.getAttribute("src") !== "/banners/douzepoints.png") {
+       homeBanner.src = "/banners/douzepoints.png";
+     }
    }
  }
   if (pagePathIsNested()) {
