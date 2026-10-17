@@ -1,0 +1,29 @@
+name: Generate Edition Option 4 All Years
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Generate all edition pages from Supabase
+        env:
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: python generate_edition_option4_all_years.py
+      - name: Upload production-ready pages for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: edition-option4-all-years
+          path: edition-option4-artifact/
+          if-no-files-found: error
