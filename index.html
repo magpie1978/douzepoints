@@ -10,10 +10,13 @@
     <link rel="preload" as="image" href="/images/2026-BG.jpeg" fetchpriority="high">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway&display=swap">
     <link rel="stylesheet" type="text/css" href="style/combined.css">
     <link rel="stylesheet" type="text/css" href="style/carousels.css"> 
     <link rel="stylesheet" type="text/css" href="style/video-cards.css"> 
-    <link rel="stylesheet" type="text/css" href="style/footer.css">
+    <!-- Footer is below the fold; do not block initial page rendering. -->
+    <link rel="preload" href="style/footer.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="style/footer.css"></noscript>
     <link rel="stylesheet" type="text/css" href="style/homepage-stability.css">
     <style>
       /* Homepage only: reserve the 400px banner + 1px divider before
