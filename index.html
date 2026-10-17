@@ -11,7 +11,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" type="text/css" href="style/combined.css">
-    <link rel="stylesheet" type="text/css" href="style/favorites.css">
     <link rel="stylesheet" type="text/css" href="style/carousels.css"> 
     <link rel="stylesheet" type="text/css" href="style/video-cards.css"> 
     <link rel="stylesheet" type="text/css" href="style/footer.css">
@@ -130,53 +129,9 @@
         <script type="module" src="js/video.js"></script>
   
       
-        <!-- SIGN-UP MODAL (reuse your existing markup if you want) -->
-        <div id="signup-modal-overlay" style="display:none;">
-          <div id="signup-modal">
-            <h3>Create Account</h3>
-            <p id="signup-error" style="color:#e50914;font-size:14px;margin:0 0 10px;min-height:18px;text-align:center;"></p>
-        
-            <input id="signup-email" type="email" placeholder="Email">
-            <input id="signup-password" type="password" placeholder="Password">
-            <input id="signup-promo" type="text" placeholder="Promo Code (required)">
-        
-            <div class="signup-buttons">
-              <button id="signup-submit" class="modal-btn primary">Create Account</button>
-              <button id="signup-close" class="modal-btn secondary">Close</button>
-            </div>
-          </div>
-        </div>
-  
-        <!-- ================= LOGIN OVERLAY ================= -->
-        <div id="auth-overlay" style="display:none;">
-          <div id="auth-modal">
-            <center><h2>Sign In</h2></center>
-            <center><h3>Sign in, or create an account, to get access to functionality such as creating your own playlists and having a dedicated page for your favorite performances</h3></center>
-        
-            <input type="email" id="login-email" placeholder="Email">
-            <input type="password" id="login-password" placeholder="Password">
-        
-            <div class="auth-buttons">
-              <button id="login-btn" class="modal-btn primary">Log In</button>
-            </div>
-        
-            <div class="auth-divider"></div>
-        
-            <div class="auth-secondary">
-              <button id="open-signup" class="modal-btn secondary">
-                Create account
-              </button>
-            </div>
-        
-            <button id="auth-close" class="auth-close">×</button>
-            <p id="login-error" style="color:#e50914;text-align:center;min-height:18px;"></p>
-          </div>
-        </div>
-      
       <!-- FOOTER -->
       <div id="footer"></div>
       <script defer src="js/footer.js" type="text/javascript"></script>
-      <script type="module" src="js/auth.js"></script>
         
     </div>
       
