@@ -64,7 +64,23 @@
           </div>
           <div class="carousel-wrapper">
             <button class="carousel-button" onclick="scrollCarousel(-1,'carouselTrack1')">&#10094;</button>
-            <div class="carousel-container"><div class="carousel-track" id="carouselTrack1"></div></div>
+            <div class="carousel-container"><div class="carousel-track" id="carouselTrack1">
+              <!-- Immediately visible LCP card; replaced with live Supabase data after loading. -->
+              <div class="carousel-video-item" data-homepage-first-card="true">
+                <div class="preview-container">
+                  <img class="thumbnail" src="images/2026-BG.jpeg" alt="Dara" loading="eager" decoding="async" fetchpriority="high" width="640" height="360">
+                </div>
+                <div class="video-title-with-icon" style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <a href="country.html?country=Bulgaria"><img class="flag-icon" src="/flags/bg.png" alt="Bulgaria flag" width="40" height="40" loading="lazy" decoding="async"></a>
+                    <div class="video-title-text">
+                      <div class="title-line"><div class="title-artist">Dara</div><div class="title-song">Bangaranga</div></div>
+                      <div class="title-meta"><span class="title-country">Bulgaria</span> <span class="title-year">2026</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div></div>
             <button class="carousel-button" onclick="scrollCarousel(1,'carouselTrack1')">&#10095;</button>
           </div>
         </div>
