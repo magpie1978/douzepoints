@@ -16,6 +16,14 @@
     <link rel="stylesheet" type="text/css" href="style/video-cards.css"> 
     <link rel="stylesheet" type="text/css" href="style/footer.css">
     <link rel="stylesheet" type="text/css" href="style/homepage-stability.css">
+    <style>
+      /* Homepage only: reserve the 400px banner + 1px divider before
+         the asynchronously fetched shared header is inserted.
+         The navigation is absolutely positioned over the banner. */
+      @media (min-width: 769px) {
+        #header-container { min-height: 401px; }
+      }
+    </style>
     
     <script defer src="/js/favicons.js"></script>
 
