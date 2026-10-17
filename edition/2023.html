@@ -158,6 +158,24 @@
       margin-top: 20px;
     }
     
+
+    /* Option 4: SEO section only; leave gallery, banner and sidebar unchanged. */
+    .seo-edition .seo-edition-panel { background:#1b1d23; border:1px solid #34363c; border-radius:16px; padding:clamp(18px,2.6vw,28px); margin-bottom:22px; }
+    .seo-edition .seo-edition-heading { border-left:4px solid #e50914; padding-left:16px; margin-bottom:22px; }
+    .seo-edition .seo-edition-heading h1,.seo-edition .seo-edition-heading h2 { margin:0; }
+    .seo-edition .seo-kicker { display:block; font-size:11px; letter-spacing:.12em; color:#bcbcbc; margin-bottom:6px; font-weight:700; }
+    .seo-edition .seo-edition-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:22px; }
+    .seo-edition .seo-edition-stat { background:#292b30; border:1px solid #393b42; border-radius:10px; padding:15px; min-width:0; }
+    .seo-edition .seo-edition-stat span { display:block; color:#bcbcbc; font-size:12px; margin-bottom:8px; }
+    .seo-edition .seo-edition-stat strong { display:block; color:#fff; font-size:20px; overflow-wrap:anywhere; }
+    .seo-edition a { color:#ff6b73; }
+    .seo-edition .seo-participants { margin-top:0; border:0; padding:0; }
+    .seo-edition .seo-results-scroll th { background:#292b30; }
+    .seo-edition .seo-edition-year-nav { display:flex; flex-wrap:wrap; gap:18px; }
+    .seo-edition .seo-edition-winner-list { line-height:1.8; padding-left:22px; }
+    @media(max-width:700px) { .seo-edition .seo-edition-stats { grid-template-columns:1fr 1fr; } .seo-edition .seo-edition-panel { padding:18px 14px; } }
+    @media(max-width:420px) { .seo-edition .seo-edition-stats { grid-template-columns:1fr; } }
+    
   </style>
 </head>
 
@@ -214,17 +232,10 @@
       <div class="grid-container" id="video-container"></div>
 
       <!-- SEO content follows the video gallery -->
-      <section class="seo-edition">
-
-        <h1>Eurovision 2023 Results &amp; Songs</h1>
-
-        <p>
-          Explore the Eurovision Song Contest 2023 in Liverpool. Browse the results, participating countries, artists and songs.
-        </p>
-
-        <p class="seo-winner">Winner: <strong>Sweden</strong> — Loreen, <em>Tattoo</em>.</p>
-
-        <h2>Eurovision 2023 Final Scoreboard</h2><div class="seo-results-scroll">
+      <section class="seo-edition" aria-label="Eurovision 2023 edition history">
+<div class="seo-edition-panel"><div class="seo-edition-heading"><span class="seo-kicker">EDITION HISTORY</span><h1>Eurovision 2023 Results &amp; Songs</h1></div><p>Explore the Eurovision Song Contest 2023 in Liverpool. Browse the results, participating countries, artists and songs.</p><div class="seo-edition-stats"><div class="seo-edition-stat"><span>Participating entries</span><strong>37</strong></div><div class="seo-edition-stat"><span>Grand finalists</span><strong>26</strong></div><div class="seo-edition-stat"><span>Host city</span><strong>Liverpool</strong></div></div></div>
+<div class="seo-edition-panel"><div class="seo-edition-heading"><span class="seo-kicker">WINNING ENTRY</span><h2>Eurovision 2023 winner</h2></div><ul class="seo-edition-winner-list"><li><strong><a href="/country/sweden.html">Sweden</a></strong> — Loreen, <em>Tattoo</em></li></ul></div>
+<div class="seo-edition-panel"><div class="seo-edition-heading"><span class="seo-kicker">GRAND FINAL</span><h2>Eurovision 2023 Final Scoreboard</h2></div><div class="seo-results-scroll">
       <div class="results-scroll">
         <table>
           <thead><tr><th>Rank</th><th>Country</th><th>Artist</th><th>Song</th><th>Jury</th><th>Televote</th><th>Total</th></tr></thead>
@@ -233,16 +244,8 @@
           </tbody>
         </table>
       </div>
-    </div>
-
-        <details class="seo-participants">
-          <summary>
-            Eurovision 2023 Participating Countries,
-            Artists &amp; Songs
-          </summary>
-
-          <div class="seo-entries">
-            <ul><li><strong>Albania</strong> — Albina and Familja Kelmendi: Duje</li>
+    </div></div>
+<div class="seo-edition-panel"><div class="seo-edition-heading"><span class="seo-kicker">ALL ENTRIES</span><h2>Participating Countries, Artists &amp; Songs</h2></div><details class="seo-participants"><summary>Show all 37 entries</summary><div class="seo-entries"><ul><li><strong>Albania</strong> — Albina and Familja Kelmendi: Duje</li>
 <li><strong>Armenia</strong> — Brunette: Future Lover</li>
 <li><strong>Australia</strong> — Voyager: Promise</li>
 <li><strong>Austria</strong> — Teya and Salena: Who the Hell Is Edgar?</li>
@@ -278,10 +281,8 @@
 <li><strong>Sweden</strong> — Loreen: Tattoo</li>
 <li><strong>Switzerland</strong> — Remo Forrer: Watergun</li>
 <li><strong>Ukraine</strong> — Tvorchi: Heart of Steel</li>
-<li><strong>United Kingdom</strong> — Mae Muller: I Wrote a Song</li></ul>
-          </div>
-        </details>
-
+<li><strong>United Kingdom</strong> — Mae Muller: I Wrote a Song</li></ul></div></details></div>
+<div class="seo-edition-panel"><div class="seo-edition-heading"><span class="seo-kicker">EXPLORE THE ARCHIVE</span><h2>Other Eurovision editions</h2></div><nav class="seo-edition-year-nav" aria-label="Other Eurovision editions"><a href="/edition/2022.html">← Eurovision 2022</a> <a href="/edition/2024.html">Eurovision 2024 →</a></nav></div>
       </section>
 
     </div>

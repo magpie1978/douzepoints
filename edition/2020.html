@@ -9,7 +9,7 @@
   <meta name="description" content="Eurovision 2020 was cancelled. Explore the participating artists, songs and videos.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://douzepoints.org/edition/2020.html">
-  
+
   <link rel="stylesheet" href="/style/combined.css">
   <link rel="stylesheet" href="/style/video-cards.css">
   <link rel="stylesheet" href="/style/favorites.css">
@@ -158,6 +158,24 @@
       margin-top: 20px;
     }
     
+
+    /* Option 4: SEO section only; leave gallery, banner and sidebar unchanged. */
+    .seo-edition .seo-edition-panel { background:#1b1d23; border:1px solid #34363c; border-radius:16px; padding:clamp(18px,2.6vw,28px); margin-bottom:22px; }
+    .seo-edition .seo-edition-heading { border-left:4px solid #e50914; padding-left:16px; margin-bottom:22px; }
+    .seo-edition .seo-edition-heading h1,.seo-edition .seo-edition-heading h2 { margin:0; }
+    .seo-edition .seo-kicker { display:block; font-size:11px; letter-spacing:.12em; color:#bcbcbc; margin-bottom:6px; font-weight:700; }
+    .seo-edition .seo-edition-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:22px; }
+    .seo-edition .seo-edition-stat { background:#292b30; border:1px solid #393b42; border-radius:10px; padding:15px; min-width:0; }
+    .seo-edition .seo-edition-stat span { display:block; color:#bcbcbc; font-size:12px; margin-bottom:8px; }
+    .seo-edition .seo-edition-stat strong { display:block; color:#fff; font-size:20px; overflow-wrap:anywhere; }
+    .seo-edition a { color:#ff6b73; }
+    .seo-edition .seo-participants { margin-top:0; border:0; padding:0; }
+    .seo-edition .seo-results-scroll th { background:#292b30; }
+    .seo-edition .seo-edition-year-nav { display:flex; flex-wrap:wrap; gap:18px; }
+    .seo-edition .seo-edition-winner-list { line-height:1.8; padding-left:22px; }
+    @media(max-width:700px) { .seo-edition .seo-edition-stats { grid-template-columns:1fr 1fr; } .seo-edition .seo-edition-panel { padding:18px 14px; } }
+    @media(max-width:420px) { .seo-edition .seo-edition-stats { grid-template-columns:1fr; } }
+    
   </style>
 </head>
 
@@ -214,71 +232,50 @@
       <div class="grid-container" id="video-container"></div>
 
       <!-- SEO content follows the video gallery -->
-      <section class="seo-edition">
-
-        <h1>Eurovision 2020 Songs &amp; Artists — Cancelled Contest</h1>
-
-        <p>
-          The Eurovision Song Contest 2020 was cancelled due to the COVID-19 pandemic. Explore the participating countries, artists and songs. No final, rankings or voting results took place.
-        </p>
-
-        
-
-        
-
-        <details class="seo-participants">
-          <summary>
-            Eurovision 2020 Participating Countries,
-            Artists &amp; Songs
-          </summary>
-
-          <div class="seo-entries">
-            <ul>
-              <li><strong>Albania</strong> — Arilena Ara: Fall from the Sky</li>
-              <li><strong>Armenia</strong> — Athena Manoukian: Chains on You</li>
-              <li><strong>Australia</strong> — Montaigne: Don&#x27;t Break Me</li>
-              <li><strong>Austria</strong> — Vincent Bueno: Alive</li>
-              <li><strong>Azerbaijan</strong> — Efendi: Cleopatra</li>
-              <li><strong>Belarus</strong> — VAL: Da vidna</li>
-              <li><strong>Belgium</strong> — Hooverphonic: Release Me</li>
-              <li><strong>Bulgaria</strong> — Victoria: Tears Getting Sober</li>
-              <li><strong>Croatia</strong> — Damir Kedžo: Divlji vjetre</li>
-              <li><strong>Cyprus</strong> — Sandro: Running</li>
-              <li><strong>Czechia</strong> — Benny Cristo: Kemama</li>
-              <li><strong>Denmark</strong> — Ben and Tan: Yes</li>
-              <li><strong>Estonia</strong> — Uku Suviste: What Love Is</li>
-              <li><strong>Finland</strong> — Aksel: Looking Back</li>
-              <li><strong>France</strong> — Tom Leeb: Mon alliée (The Best in Me)</li>
-              <li><strong>Georgia</strong> — Tornike Kipiani: Take Me as I Am</li>
-              <li><strong>Germany</strong> — Ben Dolic: Violent Thing</li>
-              <li><strong>Greece</strong> — Stefania: Supergirl</li>
-              <li><strong>Iceland</strong> — Daði og Gagnamagnið: Think About Things</li>
-              <li><strong>Ireland</strong> — Lesley Roy: Story of My Life</li>
-              <li><strong>Israel</strong> — Eden Alene: Feker Libi</li>
-              <li><strong>Italy</strong> — Diodato: Fai rumore</li>
-              <li><strong>Latvia</strong> — Samanta Tīna: Still Breathing</li>
-              <li><strong>Lithuania</strong> — The Roop: On Fire</li>
-              <li><strong>Malta</strong> — Destiny: All of My Love</li>
-              <li><strong>Moldova</strong> — Natalia Gordienko: Prison</li>
-              <li><strong>Netherlands</strong> — Jeangu Macrooy: Grow</li>
-              <li><strong>North Macedonia</strong> — Vasil: You</li>
-              <li><strong>Norway</strong> — Ulrikke: Attention</li>
-              <li><strong>Poland</strong> — Alicja: Empires</li>
-              <li><strong>Portugal</strong> — Elisa: Medo de sentir</li>
-              <li><strong>Romania</strong> — Roxen: Alcohol You</li>
-              <li><strong>Russia</strong> — Little Big: Uno</li>
-              <li><strong>San Marino</strong> — Senhit: Freaky!</li>
-              <li><strong>Serbia</strong> — Hurricane: Hasta la vista</li>
-              <li><strong>Slovenia</strong> — Ana Soklič: Voda</li>
-              <li><strong>Spain</strong> — Blas Cantó: Universo</li>
-              <li><strong>Sweden</strong> — The Mamas: Move</li>
-              <li><strong>Switzerland</strong> — Gjon&#x27;s Tears: Répondez-moi</li>
-              <li><strong>Ukraine</strong> — Go_A: Solovey</li>
-              <li><strong>United Kingdom</strong> — James Newman: My Last Breath</li>
-            </ul>
-          </div>
-        </details>
-
+      <section class="seo-edition" aria-label="Eurovision 2020 edition history">
+<div class="seo-edition-panel"><div class="seo-edition-heading"><span class="seo-kicker">EDITION HISTORY</span><h1>Eurovision 2020 Songs &amp; Artists</h1></div><p>The Eurovision Song Contest 2020 was cancelled due to the COVID-19 pandemic. Explore the selected artists and songs. No competitive final, rankings or voting results took place.</p><div class="seo-edition-stats"><div class="seo-edition-stat"><span>Participating entries</span><strong>41</strong></div><div class="seo-edition-stat"><span>Host city</span><strong>Rotterdam</strong></div></div></div>
+<div class="seo-edition-panel"><div class="seo-edition-heading"><span class="seo-kicker">ALL ENTRIES</span><h2>Participating Countries, Artists &amp; Songs</h2></div><details class="seo-participants"><summary>Show all 41 entries</summary><div class="seo-entries"><ul><li><strong>Albania</strong> — Arilena Ara: Fall from the Sky</li>
+<li><strong>Armenia</strong> — Athena Manoukian: Chains on You</li>
+<li><strong>Australia</strong> — Montaigne: Don&#x27;t Break Me</li>
+<li><strong>Austria</strong> — Vincent Bueno: Alive</li>
+<li><strong>Azerbaijan</strong> — Efendi: Cleopatra</li>
+<li><strong>Belarus</strong> — VAL: Da vidna</li>
+<li><strong>Belgium</strong> — Hooverphonic: Release Me</li>
+<li><strong>Bulgaria</strong> — Victoria: Tears Getting Sober</li>
+<li><strong>Croatia</strong> — Damir Kedžo: Divlji vjetre</li>
+<li><strong>Cyprus</strong> — Sandro: Running</li>
+<li><strong>Czechia</strong> — Benny Cristo: Kemama</li>
+<li><strong>Denmark</strong> — Ben and Tan: Yes</li>
+<li><strong>Estonia</strong> — Uku Suviste: What Love Is</li>
+<li><strong>Finland</strong> — Aksel: Looking Back</li>
+<li><strong>France</strong> — Tom Leeb: Mon alliée (The Best in Me)</li>
+<li><strong>Georgia</strong> — Tornike Kipiani: Take Me as I Am</li>
+<li><strong>Germany</strong> — Ben Dolic: Violent Thing</li>
+<li><strong>Greece</strong> — Stefania: Supergirl</li>
+<li><strong>Iceland</strong> — Daði og Gagnamagnið: Think About Things</li>
+<li><strong>Ireland</strong> — Lesley Roy: Story of My Life</li>
+<li><strong>Israel</strong> — Eden Alene: Feker Libi</li>
+<li><strong>Italy</strong> — Diodato: Fai rumore</li>
+<li><strong>Latvia</strong> — Samanta Tīna: Still Breathing</li>
+<li><strong>Lithuania</strong> — The Roop: On Fire</li>
+<li><strong>Malta</strong> — Destiny: All of My Love</li>
+<li><strong>Moldova</strong> — Natalia Gordienko: Prison</li>
+<li><strong>Netherlands</strong> — Jeangu Macrooy: Grow</li>
+<li><strong>North Macedonia</strong> — Vasil: You</li>
+<li><strong>Norway</strong> — Ulrikke: Attention</li>
+<li><strong>Poland</strong> — Alicja: Empires</li>
+<li><strong>Portugal</strong> — Elisa: Medo de sentir</li>
+<li><strong>Romania</strong> — Roxen: Alcohol You</li>
+<li><strong>Russia</strong> — Little Big: Uno</li>
+<li><strong>San Marino</strong> — Senhit: Freaky!</li>
+<li><strong>Serbia</strong> — Hurricane: Hasta la vista</li>
+<li><strong>Slovenia</strong> — Ana Soklič: Voda</li>
+<li><strong>Spain</strong> — Blas Cantó: Universo</li>
+<li><strong>Sweden</strong> — The Mamas: Move</li>
+<li><strong>Switzerland</strong> — Gjon&#x27;s Tears: Répondez-moi</li>
+<li><strong>Ukraine</strong> — Go_A: Solovey</li>
+<li><strong>United Kingdom</strong> — James Newman: My Last Breath</li></ul></div></details></div>
+<div class="seo-edition-panel"><div class="seo-edition-heading"><span class="seo-kicker">EXPLORE THE ARCHIVE</span><h2>Other Eurovision editions</h2></div><nav class="seo-edition-year-nav" aria-label="Other Eurovision editions"><a href="/edition/2019.html">← Eurovision 2019</a> <a href="/edition/2021.html">Eurovision 2021 →</a></nav></div>
       </section>
 
     </div>
