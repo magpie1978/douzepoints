@@ -1,0 +1,24 @@
+name: Generate Edition 2023 Redesign Preview
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Generate 2023 preview
+        env:
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          python generate_edition_2023_redesign_preview.py
+          test -s seo-preview/edition/2023-test.html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: edition-2023-redesign-preview
+          path: seo-preview/edition/2023-test.html
+          if-no-files-found: error
