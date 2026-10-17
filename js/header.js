@@ -103,7 +103,10 @@ async function loadHeader() {
   const banner = document.getElementById("country-banner");
   if (!banner) return;
 
-  banner.style.display = "none";
+  // The homepage banner may already have loaded early. Do not hide it again.
+  if (!(window.location.pathname === "/" || window.location.pathname.endsWith("/index.html"))) {
+    banner.style.display = "none";
+  }
 
   const params = new URLSearchParams(window.location.search);
 
