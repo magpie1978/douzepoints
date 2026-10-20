@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>
+   Route Importer
+  </title>
+<style>
+   :root {
+    color-scheme:dark;
+    --bg:#0b0d10;
+    --panel:#171b21;
+    --border:#303741;
+    --accent:#ccff00;
+    --muted:#9ca5b2}
+* {
+    box-sizing:border-box}
+body {
+    font:14px Inter,system-ui,sans-serif;
+    background:var(--bg);
+    color:#f5f7fa;
+    margin:0;
+    padding:24px;
+    max-width:1200px;
+    margin:auto}
+h1 {
+    font-size:24px}
+h2 {
+    font-size:17px}
+.panel {
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:22px;
+    margin:18px 0}
+label {
+    display:block;
+    margin:14px 0 7px;
+    color:var(--muted)}
+select,input,/* Unified lime button style, including secondary and disabled buttons. */
+button,
+button.secondary,
+button:disabled,
+button.secondary:disabled {
+    background: #ccff00;
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000;
+    border: 0;
+    border-radius: 14px;
+    padding: 14px 22px;
+    font-weight: 800;
+    cursor: pointer;
+    margin: 8px 8px 0 0;
+    opacity: 1;
+}
+button:hover:not(:disabled) {
+    background: #ddff44;
+}
+button:disabled,
+button.secondary:disabled {
+    cursor: not-allowed;
+    outline: 2px dashed #789900;
+    outline-offset: -4px;
+}
+p,small {
+    color:var(--muted);
+    line-height:1.6}
+.grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:16px}
+.metric {
+    padding:14px;
+    background:#101319;
+    border-radius:8px}
+strong.num {
+    font-size:23px;
+    display:block;
+    margin-top:5px}
+pre {
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
+    background:#0c0f13;
+    padding:15px;
+    border-radius:8px;
+    max-height:280px;
+    overflow:auto}
+a {
+    color:var(--accent)}
+.warn {
+    color:#ffcb76}
+  
+/* UI-only refresh: existing element IDs and JavaScript unchanged */
+body{max-width:1320px;padding:26px 30px 65px;line-height:1.5}h1{font-size:29px;letter-spacing:-.03em}h2{font-size:19px;letter-spacing:-.02em}.panel{background:#151a21;border-color:#29313c;border-radius:16px;padding:26px;margin:18px 0}label{color:#b6bfcb;font-size:12px;font-weight:650}select,input[type=file],input[type=url],input[type=password],input[type=text],input[type=email]{background:#0d1219!important;color:#f1f5f9!important;border:1px solid #35404e!important;border-radius:10px;padding:12px 14px;min-height:46px;box-shadow:none!important}input::placeholder{color:#738091}select:focus,input:focus{outline:2px solid rgba(204,255,0,.55);outline-offset:1px}input[type=file]{padding:9px 12px}input[type=file]::file-selector-button{background:#29313b;color:#f4f6f8;border:1px solid #46505e;border-radius:7px;padding:7px 12px;margin-right:12px;cursor:pointer}button,button.secondary{background:#252d37!important;color:#edf2f6!important;border:1px solid #3a4552!important;border-radius:9px;padding:11px 15px;min-height:43px;margin:8px 8px 0 0;font-weight:650;box-shadow:none!important;transition:background .15s,border-color .15s}button:hover:not(:disabled){background:#323c48!important;border-color:#697786!important}button:focus-visible{outline:2px solid #ccff00;outline-offset:3px}button:disabled{opacity:.35;cursor:not-allowed}#scan-start,#validate,#scan-results:not(:disabled),#download:not(:disabled){background:#ccff00!important;color:#0b1000!important;border-color:#ccff00!important;font-weight:800}#scan-start:hover:not(:disabled),#validate:hover:not(:disabled),#scan-results:hover:not(:disabled),#download:hover:not(:disabled){background:#dfff66!important}.metric{background:#0e131a;border:1px solid #222b35;border-radius:10px;padding:15px 17px;color:#b4bfca}strong.num{font-size:25px;color:#f7fafc;font-variant-numeric:tabular-nums}pre{background:#0b1016;border:1px solid #232c36;color:#e5edf4;line-height:1.55;padding:17px}.warn{color:#eabf79;font-size:12px}.grid{gap:14px}a{color:#d3ff52}@media(max-width:720px){body{padding:16px 14px 50px}.panel{padding:18px}.grid{grid-template-columns:1fr}}
+
+/* Ensure text and placeholder labels inside all form controls are readable. */
+input, select, textarea { color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; }
+input::placeholder, textarea::placeholder { color: #e5eaf0 !important; opacity: 1 !important; -webkit-text-fill-color: #e5eaf0 !important; }
+input[type="file"]::file-selector-button { color: #ffffff !important; }
+
+/* Explicitly override legacy lime-control WebKit text fill for form inputs. */
+html body input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+html body select,
+html body textarea {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+html body input::placeholder,
+html body textarea::placeholder {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Workflow grouping: clear primary scan sequence and optional legacy tools */
+#game-data-scan { border-color:#34424a; }
+#game-data-scan > div:has(> button) { margin-bottom:18px; }
+#manual-csv-tools { padding:18px 24px; }
+#manual-csv-tools details > summary, .technical-notes > summary { cursor:pointer; font-weight:700; color:#e6edf4; padding:8px 0; }
+#manual-csv-tools details[open] > summary { margin-bottom:16px; }
+#manual-csv-tools .panel { box-shadow:none; padding:18px; margin:18px 0; }
+#manual-csv-tools .grid { margin:12px 0; }
+#manual-csv-tools button:disabled, button:disabled { color:#b4bdc8 !important; -webkit-text-fill-color:#b4bdc8 !important; opacity:.52; }
+#scan-status, #scan-resume, #scan-pause, #pub-refresh { color:#f4f7fa !important; -webkit-text-fill-color:#f4f7fa !important; }
+#manual-csv-tools input[type=file] { max-width:100%; }
+#manual-csv-tools .warn { margin-top:14px; }
+.technical-notes { margin-top:14px; border-top:1px solid #303741; padding-top:8px; }
+#manual-csv-tools > details > summary { font-size:17px; }
+
+/* Collapsible scan diagnostics: normal progress stays out of the way. */
+.scan-activity{margin-top:16px;border:1px solid #2c3642;border-radius:11px;background:#0d1219;overflow:hidden}
+.scan-activity>summary{cursor:pointer;padding:13px 16px;font-weight:700;color:#eaf0f5;display:flex;gap:14px;align-items:center;justify-content:space-between}
+.scan-activity>summary::marker{color:#ccff00}
+#scan-activity-indicator{font-size:12px;font-weight:500;color:#aab5c2;text-align:right}
+.scan-activity>pre{margin:0;border:0;border-top:1px solid #29333e;border-radius:0;max-height:260px}
+</style>
+</head>
+<body>
+<h1>Import Game Data</h1>
+<p>
+   Scan your owned routes, pricing and demand data into Supabase. Use the manual CSV tools only when needed.
+  </p>
+<section class="panel" id="connection-panel">
+<h2>1. Connection &amp; authentication</h2>
+<p>The scanner uses your shared Airlines Manager session and the authenticated Supabase Edge Function. These settings are normally only needed when connecting or resuming a scan.</p>
+<div class="connection-summary" role="status" id="connection-summary">Checking shared Airlines Manager connection…</div>
+<details class="connection-advanced"><summary>Advanced connection settings</summary><div class="grid">
+<div>
+<label for="endpoint">
+      Edge Function endpoint (HTTPS)
+     </label>
+<input autocomplete="off" id="endpoint" placeholder="https://PROJECT.supabase.co/functions/v1/FUNCTION" type="url"/>
+</div>
+<div>
+<label for="api-key">
+      Supabase publishable / anon key (never service-role)
+     </label>
+<input autocomplete="off" id="api-key" placeholder="Publishable key" type="password"/>
+</div>
+<div hidden="">
+<label for="auth-email">
+      Supabase Auth email
+     </label>
+<input autocomplete="username" id="auth-email" placeholder="Email for Authentication → Users" type="email" value="chris@dunigan.email"/>
+</div>
+<div hidden="">
+<label for="auth-password">
+      Supabase Auth password
+     </label>
+<input autocomplete="current-password" id="auth-password" placeholder="Supabase Auth password (not Dashboard password)" type="password"/>
+</div>
+<div>
+<label>
+      Session
+     </label>
+<div class="metric" id="auth-status" role="status">
+      Not signed in
+     </div>
+<button class="secondary" hidden="" id="auth-login">
+      Sign in
+     </button>
+<button class="secondary" disabled="" hidden="" id="auth-logout">
+      Sign out
+     </button>
+</div>
+<div>
+<label for="scan-id">
+      Scan ID (resume existing scan)
+     </label>
+<input autocomplete="off" id="scan-id" placeholder="Latest completed scan is loaded automatically" type="text"/>
+</div>
+</div></details>
+
+
+
+
+<details class="technical-notes"><summary>Security and connection details</summary><p class="warn">
+    The server requires a valid Supabase user session whose email is explicitly allowlisted (AM_ALLOWED_EMAILS). The shared session is managed by the main website and cleared on sign-out. Do not use your Supabase Dashboard password unless it is also the Auth user password. The server scans and upserts into Supabase using its own configuration. The browser does not directly write to Supabase tables. Use only a function secured for your account; the existing function must be reviewed for authorization before exposing it publicly.
+   </p></details></section>
+<section class="panel"><h2>2. Select hub</h2><p>Choose the hub to scan. Affiliated hubs remain subject to the existing eligibility checks.</p><div>
+<label for="hub">
+      Hub
+     </label>
+<select id="hub">
+<option>
+       CGK
+      </option>
+<option>
+       BOM
+      </option>
+<option>
+       MPM
+      </option>
+<option>
+       BKK
+      </option>
+<option>
+       DEL
+      </option>
+</select>
+</div></section><section class="panel" id="game-data-scan"><h2>3. Scan game data</h2><p>Collect route audit and pricing information for the selected hub, then load the completed results.</p><div>
+<button id="scan-start">
+     Start scan (selected hub)
+    </button>
+<button class="secondary" id="scan-resume">
+     Resume existing
+    </button>
+<button class="secondary" disabled="" id="scan-pause">
+     Pause
+    </button>
+<button class="secondary" id="scan-status">
+     Refresh status
+    </button>
+<button class="secondary" disabled="" id="scan-results">
+     Load completed results
+    </button>
+<button disabled="" id="scan-export">
+     Download scanned owned routes CSV
+    </button>
+</div><div class="grid">
+<div class="metric">
+     Audit pages
+     <strong class="num" id="audit-progress">
+      —
+     </strong>
+</div>
+<div class="metric">
+     Pricing pages
+     <strong class="num" id="pricing-progress">
+      —
+     </strong>
+</div>
+<div class="metric">
+     Hubs complete
+     <strong class="num" id="hub-progress">
+      —
+     </strong>
+</div>
+<div class="metric">
+     Collected routes
+     <strong class="num" id="route-progress">
+      —
+     </strong>
+</div>
+</div><details id="scan-activity" class="scan-activity"><summary>Scan activity <span id="scan-activity-indicator">No scan activity yet</span></summary><pre id="scan-log" role="log" aria-live="polite">No scan activity yet.</pre></details></section><section class="panel" id="manual-csv-tools"><details class="advanced-tools"><summary>Manual CSV import (advanced — optional)</summary><p>Only use this if you need to merge a game-side owned-routes export with an existing routes.csv. The automated Supabase scan does not require these files.</p><div class="grid"><div>
+<label for="base">
+      Existing routes.csv (preserved)
+     </label>
+<input accept=".csv,text/csv" id="base" type="file"/>
+</div><div>
+<label for="owned">
+      Owned-routes scan CSV
+     </label>
+<input accept=".csv,text/csv" id="owned" type="file"/>
+</div></div><button id="validate">
+    Validate and merge
+   </button><button disabled="" id="download">
+    Download merged routes.csv
+   </button><section class="panel">
+<h2>CSV merge validation</h2>
+<div class="grid">
+<div class="metric">
+     Existing rows
+     <strong class="num" id="existing">
+      —
+     </strong>
+</div>
+<div class="metric">
+     Imported owned routes
+     <strong class="num" id="imported">
+      —
+     </strong>
+</div>
+<div class="metric">
+     Merged rows
+     <strong class="num" id="merged">
+      —
+     </strong>
+</div>
+<div class="metric">
+     Missing categories
+     <strong class="num" id="missing">
+      —
+     </strong>
+</div>
+</div>
+<pre id="report">Upload the two CSV files and click Validate and merge.</pre>
+<p class="warn">
+    Missing airport categories, airport metadata and total pricing demand are never fabricated. An owned-route scan alone may not produce optimiser-ready records.
+   </p>
+</section><section class="panel">
+<h2>Additional data requirements</h2>
+<p>
+    The optimiser requires a matching
+    <code>
+     pricing.csv
+    </code>
+    or Supabase pricing dataset for the hub. Use your existing authenticated Edge Function to collect route audit and pricing data; the importer invokes the Edge Function to scan the selected hub, but does not fabricate missing metadata.
+   </p>
+<p>
+    For the game-side scan, open
+    <a href="https://tycoon.airlines-manager.com/network/" rel="noopener" target="_blank">
+     Airlines Manager Network ↗
+    </a>
+    , choose the required hub, and run your owned-route exporter. Then upload its CSV above.
+   </p>
+</section></details></section>
+
+
+<script src="route-importer.js">
+</script>
+<script src="route-auth.js">
+</script>
+<script src="affiliation-guard.js">
+</script>
+<script src="route-scanner.js">
+</script>
+<section class="panel" id="publication-report-panel">
+<h2>
+    Publication report
+   </h2>
+<p>
+    After loading a completed scan, this report checks the selected hub against the production Supabase tables. Counts describe the current database, not necessarily changes made by the latest scan.
+   </p>
+<div class="grid">
+<div class="metric">
+     Owned routes
+     <strong class="num" id="pub-routes">
+      —
+     </strong>
+</div>
+<div class="metric">
+     Pricing records
+     <strong class="num" id="pub-pricing">
+      —
+     </strong>
+</div>
+<div class="metric">
+     Valid airport categories
+     <strong class="num" id="pub-categories">
+      —
+     </strong>
+</div>
+<div class="metric">
+     Unresolved categories
+     <strong class="num" id="pub-unresolved">
+      —
+     </strong>
+</div>
+<div class="metric">
+     Eligible priced routes
+     <strong class="num" id="pub-eligible">
+      —
+     </strong>
+</div>
+<div class="metric">
+     Pricing errors
+     <strong class="num" id="pub-errors">
+      —
+     </strong>
+</div>
+</div>
+<p id="pub-readiness" role="status">
+    No publication report loaded.
+   </p>
+<p class="warn" id="pub-note">
+    Newly recovered category counts are not yet tracked historically; the report shows current category coverage.
+   </p>
+<button class="secondary" id="pub-refresh">
+    Refresh publication report
+   </button>
+</section>
+<section class="panel" id="affiliations-panel">
+<h2>
+    Affiliated Hub Manager
+   </h2>
+<p>
+    Manage affiliated hubs in Supabase. Affiliated hubs are blocked as origins for scanning, importing and optimisation, and are excluded as destinations. Changes never delete routes, pricing or X380Plus allocations.
+   </p>
+<div class="grid">
+<div>
+<label for="aff-endpoint">
+      Scanner Edge Function URL
+     </label>
+<input autocomplete="off" id="aff-endpoint" placeholder="https://PROJECT.supabase.co/functions/v1/FUNCTION" type="url"/>
+</div>
+<div hidden="">
+<label for="aff-email">
+      Supabase Auth email
+     </label>
+<input autocomplete="username" id="aff-email" placeholder="Authentication user email" type="email"/>
+</div>
+<div hidden="">
+<label for="aff-password">
+      Supabase Auth password
+     </label>
+<input autocomplete="current-password" id="aff-password" placeholder="Password (not saved)" type="password"/>
+</div>
+</div>
+<button id="aff-signin">
+    Sign in
+   </button>
+<button class="secondary" disabled="" id="aff-signout">
+    Sign out
+   </button>
+<button class="secondary" disabled="" id="aff-refresh">
+    Refresh
+   </button>
+<p id="aff-message" role="status">
+    Sign in to manage affiliations. This session is kept in memory only.
+   </p>
+<div aria-live="polite" id="aff-list">
+</div>
+<div class="grid">
+<div>
+<label for="aff-new">
+      Add affiliated hub (3–5 letters or digits)
+     </label>
+<input autocomplete="off" id="aff-new" maxlength="5" placeholder="e.g. SYD" type="text"/>
+</div>
+</div>
+<button disabled="" id="aff-add">
+    Add affiliation
+   </button>
+<p class="warn">
+    Removing affiliation changes origin restrictions and destination exclusions. It does not release aircraft or delete data. Refresh the Rotation Optimiser after changes.
+   </p>
+</section>
+<script src="affiliated-hubs.js">
+</script>
+<script src="publication-report.js">
+</script>
+<style>
+.connection-summary{padding:15px 18px;background:#0d1319;border:1px solid #35404e;border-radius:11px;color:#e8edf4;font-weight:650;line-height:1.6}
+.connection-summary.good{border-color:#496a2c}
+.connection-summary.warn{border-color:#7a6234}
+.connection-advanced{margin-top:14px}
+.connection-advanced summary{cursor:pointer;color:#b8c3cf;font-weight:700;padding:8px 0}
+.connection-advanced .grid{margin-top:12px}
+.connection-advanced input{width:100%;min-width:0}
+</style>
+<script>
+/* Public configuration only. User access tokens always come from shared authentication. */
+(()=>{'use strict';
+ const endpoint='https://eukgodthgusongsbhdwg.supabase.co/functions/v1/am-auth-test', publishableKey='sb_publishable_pBMWDgyFgIUGetg6NwkKkA_rMa1--kc';
+ const $=id=>document.getElementById(id);
+ $('endpoint').value=endpoint;
+ $('api-key').value=publishableKey;
+ const summary=$('connection-summary');
+ let sequence=0;
+ const isShared=()=>window.parent!==window && Boolean(window.parent.amSharedAuth);
+ const signedIn=()=>isShared() && window.parent.amSharedAuth.isSignedIn();
+ function render(message,kind=''){
+   summary.className='connection-summary '+kind;
+   summary.textContent=message;
+ }
+ async function loadLatest({force=false}={}){
+   const current=++sequence;
+   if(!signedIn()){render('Connection configured · Sign in through the main Airlines Manager header to access scans.','warn');return;}
+   render('Supabase configured · Authenticated through Airlines Manager · Looking up latest completed scan…');
+   if($('scan-id').value.trim()&&!force){render('Supabase configured · Authenticated · Existing scan ID retained.','good');return;}
+   try{
+     const token=await window.parent.amSharedAuth.token();
+     const u=new URL(endpoint);u.searchParams.set('action','latest');u.searchParams.set('hub',$('hub').value);
+     const r=await fetch(u,{headers:{apikey:publishableKey,Authorization:'Bearer '+token},cache:'no-store'});
+     const d=await r.json().catch(()=>({}));
+     if(!r.ok||d.ok===false)throw Error(d.error||d.message||'HTTP '+r.status);
+     if(current!==sequence)return;
+     if(d.hasCompletedScan&&d.scan?.id){
+       $('scan-id').value=d.scan.id;
+       render('Connected · Authenticated · Latest completed '+$('hub').value+' scan found. Click Refresh status to view it.','good');
+     }else{
+       render('Connected · Authenticated · No completed scan found for '+$('hub').value+'.','warn');
+     }
+   }catch(e){if(current===sequence)render('Connected · Could not retrieve latest scan: '+e.message,'warn');}
+ }
+ $('hub').addEventListener('change',()=>{$('scan-id').value='';loadLatest({force:true});});
+ window.addEventListener('route-importer-auth-changed',()=>loadLatest());
+ window.addEventListener('pageshow',()=>loadLatest());
+ // The main page owns login state; a new scan keeps its own ID until hub changes.
+ loadLatest();
+})();
+</script>
+<script>
+/* Keep existing scan-log ID and scanner behaviour unchanged. */
+(()=>{'use strict';
+  const details=document.getElementById('scan-activity');
+  const log=document.getElementById('scan-log');
+  const indicator=document.getElementById('scan-activity-indicator');
+  if(!details||!log||!indicator)return;
+  const initial='Use the main Airlines Manager header to sign in, then select a hub.';
+  function update(){
+    let message=(log.textContent||'').trim();
+    if(!message||message===initial){
+      if(message!== 'No scan activity yet.')log.textContent='No scan activity yet.';
+      indicator.textContent='No scan activity yet';
+      return;
+    }
+    const problem=/(?:error|failed|blocked|denied|invalid|exception)/i.test(message);
+    const active=/^Batch\s+\d+:/i.test(message);
+    const done=/(?:Scan complete|Loaded \d+|Paused\.)/i.test(message);
+    indicator.textContent=problem?'Attention required':active?'Scanning…':done?'Latest activity available':'Activity available';
+    if(problem||active)details.open=true;
+  }
+  new MutationObserver(update).observe(log,{childList:true,characterData:true,subtree:true});
+  update();
+})();
+</script>
+</body>
+</html>
