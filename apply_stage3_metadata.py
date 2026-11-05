@@ -124,7 +124,7 @@ def main():
                 title, description = edition_metadata(source_html, year)
             else:
                 title, description = country_metadata(source_html, path.stem)
-            canonical = f'https://douzepoints.org/{kind}/{path.name}'
+            canonical = f'https://www.douzepoints.org/{kind}/{path.name}'
             result = replace_head(source_html, title, description, canonical)
             target = output/kind/path.name
             target.parent.mkdir(parents=True, exist_ok=True)

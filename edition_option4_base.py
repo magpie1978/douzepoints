@@ -22,7 +22,7 @@ SUPABASE_KEY = os.environ.get("SUPABASE_ANON_KEY", "")
 YEARS = range(1956, 2027)
 
 OUTPUT = Path("seo-preview")
-SITE = "https://douzepoints.org"
+SITE = "https://www.douzepoints.org"
 
 EXPECTED = {
     "entries": 35,

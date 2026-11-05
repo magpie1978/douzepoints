@@ -17,7 +17,7 @@ from urllib.request import Request, urlopen
 SUPABASE_URL = 'https://eukgodthgusongsbhdwg.supabase.co'
 KEY = os.environ.get('SUPABASE_ANON_KEY', '')
 OUT = Path('seo-production')
-SITE = 'https://douzepoints.org'
+SITE = 'https://www.douzepoints.org'
 
 
 def val(row, key):
